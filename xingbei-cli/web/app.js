@@ -1,6 +1,6 @@
-import { CARD_NAMES, ELEMENT_NAMES, FATE_NAMES } from "/src/cards.js";
+import { ATTACKS, CARD_NAMES, ELEMENT_NAMES, FATE_NAMES } from "/src/cards.js";
 import { Game } from "/src/engine.js";
-import { chooseAiAction, chooseAiResponse } from "/src/ai.js";
+import { chooseAiAction } from "/src/ai.js";
 import { compareHandCards } from "/src/cards.js";
 
 import { renderTeams, renderPlayers as paintPlayers, renderHand as paintHand, resizeStage, layoutHand, cardContents, cardLabel } from "/web/render.js";
@@ -171,7 +171,7 @@ function closeModal() {
   if (game) render();
 }
 
-function chooseHand(title, cards, { count = 1, valid = cards.map((_, index) => index), cancel = false } = {}) {
+function chooseHand(title, cards, { count = 1, valid = cards.map((_, index) => index), cancel = false, auto = false } = {}) {
   return session.wait(resolve => {
     const previousHint = elements.hint.textContent;
     const previousFocus = document.activeElement;
@@ -187,9 +187,10 @@ function chooseHand(title, cards, { count = 1, valid = cards.map((_, index) => i
       pendingChoice.selected = [...selected];
       confirm.disabled = selected.size !== count;
       render();
+      if (auto && selected.size === count) resolve([...selected]);
     } };
     confirm.addEventListener("click", () => resolve([...selected]));
-    elements.modalActions.append(confirm);
+    if (!auto) elements.modalActions.append(confirm);
     if (cancel) {
       const button = document.createElement("button"); button.textContent = "不使用";
       button.addEventListener("click", () => resolve(null)); elements.modalActions.append(button);
@@ -211,58 +212,9 @@ async function chooseCards(title, cards, count) {
   return chooseHand(`${title}：弃${count}张牌`, cards, { count });
 }
 
-function chooseResponseTarget(title, valid, targets, kind = "attack") {
-  return session.wait(resolve => {
-    const previousHint = elements.hint.textContent;
-    const previousFocus = document.activeElement;
-    const selected = new Set();
-    let picked = null;
-    pendingChoice = { title, type: "hand", count: 1, valid: valid.map(item => item.index), selected: [] };
-    const cancel = document.createElement("button"); cancel.textContent = "取消"; cancel.hidden = true;
-    const confirm = document.createElement("button"); confirm.textContent = "确认";
-    confirm.addEventListener("click", () => {
-      if (picked?.card.name === "holyLight") resolve({ index: picked.index, targetId: null });
-    });
-    function clearSelection() {
-      picked = null; selected.clear(); selectedCard = null; targetChoice = null;
-      pendingChoice.selected = []; cancel.hidden = true;
-      elements.modalActions.replaceChildren(cancel, decline);
-      elements.hint.textContent = title; render();
-    }
-    handChoice = { valid: pendingChoice.valid, selected, cancel: clearSelection, select(index) {
-      const next = valid.find(item => item.index === index);
-      if (!next) return;
-      if (picked?.index === index) { clearSelection(); return; }
-      picked = next; selected.clear(); selected.add(index); selectedCard = index;
-      pendingChoice.selected = [index]; cancel.hidden = false;
-      targetChoice = null;
-      if (next.card.name === "holyLight") {
-        elements.modalActions.replaceChildren(confirm, cancel, decline);
-        elements.hint.textContent = `${title}；确认使用【圣光】，或更换手牌`;
-        render(); return;
-      }
-      elements.modalActions.replaceChildren(cancel, decline);
-      elements.hint.textContent = `${title}；选择${kind === "magic" ? "魔弹传递" : "应战攻击"}目标`;
-      targetChoice = { targets, resolve(targetId) {
-        if (targetId === null) { clearSelection(); return; }
-        if (targets.includes(targetId)) resolve({ index: picked.index, targetId });
-      } };
-      render();
-    } };
-    cancel.addEventListener("click", clearSelection);
-    const decline = document.createElement("button"); decline.textContent = "不使用";
-    decline.addEventListener("click", () => resolve(null));
-    elements.modalActions.replaceChildren(cancel, decline);
-    elements.hint.textContent = title;
-    openModal(); elements.modal.querySelector(".dialog").hidden = true;
-    $("#window").classList.add("choosing-hand"); render();
-    if (keyboardMode) elements.hand.querySelector("button:enabled")?.focus();
-    return () => {
-      targetChoice = null; handChoice = null; pendingChoice = null; selectedCard = null;
-      elements.hint.textContent = previousHint;
-      closeModal(); previousFocus?.focus();
-    };
-  });
+async function chooseResponseCard(title, valid) {
+  const indexes = await chooseHand(title, game.player(humanId).hand, { valid: valid.map(item => item.index), cancel: true, auto: true });
+  return indexes ? valid.find(item => item.index === indexes[0]) : null;
 }
 
 async function resolveHumanOverflow() {
@@ -277,13 +229,7 @@ async function resolveHumanOverflow() {
 
 async function selectCard(index) {
   if (!acceptingAction) return;
-  if (targetChoice) {
-    if (selectedCard === index) { targetChoice.resolve(null); return; }
-    const card = game.player(humanId).hand[index], targets = game.legalTargets(humanId, card);
-    if (!targets.length) return;
-    selectedCard = index; targetChoice.targets = targets;
-    elements.hint.textContent = `为【${CARD_NAMES[card.name]}】选择目标`; render(); return;
-  }
+  if (targetChoice) { targetChoice.resolve(null); return; }
   if (busy) return;
   const card = game.player(humanId).hand[index];
   const targets = game.legalTargets(humanId, card);
@@ -292,18 +238,19 @@ async function selectCard(index) {
   selectedCard = index;
   render();
   try {
-    const target = await chooseTarget(targets, `为【${CARD_NAMES[card.name]}】选择目标`);
-    if (target !== null) {
-      const chosenIndex = selectedCard, chosenCard = game.player(humanId).hand[chosenIndex];
-      const action = chosenCard.type === "attack"
-        ? () => resolveAttackChain(humanId, chosenIndex, target)
-        : chosenCard.name === "magicBullet" ? () => resolveMagicChain(humanId, chosenIndex)
-          : () => game.playWithDecisions(humanId, chosenIndex, target, { autoRespond: true, overflow: overflowPolicy });
-      await completeHumanAction(action);
-    } else {
-      selectedCard = null; busy = false;
-      elements.hint.textContent = "[攻击行动]或者[法术行动]";
-      render();
+    if (card.name === "moDan") await completeHumanAction(() => game.play(humanId, index, null, { autoRespond: true, overflow: overflowPolicy }));
+    else {
+      const target = await chooseTarget(targets, `为【${CARD_NAMES[card.name]}】选择目标`);
+      if (target !== null) {
+        const action = ATTACKS.has(card.name)
+          ? () => resolveAttackChain(humanId, index, target)
+          : () => game.play(humanId, index, target, { autoRespond: true, overflow: overflowPolicy });
+        await completeHumanAction(action);
+      } else {
+        selectedCard = null; busy = false;
+        elements.hint.textContent = "[攻击行动]或者[法术行动]";
+        render();
+      }
     }
   } catch (error) {
     if (error instanceof Cancelled) throw error;
@@ -314,10 +261,7 @@ async function selectCard(index) {
 function chooseTarget(targets, hint) {
   elements.hint.textContent = hint;
   return session.wait(resolve => {
-    const choice = { targets, resolve(targetId) {
-      if (targetId === null || choice.targets.includes(targetId)) resolve(targetId);
-    } };
-    targetChoice = choice;
+    targetChoice = { targets, resolve };
     render();
     return () => { targetChoice = null; render(); };
   });
@@ -350,18 +294,18 @@ async function waitForHumanAction() {
 async function executeAi(actorId, scriptedAction = null) {
   const active = session;
   const action = scriptedAction || chooseAiAction(game, actorId);
-  if (action.type === "refresh") await game.executeAction(actorId, action);
-  else if (action.type === "purchase") await game.executeAction(actorId, action, { overflow: "random" });
-  else if (action.type === "synthesize") await game.executeAction(actorId, action, { overflow: "random" });
+  if (action.type === "refresh") game.refreshUnableHand(actorId);
+  else if (action.type === "purchase") game.purchase(actorId, { overflow: "random" });
+  else if (action.type === "synthesize") game.synthesize(actorId, action.gemCount, { overflow: "random" });
   else if (action.type === "pass") game.log.push(`${game.player(actorId).name}跳过行动`);
   else {
     const card = game.player(actorId).hand[action.index];
     const options = { autoRespond: id => id !== humanId, overflow: overflowPolicy };
-    if (card.type === "attack") await resolveAttackChain(actorId, action.index, action.targetId);
-    else if (card.name === "magicBullet") await resolveMagicChain(actorId, action.index);
+    if (ATTACKS.has(card.name)) await resolveAttackChain(actorId, action.index, action.targetId);
     else {
+      if (card.name === "moDan") await prepareMagicResponse(options);
       active.assert();
-      await game.playWithDecisions(actorId, action.index, action.targetId, options);
+      game.play(actorId, action.index, action.targetId, options);
     }
   }
   active.assert();
@@ -371,25 +315,32 @@ async function executeAi(actorId, scriptedAction = null) {
 async function resolveAttackChain(actorId, handIndex, targetId) {
   return game.attackWithDecisions(actorId, handIndex, targetId, {
     overflow: overflowPolicy,
-    resolveOverflow: resolveHumanOverflow,
-    chooseResponse: context => {
-      const { actor, target, valid, counterTargets, isCounter } = context;
-      if (target.id === humanId) return chooseResponseTarget(`${actor.name}对你发动${isCounter ? "应战攻击" : "主动攻击"}【${CARD_NAMES[context.attack.name]}】`, valid, counterTargets.map(player => player.id));
-      return chooseAiResponse(game, context);
+    chooseResponse: async ({ actor, target, attack, valid, counterTargets, isCounter }) => {
+      let picked;
+      if (target.id === humanId) {
+        picked = await chooseResponseCard(`${actor.name}对你发动${isCounter ? "应战攻击" : "主动攻击"}【${CARD_NAMES[attack.name]}】`, valid);
+      } else {
+        picked = valid[Math.floor(game.random() * valid.length)];
+      }
+      if (!picked) return null;
+
+      let nextTargetId = null;
+      if (ATTACKS.has(picked.card.name)) {
+        nextTargetId = target.id === humanId
+          ? await chooseTarget(counterTargets.map(player => player.id), "选择应战攻击目标")
+          : counterTargets[Math.floor(game.random() * counterTargets.length)].id;
+      }
+      if (ATTACKS.has(picked.card.name) && nextTargetId === null) return null;
+      return { index: picked.index, targetId: nextTargetId };
     },
   });
 }
 
-async function resolveMagicChain(actorId, handIndex) {
-  return game.playMagicWithDecisions(actorId, handIndex, {
-    overflow: overflowPolicy,
-    resolveOverflow: resolveHumanOverflow,
-    chooseResponse: context => {
-      const { actor, target, valid, nextTarget } = context;
-      if (target.id === humanId) return chooseResponseTarget(`${actor.name}向你传递【魔弹】`, valid, nextTarget ? [nextTarget.id] : [], "magic");
-      return chooseAiResponse(game, context);
-    },
-  });
+async function prepareMagicResponse(options) {
+  const valid = game.player(humanId).hand.map((card, index) => ({ card, index })).filter(item => item.card.name === "moDan" || item.card.name === "shengGuang");
+  if (!valid.length) return;
+  const picked = await chooseResponseCard("魔弹可能传递到你", valid);
+  if (picked) options.responses = { [humanId]: picked.index };
 }
 
 async function turnGate(active) {
@@ -406,28 +357,29 @@ async function runTurns(active) {
     appendLog(`━━━━━━━━ ${player.name}回合开始 ━━━━━━━━`, true);
     elements.hint.textContent = player.id === humanId ? "准备行动" : "对手思考中";
     render();
-    const turn = await game.beginTurn(player.id, {
-      chooseWeakness: () => player.id === humanId
-        ? choose("【虚弱】触发", [{ value: "draw", label: "摸3张牌并继续" }, { value: "skip", label: "跳过本回合行动" }])
-        : (game.random() < .5 ? "draw" : "skip"),
-      resolveOverflow: resolveHumanOverflow,
-    }, { overflow: overflowPolicy });
+    let weakness = "skip";
+    if (player.weakness) {
+      weakness = player.id === humanId
+        ? await choose("【虚弱】触发", [{ value: "draw", label: "摸3张牌并继续" }, { value: "skip", label: "跳过本回合行动" }])
+        : (game.random() < .5 ? "draw" : "skip");
+    }
     active.assert();
+    const turn = game.startTurn(player.id, { weakness, overflow: overflowPolicy });
     await resolveHumanOverflow();
     flushLog();
     if (!turn.skipped && !game.winner) {
       if (player.id === humanId) {
         if (game.unusableCards(humanId).length >= 4) {
           await choose("无法行动", [{ value: true, label: "展示并重摸" }], { detail: "至少有4张牌当前无法使用。你将弃置并重摸全部手牌。" });
-          await game.executeAction(humanId, { type: "refresh" }, { resolveOverflow: resolveHumanOverflow }); flushLog();
+          game.refreshUnableHand(humanId); flushLog();
         } else await waitForHumanAction();
-      } else { await delay(isDev ? 0 : 650); await executeAi(player.id, isDev && ["attack", "attack-switch"].includes(sceneId) && events.length === 1 ? { type: "play", index: 0, targetId: humanId } : null); active.assert(); flushLog(); }
+      } else { await delay(isDev ? 0 : 650); await executeAi(player.id, isDev && sceneId === "attack" && events.length === 1 ? { type: "play", index: 0, targetId: humanId } : null); active.assert(); flushLog(); }
     }
     active.assert();
     events.push({ type: "turn-end", current: player.id });
     appendLog(`━━━━━━━━ ${player.name}回合结束 ━━━━━━━━`, true);
-    await game.endTurnWithDecisions({ resolveOverflow: resolveHumanOverflow });
     if (game.winner) break;
+    game.current = (game.current + 1) % game.players.length;
     await delay(isDev ? 0 : 350);
   }
   acceptingAction = false;
@@ -482,17 +434,17 @@ async function specialAction(type) {
   render();
   const active = session;
   try {
-    if (type === "buy") await completeHumanAction(() => game.executeAction(humanId, { type: "purchase" }, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow }));
+    if (type === "buy") await completeHumanAction(() => game.purchase(humanId, { overflow: overflowPolicy }));
     if (type === "synth") {
       const stones = game.stoneCounts(game.player(humanId).team);
       const picked = await chooseStones("合成：选择星石", stones, 3, 3);
-      if (picked) await completeHumanAction(() => game.executeAction(humanId, { type: "synthesize", gemCount: picked.gem }, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow }));
+      if (picked) await completeHumanAction(() => game.synthesize(humanId, picked.gem, { overflow: overflowPolicy }));
     }
     if (type === "refine") {
       const player = game.player(humanId), stones = game.stoneCounts(player.team);
       const capacity = 3 - player.energy.gem - player.energy.crystal;
       const picked = await chooseStones("提炼：选择星石", stones, 1, Math.min(2, stones.total, capacity));
-      if (picked) await completeHumanAction(() => game.executeAction(humanId, { type: "refine", stones: picked }));
+      if (picked) await completeHumanAction(() => game.refine(humanId, picked));
     }
   } catch (error) {
     if (error instanceof Cancelled) throw error;
@@ -505,10 +457,7 @@ async function specialAction(type) {
 for (const type of ["buy", "synth", "refine"]) elements[type].addEventListener("click", () => launch(() => specialAction(type)));
 $("#cancel-target").addEventListener("click", () => targetChoice?.resolve(null));
 document.addEventListener("keydown", event => {
-  if (event.key === "Escape") {
-    if (targetChoice) targetChoice.resolve(null);
-    else handChoice?.cancel?.();
-  }
+  if (event.key === "Escape" && targetChoice) targetChoice.resolve(null);
 });
 $("#restart").addEventListener("click", () => newGame());
 $("#clear-log").addEventListener("click", () => { actionLog = []; elements.log.replaceChildren(); });
@@ -553,9 +502,8 @@ if (isDev) {
   });
   $("#dev-step").addEventListener("click", () => { paused = true; $("#dev-pause").textContent = "继续 AI"; resumeTurn?.(); });
   function exportState() {
-    game.assertCardLocations();
     return { seed, scene: sceneId, paused, current: game.current, phase: targetChoice ? "target" : pendingChoice ? "choice" : acceptingAction ? "action" : "turn", selectedCard, legalTargets: targetChoice?.targets || [], pendingChoice, perspective: humanId,
-      game: { players: game.players.map(player => player.toJSON()), teams: game.teams, deck: game.deck, discard: game.discard, field: game.field, outside: game.outside, winner: game.winner, turn: game.turn.state, timeline: game.timeline }, events, log: actionLog };
+      game: { players: game.players, teams: game.teams, deck: game.deck, discard: game.discard, winner: game.winner }, events, log: actionLog };
   }
   // Developer-only interface shared with the browser verification tool.
   window.xingbeiDev = { reset: resetScene, exportState, step: () => resumeTurn?.() };

@@ -13,10 +13,8 @@ button:disabled { cursor: default; }
 .player { position: absolute; pointer-events: auto; width: 150px; height: 180px; z-index: 2; }
 .player[data-position="0"] { top: calc(100% - 220px); left: 0; }
 .player[data-position="1"] { top: calc(30% - 128px); left: calc(100% - 140px); }
-.player[data-position="2"] { top: 0; left: calc(75% - 90px); }
-.player[data-position="3"] { top: 0; left: calc(50% - 60px); }
-.player[data-position="4"] { top: 0; left: calc(25% - 30px); }
-.player[data-position="5"] { top: calc(30% - 128px); left: 0; }
+.player[data-position="2"] { top: 0; left: calc(50% - 60px); }
+.player[data-position="3"] { top: calc(30% - 128px); left: 0; }
 .avatar { position: absolute; inset: 7px; width: 136px; height: 166px; object-fit: cover; object-position: 50% 0; }
 .player-name, .identity, .count, .energy, .marks { position: absolute; }
 .player-name { top: 21px; left: 13px; writing-mode: vertical-rl; }

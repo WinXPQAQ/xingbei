@@ -215,7 +215,6 @@ export class TerminalUI {
       this.input.off("keypress", this.keyHandler);
       this.output.off("resize", this.resizeHandler);
       this.input.setRawMode(false);
-      this.input.pause();
       this.output.write("\x1b[?1049l\x1b[?25h");
     } else this.lineReader?.close();
   }
