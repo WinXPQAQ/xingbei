@@ -53,6 +53,24 @@ try {
       await page.waitForFunction(() => window.xingbeiDev.exportState().current === 1);
       check(`${tag} 可以放弃所有额外行动`, (await state()).game.players[0].hand.length === 2);
     }
+    if (hero === "marksman") {
+      await page.getByRole("button", { name: "狙击", exact: true }).click();
+      check(`${tag} 目标提交前不扣费`, (await state()).game.players[0].energy.crystal === 1);
+      await page.locator("#cancel-target").click();
+      await page.getByRole("button", { name: "狙击", exact: true }).click();
+      await page.locator('.player.targetable[data-player="0"]').click();
+      await page.waitForFunction(() => window.xingbeiDev.exportState().pendingChoice?.title.startsWith("爆牌"));
+      check(`${tag} 补到5且等待暗弃`, (await state()).game.players[0].hand.length === 5);
+      await page.locator('#hand .card[data-index="0"]').click();
+      await page.getByRole("button", { name: "确定", exact: true }).click();
+      await page.waitForFunction(() => window.xingbeiDev.exportState().phase === "action");
+      const after = await state();
+      check(`${tag} 狙击非伤害`, !after.game.timeline.some(entry => entry.timing === "damageBefore"));
+      check(`${tag} 暗弃和士气`, after.game.discard[0].discardVisibility === "hidden" && after.game.teams.red.morale === 14);
+      check(`${tag} 保留额外攻击`, after.game.turn.pendingActions.length === 1);
+      await page.getByRole("button", { name: "结束回合", exact: true }).click();
+      await page.waitForFunction(() => window.xingbeiDev.exportState().current === 1);
+    }
     await page.screenshot({ path: resolve(output, `${tag}.png`) });
     await page.close();
   }

@@ -209,7 +209,7 @@ export class Game {
     return player;
   }
 
-  draw(id, count, { overflow = "first", moraleLoss = true } = {}) {
+  draw(id, count, { overflow = "first", moraleLoss = true, cause = { type: "directDraw" } } = {}) {
     const player = this.player(id);
     const cards = [];
     for (let i = 0; i < count; i++) {
@@ -227,12 +227,12 @@ export class Game {
     if (excess) {
       const policy = typeof overflow === "function" ? overflow(player, excess) : overflow;
       if (policy === "defer") {
-        player.pendingOverflow = { moraleLoss };
+        player.pendingOverflow = { moraleLoss, cause };
       } else {
         let indexes = policy;
         if (policy === "first") indexes = Array.from({ length: excess }, (_, index) => index);
         if (policy === "random") indexes = this.randomIndexes(player.hand.length, excess);
-        this.resolveOverflow(id, indexes, { moraleLoss });
+        this.resolveOverflow(id, indexes, { moraleLoss, cause });
       }
     }
   }
@@ -305,7 +305,7 @@ export class Game {
     if (this.turn.state?.playerId === actorId && this.turn.state.completed) return false;
     const player = this.player(actorId);
     return player.handLimit - player.hand.length <= 2 &&
-      this.unusableCards(actorId).length === player.hand.length && !player.hero.canActWithSkills;
+      this.unusableCards(actorId).length === player.hand.length && !player.hero.canActWithSkills && !this.legalSkillActions(actorId).length;
   }
 
   canDrawSpecial(actorId) {
@@ -368,6 +368,7 @@ export class Game {
     if (action.type === "purchase") steps = this.purchaseSteps(actorId, options);
     else if (action.type === "synthesize") steps = this.synthesizeSteps(actorId, action.gemCount, options);
     else if (action.type === "refine") steps = this.refineSteps(actorId, action.stones, options);
+    else if (action.type === "skill") steps = this.skillActionSteps(actorId, action, options);
     else if (action.type === "refresh") steps = this.refreshUnableHandSteps(actorId, options);
     else throw new RuleError("未知行动");
     return resolveAsync(steps, request => this.interactiveDecision(request, options), options.onPresentation ?? this.onPresentation);
@@ -447,6 +448,40 @@ export class Game {
     this.log.push(`${player.name}无法行动，展示并弃置全部手牌：${revealed}；重摸${count}张`);
     yield* this.present();
     if (this.player(actorId).pendingOverflow) yield { type: "overflow", player: this.player(actorId) };
+    yield* this.present();
+    yield* this.turn.endAction(options);
+  }
+
+  legalSkillActions(playerId) {
+    const player = this.player(playerId);
+    return player.getSkills().flatMap(({ skill }) => {
+      const definition = typeof skill === "string" ? this.skillDefinitions.get(skill) : skill;
+      if (!definition?.action) return [];
+      const spec = definition.action(this, player);
+      if (!spec || !this.turn.canUse(spec.type) || (spec.energy && !this.canPayEnergy(playerId, spec.energy))) return [];
+      if (player.hand.filter(spec.cardFilter ?? (() => true)).length < (spec.cardCount ?? 0) || (spec.targets?.length ?? 0) < (spec.targetCount ?? 1)) return [];
+      return [{ skillId: definition.id, name: definition.name, spec }];
+    });
+  }
+  *skillActionSteps(playerId, action, options = {}) {
+    if (this.winner) throw new RuleError("游戏已经结束");
+    const player = this.player(playerId);
+    const entry = this.legalSkillActions(playerId).find(entry => entry.skillId === action.skillId);
+    if (!entry) throw new RuleError("当前不能发动此行动技能");
+    const spec = entry.spec;
+    const cards = (action.cardIds ?? []).map(id => this.cards.get(id));
+    const targetIds = action.targetIds ?? [];
+    if (cards.length !== (spec.cardCount ?? 0) || new Set(cards).size !== cards.length || cards.some(card => !card || card.location.zone !== "hand" || card.location.playerId !== playerId || !(spec.cardFilter?.(card) ?? true))) throw new RuleError("技能手牌费用无效");
+    if (targetIds.length !== (spec.targetCount ?? 1) || new Set(targetIds).size !== targetIds.length || targetIds.some(id => !spec.targets.includes(id))) throw new RuleError("技能目标无效");
+    const definition = player.getSkills().map(({ skill }) => typeof skill === "string" ? this.skillDefinitions.get(skill) : skill).find(skill => skill.id === action.skillId);
+    yield* this.turn.beginAction(playerId, spec.type, null, options);
+    this.recordPresentation("skill", { playerId, skillId: definition.id, label: definition.name });
+    this.log.push(`${player.name}发动【${definition.name}】`);
+    const resolutionCards = [];
+    yield* definition.resolveAction({ game: this, player, cards, targetIds, action, options: { ...options, resolutionCards } });
+    for (const id of resolutionCards) if (this.cards.get(id).location.zone === "field") this.moveCard(id, { zone: "discard" }, { animate: false });
+    if (resolutionCards.length) this.recordPresentation("cleanup", { cardIds: resolutionCards, visibility: "public" });
+    if (player.pendingOverflow) yield { type: "overflow", player };
     yield* this.present();
     yield* this.turn.endAction(options);
   }

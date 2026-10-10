@@ -16,5 +16,10 @@ export function createHeroScene(id, seed) {
     give(0, card => card.type === "attack" && card.element === "earth");
     game.player(0).energy.crystal = 1;
   }
+  if (heroId === "marksman") {
+    give(0, card => card.hasUniqueSkill("flashTrap"));
+    give(0, card => card.name === "holyLight");
+    game.player(0).handLimit = 4; game.player(0).energy.crystal = 1;
+  }
   game.log = []; game.assertCardLocations(); return game;
 }

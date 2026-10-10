@@ -145,6 +145,7 @@ function render() {
   elements.refine.disabled = locked || stones.total < 1 || player.energy.gem + player.energy.crystal >= 3;
   elements.buy.hidden = !game.canDrawSpecial(humanId) || !!targetChoice;
   elements.synth.hidden = !game.canDrawSpecial(humanId) || stones.total < 3 || !!targetChoice;
+  renderSkillControls(locked);
   elements.refine.hidden = stones.total < 1 || player.energy.gem + player.energy.crystal >= 3 || !!targetChoice;
   $("#cancel-target").hidden = !targetChoice;
   $("#control").hidden = !!pendingChoice;
@@ -412,6 +413,44 @@ async function completeHumanAction(action) {
   finishAction?.();
 }
 
+function renderSkillControls(locked) {
+  const entries = game.legalSkillActions(humanId);
+  for (const node of document.querySelectorAll(".hero-action")) if (!entries.some(entry => entry.skillId === node.dataset.skill)) node.remove();
+  for (const entry of entries) {
+    let button = document.querySelector(`.hero-action[data-skill="${entry.skillId}"]`);
+    if (!button) {
+      button = document.createElement("button"); button.className = "hero-action"; button.dataset.skill = entry.skillId; button.textContent = entry.name;
+      button.addEventListener("click", () => launch(() => selectSkillAction(entry.skillId)));
+      document.querySelector("#control").append(button);
+    }
+    button.disabled = locked;
+  }
+}
+async function selectSkillAction(skillId) {
+  if (!acceptingAction || busy) return;
+  const entry = game.legalSkillActions(humanId).find(entry => entry.skillId === skillId);
+  if (!entry) return;
+  const active = session;
+  busy = true; render();
+  try {
+    const spec = entry.spec, player = game.player(humanId);
+    let cardIds = [];
+    if (spec.cardCount) {
+      const valid = player.hand.flatMap((card, index) => (spec.cardFilter?.(card) ?? true) ? [index] : []);
+      const indexes = await chooseHand(`${entry.name}：选择手牌`, player.hand, { count: spec.cardCount, valid, cancel: true });
+      active.assert(); if (indexes == null) return;
+      cardIds = indexes.map(index => player.hand[index].id);
+    }
+    const targetIds = [];
+    for (let i = 0; i < (spec.targetCount ?? 1); i++) {
+      const id = await chooseTarget(spec.targets.filter(id => !targetIds.includes(id)), `${entry.name}：选择目标`);
+      active.assert(); if (id == null) return;
+      targetIds.push(id);
+    }
+    await completeHumanAction(() => game.executeAction(humanId, { type: "skill", skillId, cardIds, targetIds }, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow }));
+  } finally { active.assert(); busy = false; selectedCard = null; render(); }
+}
+
 async function waitForHumanAction() {
   acceptingAction = true;
   elements.hint.textContent = game.turn.hasExtraActions() ? "额外攻击行动，或结束回合" : "[攻击行动]或者[法术行动]";
@@ -426,6 +465,7 @@ async function executeAi(actorId, scriptedAction = null) {
   if (action.type === "refresh") await game.executeAction(actorId, action);
   else if (action.type === "purchase") await game.executeAction(actorId, action, { overflow: "random" });
   else if (action.type === "synthesize") await game.executeAction(actorId, action, { overflow: "random" });
+  else if (action.type === "skill") await game.executeAction(actorId, action, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
   else if (action.type === "pass") game.log.push(`${game.player(actorId).name}跳过行动`);
   else {
     const card = game.player(actorId).hand[action.index];

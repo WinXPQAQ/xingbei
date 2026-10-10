@@ -14,6 +14,16 @@ export function chooseAiAction(game, actorId) {
     return { type: "synthesize", gemCount };
   }
 
+  const skills = game.legalSkillActions(actorId);
+  if (skills.length && (!game.legalCards(actorId).length || game.random() < 0.5)) {
+    const entry = randomItem(game, skills), spec = entry.spec;
+    const cards = player.hand.filter(spec.cardFilter ?? (() => true)).slice(0, spec.cardCount ?? 0);
+    const preferred = spec.targets.filter(id => game.player(id).team !== player.team);
+    const targets = [...(preferred.length >= (spec.targetCount ?? 1) ? preferred : spec.targets)];
+    const targetIds = [];
+    while (targetIds.length < (spec.targetCount ?? 1)) targetIds.push(targets.splice(Math.floor(game.random() * targets.length), 1)[0]);
+    return { type: "skill", skillId: entry.skillId, cardIds: cards.map(card => card.id), targetIds };
+  }
   const cards = game.legalCards(actorId);
   if (!cards.length) return game.canDrawSpecial(actorId) ? { type: "purchase" } : { type: "pass" };
 
@@ -39,6 +49,10 @@ export function runAiAction(game, actorId, { autoRespond = true } = {}) {
   if (action.type === "refresh") game.refreshUnableHand(actorId);
   else if (action.type === "purchase") game.purchase(actorId);
   else if (action.type === "synthesize") game.synthesize(actorId, action.gemCount);
+  else if (action.type === "skill") {
+    const steps = game.skillActionSteps(actorId, action, { autoRespond });
+    let result = steps.next(); while (!result.done) result = steps.next(game.automaticDecision(result.value, { autoRespond }));
+  }
   else if (action.type === "play") game.play(actorId, action.index, action.targetId, { autoRespond });
   else game.log.push(`${game.player(actorId).name}跳过行动`);
   return action;

@@ -113,7 +113,25 @@ async function humanTurn() {
     if (command === "quit") return false;
     if (command === "end" && game.turn.hasExtraActions()) { game.skipExtraActions(humanId); return true; }
     try {
-      if (command === "buy") await game.executeAction(humanId, { type: "purchase" }, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
+      if (command === "skill") {
+        const entries = game.legalSkillActions(humanId);
+        entries.forEach((entry, i) => tui.console(`${i}: ${entry.name}`));
+        const selected = await askIndex(tui, "技能> ", entries.map((_, i) => i));
+        if (selected == null) continue;
+        const entry = entries[selected], cardIds = [], targetIds = [];
+        while (cardIds.length < (entry.spec.cardCount ?? 0)) {
+          const valid = player.hand.flatMap((card, i) => !cardIds.includes(card.id) && (entry.spec.cardFilter?.(card) ?? true) ? [i] : []);
+          const index = await askIndex(tui, "费用牌（回车取消）> ", valid); if (index == null) break;
+          cardIds.push(player.hand[index].id);
+        }
+        if (cardIds.length !== (entry.spec.cardCount ?? 0)) continue;
+        while (targetIds.length < (entry.spec.targetCount ?? 1)) {
+          const id = await askIndex(tui, "目标（回车取消）> ", entry.spec.targets.filter(id => !targetIds.includes(id))); if (id == null) break;
+          targetIds.push(id);
+        }
+        if (targetIds.length !== (entry.spec.targetCount ?? 1)) continue;
+        await game.executeAction(humanId, { type: "skill", skillId: entry.skillId, cardIds, targetIds }, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
+      } else if (command === "buy") await game.executeAction(humanId, { type: "purchase" }, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
       else if (command === "synth") await game.executeAction(humanId, { type: "synthesize", gemCount: await chooseSynthesis(player) }, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
       else if (command === "refine") await game.executeAction(humanId, { type: "refine", stones: await chooseRefinement(player) });
       else if (command === "play") {
@@ -125,7 +143,7 @@ async function humanTurn() {
         if (card.name !== "magicBullet" && !targets.includes(target)) throw new RuleError(`合法目标：${targets.join("、")}`);
         await playCard(humanId, index, target);
       } else {
-        tui.console("play 牌号 目标号；魔弹只需play 牌号；buy购买；synth合成；refine提炼；end放弃额外行动；quit退出。Tab切换面板，PgUp/PgDn滚动。");
+        tui.console("play 牌号 目标号；魔弹只需play 牌号；buy购买；synth合成；refine提炼；skill英雄技能；end放弃额外行动；quit退出。Tab切换面板，PgUp/PgDn滚动。");
         continue;
       }
       await resolveHumanOverflow();

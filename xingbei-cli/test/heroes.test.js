@@ -87,3 +87,41 @@ test("风怒限制风系，烈风技允许圣光而不消耗圣盾，取消可�
   } });
   assert.equal(shield.location.zone, "status"); assert.equal(storm.player(1).hand.length, 1);
 });
+
+test("神箭手攻击响应：闪电箭禁止应战，精准射击仍执行时点2；贯穿射击是未命中响应", async () => {
+  const lightning = make("marksman"); named(lightning, 0, "thunderStrike"); named(lightning, 1, "thunderStrike"); named(lightning, 1, "holyLight");
+  named(lightning, 0, "poison");
+  await lightning.attackWithDecisions(0, 0, 1, { chooseResponse: request => {
+    assert.deepEqual(request.valid.map(item => item.card.name), ["holyLight"]); return { index: 1 };
+  }, choose: request => request.type === "cardChoice" ? [0] : false });
+  assert.equal(lightning.player(1).hand.length, 3);
+  assert.equal(lightning.timeline.filter(entry => entry.timing === Timing.SPELL_ACTION_START).length, 0);
+  assert.equal(lightning.discard.find(card => card.name === "poison").discardVisibility, "public");
+  assert.match(lightning.log.join(" "), /2点法术伤害/);
+  const precise = make("marksman"); take(precise, 0, card => card.hasUniqueSkill("precisionShot"));
+  const shield = precise.deck.find(card => card.name === "holyShield"); precise.attachCard(shield.id, 1, { effectId: "holyShield" });
+  let asked = 0;
+  await precise.attackWithDecisions(0, 0, 1, { choose: request => request.skillId === "precisionShot", chooseResponse: () => { asked++; return null; } });
+  assert.equal(asked, 0); assert.equal(precise.player(1).hand.length, 1); assert.equal(shield.location.zone, "status");
+  assert.equal(precise.timeline.find(entry => entry.timing === Timing.ATTACK_HIT_CHECK).point, 2);
+});
+
+test("神箭手法术技能：闪光陷阱正常伤害，狙击直接补5、暗弃与可放弃攻击行动", async () => {
+  const game = make("marksman"); const trap = take(game, 0, card => card.hasUniqueSkill("flashTrap"));
+  await game.beginTurn(0);
+  await assert.rejects(game.executeAction(0, { type: "skill", skillId: "flashTrap", cardIds: [], targetIds: [1] }), /费用/);
+  assert.equal(trap.location.zone, "hand");
+  await game.executeAction(0, { type: "skill", skillId: "flashTrap", cardIds: [trap.id], targetIds: [1] });
+  assert.equal(game.player(1).hand.length, 2); assert.equal(trap.location.zone, "discard");
+  game.assertCardLocations(); game.endTurn();
+  const snipe = make("marksman"); snipe.player(0).handLimit = 4; snipe.player(0).energy.gem = 1;
+  snipe.changeHealing(0, 2); await snipe.beginTurn(0);
+  await snipe.executeAction(0, { type: "skill", skillId: "snipe", targetIds: [0] }, { overflow: "defer", resolveOverflow: request => {
+    assert.equal(request.player.hand.length, 5); assert.equal(request.player.pendingOverflow.cause.type, "directDraw");
+    snipe.resolveOverflow(0, [0], request.player.pendingOverflow);
+  } });
+  assert.equal(snipe.player(0).hand.length, 4); assert.equal(snipe.teams.red.morale, 14); assert.equal(snipe.player(0).healing, 2);
+  assert.equal(snipe.discard[0].discardVisibility, "hidden"); assert.equal(snipe.player(0).energy.gem, 0);
+  assert.equal(snipe.timeline.some(entry => entry.timing === Timing.DAMAGE_BEFORE), false);
+  assert.equal(snipe.turn.hasExtraActions(), true); snipe.skipExtraActions(0); snipe.endTurn(); snipe.assertCardLocations();
+});
