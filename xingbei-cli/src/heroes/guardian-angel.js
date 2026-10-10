@@ -46,7 +46,7 @@ export const guardianAngelSkills = [
     filter: ({ game, player, context }) => context.team === player.team && context.amount < 0 && context.cause?.type === "damage" && context.cause.damageType === "spell" && game.canPayEnergy(player.id, "crystal"),
     *resolve({ game, player, context }) {
       const count = Math.min(-context.amount, player.energy.gem + player.energy.crystal);
-      const value = yield { type: "numberChoice", playerId: player.id, title: "神之庇护：消耗能量抵御士气下降", choices: Array.from({ length: count + 1 }, (_, value) => ({ value, label: value ? `抵御${value}点` : "不发动" })), defaultValue: 0 };
+      const value = yield { type: "numberChoice", skillId: "divineShelter", playerId: player.id, title: "神之庇护：消耗能量抵御士气下降", choices: Array.from({ length: count + 1 }, (_, value) => ({ value, label: value ? `抵御${value}点` : "不发动" })), defaultValue: 0 };
       if (!Number.isInteger(value) || value < 0 || value > count) throw new Error("无效的庇护数量");
       if (value) { yield* game.paySkillEnergy(player.id, "crystal", value); context.amount += value; }
     } },

@@ -364,10 +364,10 @@ export class Game {
     this.recordPresentation("stones", { team, amount: -(gem + crystal), gem, crystal });
   }
 
-  purchase(actorId, options = {}) { return resolveSync(this.purchaseSteps(actorId, options), () => null); }
-  synthesize(actorId, gemCount, options = {}) { return resolveSync(this.synthesizeSteps(actorId, gemCount, options), () => null); }
-  refine(actorId, stones) { return resolveSync(this.refineSteps(actorId, stones), () => null); }
-  refreshUnableHand(actorId) { return resolveSync(this.refreshUnableHandSteps(actorId), () => null); }
+  purchase(actorId, options = {}) { return resolveSync(this.purchaseSteps(actorId, options), request => this.automaticDecision(request, options)); }
+  synthesize(actorId, gemCount, options = {}) { return resolveSync(this.synthesizeSteps(actorId, gemCount, options), request => this.automaticDecision(request, options)); }
+  refine(actorId, stones, options = {}) { return resolveSync(this.refineSteps(actorId, stones, options), request => this.automaticDecision(request, options)); }
+  refreshUnableHand(actorId, options = {}) { return resolveSync(this.refreshUnableHandSteps(actorId, options), request => this.automaticDecision(request, options)); }
   skipExtraActions(playerId) {
     if (this.turn.state?.playerId !== playerId || !this.turn.state.completed) throw new RuleError("当前不能结束额外行动");
     this.turn.state.pendingActions = [];
@@ -424,7 +424,13 @@ export class Game {
     yield* this.turn.endAction(options);
   }
 
+  canRefine(playerId) {
+    const player = this.player(playerId);
+    return !this.winner && this.turn.canUse("special") && player.energy.gem + player.energy.crystal < 3 && this.stoneCounts(player.team).total > 0;
+  }
+
   *refineSteps(actorId, { gem = 0, crystal = 0 }, options = {}) {
+    if (!this.canRefine(actorId)) throw new RuleError("当前不能提炼");
     const player = this.player(actorId);
     const total = gem + crystal;
     if (!Number.isInteger(gem) || !Number.isInteger(crystal) || total < 1 || total > 2) {
@@ -486,7 +492,7 @@ export class Game {
   *chooseBasicEffect(playerId, cards, title) {
     const effects = cards.filter(card => card.location.zone === "status" && card.category === "basic");
     if (!effects.length) throw new RuleError("没有基础效果可以选择");
-    const id = yield { type: "effectChoice", playerId, title, choices: effects.map(card => ({ value: card.id, label: `${this.player(card.location.playerId).name}：${this.effects.get(card.attachment.effectId)?.name ?? cardName(card)} #${card.id}` })), defaultValue: effects[0].id };
+    const id = yield { type: "effectChoice", playerId, title, choices: effects.map((card, index) => ({ value: card.id, label: `${this.player(card.location.playerId).name}：${this.effects.get(card.attachment.effectId)?.name ?? cardName(card)} · ${index + 1}${card.attachment.sourcePlayerId == null ? "" : "（来自" + this.player(card.attachment.sourcePlayerId).name + "）"}` })), defaultValue: effects[0].id };
     if (!effects.some(card => card.id === id)) throw new RuleError("无效的基础效果"); return id;
   }
   *removeBasicEffectSteps(cardId, actorId, options = {}) {
@@ -508,18 +514,29 @@ export class Game {
       return [{ skillId: definition.id, name: definition.name, spec }];
     });
   }
+  skillActionSpec(playerId, action) {
+    const player = this.player(playerId);
+    const definition = player.getSkills().map(({ skill }) => typeof skill === "string" ? this.skillDefinitions.get(skill) : skill).find(skill => skill?.id === action.skillId);
+    return definition?.action?.(this, player, action) ?? null;
+  }
   *skillActionSteps(playerId, action, options = {}) {
     if (this.winner) throw new RuleError("游戏已经结束");
     const player = this.player(playerId);
     const entry = this.legalSkillActions(playerId).find(entry => entry.skillId === action.skillId);
     if (!entry) throw new RuleError("当前不能发动此行动技能");
-    const spec = entry.spec;
+    const spec = this.skillActionSpec(playerId, action);
+    if (!spec) throw new RuleError("技能选项无效");
     const cards = (action.cardIds ?? []).map(id => this.cards.get(id));
     const targetIds = action.targetIds ?? [];
     if (cards.length !== (spec.cardCount ?? 0) || new Set(cards).size !== cards.length || cards.some(card => !card || card.location.zone !== "hand" || card.location.playerId !== playerId || !(spec.cardFilter?.(card) ?? true))) throw new RuleError("技能手牌费用无效");
     if (!(spec.targetCounts ?? [spec.targetCount ?? 1]).includes(targetIds.length) || new Set(targetIds).size !== targetIds.length || targetIds.some(id => !spec.targets.includes(id))) throw new RuleError("技能目标无效");
     const definition = player.getSkills().map(({ skill }) => typeof skill === "string" ? this.skillDefinitions.get(skill) : skill).find(skill => skill.id === action.skillId);
-    yield* this.turn.beginAction(playerId, spec.type, null, options);
+    const validateAction = () => {
+      const current = this.skillActionSpec(playerId, action);
+      if (!current || (current.energy && !this.canPayEnergy(playerId, current.energy))) throw new RuleError("启动后此技能费用或选项已不可用，请重新选择行动");
+    };
+    yield* this.turn.beginAction(playerId, spec.type, null, { ...options, validateAction, actionEnergyCost: spec.energy ? 1 : 0 });
+    validateAction();
     this.recordPresentation("skill", { playerId, skillId: definition.id, label: definition.name });
     this.log.push(`${player.name}发动【${definition.name}】`);
     const resolutionCards = [];
@@ -550,7 +567,7 @@ export class Game {
   }
 
   *offerSkill(playerId, skillId, title) {
-    const value = yield { type: "skillChoice", playerId, skillId, title,
+    const value = yield { type: "skillChoice", playerId, skillId, title, energy: { ...this.player(playerId).energy }, reservedEnergy: this.turn.state?.reservedEnergy ?? 0,
       choices: [{ value: true, label: "发动" }, { value: false, label: "不发动" }], defaultValue: false };
     if (value) { this.log.push(`${this.player(playerId).name}发动【${title}】`); this.recordPresentation("skill", { playerId, skillId, label: title }); }
     return value === true;
@@ -578,7 +595,9 @@ export class Game {
     energy.gem -= selected.gem; energy.crystal -= selected.crystal;
     this.recordPresentation("energy", { playerId, gem: -selected.gem, crystal: -selected.crystal });
   }
-  getHealingLimit(playerId) { return 2; }
+  getHealingLimit(playerId) {
+    return this.player(playerId).getSkills().reduce((limit, { skill }) => (typeof skill === "string" ? this.skillDefinitions.get(skill) : skill)?.modifyHealingLimit?.(limit, { game: this, playerId }) ?? limit, 2);
+  }
   changeHealing(playerId, amount, { limit = this.getHealingLimit(playerId) } = {}) {
     const player = this.player(playerId);
     const actual = amount > 0 ? Math.max(0, Math.min(amount, limit - player.healing)) : -Math.min(-amount, player.healing);
@@ -715,7 +734,7 @@ export class Game {
     }, decisions.onPresentation ?? this.onPresentation);
   }
   beginAction(playerId, actionType) { return resolveSync(this.turn.beginAction(playerId, actionType), () => null); }
-  endAction() { return resolveSync(this.turn.endAction(), () => null); }
-  endTurn() { return resolveSync(this.turn.end(), () => null); }
+  endAction(options = {}) { return resolveSync(this.turn.endAction(options), request => this.automaticDecision(request, options)); }
+  endTurn(options = {}) { return resolveSync(this.turn.end(options), request => this.automaticDecision(request, options)); }
   endTurnWithDecisions(options = {}) { return resolveAsync(this.turn.end(options), request => this.interactiveDecision(request, options), options.onPresentation ?? this.onPresentation); }
 }

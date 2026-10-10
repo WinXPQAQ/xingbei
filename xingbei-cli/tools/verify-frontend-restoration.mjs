@@ -207,6 +207,8 @@ try {
     await page.locator("#hand .card").nth(0).click();
     await page.locator("#hand .card").nth(1).click();
     await page.getByRole("button", { name: "确认弃置" }).click();
+    await page.waitForFunction(() => window.xingbeiDev.exportState().game.teams.red.morale === 13);
+    await settle(page);
     check(`${tag}: 爆牌结算`, (await state(page)).game.players[0].hand.length === 6 && (await state(page)).game.teams.red.morale === 13);
     await scene("overflow");
     await page.locator("#dev-scene").evaluate(select => { select.value = "opening"; select.dispatchEvent(new Event("change", { bubbles: true })); });

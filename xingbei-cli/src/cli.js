@@ -12,7 +12,7 @@ const overflowPolicy = player => player.id === humanId ? "defer" : "random";
 
 game.onDecision = async request => {
   if (request.type === "cardChoice") {
-    if (request.playerId !== humanId) return request.defaultValue;
+    if (request.playerId !== humanId) return chooseAiRuleDecision(request);
     const selected = [];
     while (selected.length < request.count) {
       showState(); const index = await askIndex(tui, `${request.title}> `, request.valid.filter(index => !selected.includes(index)));
@@ -33,7 +33,7 @@ function showState() {
   const red = game.stoneCounts("red"), blue = game.stoneCounts("blue");
   const lines = [`红方 士气${game.teams.red.morale} 星杯${game.teams.red.cups} 星石${red.gem}宝/${red.crystal}晶 | 蓝方 士气${game.teams.blue.morale} 星杯${game.teams.blue.cups} 星石${blue.gem}宝/${blue.crystal}晶`];
   for (const p of game.players) {
-    const effects = `盾:${p.getStatus("holyShield")[0] ? 1 : 0} 虚弱:${p.getStatus("weakness")[0] ? 1 : 0} 中毒:${p.getStatus("poison").length} 能量:${p.energy.gem}宝/${p.energy.crystal}晶`;
+    const effects = `盾:${p.getStatus("holyShield")[0] ? 1 : 0} 虚弱:${p.getStatus("weakness")[0] ? 1 : 0} 中毒:${p.getStatus("poison").length} ${p.statuses.filter(card => !["holyShield", "weakness", "poison"].includes(card.attachment.effectId)).map(card => game.effects.get(card.attachment.effectId)?.name ?? card.attachment.effectId).join("、")} 治疗:${p.healing}/${game.getHealingLimit(p.id)} 能量:${p.energy.gem}宝/${p.energy.crystal}晶`;
     if (p.id === humanId) {
       lines.push(`▶ ${p.id}:${p.name}[${p.team === "red" ? "红" : "蓝"}] 手牌(${p.hand.length}/${p.handLimit}) ${effects}`);
       p.hand.forEach((card, i) => lines.push(`  ${i}:${cardText(card)} #${card.id}`));
@@ -60,6 +60,7 @@ async function chooseSynthesis(player) {
 }
 
 async function chooseRefinement(player) {
+  if (!game.canRefine(player.id)) throw new RuleError("当前不能提炼");
   const stones = game.stoneCounts(player.team);
   const capacity = 3 - player.energy.gem - player.energy.crystal;
   const totals = [1, 2].filter(total => total <= stones.total && total <= capacity);
@@ -119,6 +120,12 @@ async function humanTurn() {
         const selected = await askIndex(tui, "技能> ", entries.map((_, i) => i));
         if (selected == null) continue;
         const entry = entries[selected], cardIds = [], targetIds = [];
+        let mode;
+        if (entry.spec.modes) {
+          entry.spec.modes.forEach((choice, i) => tui.console(`${i}: ${choice.label}`));
+          const index = await askIndex(tui, "效果> ", entry.spec.modes.map((_, i) => i)); if (index == null) continue;
+          mode = entry.spec.modes[index].value; entry.spec = game.skillActionSpec(humanId, { skillId: entry.skillId, mode });
+        }
         if (entry.spec.targetCounts) {
           const count = await askIndex(tui, "目标人数> ", entry.spec.targetCounts); if (count == null) continue;
           entry.spec = { ...entry.spec, targetCount: count };
@@ -134,7 +141,7 @@ async function humanTurn() {
           targetIds.push(id);
         }
         if (targetIds.length !== (entry.spec.targetCount ?? 1)) continue;
-        await game.executeAction(humanId, { type: "skill", skillId: entry.skillId, cardIds, targetIds }, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
+        await game.executeAction(humanId, { type: "skill", skillId: entry.skillId, mode, cardIds, targetIds }, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
       } else if (command === "buy") await game.executeAction(humanId, { type: "purchase" }, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
       else if (command === "synth") await game.executeAction(humanId, { type: "synthesize", gemCount: await chooseSynthesis(player) }, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
       else if (command === "refine") await game.executeAction(humanId, { type: "refine", stones: await chooseRefinement(player) });
@@ -188,6 +195,8 @@ async function aiTurn(actorId) {
   if (action.type === "refresh") return game.executeAction(actorId, action);
   if (action.type === "purchase") return game.executeAction(actorId, action, { overflow: "random" });
   if (action.type === "synthesize") return game.executeAction(actorId, action, { overflow: "random" });
+  if (action.type === "refine") return game.executeAction(actorId, action);
+  if (action.type === "skill") return game.executeAction(actorId, action, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
   if (action.type === "pass") return game.log.push(`${game.player(actorId).name}跳过行动`);
   return playCard(actorId, action.index, action.targetId);
 }

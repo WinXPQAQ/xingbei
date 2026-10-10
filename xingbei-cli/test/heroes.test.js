@@ -228,3 +228,83 @@ test("神之庇护只抵御己方法术伤害的爆牌士气，伤害摸牌与�
   const direct = make("guardianAngel"); direct.player(3).handLimit = 1; direct.player(0).energy.crystal = 2;
   direct.draw(3, 3); assert.equal(direct.teams.red.morale, 13); assert.equal(direct.player(0).energy.crystal, 2);
 });
+
+test("神官治疗上限6、防御每次最多1、祈福明弃与启示特殊行动结束", async () => {
+  const game = make("priest"); assert.equal(game.getHealingLimit(0), 6); assert.equal(game.getHealingLimit(1), 2);
+  game.changeHealing(0, 8); assert.equal(game.player(0).healing, 6);
+  const { resolveAsync } = await import("../src/resolution/decisions.js");
+  await resolveAsync(game.damageSteps(0, 3, { sourceId: 1, damageType: "spell" }), request => {
+    if (request.type === "healing") { assert.deepEqual(request.choices.map(choice => choice.value), [0, 1]); return 1; } return request.defaultValue;
+  });
+  assert.equal(game.player(0).healing, 5); assert.equal(game.player(0).hand.length, 2);
+  await assert.rejects(resolveAsync(game.damageSteps(0, 2), request => request.type === "healing" ? 2 : request.defaultValue), /治疗/);
+  while (game.player(0).hand.length) game.moveCard(game.player(0).hand[0].id, { zone: "deck" });
+  const cards = [named(game, 0, "holyLight"), named(game, 0, "poison")];
+  await game.executeAction(0, { type: "skill", skillId: "prayer", cardIds: cards.map(card => card.id), targetIds: [] });
+  assert.equal(game.player(0).healing, 6); assert.ok(cards.every(card => card.discardVisibility === "public"));
+  const sync = make("priest"); sync.startTurn(0); sync.purchase(0, { skillChoices: { revelation: true } });
+  assert.equal(sync.player(0).healing, 1);
+  game.changeHealing(0, -6); await game.beginTurn(0);
+  await game.executeAction(0, { type: "purchase" }, { choose: request => request.skillId === "revelation" });
+  assert.equal(game.player(0).healing, 1); assert.equal(game.timeline.filter(entry => entry.timing === Timing.SPECIAL_ACTION_END).length, 1); game.assertCardLocations();
+});
+
+test("神圣契约启动一次、队友可超过普通治疗上限；启动改变费用后允许重选，领域暗弃不触发封印", async () => {
+  const game = make("priest"); game.changeHealing(0, 6); game.player(0).energy.crystal = 2; game.changeHealing(3, 1);
+  const cards = [named(game, 0, "holyLight"), named(game, 0, "poison")]; await game.beginTurn(0);
+  await game.executeAction(0, { type: "skill", skillId: "sacredDomain", cardIds: cards.map(card => card.id), targetIds: [3], mode: "heal" }, { choose: request => request.type === "skillChoice" ? true : request.type === "playerChoice" ? 3 : request.type === "numberChoice" ? 3 : request.defaultValue });
+  assert.equal(game.player(0).healing, 5); assert.equal(game.player(3).healing, 4); assert.equal(game.player(0).energy.crystal, 0);
+  assert.ok(cards.every(card => card.discardVisibility === "hidden"));
+  game.changeHealing(3, 1); assert.equal(game.player(3).healing, 4); game.changeHealing(3, -1); assert.equal(game.player(3).healing, 3);
+  game.changeHealing(3, 1); assert.equal(game.player(3).healing, 3); game.assertCardLocations();
+  const changed = make("priest"); changed.changeHealing(0, 1); changed.player(0).energy.crystal = 1;
+  const costs = [named(changed, 0, "holyLight"), named(changed, 0, "poison")]; await changed.beginTurn(0);
+  await assert.rejects(changed.executeAction(0, { type: "skill", skillId: "sacredDomain", mode: "damage", cardIds: costs.map(card => card.id), targetIds: [1] }, { choose: request => request.type === "skillChoice" ? true : request.defaultValue }), /重新选择/);
+  assert.equal(changed.turn.state.actionType, null); assert.equal(changed.player(0).hand.length, 2);
+  await changed.executeAction(0, { type: "skill", skillId: "prayer", cardIds: costs.map(card => card.id), targetIds: [] });
+  assert.equal(changed.timeline.filter(entry => entry.timing === Timing.ACTIVATION).length, 1);
+  const damage = make("priest"); damage.changeHealing(0, 1); damage.player(0).energy.gem = 1;
+  const fire = named(damage, 0, "fireStrike"), other = named(damage, 0, "holyLight");
+  const seal = damage.deck.find(card => card.hasUniqueSkill("fireSeal")); damage.attachCard(seal.id, 0, { effectId: "fireSeal", sourcePlayerId: 1 });
+  await damage.executeAction(0, { type: "skill", skillId: "sacredDomain", mode: "damage", cardIds: [fire.id, other.id], targetIds: [1] });
+  assert.equal(seal.location.zone, "status"); assert.equal(damage.player(1).hand.length, 2); assert.equal(damage.player(0).healing, 0);
+});
+
+test("水之神力强制转移手牌、治疗和爆牌，最后一张水牌沿用原版无剩余手牌时跳过给牌", async () => {
+  for (const remaining of [false, true]) {
+    const game = make("priest"), water = named(game, 0, "waterStrike");
+    if (remaining) named(game, 0, "holyLight");
+    game.player(3).handLimit = 0;
+    await game.executeAction(0, { type: "skill", skillId: "waterPower", cardIds: [water.id], targetIds: [3] });
+    assert.equal(game.player(0).healing, 1); assert.equal(game.player(3).healing, 1); assert.equal(game.player(0).hand.length, 0);
+    assert.equal(game.teams.red.morale, remaining ? 14 : 15); game.assertCardLocations();
+  }
+});
+
+test("六英雄默认阵容完整AI对局：逐回合、额外行动、实例守恒与结束", async () => {
+  const { chooseAiAction, chooseAiResponse, chooseAiRuleDecision } = await import("../src/ai.js");
+  for (const seed of [1, 13, 71]) {
+    const game = new Game({ seed }).setup();
+    assert.deepEqual(game.players.map(player => player.hero.id), ["berserker", "windSwordmaster", "marksman", "sealer", "guardianAngel", "priest"]);
+    game.onDecision = request => chooseAiRuleDecision(request);
+    let turns = 0;
+    const options = { overflow: "random", choose: game.onDecision, chooseResponse: request => chooseAiResponse(game, request) };
+    while (!game.winner && turns++ < 500) {
+      const id = game.current;
+      const turn = await game.beginTurn(id, { choose: game.onDecision, chooseWeakness: () => "skip" }, options);
+      if (!turn.skipped && !game.winner) {
+        let actions = 0;
+        do {
+          assert.ok(++actions < 20, "每回合额外行动有界");
+          const action = chooseAiAction(game, id);
+          if (action.type !== "pass") await game.executeAction(id, action, options);
+          else if (game.turn.hasExtraActions()) game.skipExtraActions(id);
+          game.assertCardLocations();
+        } while (game.turn.hasExtraActions() && !game.winner);
+      }
+      await game.endTurnWithDecisions(options); game.assertCardLocations();
+      assert.equal(game.cards.size, 151);
+    }
+    assert.ok(game.winner, `种子${seed}应在500回合内结束`);
+  }
+});

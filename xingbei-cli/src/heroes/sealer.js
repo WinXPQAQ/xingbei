@@ -56,8 +56,7 @@ export const sealerSkills = [
     },
     *resolveAction({ game, player, targetIds, options }) {
       const target = game.player(targetIds[0]), effects = target.getBasicEffects();
-      const id = yield { type: "effectChoice", playerId: player.id, title: "封印破碎：选择收入手中的基础效果", choices: effects.map(card => ({ value: card.id, label: `${game.effects.get(card.attachment.effectId)?.name ?? card.attachment.effectId} #${card.id}` })), defaultValue: effects[0].id };
-      if (!effects.some(card => card.id === id)) throw new Error("无效的基础效果");
+      const id = yield* game.chooseBasicEffect(player.id, effects, "封印破碎：选择收入手中的基础效果");
       yield* game.paySkillEnergy(player.id, "crystal");
       game.removeEffect(id, { zone: "hand", playerId: player.id });
       game.draw(player.id, 0, { overflow: options.overflow });

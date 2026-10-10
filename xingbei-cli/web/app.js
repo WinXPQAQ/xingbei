@@ -142,11 +142,11 @@ function render() {
   endExtra.hidden = !game.turn.hasExtraActions(); endExtra.disabled = locked;
   elements.buy.disabled = locked || !game.canDrawSpecial(humanId);
   elements.synth.disabled = locked || !game.canDrawSpecial(humanId) || stones.total < 3;
-  elements.refine.disabled = locked || stones.total < 1 || player.energy.gem + player.energy.crystal >= 3;
+  elements.refine.disabled = locked || !game.canRefine(humanId);
   elements.buy.hidden = !game.canDrawSpecial(humanId) || !!targetChoice;
   elements.synth.hidden = !game.canDrawSpecial(humanId) || stones.total < 3 || !!targetChoice;
   renderSkillControls(locked);
-  elements.refine.hidden = stones.total < 1 || player.energy.gem + player.energy.crystal >= 3 || !!targetChoice;
+  elements.refine.hidden = !game.canRefine(humanId) || !!targetChoice;
   $("#cancel-target").hidden = !targetChoice;
   $("#control").hidden = !!pendingChoice;
   $(".center-hint").hidden = !!pendingChoice && pendingChoice.type !== "hand";
@@ -219,7 +219,7 @@ function choose(title, choices, { cancel = false, detail = "" } = {}) {
 
 async function chooseRuleDecision(request) {
   if (request.type === "cardChoice") {
-    if (request.playerId !== humanId) return request.defaultValue;
+    if (request.playerId !== humanId) return chooseAiRuleDecision(request);
     return chooseHand(request.title, game.player(humanId).hand, { count: request.count, valid: request.valid, cancel: request.optional });
   }
   if (!request.choices) return null;
@@ -409,7 +409,8 @@ async function completeHumanAction(action) {
   selectedCard = null;
   busy = true;
   render();
-  await action();
+  try { await action(); }
+  catch (error) { active.assert(); acceptingAction = true; busy = false; render(); throw error; }
   active.assert();
   await resolveHumanOverflow();
   active.assert();
@@ -439,7 +440,12 @@ async function selectSkillAction(skillId) {
   const active = session;
   busy = true; render();
   try {
-    const spec = { ...entry.spec }, player = game.player(humanId);
+    let mode;
+    if (entry.spec.modes) {
+      mode = await choose(`${entry.name}：选择效果`, entry.spec.modes, { cancel: true });
+      active.assert(); if (mode == null) return;
+    }
+    const spec = { ...game.skillActionSpec(humanId, { skillId, mode }) }, player = game.player(humanId);
     if (spec.targetCounts) {
       const count = await choose(`${entry.name}：目标人数`, spec.targetCounts.map(value => ({ value, label: `${value}人` })), { cancel: true });
       active.assert(); if (count == null) return; spec.targetCount = count;
@@ -458,7 +464,7 @@ async function selectSkillAction(skillId) {
       active.assert(); if (id == null) return;
       targetIds.push(id);
     }
-    await completeHumanAction(() => game.executeAction(humanId, { type: "skill", skillId, cardIds, targetIds }, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow }));
+    await completeHumanAction(() => game.executeAction(humanId, { type: "skill", skillId, mode, cardIds, targetIds }, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow }));
   } finally { active.assert(); busy = false; selectedCard = null; render(); }
 }
 
@@ -476,6 +482,7 @@ async function executeAi(actorId, scriptedAction = null) {
   if (action.type === "refresh") await game.executeAction(actorId, action);
   else if (action.type === "purchase") await game.executeAction(actorId, action, { overflow: "random" });
   else if (action.type === "synthesize") await game.executeAction(actorId, action, { overflow: "random" });
+  else if (action.type === "refine") await game.executeAction(actorId, action, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
   else if (action.type === "skill") await game.executeAction(actorId, action, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
   else if (action.type === "pass") game.log.push(`${game.player(actorId).name}跳过行动`);
   else {

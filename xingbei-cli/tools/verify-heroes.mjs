@@ -99,7 +99,44 @@ try {
       check(`${tag} 羁绊给治疗`, after.game.players[0].healing === 1);
       check(`${tag} 保留其他基础效果`, after.game.players[1].statuses.some(card => card.attachment.effectId === "poison"));
     }
+    if (hero === "priest") {
+      check(`${tag} 神官6治疗槽`, await page.locator('.player[data-player="0"] .hp > span').count() === 6);
+      await page.getByRole("button", { name: "神圣祈福", exact: true }).click();
+      await page.locator('#hand .card[data-index="0"]').click(); await page.locator('#hand .card[data-index="1"]').click();
+      check(`${tag} 费用选牌仍未提交`, (await state()).game.players[0].hand.length === 3);
+      await page.getByRole("button", { name: "确认弃置", exact: true }).click();
+      await page.waitForFunction(() => window.xingbeiDev.exportState().pendingChoice?.title === "神圣契约");
+      await page.getByRole("button", { name: "不发动", exact: true }).click();
+      await page.waitForFunction(() => window.xingbeiDev.exportState().current === 1);
+      check(`${tag} 祈福上限6及明弃`, (await state()).game.players[0].healing === 6 && (await state()).game.discard.every(card => card.discardVisibility === "public"));
+      await page.goto(`http://127.0.0.1:4173/web/dev.html?scene=hero-priest`);
+      await page.waitForFunction(() => window.xingbeiDev?.exportState().phase === "action");
+      await page.locator('#hand .card[data-index="2"]').click(); await page.locator('.player.targetable[data-player="1"]').click();
+      await page.waitForFunction(() => window.xingbeiDev.exportState().pendingChoice?.title === "神圣契约");
+      await page.getByRole("button", { name: "发动", exact: true }).click();
+      await page.getByRole("button", { name: "红二 · 剑帝", exact: true }).click();
+      await page.getByRole("button", { name: "4点", exact: true }).click();
+      await page.waitForFunction(() => window.xingbeiDev.exportState().current === 1);
+      const after = await state();
+      check(`${tag} 契约转移突破普通上限`, after.game.players[3].healing === 4 && after.game.players[0].healing === 0);
+      check(`${tag} 超上限槽完整显示`, await page.locator('.player[data-player="3"] .hp > span').count() === 4);
+      check(`${tag} 启动仅一次及扣费`, after.game.timeline.filter(entry => entry.timing === "activation").length === 1 && after.game.players[0].energy.crystal === 0);
+    }
+    await page.waitForFunction(() => !window.xingbeiDev.animations().playing && window.xingbeiDev.animations().active === 0);
     await page.screenshot({ path: resolve(output, `${tag}.png`) });
+    if (hero === "priest") {
+      await page.addInitScript(() => { Date.now = () => 13; });
+      await page.goto("http://127.0.0.1:4173/?motion=off");
+      await page.waitForFunction(() => document.querySelector("#hint").textContent.includes("[攻击行动]"));
+      check(`${tag} 正式页面六英雄阵容`, (await page.locator(".player-name").allTextContents()).join() === "狂战士,风之剑圣,神箭手,封印师,守护天使,神官");
+      check(`${tag} 正式六人开局手牌`, await page.locator("#hand .card").count() === 4);
+      const ids = await page.locator("#hand .card").evaluateAll(nodes => nodes.map(node => node.dataset.cardId).join());
+      await page.locator("#hand .card:not(.unusable):enabled").first().click();
+      check(`${tag} 正式选牌高亮目标`, await page.locator(".player.targetable").count() > 0);
+      await page.locator("#cancel-target").click();
+      check(`${tag} 正式取消保留牌`, await page.locator("#hand .card").evaluateAll(nodes => nodes.map(node => node.dataset.cardId).join()) === ids);
+      await page.screenshot({ path: resolve(output, `default-${tag}.png`) });
+    }
     await page.close();
   }
   check("控制台和素材错误0", issues.length === 0);

@@ -33,7 +33,7 @@ export class TurnFlow {
     const state = this.state;
     if (!state) return true;
     if (state.skipped) return false;
-    if (!state.completed) return !state.actionType;
+    if (!state.completed) return !state.actionType && (type !== "special" || !state.activationDone);
     const action = this.nextAction();
     return !!action && action.type === type && (!action.element || card?.getTraits({ game: this.game, playerId: state.playerId, purpose: "action" }).elements.includes(action.element));
   }
@@ -43,18 +43,22 @@ export class TurnFlow {
     if (!state) return;
     if (!["attack", "spell", "special"].includes(actionType)) throw new RuleError("未知行动类型");
     if (state.playerId !== playerId || !this.canUse(actionType, card)) throw new RuleError("当前阶段不能执行该行动");
+    const route = actionType === "special" ? "special" : "normal";
+    if (route === "normal" && !state.activationDone) {
+      state.activationDone = true;
+      state.phase = Timing.ACTIVATION;
+      state.reservedEnergy = options.actionEnergyCost ?? 0;
+      yield* this.game.trigger(Timing.ACTIVATION, state, options);
+      delete state.reservedEnergy;
+    }
+    try { options.validateAction?.(); }
+    catch (error) { state.phase = Timing.ACTION_PHASE_START; throw error; }
     if (state.completed) {
       const action = this.nextAction(); state.pendingActions.splice(state.pendingActions.indexOf(action), 1);
     }
     state.completed = false;
     if (actionType === "attack") state.attackCount++;
-    state.route = actionType === "special" ? "special" : "normal";
-    state.actionType = actionType;
-    if (state.route === "normal" && !state.activationDone) {
-      state.activationDone = true;
-      state.phase = Timing.ACTIVATION;
-      yield* this.game.trigger(Timing.ACTIVATION, state, options);
-    }
+    state.route = route; state.actionType = actionType;
     state.phase = { attack: Timing.ATTACK_ACTION_START, spell: Timing.SPELL_ACTION_START, special: Timing.SPECIAL_ACTION_START }[actionType];
     yield* this.game.trigger(state.phase, state, options);
   }

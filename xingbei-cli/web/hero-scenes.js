@@ -29,5 +29,9 @@ export function createHeroScene(id, seed) {
     give(0, card => card.hasUniqueSkill("angelWall")); give(0, card => card.element === "wind");
     const poison = game.deck.find(card => card.name === "poison"); game.attachCard(poison.id, 1, { effectId: "poison" });
   }
+  if (heroId === "priest") {
+    give(0, card => card.name === "holyLight"); give(0, card => card.name === "poison");
+    give(0, card => card.name === "fireStrike"); game.changeHealing(0, 4); game.player(0).energy.crystal = 1;
+  }
   game.log = []; game.assertCardLocations(); return game;
 }
