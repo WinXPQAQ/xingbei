@@ -8,7 +8,7 @@ import { join } from "node:path";
 const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || "playwright");
 const base = process.env.CURRENT_URL || "http://127.0.0.1:4173";
-const resource = `${base}/assets/card/xingShi/baoShi.png`;
+const resource = `${base}/assets/stones/gem.png`;
 const first = await fetch(resource);
 assert.equal(first.status, 200);
 assert.equal(first.headers.get("cache-control"), "public, max-age=86400");
@@ -48,7 +48,7 @@ try {
     await context.close();
     context = null;
   }
-  assert.ok(cached.some(url => url.includes("/assets/card/") && !url.includes("/xingShi/")), "重启浏览器后手牌图片应命中磁盘缓存");
+  assert.ok(cached.some(url => url.includes("/assets/card/") && !url.includes("/stones/")), "重启浏览器后手牌图片应命中磁盘缓存");
   const result = { base, etag, conditionalStatus: validated.status, diskCachedResources: [...new Set(cached)] };
   if (process.argv[2]) await writeFile(process.argv[2], JSON.stringify(result, null, 2));
   console.log(`HTTP缓存与304校验通过；重启浏览器后${result.diskCachedResources.length}项资源命中本地磁盘缓存。`);

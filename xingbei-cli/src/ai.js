@@ -4,7 +4,7 @@
  */
 export function chooseAiAction(game, actorId) {
   const player = game.player(actorId);
-  if (game.unusableCards(actorId).length >= 4) return { type: "refresh" };
+  if (game.canRefreshUnableHand(actorId)) return { type: "refresh" };
 
   const stones = game.stoneCounts(player.team);
   if (stones.total >= 3 && game.canDrawSpecial(actorId)) {
@@ -20,10 +20,10 @@ export function chooseAiAction(game, actorId) {
   const action = randomItem(game, cards);
   let targets = action.targets;
 
-  if (action.card.name === "shengDun") {
+  if (action.card.name === "holyShield") {
     const allies = targets.filter(id => game.player(id).team === player.team);
     if (allies.length) targets = allies;
-  } else if (action.card.name === "xuRuo" || action.card.name === "zhongDu") {
+  } else if (action.card.name === "weakness" || action.card.name === "poison") {
     const enemies = targets.filter(id => game.player(id).team !== player.team);
     if (enemies.length) {
       const highestHandSize = Math.max(...enemies.map(id => game.player(id).hand.length));
@@ -46,4 +46,11 @@ export function runAiAction(game, actorId, { autoRespond = true } = {}) {
 
 function randomItem(game, items) {
   return items[Math.floor(game.random() * items.length)];
+}
+
+export function chooseAiResponse(game, context) {
+  const picked = randomItem(game, context.valid);
+  if (!picked) return null;
+  const targetId = picked.card.type === "attack" ? randomItem(game, context.counterTargets).id : context.nextTarget?.id ?? null;
+  return { index: picked.index, targetId };
 }

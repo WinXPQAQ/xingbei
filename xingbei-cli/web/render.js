@@ -1,15 +1,12 @@
 // Presentation adapted from v1.6.7 UI, music and nova. See SOURCES.md.
 import { CARD_NAMES, ELEMENT_NAMES, FATE_NAMES } from "/src/cards.js";
 
-const portraits = ["kuangZhanShi", "moFaShaoNv", "yinYouShiRen", "jianDi"];
-const portraitNames = ["狂战士", "魔法少女", "吟游诗人", "剑帝"];
-
-export function cardContents(card) {
-  return `<img class="image" src="/assets/card/${card.name}.png" alt=""><span class="info"><span>${ELEMENT_NAMES[card.element]}${FATE_NAMES[card.fate]}</span></span><span class="name" aria-hidden="true"></span>`;
+export function cardContents(card, context = {}) {
+  return `<img class="image" src="/assets/card/${card.name}.png" alt=""><span class="info"><span>${card.getTraits(context).elements.map(element => ELEMENT_NAMES[element]).join("/")}${card.getTraits(context).fates.map(fate => FATE_NAMES[fate]).join("/")}</span></span><span class="name" aria-hidden="true"></span>`;
 }
 
-export function cardLabel(card) {
-  return `${CARD_NAMES[card.name]} · ${ELEMENT_NAMES[card.element]}系 · ${FATE_NAMES[card.fate]}命格`;
+export function cardLabel(card, context = {}) {
+  return `${CARD_NAMES[card.name] ?? card.name} · ${card.getTraits(context).elements.map(element => ELEMENT_NAMES[element]).join("/") || "无"}系 · ${card.getTraits(context).fates.map(fate => FATE_NAMES[fate]).join("/") || "无"}命格`;
 }
 
 export function renderTeams(game, nodes, humanId) {
@@ -17,12 +14,14 @@ export function renderTeams(game, nodes, humanId) {
     const data = game.teams[team];
     const stones = game.stoneCounts(team);
     nodes[team].classList.toggle("highlight", game.player(humanId).team === team);
-    nodes[team].innerHTML = `<td>${data.morale}</td><td class="stones">${[...Array(stones.gem)].map(() => '<img src="/assets/card/xingShi/baoShi.png" alt="宝石">').join("")}${[...Array(stones.crystal)].map(() => '<img src="/assets/card/xingShi/shuiJing.png" alt="水晶">').join("")}</td><td>${data.cups}</td>`;
+    nodes[team].innerHTML = `<td>${data.morale}</td><td class="stones">${[...Array(stones.gem)].map(() => '<img src="/assets/stones/gem.png" alt="宝石">').join("")}${[...Array(stones.crystal)].map(() => '<img src="/assets/stones/crystal.png" alt="水晶">').join("")}</td><td>${data.cups}</td>`;
   }
 }
 
 export function renderPlayers(game, container, humanId, targets = null) {
   container.replaceChildren();
+  container.dataset.number = game.players.length;
+  container.closest("#arena").dataset.number = game.players.length;
   for (const player of game.players) {
     const node = document.createElement("article");
     node.className = `player${player.id === game.current ? " current" : ""}`;
@@ -32,15 +31,15 @@ export function renderPlayers(game, container, humanId, targets = null) {
     node.tabIndex = targets?.includes(player.id) ? 0 : -1;
     node.classList.toggle("targetable", !!targets?.includes(player.id));
     node.classList.toggle("untargetable", !!targets && !targets.includes(player.id));
-    node.setAttribute("aria-label", `${player.name}，${portraitNames[player.id]}，${player.hand.length}张手牌`);
+    node.setAttribute("aria-label", `${player.name}，${player.hero.name}，${player.hand.length}张手牌`);
     const marks = [];
-    if (player.shield) marks.push('<img src="/assets/card/shengDun.png" title="圣盾" alt="圣盾">');
-    if (player.weakness) marks.push('<img src="/assets/card/xuRuo.png" title="虚弱" alt="虚弱">');
-    if (player.poisons.length) marks.push(`<span class="poison-mark"><img src="/assets/card/zhongDu.png" title="中毒" alt="中毒"><b>${player.poisons.length}</b></span>`);
+    if (player.getStatus("holyShield")[0]) marks.push('<img src="/assets/card/holyShield.png" title="圣盾" alt="圣盾">');
+    if (player.getStatus("weakness")[0]) marks.push('<img src="/assets/card/weakness.png" title="虚弱" alt="虚弱">');
+    if (player.getStatus("poison").length) marks.push(`<span class="poison-mark"><img src="/assets/card/poison.png" title="中毒" alt="中毒"><b>${player.getStatus("poison").length}</b></span>`);
     const energy = [
-      ["crystal", "shuiJing", "水晶"], ["gem", "baoShi", "宝石"],
-    ].filter(([kind]) => player.energy[kind] > 0).map(([kind, image, label]) => `<span><img src="/assets/card/xingShi/${image}.png" alt="${label}"><b>${player.energy[kind]}</b></span>`).join("");
-    node.innerHTML = `<img class="avatar" src="/assets/character/${portraits[player.id]}.jpg" alt=""><span class="player-name" title="${player.name}；头像仅作展示，角色技能尚未实现">${portraitNames[player.id]}</span><span class="identity"><span>${player.team === "red" ? "红" : "蓝"}</span></span><span class="count">${player.hand.length}/6</span><span class="hp" title="治疗 ${player.healing}" aria-label="治疗 ${player.healing}">${[1, 0].map(index => `<span class="${index < player.healing ? "" : "lost"}"></span>`).join("")}</span><span class="energy" title="个人能量" style="top:${6 + marks.length * 28}px">${energy}</span><div class="marks">${marks.reverse().join("")}</div>`;
+      ["crystal", "crystal", "水晶"], ["gem", "gem", "宝石"],
+    ].filter(([kind]) => player.energy[kind] > 0).map(([kind, image, label]) => `<span><img src="/assets/stones/${image}.png" alt="${label}"><b>${player.energy[kind]}</b></span>`).join("");
+    node.innerHTML = `<img class="avatar" src="/assets/character/${player.hero.portrait}.jpg" alt=""><span class="player-name" title="${player.name}；头像仅作展示，角色技能尚未实现">${player.hero.name}</span><span class="identity"><span>${player.team === "red" ? "红" : "蓝"}</span></span><span class="count">${player.hand.length}/${player.handLimit}</span><span class="hp" title="治疗 ${player.healing}" aria-label="治疗 ${player.healing}">${[1, 0].map(index => `<span class="${index < player.healing ? "" : "lost"}"></span>`).join("")}</span><span class="energy" title="个人能量" style="top:${6 + marks.length * 28}px">${energy}</span><div class="marks">${marks.reverse().join("")}</div>`;
     if (player.energy.gem + player.energy.crystal === 0) node.querySelector(".energy").hidden = true;
     node.addEventListener("keydown", event => {
       if (event.key === "Enter" || event.key === " ") { event.preventDefault(); node.click(); }
@@ -57,9 +56,10 @@ export function renderHand(game, container, humanId, { acceptingAction, selected
     const selected = handChoice ? handChoice.selected.has(index) : selectedCard === index;
     button.className = `card${selected ? " selected" : ""}${usable ? "" : " unusable"}`;
     button.disabled = !acceptingAction || locked || (handChoice && !usable);
-    button.innerHTML = cardContents(card);
-    button.title = cardLabel(card);
-    button.setAttribute("aria-label", cardLabel(card));
+    const context = { game, playerId: humanId, purpose: "hand" };
+    button.innerHTML = cardContents(card, context);
+    button.title = cardLabel(card, context);
+    button.setAttribute("aria-label", cardLabel(card, context));
     button.setAttribute("aria-pressed", String(selected));
     button.addEventListener("click", () => onSelect(index));
     container.append(button);
