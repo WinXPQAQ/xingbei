@@ -207,7 +207,7 @@ function choose(title, choices, { cancel = false, detail = "" } = {}) {
     if (cancel) {
       const button = document.createElement("button");
       button.className = "ghost";
-      button.textContent = "不响应";
+      button.textContent = cancelLabel;
       button.addEventListener("click", () => { closeModal(); resolve(null); });
       elements.modalActions.append(button);
     }
@@ -241,7 +241,7 @@ function closeModal() {
   if (game) render();
 }
 
-function chooseHand(title, cards, { count = 1, valid = cards.map((_, index) => index), cancel = false } = {}) {
+function chooseHand(title, cards, { count = 1, valid = cards.map((_, index) => index), cancel = false, cancelLabel = "不响应" } = {}) {
   return session.wait(resolve => {
     const previousHint = elements.hint.textContent;
     const previousFocus = document.activeElement;
@@ -351,6 +351,12 @@ async function selectCard(index) {
   if (!acceptingAction) return;
   if (targetChoice) {
     if (selectedCard === index) { targetChoice.resolve(null); return; }
+    if (targetChoice.skillCards) {
+      if (targetChoice.skillCards.length !== 1) return;
+      const card = game.player(humanId).hand[index];
+      if (!(targetChoice.cardFilter?.(card) ?? true)) return;
+      targetChoice.skillCards[0] = card.id; selectedCard = index; render(); return;
+    }
     const card = game.player(humanId).hand[index], targets = game.legalTargets(humanId, card);
     if (!targets.length) return;
     selectedCard = index; targetChoice.targets = targets;
@@ -383,10 +389,10 @@ async function selectCard(index) {
   }
 }
 
-function chooseTarget(targets, hint) {
+function chooseTarget(targets, hint, selection = {}) {
   elements.hint.textContent = hint;
   return session.wait(resolve => {
-    const choice = { targets, resolve(targetId) {
+    const choice = { targets, ...selection, resolve(targetId) {
       if (targetId === null || choice.targets.includes(targetId)) { if (targetId !== null) director.captureHand(); resolve(targetId); }
     } };
     targetChoice = choice;
@@ -437,13 +443,14 @@ async function selectSkillAction(skillId) {
     let cardIds = [];
     if (spec.cardCount) {
       const valid = player.hand.flatMap((card, index) => (spec.cardFilter?.(card) ?? true) ? [index] : []);
-      const indexes = await chooseHand(`${entry.name}：选择手牌`, player.hand, { count: spec.cardCount, valid, cancel: true });
+      const indexes = await chooseHand(`${entry.name}：选择手牌`, player.hand, { count: spec.cardCount, valid, cancel: true, cancelLabel: "取消" });
       active.assert(); if (indexes == null) return;
       cardIds = indexes.map(index => player.hand[index].id);
     }
+    if (cardIds.length === 1) selectedCard = player.hand.findIndex(card => card.id === cardIds[0]);
     const targetIds = [];
     for (let i = 0; i < (spec.targetCount ?? 1); i++) {
-      const id = await chooseTarget(spec.targets.filter(id => !targetIds.includes(id)), `${entry.name}：选择目标`);
+      const id = await chooseTarget(spec.targets.filter(id => !targetIds.includes(id)), `${entry.name}：选择目标`, { skillCards: cardIds, cardFilter: spec.cardFilter });
       active.assert(); if (id == null) return;
       targetIds.push(id);
     }

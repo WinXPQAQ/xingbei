@@ -19,5 +19,7 @@
   "stones/gem.png": "card/xingShi/baoShi.png",
   "stones/crystal.png": "card/xingShi/shuiJing.png",
   "character/windSwordmaster.jpg": "character/fengZhiJianSheng.jpg",
-  "character/marksman.jpg": "character/shenJianShou.jpg"
+  "character/marksman.jpg": "character/shenJianShou.jpg",
+  "character/sealer.jpg": "character/fengYinShi.jpg",
+  "card/fivefoldBinding.png": "card/zhuanShu/wuXiShuFu.png"
 }

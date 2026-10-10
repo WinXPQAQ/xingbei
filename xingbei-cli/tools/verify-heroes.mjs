@@ -71,6 +71,20 @@ try {
       await page.getByRole("button", { name: "结束回合", exact: true }).click();
       await page.waitForFunction(() => window.xingbeiDev.exportState().current === 1);
     }
+    if (hero === "sealer") {
+      check(`${tag} 唯一专属牌在场外`, (await state()).game.outside.length === 1);
+      await page.getByRole("button", { name: "火之封印", exact: true }).click();
+      await page.locator('#hand .card[data-index="0"]').click();
+      await page.getByRole("button", { name: "确定", exact: true }).click();
+      check(`${tag} 挂载前可取消`, (await state()).game.players[0].hand.length === 2);
+      await page.locator('.player.targetable[data-player="1"]').click();
+      await page.waitForFunction(() => window.xingbeiDev.exportState().pendingChoice?.title === "法术激荡");
+      await page.getByRole("button", { name: "不发动", exact: true }).click();
+      await page.waitForFunction(() => window.xingbeiDev.exportState().current === 1);
+      const after = await state();
+      check(`${tag} 实际牌挂载`, after.game.players[1].statuses[0].attachment.effectId === "fireSeal" && after.game.field.length === 0);
+      check(`${tag} 基础效果标记显示`, await page.locator('.player[data-player="1"] img[alt="火之封印"]').count() === 1);
+    }
     await page.screenshot({ path: resolve(output, `${tag}.png`) });
     await page.close();
   }

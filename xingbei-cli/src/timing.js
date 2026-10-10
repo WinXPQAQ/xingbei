@@ -1,4 +1,5 @@
 export const Timing = Object.freeze({
+  CARD_EXPOSED: "cardExposed",
   TURN_START: "turnStart", ACTION_PHASE_BEFORE: "actionPhaseBefore", ACTION_PHASE_START: "actionPhaseStart",
   ACTION_PHASE_SKIPPED: "actionPhaseSkipped", ACTIVATION: "activation",
   ATTACK_ACTION_START: "attackActionStart", ATTACK_ACTION_END: "attackActionEnd",

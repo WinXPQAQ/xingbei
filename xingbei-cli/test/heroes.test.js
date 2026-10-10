@@ -125,3 +125,51 @@ test("神箭手法术技能：闪光陷阱正常伤害，狙击直接补5、暗�
   assert.equal(snipe.timeline.some(entry => entry.timing === Timing.DAMAGE_BEFORE), false);
   assert.equal(snipe.turn.hasExtraActions(), true); snipe.skipExtraActions(0); snipe.endTurn(); snipe.assertCardLocations();
 });
+
+test("封印师：独有技牌挂载为基础效果，使用/展示/明弃触发，暗弃与盖牌不触发", async () => {
+  for (const exposure of ["play", "show", "public", "hidden", "covered"]) {
+    const game = make("sealer"); const seal = take(game, 0, card => card.hasUniqueSkill("fireSeal"));
+    const fire = named(game, 1, "fireStrike");
+    await game.executeAction(0, { type: "skill", skillId: "fireSeal", cardIds: [seal.id], targetIds: [1] });
+    assert.equal(seal.location.zone, "status"); assert.equal(game.player(1).getBasicEffects()[0], seal);
+    assert.ok(!game.legalSkillActions(0).find(entry => entry.skillId === "fireSeal"));
+    if (exposure === "play") await game.attackWithDecisions(1, 0, 0, { chooseResponse: () => null });
+    else if (exposure === "show") {
+      const { resolveAsync } = await import("../src/resolution/decisions.js");
+      await resolveAsync(game.showCardsSteps(1, [fire]), request => request.defaultValue);
+    } else {
+      game.discardCards(1, [fire], { visibility: exposure === "hidden" ? "hidden" : "public", covered: exposure === "covered" });
+      const { resolveAsync } = await import("../src/resolution/decisions.js");
+      await resolveAsync(game.flushRuleEvents(), request => request.defaultValue);
+    }
+    assert.equal(seal.location.zone, ["hidden", "covered"].includes(exposure) ? "status" : "discard");
+    assert.equal(game.log.some(line => line.includes("3点法术伤害")), !["hidden", "covered"].includes(exposure));
+    game.assertCardLocations();
+  }
+});
+
+test("五系束缚是独立场外实体，优先级中毒→束缚→虚弱，合并摸牌后回场外并可复用；封印破碎只收基础牌", async () => {
+  const game = make("sealer"); const binding = game.cards.get(game.player(0).hero.state.bindingCardId);
+  assert.equal(game.cards.size, 151); assert.equal(binding.location.zone, "outside");
+  game.player(0).energy.crystal = 2;
+  await game.executeAction(0, { type: "skill", skillId: "fivefoldBinding", targetIds: [1] });
+  assert.equal(binding.category, "exclusive"); assert.equal(binding.location.zone, "status"); assert.equal(game.player(1).getBasicEffects().length, 0);
+  assert.equal(game.legalSkillActions(0).some(entry => entry.skillId === "fivefoldBinding"), false);
+  for (const element of ["earth", "water", "fire"]) {
+    const seal = game.deck.find(card => card.hasUniqueSkill(`${element}Seal`)); game.attachCard(seal.id, 2, { effectId: `${element}Seal`, sourcePlayerId: 0 });
+  }
+  for (const name of ["poison", "weakness"]) { const card = game.deck.find(card => card.name === name); game.attachCard(card.id, 1, { effectId: name }); }
+  const effectOrder = []; game.enablePresentation(events => { for (const event of events) if (event.type === "effect") effectOrder.push(event.effectId); });
+  await game.beginTurn(1, { choose: request => request.type === "bindingChoice" ? "draw" : request.defaultValue });
+  assert.deepEqual(effectOrder, ["poison", "fivefoldBinding"]); assert.equal(game.turn.state.skipped, false);
+  assert.equal(game.player(1).hand.length, 6); assert.equal(game.teams.blue.morale, 13);
+  assert.equal(game.player(1).statuses.length, 0); assert.equal(binding.location.zone, "outside"); game.endTurn();
+  await game.beginTurn(0);
+  const collected = game.player(2).getBasicEffects()[0];
+  await game.executeAction(0, { type: "skill", skillId: "sealBreaking", targetIds: [2] }, { choose: request => request.type === "effectChoice" ? collected.id : request.defaultValue });
+  assert.equal(collected.location.zone, "hand"); assert.equal(collected.attachment, null); assert.equal(game.player(0).energy.crystal, 0);
+  game.endTurn(); game.assertCardLocations();
+  const skipped = make("sealer"); skipped.player(0).energy.crystal = 1;
+  await skipped.executeAction(0, { type: "skill", skillId: "fivefoldBinding", targetIds: [1] });
+  const result = await skipped.beginTurn(1); assert.equal(result.skipped, true); assert.equal(skipped.outside.length, 1);
+});

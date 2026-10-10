@@ -21,5 +21,9 @@ export function createHeroScene(id, seed) {
     give(0, card => card.name === "holyLight");
     game.player(0).handLimit = 4; game.player(0).energy.crystal = 1;
   }
+  if (heroId === "sealer") {
+    give(0, card => card.hasUniqueSkill("fireSeal")); give(0, card => card.name === "holyLight");
+    give(1, card => card.name === "fireStrike"); game.player(0).energy.crystal = 2;
+  }
   game.log = []; game.assertCardLocations(); return game;
 }

@@ -44,6 +44,10 @@ export function renderPlayers(game, container, humanId, targets = null) {
     if (player.getStatus("holyShield")[0]) marks.push('<img src="/assets/card/holyShield.png" title="圣盾" alt="圣盾">');
     if (player.getStatus("weakness")[0]) marks.push('<img src="/assets/card/weakness.png" title="虚弱" alt="虚弱">');
     if (player.getStatus("poison").length) marks.push(`<span class="poison-mark"><img src="/assets/card/poison.png" title="中毒" alt="中毒"><b>${player.getStatus("poison").length}</b></span>`);
+    for (const card of player.statuses.filter(card => !["holyShield", "weakness", "poison"].includes(card.attachment.effectId))) {
+      const id = card.attachment.effectId, label = UNIQUE_SKILL_NAMES[id] ?? CARD_NAMES[id] ?? id;
+      marks.push(`<span class="poison-mark"><img src="/assets/card/${card.name}.png" title="${label}" alt="${label}"><b>${label.startsWith("五") ? "" : label[0]}</b></span>`);
+    }
     const energy = [
       ["crystal", "crystal", "水晶"], ["gem", "gem", "宝石"],
     ].filter(([kind]) => player.energy[kind] > 0).map(([kind, image, label]) => `<span><img src="/assets/stones/${image}.png" alt="${label}"><b>${player.energy[kind]}</b></span>`).join("");

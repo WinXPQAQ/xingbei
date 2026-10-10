@@ -1,3 +1,4 @@
+import { initializeSealer } from "./heroes/sealer.js";
 import { cardName, createDeck } from "./cards.js";
 
 import { RuleError } from "./errors.js";
@@ -39,7 +40,7 @@ export class Game {
     this.deck = []; this.discard = []; this.field = []; this.outside = [];
     this.cards = new Map();
     this.effects = new Map(Object.entries(BASIC_EFFECTS));
-    this.skillDefinitions = new Map();
+    this.skillDefinitions = new Map(); this.pendingRuleEvents = []; this.processingRuleEvents = false;
     this.presentationEnabled = false; this.presentationEvents = []; this.presentationSequence = 0;
     this.turn = new TurnFlow(this); this.timeline = [];
     for (const card of createDeck()) this.registerCard(card, { zone: "deck" });
@@ -47,6 +48,7 @@ export class Game {
     this.current = 0;
     this.winner = null;
     this.log = [];
+    initializeSealer(this);
   }
 
   enablePresentation(onPresentation) { this.presentationEnabled = true; this.presentationEvents = []; this.onPresentation = onPresentation; }
@@ -156,6 +158,7 @@ export class Game {
   }
 
   *trigger(timing, context, options = {}) {
+    if (timing !== Timing.CARD_EXPOSED) yield* this.flushRuleEvents(options);
     yield* this.present();
     this.timeline.push({ timing, playerId: context.playerId ?? context.targetId, cardId: context.card?.id ?? null, point: context.point ?? null });
     const ownerId = context.playerId ?? context.targetId;
@@ -262,11 +265,13 @@ export class Game {
 
   discardCard(player, index, options = {}) {
     if (!Number.isInteger(index) || index < 0 || index >= player.hand.length) throw new RuleError("无效的手牌编号");
+    this.queueExposure(player.id, [player.hand[index]], { reason: "discard", visibility: options.visibility ?? "public", covered: options.covered ?? false });
     return this.moveCard(player.hand[index].id, { zone: "discard" }, options);
   }
 
   playCard(player, index, options = {}) {
     if (!Number.isInteger(index) || !player.hand[index]) throw new RuleError("无效的手牌编号");
+    this.queueExposure(player.id, [player.hand[index]], { reason: "play" });
     const card = this.moveCard(player.hand[index].id, { zone: "field" }, { reason: "play", targetId: options.targetId });
     options.resolutionCards?.push(card.id);
     return card;
@@ -452,6 +457,22 @@ export class Game {
     yield* this.turn.endAction(options);
   }
 
+  queueExposure(playerId, cards, { reason = "show", visibility = "public", covered = false } = {}) {
+    if (visibility !== "public" || covered || !cards.length) return;
+    this.pendingRuleEvents.push({ playerId, cards: [...cards], traits: cards.map(card => card.getTraits({ game: this, playerId, purpose: "exposure" })), origin: "hand", visibility, covered, reason });
+  }
+  *flushRuleEvents(options = {}) {
+    if (this.processingRuleEvents) return;
+    this.processingRuleEvents = true;
+    try { while (this.pendingRuleEvents.length && !this.winner) yield* this.trigger(Timing.CARD_EXPOSED, this.pendingRuleEvents.shift(), options); }
+    finally { this.processingRuleEvents = false; }
+  }
+  *showCardsSteps(playerId, cards, options = {}) {
+    if (cards.some(card => card.location.zone !== "hand" || card.location.playerId !== playerId)) throw new RuleError("只能展示本人手牌");
+    this.log.push(`${this.player(playerId).name}展示${cards.map(cardName).join("、")}`);
+    this.queueExposure(playerId, cards, options); yield* this.flushRuleEvents(options);
+  }
+
   legalSkillActions(playerId) {
     const player = this.player(playerId);
     return player.getSkills().flatMap(({ skill }) => {
@@ -495,9 +516,10 @@ export class Game {
     if (!Array.isArray(indexes) || indexes.length !== count || new Set(indexes).size !== count || indexes.some(index => !valid.includes(index))) throw new RuleError("无效的手牌选择");
     return indexes.map(index => player.hand[index]);
   }
-  discardCards(playerId, cards, { visibility = "public", reason = "skillCost" } = {}) {
+  discardCards(playerId, cards, { visibility = "public", reason = "skillCost", covered = false } = {}) {
     const player = this.player(playerId);
     if (cards.some(card => card.location.zone !== "hand" || card.location.playerId !== playerId)) throw new RuleError("弃牌必须来自本人手牌");
+    this.queueExposure(playerId, cards, { visibility, reason, covered });
     for (const card of cards) this.moveCard(card.id, { zone: "discard" }, { animate: false, visibility });
     this.recordPresentation("discard", { playerId, cards: cards.map(card => card.toJSON()), visibility, reason });
     if (player.hand.length <= player.handLimit) delete player.pendingOverflow;
