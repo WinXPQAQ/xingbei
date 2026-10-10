@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>星杯传说</title>
+  <link rel="stylesheet" href="/web/style.css">
+  <link rel="stylesheet" href="/web/original-theme.css">
+</head>
+<body>
+  <main id="window" class="game-shell">
+    <header id="system" class="topbar">
+      <div class="system-left"><button id="restart">重新开始</button><button id="toggle-log" aria-expanded="false" aria-controls="log-panel">记录</button><button id="sort-hand">整理手牌</button></div>
+      <div class="system-right"><button id="deck-info" title="牌库与弃牌数量">牌堆 <span id="deck-count"></span> / <span id="discard-count"></span></button></div>
+    </header>
+    <section id="arena" class="board" aria-label="四人对局">
+      <div id="players" class="players"></div>
+      <div class="center-hint"><span id="turn-name" class="visually-hidden"></span><span id="hint" role="status">准备行动</span></div>
+      <section id="me" class="hand-zone" aria-label="你的手牌"><span id="hand-count" class="visually-hidden"></span><div id="handcards1" class="hand-viewport"><div id="hand" class="hand"></div></div></section>
+      <div id="control" class="actions"><button id="buy">购买</button><button id="synth">合成</button><button id="refine">提炼</button><button id="cancel-target" hidden>取消</button></div>
+    </section>
+    <section class="zhanJi" aria-label="双方战绩"><table><thead><tr><td>士气</td><td>星石</td><td>星杯</td></tr></thead><tbody><tr id="red-team" aria-label="红方"></tr><tr id="blue-team" aria-label="蓝方"></tr></tbody></table></section>
+    <aside id="log-panel" class="log-panel" hidden><div class="log-title"><span>行动记录</span><button id="clear-log">清空</button><button id="close-log" aria-label="关闭记录">关闭</button></div><div id="log" class="log" role="log"></div></aside>
+    <div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title"><div class="dialog"><h2 id="modal-title"></h2><div id="modal-body"></div><div id="modal-actions" class="modal-actions"></div></div></div>
+    <div id="toast" class="toast" role="status"></div>
+  </main>
+  <nav class="dev-tools" aria-label="开发场景"><label>开发场景 <select id="dev-scene"></select></label><button id="dev-reset">重置</button><button id="dev-pause">继续 AI</button><button id="dev-step">单步 AI</button><button id="dev-export">导出状态</button></nav>
+  <script type="module" src="/web/app.js"></script>
+</body>
+</html>

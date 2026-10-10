@@ -1,0 +1,71 @@
+/* Structure only. Visual rules derived from the original are in original-theme.css. */
+* { box-sizing: border-box; }
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:disabled { cursor: default; }
+[hidden], .hidden { display: none !important; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.game-shell { position: absolute; top: 0; left: 0; transform-origin: top left; overflow: hidden; }
+.topbar { position: absolute; inset: 0 0 auto; z-index: 8; display: flex; justify-content: space-between; padding: 10px; }
+.system-left, .system-right { display: flex; gap: 8px; }
+.board { position: absolute; width: 94%; height: calc(95% + 20px); top: calc(5% + 10px); left: 3%; }
+.players { position: absolute; inset: 0; pointer-events: none; }
+.player { position: absolute; pointer-events: auto; width: 150px; height: 180px; z-index: 2; }
+.player[data-position="0"] { top: calc(100% - 220px); left: 0; }
+.player[data-position="1"] { top: calc(30% - 128px); left: calc(100% - 140px); }
+.player[data-position="2"] { top: 0; left: calc(50% - 60px); }
+.player[data-position="3"] { top: calc(30% - 128px); left: 0; }
+.avatar { position: absolute; inset: 7px; width: 136px; height: 166px; object-fit: cover; object-position: 50% 0; }
+.player-name, .identity, .count, .energy, .marks { position: absolute; }
+.player-name { top: 21px; left: 13px; writing-mode: vertical-rl; }
+.identity { top: -5px; right: -6px; width: 36px; height: 24px; }
+.count { left: 8px; bottom: 25px; }
+.energy { left: -20px; display: flex; flex-direction: column; gap: 2px; }
+.energy > span { position: relative; height: 26px; }
+.energy b { position: absolute; right: -3px; bottom: 0; font-weight: normal; }
+.energy img { width: 26px; height: 26px; }
+.marks { left: -20px; top: 6px; display: flex; flex-direction: column; gap: 2px; }
+.marks img { width: 26px; height: 26px; object-fit: cover; }
+.poison-mark { position: relative; }
+.poison-mark b { position: absolute; bottom: 0; right: 0; }
+.center-hint { position: absolute; width: 400px; left: calc(50% - 200px); top: 218px; text-align: center; pointer-events: none; z-index: 4; }
+.hand-zone { position: absolute; bottom: 38px; left: 0; width: calc(9700% / 94); height: 120px; }
+.hand-viewport { position: absolute; left: 150px; width: calc(100% - 380px); height: 120px; overflow: visible; z-index: 3; }
+.hand-viewport.scrollh { overflow-x: auto; overflow-y: hidden; height: 180px; top: -60px; padding-top: 60px; }
+.hand { position: relative; height: 120px; margin-left: 10px; }
+.card { width: 104px; height: 104px; padding: 0; position: relative; flex-shrink: 0; }
+.hand > .card { position: absolute; left: 4px; top: 8px; transform: translateX(var(--card-x)); }
+.hand > .card.selected { transform: translate(var(--card-x), -20px); }
+.card > .image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.card > .info, .card > .name { position: absolute; }
+.card > .info { top: 5.2px; right: 7px; white-space: nowrap; }
+.card > .name { top: 9px; left: 6px; writing-mode: vertical-rl; }
+.actions { position: absolute; left: calc(-150% / 47 + 120px); width: calc(5000% / 47 - 240px); bottom: 150px; min-height: 40px; display: flex; justify-content: center; align-items: flex-start; gap: 6px; z-index: 5; }
+.zhanJi { position: absolute; bottom: 0; right: 0; padding: 6px; z-index: 4; }
+.zhanJi table { border-collapse: separate; border-spacing: 2px; min-width: 216px; }
+.zhanJi td { padding: 2px; text-align: center; }
+.zhanJi .stones { width: 100px; max-width: 140px; }
+.stones img { width: 20px; height: 20px; vertical-align: middle; }
+.log-panel { position: absolute; right: 12px; top: 58px; bottom: 120px; width: 300px; z-index: 9; padding: 12px; display: flex; flex-direction: column; }
+.log-title { display: flex; gap: 8px; align-items: center; }
+.log-title > span { margin-right: auto; }
+.log { flex: 1; overflow: auto; min-height: 0; margin-top: 12px; }
+.log-entry { padding: 4px 0; overflow-wrap: anywhere; }
+.modal { position: absolute; inset: 0; z-index: 20; pointer-events: none; }
+.dialog { position: absolute; width: calc(90% - 300px); left: calc(5% + 150px); bottom: 170px; min-height: 200px; max-height: calc(100% - 370px); overflow: auto; padding: 16px 8px; text-align: center; pointer-events: auto; }
+.dialog h2 { font-size: 20px; font-weight: normal; margin: 0 0 8px; }
+.modal-actions { position: absolute; left: calc(-150% / 47 + 120px); width: calc(5000% / 47 - 240px); bottom: 150px; display: flex; justify-content: center; flex-wrap: wrap; gap: 6px; pointer-events: auto; }
+.choice-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 0; }
+.choice-card { margin: 8px 4px; }
+.toast { position: absolute; left: 50%; bottom: 190px; transform: translateX(-50%); padding: 10px 18px; z-index: 30; opacity: 0; pointer-events: none; }
+.toast.show { opacity: 1; }
+/* Separate developer toolbar; never loaded in the normal game. */
+.dev-tools { position: fixed; left: 8px; top: 58px; z-index: 50; max-width: calc(100vw - 16px); padding: 8px; background: #222e; border: 1px solid #777; border-radius: 6px; display: flex; flex-wrap: wrap; gap: 6px; font-size: 13px; }
+.dev-tools select, .dev-tools button { font: inherit; padding: 5px; }
+.dev-tools label { display: flex; align-items: center; gap: 4px; }
+.test-version { position: fixed; top: 8px; left: 50%; transform: translateX(-50%); z-index: 51; padding: 3px 8px; border-radius: 4px; background: #222c; color: #eee; font: 12px sans-serif; white-space: nowrap; pointer-events: none; }
+
+@media (min-width: 1150px) { .dialog { width: 630px; left: calc(50% - 315px); } }
+
+.hp { position: absolute; bottom: 15px; left: 121px; width: 18px; line-height: 16px; text-align: center; z-index: 3; }
+.hp > span { position: relative; display: inline-block; width: 10px; height: 10px; top: 5px; transform: scale(2.5); }

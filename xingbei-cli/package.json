@@ -1,0 +1,12 @@
+{
+  "name": "xingbei-cli",
+  "version": "0.1.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node src/cli.js",
+    "web": "node server.js",
+    "test": "node --test"
+  },
+  "engines": { "node": ">=20" }
+}
