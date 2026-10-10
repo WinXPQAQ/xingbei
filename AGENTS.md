@@ -71,10 +71,11 @@
 
 ## 规则建模约定（v0.2.0）
 
-- 规则结构与接口见 `xingbei-cli/docs/game-architecture.md`。代码标识使用英文；属性为dark/water/fire/wind/lightning/earth/light，命格为H/Y/J/S/X。中文显示文字保留。原版素材文件名及原版采集工具所访问的旧API仅作为外部适配，不重命名或修改原项目。
+- 规则结构与接口见 `xingbei-cli/docs/game-architecture.md`。代码标识使用英文；属性为dark/water/fire/wind/thunder/earth/light，命格为H/Y/J/S/X。中文显示文字保留。原版素材文件名及原版采集工具所访问的旧API仅作为外部适配，不重命名或修改原项目。
 - 牌继承Card→BasicCard/ExclusiveCard；基础牌再分AttackCard/SpellCard，法术牌有五个具体子类。牌ID不变，包含场外的所有实体都登记在Game.cards。基础牌初始注册只允许deck。
 - 区域转移只能使用registerCard/moveCard/attachCard/removeEffect，不直接push/splice手牌、牌堆或状态数组。场外outside不是删除；专属牌允许进入牌堆和弃牌堆。开发场景也遵循同一登记与移动接口。
-- 效果由实际牌的attachment承载，不创建第二个附加状态实体。每张中毒分别作为一个实例，允许同名多个；圣盾/虚弱及其他基础效果默认不叠加。基础牌可承载英雄创造的不同effectId。Player的shield/weakness/poisons为只读派生查询。
+- 效果由实际牌的attachment承载，不创建第二个附加状态实体。每张中毒分别作为一个实例，允许同名多个；圣盾/虚弱及其他基础效果默认不叠加。基础牌可承载英雄创造的不同effectId。Player统一使用getStatus(effectId)返回匹配牌数组，不增加具体状态的专用属性；中毒、圣盾、虚弱牌子类通过effectDefinition绑定各自基础效果。
+- 无法行动统一由Game.canRefreshUnableHand判断：所有手牌当前不可使用、handLimit减手牌数不超过2，且hero.canActWithSkills为false。未实现英雄行动技能时该标记默认false；网页、终端及AI共用该判断，不能只检查4张不可用牌。
 - Player组合Hero；公共个人状态归Player，英雄专属可变状态归Hero.state，技能汇总包含状态区专属牌授予的能力，牌离开时失去该能力。
 - 攻击/魔弹各有独立结算模块，同步和异步入口驱动同一套流程。TurnFlow负责回合/行动阶段及普通与特殊路线、攻击/法术行动结束、回合结束；终端和网页不能自行推进current。
 - 已查证原版中毒、虚弱触发于xingDongBefore（行动阶段开始前），优先级3/1，先中毒后虚弱。圣盾在攻击/魔弹命中检查中改成未命中，不在通用damage中仅抵消伤害。不要把中毒描述为回合开始触发。

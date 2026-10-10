@@ -65,7 +65,7 @@ game.removeEffect(seal.id, { zone: "outside" });
 
 ## 属性和命格
 
-属性为`dark / water / fire / wind / lightning / earth / light`。命格为`H幻 / Y咏 / J技 / S圣 / X血`。
+属性为`dark / water / fire / wind / thunder / earth / light`。命格为`H幻 / Y咏 / J技 / S圣 / X血`。
 
 - `getPrintedTraits()`返回印刷值：`{ elements: [...], fates: [...] }`。
 - `getTraits({ game, playerId, purpose, ... })`返回当前规则下的有效值。
@@ -92,11 +92,15 @@ card.attachment = {
 - 中毒的定义为`stackable: true`：两张中毒就是两个效果实例，保留各自牌ID、施加者并分别触发、弃置。
 - 圣盾、虚弱及新注册的基础效果默认`stackable: false`：同一玩家不能挂两个同名效果，即使施加者不同。
 - 专属牌效果以唯一牌实体保证单一位置；不会把同名的两张不同专属实体合并。
-- `Player.getBasicEffects()`查询基础牌承载的效果；`getEffects(effectId)`返回匹配牌的数组。
+- `Player.getBasicEffects()`查询基础牌承载的效果；统一入口`getStatus(effectId)`返回匹配牌的数组，没有时返回空数组，中毒的每张牌分别保留。
 - `removeEffect(cardId, destination)`按指定牌移除；默认弃牌，也可以回手、回场外等。
-- `.shield`、`.weakness`、`.poisons`是从状态区计算的只读查询，不再存储另一份可修改状态。
+- 不为圣盾、虚弱、中毒设置专用状态属性，序列化只保留状态区牌及其attachment。前端、终端和规则均调用统一查询。
+
+`PoisonCard`、`ShieldCard`、`WeaknessCard`通过只读的`effectDefinition`分别绑定`BASIC_EFFECTS`中的中毒、圣盾、虚弱定义，合法目标和出牌挂载均采用该定义的ID。定义集中保存叠加规则和触发结算，同一张基础牌被英雄挂为其他效果时，仍按attachment中的effectId触发。
 
 `Player.getSkills()`组合英雄技能和当前状态区牌授予的技能，并保留`sourceCard`。牌移走即失去它授予的技能。英雄可变的专属计数等保存在`hero.state`，公共能量等保存在`Player`。
+
+`Player.handLimit`默认6，抽牌爆牌和界面共用该上限。`Game.canRefreshUnableHand(playerId)`仅在所有手牌不可使用、空余位不超过2且`Hero.canActWithSkills`为false时允许展示并重摸。英雄行动技能尚未实现，标记默认false，后续技能须根据实际可行动条件更新；终端、网页和AI不复制条件。
 
 ## 回合与触发时点
 

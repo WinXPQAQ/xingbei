@@ -75,7 +75,7 @@ test("固定牌堆有150张且保留系别和fate", () => {
   assert.equal(deck.length, 150);
   assert.ok(deck.every(c => c.id && c.element && c.fate));
   assert.deepEqual(Object.fromEntries([...new Set(deck.map(c => c.name))].map(n => [n, deck.filter(c => c.name === n).length])), {
-    darkStrike: 6, waterStrike: 21, fireStrike: 21, windStrike: 21, lightningStrike: 21,
+    darkStrike: 6, waterStrike: 21, fireStrike: 21, windStrike: 21, thunderStrike: 21,
     earthStrike: 21, holyLight: 11, weakness: 6, poison: 6, holyShield: 10, magicBullet: 6,
   });
 });
@@ -120,8 +120,8 @@ test("中毒在行动前逐张造成1点法术伤害", () => {
   attach(game, 1, card("poison"), 0); attach(game, 1, card("poison"), 2);
   game.startTurn(1);
   assert.equal(game.players[1].hand.length, 2);
-  assert.equal(game.players[1].poisons.length, 0);
-  assert.ok(game.players[1].shield, "圣盾不能抵消中毒等普通法术伤害");
+  assert.equal(game.players[1].getStatus("poison").length, 0);
+  assert.ok(game.players[1].getStatus("holyShield")[0], "圣盾不能抵消中毒等普通法术伤害");
 });
 
 test("应战攻击可以形成连续应战链", () => {
@@ -229,7 +229,7 @@ test("圣盾抵消后攻击不算命中且不产生星石", () => {
   attach(game, 1, card("holyShield"));
   game.play(0, 0, 1);
   assert.equal(game.stoneCounts("red").total, 0);
-  assert.equal(game.players[1].shield, null);
+  assert.deepEqual(game.players[1].getStatus("holyShield"), []);
   assert.equal(game.players[1].hand.length, 0);
 });
 
@@ -326,7 +326,7 @@ test("AI爆牌随机弃置并立即降低士气", () => {
   assert.equal(game.teams.blue.morale, 13);
 });
 
-test("圣光和无合法目标的状态牌计为不可用牌", () => {
+test("无法行动要求全部手牌不可用、空余位不超过2且英雄无法通过技能行动", () => {
   const game = new Game({ shuffleDeck: false });
   for (const player of game.players) {
     attach(game, player.id, card("holyShield"));
@@ -334,10 +334,29 @@ test("圣光和无合法目标的状态牌计为不可用牌", () => {
   }
   setHand(game, 0, [card("holyLight", "light"), card("holyShield"), card("weakness"), card("holyLight", "light")]);
   assert.equal(game.unusableCards(0).length, 4);
+  assert.equal(game.canRefreshUnableHand(0), true);
+  assert.equal(chooseAiAction(game, 0).type, "refresh");
+  appendHand(game, 0, card("waterStrike"));
+  assert.equal(game.unusableCards(0).length, 4);
+  assert.equal(game.canRefreshUnableHand(0), false);
+  assert.notEqual(chooseAiAction(game, 0).type, "refresh");
+  assert.throws(() => game.refreshUnableHand(0), RuleError);
+  game.discardCard(game.player(0), 4);
+  game.player(0).hero.canActWithSkills = true;
+  assert.equal(game.canRefreshUnableHand(0), false);
+  assert.throws(() => game.refreshUnableHand(0), RuleError);
+  game.player(0).hero.canActWithSkills = false;
+  game.player(0).handLimit = 7;
+  assert.equal(game.canRefreshUnableHand(0), false);
+  assert.throws(() => game.refreshUnableHand(0), RuleError);
+  game.player(0).handLimit = 6;
   assert.throws(() => game.play(0, 0, 1), RuleError);
   game.refreshUnableHand(0);
   assert.equal(game.players[0].hand.length, 4);
   assert.equal(game.teams.red.morale, 15);
+  setHand(game, 0, [card("holyLight", "light"), card("holyLight", "light"), card("holyLight", "light")]);
+  assert.equal(game.canRefreshUnableHand(0), false);
+  assert.throws(() => game.refreshUnableHand(0), RuleError);
 });
 
 test("AI优先给己方圣盾，并向手牌最多的敌人使用中毒或虚弱", () => {

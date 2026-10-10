@@ -150,3 +150,6 @@ python3 -m http.server 4182 --bind 127.0.0.1 --directory xingbei-cli/artifacts/f
 当前默认已改为六人3v3、固定红蓝蓝红红蓝，玩家控制首位红方；后续测试统一使用此配置。本文原有四人截图和结论保留为历史，不作为六人验收依据。新增原版采集工具 `tools/capture-original-six-player.mjs` 已采集四视口六人开局，证据位于 `artifacts/frontend/restoration/2026-10-10/six-original-6/`。该采集明确使用隔离选角配置和运行时阵营标记，不代表原版六人自然规则流程通过。当前验证结果见 [最新实施报告](frontend-restoration-2026-10-10.md)。
 
 v0.2.0规则拆分查证原版中毒/虚弱均在行动阶段开始前（xingDongBefore）触发，中毒先于虚弱；圣盾改变攻击/魔弹命中结果。源码位置和新阶段映射见 [游戏结构](game-architecture.md)，旧截图中的拼音标识保留为历史，不代表新规则接口。
+
+
+PR #1 评论修正已完成：雷系统一 thunder，状态牌子类绑定效果，状态查询统一 getStatus(effectId)，无法行动采用全部手牌不可用、空余位≤2且英雄不可通过技能行动的共享判断。34项Node测试与两视口108项整体、49项应战、51项魔弹检查通过；本批证据和范围见 frontend-restoration-2026-10-10.md 的“PR #1 评论修正”。未关闭此前剩余视觉与自然流程差异。

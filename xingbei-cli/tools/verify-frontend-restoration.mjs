@@ -95,7 +95,7 @@ try {
     await page.locator("#hand .card").first().click();
     await page.locator('.player.targetable[data-player="1"]').click();
     await page.waitForFunction(() => window.xingbeiDev.exportState().current === 1);
-    check(`${tag}: 目标提交接入引擎`, (await state(page)).game.players[1].weakness?.name === "weakness");
+    check(`${tag}: 目标提交接入引擎`, (await state(page)).game.players[1].statuses.find(card => card.attachment?.effectId === "weakness")?.name === "weakness");
     await page.locator("#dev-reset").evaluate(button => button.click());
     await page.locator("#cancel-target").waitFor();
     await page.locator("#cancel-target").click();
@@ -189,7 +189,7 @@ try {
     await capture(page, `weakness-${tag}`, viewport);
     await page.getByRole("button", { name: "跳过本回合行动", exact: true }).click();
     await page.waitForFunction(() => window.xingbeiDev.exportState().current === 1);
-    check(`${tag}: 虚弱跳过`, (await state(page)).game.players[0].weakness === null);
+    check(`${tag}: 虚弱跳过`, !(await state(page)).game.players[0].statuses.some(card => card.attachment?.effectId === "weakness"));
     await scene("overflow");
     await page.getByRole("button", { name: "确认弃置" }).waitFor();
     await capture(page, `overflow-${tag}`, viewport);

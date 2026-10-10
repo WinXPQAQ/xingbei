@@ -14,11 +14,11 @@ function showState() {
   const red = game.stoneCounts("red"), blue = game.stoneCounts("blue");
   const lines = [`红方 士气${game.teams.red.morale} 星杯${game.teams.red.cups} 星石${red.gem}宝/${red.crystal}晶 | 蓝方 士气${game.teams.blue.morale} 星杯${game.teams.blue.cups} 星石${blue.gem}宝/${blue.crystal}晶`];
   for (const p of game.players) {
-    const effects = `盾:${p.shield ? 1 : 0} 虚弱:${p.weakness ? 1 : 0} 中毒:${p.poisons.length} 能量:${p.energy.gem}宝/${p.energy.crystal}晶`;
+    const effects = `盾:${p.getStatus("holyShield")[0] ? 1 : 0} 虚弱:${p.getStatus("weakness")[0] ? 1 : 0} 中毒:${p.getStatus("poison").length} 能量:${p.energy.gem}宝/${p.energy.crystal}晶`;
     if (p.id === humanId) {
-      lines.push(`▶ ${p.id}:${p.name}[${p.team === "red" ? "红" : "蓝"}] 手牌(${p.hand.length}/6) ${effects}`);
+      lines.push(`▶ ${p.id}:${p.name}[${p.team === "red" ? "红" : "蓝"}] 手牌(${p.hand.length}/${p.handLimit}) ${effects}`);
       p.hand.forEach((card, i) => lines.push(`  ${i}:${cardText(card)} #${card.id}`));
-    } else lines.push(`  ${p.id}:${p.name}[${p.team === "red" ? "红" : "蓝"}] 手牌(${p.hand.length}/6) ${effects}`);
+    } else lines.push(`  ${p.id}:${p.name}[${p.team === "red" ? "红" : "蓝"}] 手牌(${p.hand.length}/${p.handLimit}) ${effects}`);
   }
   tui.setState(lines);
 }
@@ -55,8 +55,8 @@ async function chooseRefinement(player) {
 
 async function resolveHumanOverflow() {
   const player = game.player(humanId);
-  while (player.hand.length > 6) {
-    const excess = player.hand.length - 6;
+  while (player.hand.length > player.handLimit) {
+    const excess = player.hand.length - player.handLimit;
     showState();
     tui.console(`【爆牌】你的手牌超过上限，必须弃置${excess}张。请输入不同的手牌编号，用空格分隔。`);
     const answer = (await tui.question(`爆牌弃置${excess}张> `)).trim();
@@ -83,8 +83,8 @@ function turnDivider(playerName, phase) {
 
 async function humanTurn() {
   const player = game.player(humanId);
-  if (game.unusableCards(humanId).length >= 4) {
-    tui.console("无法行动：至少有4张牌当前不可使用，将展示并替换全部手牌。");
+  if (game.canRefreshUnableHand(humanId)) {
+    tui.console("无法行动：所有手牌当前不可使用、空余手牌位不超过2，且无法通过英雄技能行动，将展示并替换全部手牌。");
     await game.executeAction(humanId, { type: "refresh" }); flushLog(); return true;
   }
   while (true) {

@@ -161,7 +161,7 @@ ORIGINAL_EVIDENCE=xingbei-cli/artifacts/frontend/restoration/2026-10-10/six-orig
 
 效果由挂载牌的attachment承载：每张中毒独立触发，其他基础效果默认不允许同名重复；可注册英雄使用基础牌形成的特殊效果。状态区专属牌可授予技能，离开时自动不再提供技能。有效属性/命格查询支持空集合、多属性及英雄上下文覆盖，攻击提交时保存有效属性快照，原牌属性不变。
 
-规则及当前验证工具使用英文牌名和dark/water/fire/wind/lightning/earth/light，命格H/Y/J/S/X。英文资源URL由legacy-assets.json映射到原素材文件名，原项目不改动；原版采集工具访问的旧API标识仍作为外部参考适配保留，旧证据不改写。
+规则及当前验证工具使用英文牌名和dark/water/fire/wind/thunder/earth/light，命格H/Y/J/S/X。英文资源URL由legacy-assets.json映射到原素材文件名，原项目不改动；原版采集工具访问的旧API标识仍作为外部参考适配保留，旧证据不改写。
 
 攻击与魔弹分别提取到src/resolution，同步/异步入口共用生成器结算。TurnFlow显式表达回合开始、行动阶段开始前/开始、普通启动→攻击/法术与特殊行动路线、各行动结束、行动阶段结束、回合结束；客户端由引擎推进座位。中毒和虚弱经旧代码查证均触发xingDongBefore，中毒优先；圣盾改变命中结果而非在公共damage内抵消伤害。来源位置、接口与扩展限制见game-architecture.md。
 
@@ -170,3 +170,14 @@ ORIGINAL_EVIDENCE=xingbei-cli/artifacts/frontend/restoration/2026-10-10/six-orig
 验证结果：原精简30项Node测试迁移后，加4项针对新结构的真实风险检查，共34项通过。最终整体浏览器108项、应战49项、魔弹51项通过；桌面1440×900及触屏竖屏390×844，合计208项、控制台/素材错误0，36个几何区域边界与原版误差≤1px。保存32张整体场景图及专项选择/圣光确认截图；不执行已删除的逐像素重置比较。缓存HTTP/304及重启浏览器后16项磁盘缓存命中通过。证据为architecture-release/、architecture-release-attack-response/、architecture-release-magic-target/；攻击有效属性快照补充后专项复验为architecture-attack-snapshot/。初次architecture-first因服务尚未重载英文资源映射而失败，目录保留；重启后验证通过。
 
 本次未新增真实英雄技能或具体专属牌玩法，未宣称原版自然响应流程及全部前端已还原。额外行动、真实启动技能选择、特殊技能排序和更多角色规则仍须逐项迁移。测试服务版本0.2.0，继续监听0.0.0.0:4173。
+
+
+## 同日后续：PR #1 评论修正
+
+按四条 review 意见统一雷系为 thunder、雷光斩为 thunderStrike，同步牌堆、校验、显示名、资源映射、测试和架构约定；旧素材文件名与原项目不变。中毒、圣盾、虚弱子类通过 effectDefinition 绑定各自基础效果，目标校验和出牌挂载采用定义 ID，保留英雄以基础牌承载其他效果的接口。
+
+删除 Player 的圣盾、虚弱、中毒专用查询属性及序列化副本，改为统一 getStatus(effectId)，返回每张匹配状态牌组成的数组，没有时返回空数组。引擎、网页、终端和验证脚本同步使用该接口。
+
+无法行动由 Game.canRefreshUnableHand 统一检查：所有手牌当前不可用、handLimit 减手牌数不超过2且 hero.canActWithSkills 为 false。英雄行动技能尚未实现，标记默认 false。Player.handLimit 默认6，爆牌和界面共用此上限。扩充原有规则用例检查混合可用手牌、空余位边界、改变上限和技能标记，不增加重复测试数量。
+
+本批34项Node测试通过；桌面1440×900与触屏竖屏390×844整体108项、应战49项、魔弹51项浏览器检查通过，控制台/素材错误0。整体36个几何区域与六人原版边界误差≤1px，保留32张场景图，未进行逐像素复现检查。证据为 pr-1-review/、pr-1-review-attack/、pr-1-review-magic/。尚未实现的英雄技能、自然流程基准与前端差异仍按前述记录保留。

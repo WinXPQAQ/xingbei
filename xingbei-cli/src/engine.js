@@ -91,7 +91,7 @@ export class Game {
   canAttach(card, playerId, effectId) {
     const player = this.player(playerId), definition = this.effects.get(effectId);
     if (card.category === "basic" && (!definition || definition.category !== "basic")) return false;
-    return card.category === "exclusive" || definition.stackable || !player.getEffects(effectId).some(existing => existing !== card);
+    return card.category === "exclusive" || definition.stackable || !player.getStatus(effectId).some(existing => existing !== card);
   }
 
   attachCard(cardId, playerId, { effectId, sourcePlayerId = null, sourceSkillId = null, data = {} }) {
@@ -185,7 +185,7 @@ export class Game {
       }
       this.moveCard(this.deck.at(-1).id, { zone: "hand", playerId: id });
     }
-    const excess = Math.max(0, player.hand.length - 6);
+    const excess = Math.max(0, player.hand.length - player.handLimit);
     if (excess) {
       const policy = typeof overflow === "function" ? overflow(player, excess) : overflow;
       if (policy === "defer") {
@@ -208,7 +208,7 @@ export class Game {
 
   resolveOverflow(id, indexes, { moraleLoss = true } = {}) {
     const player = this.player(id);
-    const excess = Math.max(0, player.hand.length - 6);
+    const excess = Math.max(0, player.hand.length - player.handLimit);
     if (!excess) { delete player.pendingOverflow; return []; }
     if (!Array.isArray(indexes) || indexes.length !== excess || new Set(indexes).size !== excess ||
         indexes.some(index => !Number.isInteger(index) || index < 0 || index >= player.hand.length)) {
@@ -249,6 +249,12 @@ export class Game {
 
   unusableCards(actorId) {
     return this.player(actorId).hand.filter(card => !this.legalTargets(actorId, card).length);
+  }
+
+  canRefreshUnableHand(actorId) {
+    const player = this.player(actorId);
+    return player.handLimit - player.hand.length <= 2 &&
+      this.unusableCards(actorId).length === player.hand.length && !player.hero.canActWithSkills;
   }
 
   canDrawSpecial(actorId) {
@@ -363,7 +369,7 @@ export class Game {
 
   *refreshUnableHandSteps(actorId) {
     const player = this.player(actorId);
-    if (this.unusableCards(actorId).length < 4) throw new RuleError("未满足无法行动条件");
+    if (!this.canRefreshUnableHand(actorId)) throw new RuleError("未满足无法行动条件");
     if (this.winner) throw new RuleError("游戏已经结束");
     yield* this.turn.beginAction(actorId, "special");
     const count = player.hand.length;

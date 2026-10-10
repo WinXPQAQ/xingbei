@@ -1,6 +1,7 @@
 import { attackSteps } from "./resolution/attack.js";
 import { magicSteps } from "./resolution/magic.js";
 import { RuleError } from "./errors.js";
+import { BASIC_EFFECTS } from "./effects.js";
 
 export class Card {
   #location = null;
@@ -37,7 +38,7 @@ export class Card {
 export class BasicCard extends Card {
   constructor({ element, fate, ...options }) {
     super({ ...options, elements: [element], fates: [fate] });
-    if (!["dark", "water", "fire", "wind", "lightning", "earth", "light"].includes(element) || !["H", "Y", "J", "S", "X"].includes(fate)) throw new RuleError("基础牌必须有合法属性和命格");
+    if (!["dark", "water", "fire", "wind", "thunder", "earth", "light"].includes(element) || !["H", "Y", "J", "S", "X"].includes(fate)) throw new RuleError("基础牌必须有合法属性和命格");
     this.category = "basic";
   }
 }
@@ -57,14 +58,25 @@ export class SpellCard extends BasicCard {
   constructor(options) { super(options); this.type = "spell"; }
 }
 class EffectCard extends SpellCard {
-  legalTargets({ game }) { return game.players.filter(player => game.canAttach(this, player.id, this.name)).map(player => player.id); }
+  constructor(options, effectDefinition) {
+    super(options);
+    if (this.name !== effectDefinition.id) throw new RuleError("状态牌与其基础效果不匹配");
+    Object.defineProperty(this, "effectDefinition", { value: effectDefinition });
+  }
+  legalTargets({ game }) { return game.players.filter(player => game.canAttach(this, player.id, this.effectDefinition.id)).map(player => player.id); }
   resolve({ game, actor, targetId }) {
-    game.attachCard(this.id, targetId, { effectId: this.name, sourcePlayerId: actor.id });
+    game.attachCard(this.id, targetId, { effectId: this.effectDefinition.id, sourcePlayerId: actor.id });
   }
 }
-export class PoisonCard extends EffectCard {}
-export class ShieldCard extends EffectCard {}
-export class WeaknessCard extends EffectCard {}
+export class PoisonCard extends EffectCard {
+  constructor(options) { super(options, BASIC_EFFECTS.poison); }
+}
+export class ShieldCard extends EffectCard {
+  constructor(options) { super(options, BASIC_EFFECTS.holyShield); }
+}
+export class WeaknessCard extends EffectCard {
+  constructor(options) { super(options, BASIC_EFFECTS.weakness); }
+}
 export class HolyLightCard extends SpellCard {
   resolve() { throw new RuleError("圣光只能用于响应攻击或魔弹"); }
 }
@@ -81,6 +93,6 @@ export class ExclusiveCard extends Card {
 const spellClasses = { poison: PoisonCard, holyShield: ShieldCard, weakness: WeaknessCard, holyLight: HolyLightCard, magicBullet: MagicBulletCard };
 export function createBasicCard(options) {
   const Type = spellClasses[options.name] || AttackCard;
-  if (!spellClasses[options.name] && !["darkStrike", "waterStrike", "fireStrike", "windStrike", "lightningStrike", "earthStrike"].includes(options.name)) throw new RuleError(`未知基础牌 ${options.name}`);
+  if (!spellClasses[options.name] && !["darkStrike", "waterStrike", "fireStrike", "windStrike", "thunderStrike", "earthStrike"].includes(options.name)) throw new RuleError(`未知基础牌 ${options.name}`);
   return new Type(options);
 }

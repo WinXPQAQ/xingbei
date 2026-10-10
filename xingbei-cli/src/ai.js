@@ -4,7 +4,7 @@
  */
 export function chooseAiAction(game, actorId) {
   const player = game.player(actorId);
-  if (game.unusableCards(actorId).length >= 4) return { type: "refresh" };
+  if (game.canRefreshUnableHand(actorId)) return { type: "refresh" };
 
   const stones = game.stoneCounts(player.team);
   if (stones.total >= 3 && game.canDrawSpecial(actorId)) {

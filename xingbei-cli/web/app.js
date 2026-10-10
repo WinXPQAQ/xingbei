@@ -76,7 +76,7 @@ function render() {
   elements.deck.textContent = game.deck.length;
   elements.discard.textContent = game.discard.length;
   elements.turn.textContent = game.player(game.current).name;
-  elements.handCount.textContent = `${game.player(humanId).hand.length} / 6`;
+  elements.handCount.textContent = `${game.player(humanId).hand.length} / ${game.player(humanId).handLimit}`;
   renderPlayers();
   paintHand(game, elements.hand, humanId, {
     acceptingAction: acceptingAction || !!handChoice, selectedCard, locked: busy && !targetChoice && !handChoice, handChoice,
@@ -268,8 +268,8 @@ function chooseResponseTarget(title, valid, targets, kind = "attack") {
 async function resolveHumanOverflow() {
   const active = session;
   const player = game.player(humanId);
-  if (player.hand.length <= 6) return;
-  const indexes = await chooseCards("爆牌", player.hand, player.hand.length - 6);
+  if (player.hand.length <= player.handLimit) return;
+  const indexes = await chooseCards("爆牌", player.hand, player.hand.length - player.handLimit);
   active.assert();
   game.resolveOverflow(humanId, indexes, player.pendingOverflow ?? {});
   flushLog();
@@ -417,8 +417,8 @@ async function runTurns(active) {
     flushLog();
     if (!turn.skipped && !game.winner) {
       if (player.id === humanId) {
-        if (game.unusableCards(humanId).length >= 4) {
-          await choose("无法行动", [{ value: true, label: "展示并重摸" }], { detail: "至少有4张牌当前无法使用。你将弃置并重摸全部手牌。" });
+        if (game.canRefreshUnableHand(humanId)) {
+          await choose("无法行动", [{ value: true, label: "展示并重摸" }], { detail: "所有手牌当前不可使用、空余手牌位不超过2，且无法通过英雄技能行动。你将弃置并重摸全部手牌。" });
           await game.executeAction(humanId, { type: "refresh" }, { resolveOverflow: resolveHumanOverflow }); flushLog();
         } else await waitForHumanAction();
       } else { await delay(isDev ? 0 : 650); await executeAi(player.id, isDev && ["attack", "attack-switch"].includes(sceneId) && events.length === 1 ? { type: "play", index: 0, targetId: humanId } : null); active.assert(); flushLog(); }

@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { Game, RuleError, Timing } from "../src/engine.js";
 import { Card, BasicCard, AttackCard, SpellCard, ExclusiveCard, createBasicCard } from "../src/card.js";
+import { BASIC_EFFECTS } from "../src/effects.js";
 
 const take = (game, name) => game.deck.find(card => card.name === name);
 const hand = (game, playerId, name) => game.moveCard(take(game, name).id, { zone: "hand", playerId });
@@ -11,6 +12,17 @@ test("牌继承、唯一登记、六区域移动与专属牌授予技能遵循�
   const attack = take(game, "waterStrike"), spell = take(game, "poison");
   assert.ok(attack instanceof Card && attack instanceof BasicCard && attack instanceof AttackCard);
   assert.ok(spell instanceof SpellCard);
+  for (const name of ["poison", "holyShield", "weakness"]) {
+    const card = take(game, name);
+    assert.equal(card.effectDefinition, BASIC_EFFECTS[name]);
+    hand(game, 0, name);
+    game.play(0, game.player(0).hand.indexOf(card), 1);
+    assert.deepEqual(game.player(1).getStatus(name), [card]);
+    assert.equal(card.attachment.effectId, card.effectDefinition.id);
+    game.removeEffect(card.id);
+    assert.deepEqual(game.player(1).getStatus(name), []);
+  }
+  assert.deepEqual(game.player(1).getStatus("unknown"), []);
   assert.throws(() => { attack.id = "changed"; }, TypeError);
   assert.throws(() => game.registerCard(attack, { zone: "deck" }), RuleError);
   assert.throws(() => game.registerCard(createBasicCard({ id: "new-basic", name: "poison", element: "water", fate: "H" }), { zone: "hand", playerId: 0 }), RuleError);
@@ -84,7 +96,7 @@ test("多个中毒是独立基础效果，先于虚弱逐牌处理；其他基�
   assert.throws(() => game.attachCard(take(game, "fireStrike").id, 3, { effectId: "heroMark" }), RuleError);
   await game.beginTurn(0, { chooseWeakness: () => {
     assert.equal(game.player(0).hand.length, 2);
-    assert.equal(game.player(0).poisons.length, 0);
+    assert.equal(game.player(0).getStatus("poison").length, 0);
     assert.ok(poisons.every(card => card.location.zone === "discard"));
     return "skip";
   } });
