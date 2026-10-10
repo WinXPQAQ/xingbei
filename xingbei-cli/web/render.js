@@ -1,12 +1,13 @@
+import { UNIQUE_SKILL_NAMES } from "/src/unique-skills.js";
 // Presentation adapted from v1.6.7 UI, music and nova. See SOURCES.md.
 import { CARD_NAMES, ELEMENT_NAMES, FATE_NAMES } from "/src/cards.js";
 
 export function cardContents(card, context = {}) {
-  return `<img class="image" src="/assets/card/${card.name}.png" alt=""><span class="info"><span>${card.getTraits(context).elements.map(element => ELEMENT_NAMES[element]).join("/")}${card.getTraits(context).fates.map(fate => FATE_NAMES[fate]).join("/")}</span></span><span class="name" aria-hidden="true"></span>`;
+  return `<img class="image" src="/assets/card/${card.name}.png" alt=""><span class="info"><span>${card.getTraits(context).elements.map(element => ELEMENT_NAMES[element]).join("/")}${card.getTraits(context).fates.map(fate => FATE_NAMES[fate]).join("/")}</span></span><span class="name" aria-hidden="true"></span><span class="range">${(card.uniqueSkills ?? []).map(id => UNIQUE_SKILL_NAMES[id] ?? id).join("<br>")}</span>`;
 }
 
 export function cardLabel(card, context = {}) {
-  return `${CARD_NAMES[card.name] ?? card.name} · ${card.getTraits(context).elements.map(element => ELEMENT_NAMES[element]).join("/") || "无"}系 · ${card.getTraits(context).fates.map(fate => FATE_NAMES[fate]).join("/") || "无"}命格`;
+  return `${CARD_NAMES[card.name] ?? card.name} · ${card.getTraits(context).elements.map(element => ELEMENT_NAMES[element]).join("/") || "无"}系 · ${card.getTraits(context).fates.map(fate => FATE_NAMES[fate]).join("/") || "无"}命格${card.uniqueSkills?.length ? " · " + card.uniqueSkills.map(id => UNIQUE_SKILL_NAMES[id] ?? id).join(" / ") : ""}`;
 }
 
 export function renderTeams(game, nodes, humanId) {
@@ -46,7 +47,7 @@ export function renderPlayers(game, container, humanId, targets = null) {
     const energy = [
       ["crystal", "crystal", "水晶"], ["gem", "gem", "宝石"],
     ].filter(([kind]) => player.energy[kind] > 0).map(([kind, image, label]) => `<span><img src="/assets/stones/${image}.png" alt="${label}"><b>${player.energy[kind]}</b></span>`).join("");
-    const markup = `<img class="avatar" src="/assets/character/${player.hero.portrait}.jpg" alt=""><span class="player-name" title="${player.name}；头像仅作展示，角色技能尚未实现">${player.hero.name}</span><span class="identity"><span>${player.team === "red" ? "红" : "蓝"}</span></span><span class="count">${player.hand.length}/${player.handLimit}</span><span class="hp" title="治疗 ${player.healing}" aria-label="治疗 ${player.healing}">${[1, 0].map(index => `<span class="${index < player.healing ? "" : "lost"}"></span>`).join("")}</span><span class="energy" title="个人能量" style="top:${6 + marks.length * 28}px">${energy}</span><div class="marks">${marks.reverse().join("")}</div>`;
+    const markup = `<img class="avatar" src="/assets/character/${player.hero.portrait}.jpg" alt=""><span class="player-name" title="${player.name}；${player.hero.implemented || player.hero.skills?.length ? "已实现角色技能" : "角色技能尚未实现"}">${player.hero.name}</span><span class="identity"><span>${player.team === "red" ? "红" : "蓝"}</span></span><span class="count">${player.hand.length}/${player.handLimit}</span><span class="hp" title="治疗 ${player.healing}" aria-label="治疗 ${player.healing}">${[1, 0].map(index => `<span class="${index < player.healing ? "" : "lost"}"></span>`).join("")}</span><span class="energy" title="个人能量" style="top:${6 + marks.length * 28}px">${energy}</span><div class="marks">${marks.reverse().join("")}</div>`;
     if (node._markup !== markup) { node.innerHTML = markup; node._markup = markup; }
     if (player.energy.gem + player.energy.crystal === 0) node.querySelector(".energy").hidden = true;
 

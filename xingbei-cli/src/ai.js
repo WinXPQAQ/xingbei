@@ -55,3 +55,9 @@ export function chooseAiResponse(game, context) {
   const targetId = picked.card.type === "attack" ? randomItem(game, context.counterTargets).id : context.nextTarget?.id ?? null;
   return { index: picked.index, targetId };
 }
+
+export function chooseAiRuleDecision(request) {
+  if (request.type === "healing") return request.choices.at(-1).value;
+  if (request.type === "skillChoice") return true;
+  return request.defaultValue ?? null;
+}

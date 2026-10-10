@@ -24,3 +24,5 @@
 
 
 动画适配来源：`noname/library/element/player.js` 的 `$draw`（12006起）、`$throwordered2`（12667起）、`$damagepop`（13660起）、`$damage`（13708起），`noname/game/index.js` 的 `linexy`（4750起），以及 `layout/default/layout.css` 的默认过渡、浮字与线条样式。新版 `web/animation.js`、`web/animation.css`复用这些行为与比例，不引入旧引擎。`/theme/cardback.png`读取原版 `theme/style/cardback/image/xingBei1.png`；牌背继续保留原项目版权和素材说明。
+
+英雄技能及逐牌独有技来自原项目character/shiZhouNian.js与card/xingBei.js；六判定时点遵循用户规则，.range提取layout/default/layout.css。复制与改写继续遵循本仓库GPL许可。

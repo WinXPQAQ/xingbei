@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { cardText } from "./cards.js";
 import { Game, RuleError } from "./engine.js";
-import { chooseAiAction, chooseAiResponse } from "./ai.js";
+import { chooseAiAction, chooseAiResponse, chooseAiRuleDecision } from "./ai.js";
 import { askIndex, TerminalUI } from "./tui.js";
 
 const tui = new TerminalUI();
@@ -9,6 +9,15 @@ const humanId = Number(process.argv[2] ?? 0);
 const game = new Game({ seed: Date.now() }).setup();
 game.player(humanId);
 const overflowPolicy = player => player.id === humanId ? "defer" : "random";
+
+game.onDecision = async request => {
+  if (!request.choices) return null;
+  if (request.playerId !== humanId) return chooseAiRuleDecision(request);
+  tui.console(request.title);
+  request.choices.forEach((choice, index) => tui.console(`${index}: ${choice.label}`));
+  const index = await askIndex(tui, "选择（回车不发动）> ", request.choices.map((_, index) => index));
+  return index == null ? request.defaultValue : request.choices[index].value;
+};
 
 function showState() {
   const red = game.stoneCounts("red"), blue = game.stoneCounts("blue");

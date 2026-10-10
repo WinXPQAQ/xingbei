@@ -1,6 +1,6 @@
 import { CARD_NAMES, ELEMENT_NAMES, FATE_NAMES } from "/src/cards.js";
 import { Game } from "/src/engine.js";
-import { chooseAiAction, chooseAiResponse } from "/src/ai.js";
+import { chooseAiAction, chooseAiResponse, chooseAiRuleDecision } from "/src/ai.js";
 import { compareHandCards } from "/src/cards.js";
 
 import { renderTeams, renderPlayers as paintPlayers, renderHand as paintHand, resizeStage, layoutHand, cardContents, cardLabel } from "/web/render.js";
@@ -58,6 +58,7 @@ function newGame(nextGame = null, nextSeed = Date.now(), id = null) {
   seed = nextSeed;
   sceneId = id;
   game = nextGame || new Game({ seed }).setup();
+  game.onDecision = chooseRuleDecision;
   acceptingAction = false;
   busy = false;
   selectedCard = null;
@@ -212,6 +213,12 @@ function choose(title, choices, { cancel = false, detail = "" } = {}) {
     if (keyboardMode) elements.modalActions.querySelector("button")?.focus();
     return () => { pendingChoice = null; closeModal(); previousFocus?.focus(); };
   });
+}
+
+async function chooseRuleDecision(request) {
+  if (!request.choices) return null;
+  if (request.playerId !== humanId) return chooseAiRuleDecision(request);
+  return choose(request.title, request.choices);
 }
 
 function openModal() {

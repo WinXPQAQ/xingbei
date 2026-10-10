@@ -5,7 +5,7 @@ import { BASIC_EFFECTS } from "./effects.js";
 
 export class Card {
   #location = null;
-  constructor({ id, name, elements = [], fates = [], skills = [] }) {
+  constructor({ id, name, elements = [], fates = [], skills = [], uniqueSkills = [] }) {
     if (!id || !name) throw new RuleError("牌必须有唯一编号和牌名");
     Object.defineProperty(this, "id", { value: id, enumerable: true });
     this.name = name;
@@ -14,6 +14,7 @@ export class Card {
       fates: { value: Object.freeze([...fates]), enumerable: true },
     });
     this.discardVisibility = null;
+    this.uniqueSkills = Object.freeze([...uniqueSkills]);
     this.attachment = null; this.skills = Object.freeze([...skills]);
     this.category = "exclusive"; this.type = null;
   }
@@ -26,13 +27,14 @@ export class Card {
   getTraits(context = {}) {
     return context.game ? context.game.modifyTraits(this, this.getPrintedTraits(), context) : this.getPrintedTraits();
   }
+  hasUniqueSkill(id) { return this.uniqueSkills.includes(id); }
   legalTargets() { return []; }
   canRespond() { return false; }
   resolve() { throw new RuleError(`尚未实现 ${this.name}`); }
   toJSON() {
     return { id: this.id, name: this.name, category: this.category, type: this.type,
       element: this.element, fate: this.fate, elements: this.elements, fates: this.fates,
-      location: this.location, discardVisibility: this.discardVisibility, attachment: this.attachment };
+      uniqueSkills: this.uniqueSkills, location: this.location, discardVisibility: this.discardVisibility, attachment: this.attachment };
   }
 }
 

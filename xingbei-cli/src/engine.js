@@ -4,7 +4,7 @@ import { RuleError } from "./errors.js";
 export { RuleError } from "./errors.js";
 import { Card } from "./card.js";
 import { Player } from "./player.js";
-import { createDefaultHero } from "./hero.js";
+import { createDefaultHero, createHero } from "./hero.js";
 import { BASIC_EFFECTS } from "./effects.js";
 import { TurnFlow } from "./turn.js";
 import { Timing } from "./timing.js";
@@ -31,10 +31,10 @@ export const DamageType = Object.freeze({ ATTACK: "attack", SPELL: "spell" });
 export const DiscardVisibility = Object.freeze({ PUBLIC: "public", HIDDEN: "hidden" });
 
 export class Game {
-  constructor({ names = DEFAULT_NAMES, teams = DEFAULT_TEAMS, seed = Date.now(), shuffleDeck = true } = {}) {
+  constructor({ names = DEFAULT_NAMES, teams = DEFAULT_TEAMS, seed = Date.now(), shuffleDeck = true, heroRules = true, heroIds = null } = {}) {
     if (names.length !== 6 || teams.length !== 6 || teams.filter(team => team === "red").length !== 3 || teams.filter(team => team === "blue").length !== 3) throw new RuleError("当前对局需要6名玩家，红蓝各3人");
     this.random = seededRandom(seed);
-    this.players = names.map((name, seat) => new Player({ id: seat, name, team: teams[seat], hero: createDefaultHero(seat) }));
+    this.players = names.map((name, seat) => new Player({ id: seat, name, team: teams[seat], hero: heroIds ? createHero(heroIds[seat], heroRules) : createDefaultHero(seat, heroRules) }));
     this.teams = { red: { morale: 15, achievements: [], cups: 0 }, blue: { morale: 15, achievements: [], cups: 0 } };
     this.deck = []; this.discard = []; this.field = []; this.outside = [];
     this.cards = new Map();
@@ -157,7 +157,7 @@ export class Game {
 
   *trigger(timing, context, options = {}) {
     yield* this.present();
-    this.timeline.push({ timing, playerId: context.playerId ?? context.targetId, cardId: context.card?.id ?? null });
+    this.timeline.push({ timing, playerId: context.playerId ?? context.targetId, cardId: context.card?.id ?? null, point: context.point ?? null });
     const ownerId = context.playerId ?? context.targetId;
     const effects = ownerId == null ? [] : this.player(ownerId).statuses.map(card => ({ card, player: this.player(ownerId), definition: this.effects.get(card.attachment.effectId) }));
     const skills = this.players.flatMap(player => player.getSkills(context).map(({ skill, sourceCard }) => ({ player, sourceCard, definition: typeof skill === "string" ? this.skillDefinitions.get(skill) : skill })));
@@ -444,21 +444,57 @@ export class Game {
     yield* this.turn.endAction();
   }
 
-  *damageSteps(targetId, amount, { sourceId = null, damageType = DamageType.ATTACK, overflow = "first", useHealing = 0 } = {}) {
+  *offerSkill(playerId, skillId, title) {
+    const value = yield { type: "skillChoice", playerId, skillId, title,
+      choices: [{ value: true, label: "发动" }, { value: false, label: "不发动" }], defaultValue: false };
+    if (value) { this.log.push(`${this.player(playerId).name}发动【${title}】`); this.recordPresentation("skill", { playerId, skillId, label: title }); }
+    return value === true;
+  }
+
+  canPayEnergy(playerId, kind, count = 1) {
+    const energy = this.player(playerId).energy;
+    return (kind === "gem" ? energy.gem : energy.gem + energy.crystal) >= count;
+  }
+  payEnergy(playerId, kind, count = 1) {
+    if (!Number.isInteger(count) || count < 0 || !this.canPayEnergy(playerId, kind, count)) throw new RuleError("个人能量不足");
+    const energy = this.player(playerId).energy;
+    const crystals = kind === "gem" ? 0 : Math.min(count, energy.crystal);
+    energy.crystal -= crystals; energy.gem -= count - crystals;
+    this.recordPresentation("energy", { playerId, gem: -(count - crystals), crystal: -crystals });
+  }
+  getHealingLimit(playerId) { return 2; }
+  changeHealing(playerId, amount, { limit = this.getHealingLimit(playerId) } = {}) {
+    const player = this.player(playerId);
+    const actual = amount > 0 ? Math.max(0, Math.min(amount, limit - player.healing)) : -Math.min(-amount, player.healing);
+    player.healing += actual;
+    if (actual) this.recordPresentation("healing", { playerId, amount: actual });
+    return actual;
+  }
+
+  *damageSteps(targetId, amount, options = {}) {
+    const { sourceId = null, damageType = DamageType.ATTACK, overflow = "first", useHealing, attackContext } = options;
     const target = this.player(targetId);
     if (!Object.values(DamageType).includes(damageType)) throw new RuleError("无效的伤害类别");
-    const context = { targetId, sourceId, amount, damageType };
-    yield* this.trigger(Timing.DAMAGE_BEFORE, context, { overflow });
-    const healing = Math.min(Math.max(0, context.amount), target.healing, Math.max(0, useHealing));
-    target.healing -= healing;
-    if (healing) this.recordPresentation("healing", { playerId: targetId, amount: -healing });
-    context.actual = Math.max(0, context.amount - healing);
+    const context = attackContext ?? { targetId, sourceId, amount, damageType };
+    Object.assign(context, { targetId, sourceId, amount, damageType, point: 3 });
+    yield* this.trigger(Timing.DAMAGE_BEFORE, context, options);
+    context.point = 4; context.healingLimit = Math.min(Math.max(0, context.amount), target.healing);
+    yield* this.trigger(Timing.HEALING_BEFORE, context, options);
+    const requested = useHealing ?? (context.healingLimit ? yield { type: "healing", playerId: targetId, title: "使用治疗抵挡伤害", choices: Array.from({ length: context.healingLimit + 1 }, (_, value) => ({ value, label: `使用${value}治疗` })), defaultValue: 0 } : 0);
+    if (!Number.isInteger(requested) || requested < 0 || requested > context.healingLimit) throw new RuleError("无效的治疗使用数量");
+    this.changeHealing(targetId, -requested);
+    context.actual = Math.max(0, context.amount - requested);
+    context.point = 5;
+    yield* this.trigger(Timing.DAMAGE_ACTUAL_BEFORE, context, options);
+    context.actual = Math.max(0, context.actual);
+    context.point = 6;
+    yield* this.trigger(Timing.DAMAGE_ACTUAL, context, options);
     this.recordPresentation("damage", { playerId: targetId, sourceId, amount: context.actual, damageType: context.damageType });
     yield* this.present();
-    if (context.actual) this.draw(targetId, context.actual, { overflow });
+    if (context.actual) this.draw(targetId, context.actual, { overflow, cause: { type: "damage", sourceId, damageType: context.damageType } });
     yield* this.present();
     this.log.push(`${target.name}承受${context.actual}点${context.damageType === DamageType.SPELL ? "法术" : "攻击"}伤害`);
-    yield* this.trigger(Timing.DAMAGE_AFTER, context, { overflow });
+    yield* this.trigger(Timing.DAMAGE_AFTER, context, options);
     return context.actual;
   }
   damage(targetId, amount, options = {}) { return resolveSync(this.damageSteps(targetId, amount, options), () => null); }
@@ -493,7 +529,7 @@ export class Game {
   }
 
   automaticDecision(request, options = {}) {
-    if (request.type !== "response") return options.choose?.(request) ?? null;
+    if (request.type !== "response") return options.choose?.(request) ?? options.skillChoices?.[request.skillId] ?? request.defaultValue ?? null;
     const { target, valid } = request;
     const configured = options.responses?.[target.id];
     let decision = typeof configured === "number" ? { index: configured } : configured;
@@ -521,7 +557,7 @@ export class Game {
     if (request.type === "response") return options.chooseResponse?.(request) ?? this.automaticDecision(request, options);
     if (request.type === "target") return options.chooseTarget?.(request);
     if (request.type === "overflow") return options.resolveOverflow?.(request);
-    return options.choose?.(request);
+    return options.choose?.(request) ?? this.onDecision?.(request) ?? this.automaticDecision(request, options);
   }
 
   nearestOpponent(fromId, excluded = new Set()) {
@@ -550,7 +586,7 @@ export class Game {
     return resolveAsync(this.turn.start(playerId, options), request => {
       if (request.type === "weakness") return decisions.chooseWeakness?.(request) ?? "skip";
       if (request.type === "overflow") return decisions.resolveOverflow?.(request);
-      return decisions.choose?.(request);
+      return decisions.choose?.(request) ?? this.onDecision?.(request) ?? this.automaticDecision(request, options);
     }, decisions.onPresentation ?? this.onPresentation);
   }
   beginAction(playerId, actionType) { return resolveSync(this.turn.beginAction(playerId, actionType), () => null); }

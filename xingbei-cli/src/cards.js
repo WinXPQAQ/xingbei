@@ -1,3 +1,4 @@
+import { UNIQUE_SKILL_SPEC } from "./unique-skills.js";
 import { createBasicCard } from "./card.js";
 export { Card, BasicCard, AttackCard, SpellCard, PoisonCard, ShieldCard, WeaknessCard, HolyLightCard, MagicBulletCard, ExclusiveCard, createBasicCard } from "./card.js";
 
@@ -33,7 +34,7 @@ export function createDeck() {
   const deck = [];
   let id = 1;
   for (const [element, fate, name, count] of DECK_SPEC) {
-    for (let i = 0; i < count; i++) deck.push(createBasicCard({ id: `c${id++}`, name, element, fate }));
+    for (let i = 0; i < count; i++) deck.push(createBasicCard({ id: `c${id++}`, name, element, fate, uniqueSkills: UNIQUE_SKILL_SPEC[`${name}:${element}:${fate}`]?.[i] ?? [] }));
   }
   return deck;
 }

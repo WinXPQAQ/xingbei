@@ -157,3 +157,6 @@ Game.enablePresentation(callback)记录结构化事件与独立展示快照，pr
 `DiscardVisibility.PUBLIC` / `DiscardVisibility.HIDDEN`分别为public / hidden。moveCard和discardCard接受visibility；牌在弃牌堆期间保存discardVisibility，离开弃牌堆清除该值。爆牌统一暗弃，动画只显示牌背，日志只记数量；无法行动展示重摸仍为明弃。它们共用弃牌堆，不新增区域；开发状态导出包含实际牌数据，属于调试接口，不是联网游戏的隐藏信息过滤接口。
 
 提交后playCard将攻击、响应攻击、魔弹和圣光从手牌移到field，并把牌ID登记到当前结算的resolutionCards。整条攻击/魔弹链完成（含响应、命中、伤害和爆牌选择）后，同一结算仍在field的牌一起明弃；不会收走其他技能放在场上的牌。中毒/圣盾/虚弱也先进入field，再移到目标status，结算清理不弃置已挂载的牌。取消待提交选牌不会移牌；场上的牌尚不在弃牌堆，因此不会在结算中被洗回牌库。
+
+
+六英雄工程Goal 1（狂战士）已实施：独有技逐牌还原、六判定时点、完整狂战士技能及响应/治疗决策。40项Node与两视口17项英雄浏览器检查通过；范围和限制见[英雄实施记录](hero-implementation.md)。历史基础规则场景显式关闭英雄规则，正式页面启用已实现技能。各goal仅本地commit，不push。

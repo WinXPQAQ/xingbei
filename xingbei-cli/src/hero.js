@@ -1,3 +1,4 @@
+import { berserkerSkills } from "./heroes/berserker.js";
 // Fixed definitions are shared; mutable state belongs to each hero instance.
 export class Hero {
   constructor({ id, name, portrait = id, skills = [] }) {
@@ -7,12 +8,16 @@ export class Hero {
     this.canActWithSkills = false;
   }
   getSkills() { return [...this.skills]; }
-  toJSON() { return { id: this.id, name: this.name, portrait: this.portrait, state: this.state, canActWithSkills: this.canActWithSkills }; }
+  toJSON() { return { id: this.id, name: this.name, portrait: this.portrait, state: this.state, implemented: this.skills.length > 0, skillNames: this.skills.map(skill => skill.name ?? skill), canActWithSkills: this.canActWithSkills }; }
 }
 const definitions = [
   ["berserker", "狂战士"], ["magicalGirl", "魔法少女"], ["bard", "吟游诗人"],
   ["swordEmperor", "剑帝"], ["priest", "神官"], ["assassin", "暗杀者"],
 ];
-export function createDefaultHero(seat) {
-  const [id, name] = definitions[seat]; return new Hero({ id, name });
+export const HERO_DEFINITIONS = { berserker: { name: "狂战士", skills: berserkerSkills } };
+export function createHero(id, enabled = true) {
+  const definition = HERO_DEFINITIONS[id];
+  const name = definition?.name ?? definitions.find(entry => entry[0] === id)?.[1] ?? id;
+  return new Hero({ id, name, skills: enabled ? definition?.skills ?? [] : [] });
 }
+export function createDefaultHero(seat, enabled = true) { return createHero(definitions[seat][0], enabled); }

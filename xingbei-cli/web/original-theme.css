@@ -48,3 +48,6 @@ button:disabled { opacity: .4; }
 
 .hp > span { background: url('/theme/hp-xingBei1.png') center/100% 100%; border-radius: 2px; filter: brightness(.8) contrast(1.5); }
 .hp > .lost { background-image: url('/theme/hp-xingBei4.png'); filter: grayscale(1); }
+
+/* Original layout/default/layout.css .card > .range, scoped to new cards. */
+.card > .range { position: absolute; right: 5px; bottom: 5px; font-size: 17px; text-align: right; text-shadow: rgba(255,255,255,.95) 0 0 1px, rgba(255,255,255,.85) 0 0 2px, rgba(255,255,255,.75) 0 0 3px, rgba(213,194,179,.6) 0 0 5px, rgba(0,0,0,.3) 0 1px 1px; pointer-events: none; }

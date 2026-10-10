@@ -8,7 +8,7 @@ const take = (game, name) => game.deck.find(card => card.name === name);
 const hand = (game, playerId, name) => game.moveCard(take(game, name).id, { zone: "hand", playerId });
 
 test("牌继承、唯一登记、六区域移动与专属牌授予技能遵循实体生命周期", () => {
-  const game = new Game({ shuffleDeck: false });
+  const game = new Game({ heroRules: false, shuffleDeck: false });
   const attack = take(game, "waterStrike"), spell = take(game, "poison");
   assert.ok(attack instanceof Card && attack instanceof BasicCard && attack instanceof AttackCard);
   assert.ok(spell instanceof SpellCard);
@@ -46,7 +46,7 @@ test("牌继承、唯一登记、六区域移动与专属牌授予技能遵循�
 });
 
 test("有效属性查询支持双属性、空命格和英雄覆盖，原属性及其他用途保持独立", async () => {
-  const game = new Game({ shuffleDeck: false });
+  const game = new Game({ heroRules: false, shuffleDeck: false });
   const attack = take(game, "waterStrike"), response = take(game, "fireStrike");
   const dual = new ExclusiveCard({ id: "dual", name: "dualElement", elements: ["water", "fire"] });
   game.registerCard(dual, { zone: "outside" });
@@ -66,7 +66,7 @@ test("有效属性查询支持双属性、空命格和英雄覆盖，原属性�
   assert.deepEqual(response.getPrintedTraits(), printed);
   assert.deepEqual(response.getTraits({ game, playerId: 1, purpose: "cost" }), printed);
   assert.deepEqual(response.getTraits({ game, playerId: 1, purpose: "response" }), { elements: ["water"], fates: ["S"] });
-  const chain = new Game({ shuffleDeck: false });
+  const chain = new Game({ heroRules: false, shuffleDeck: false });
   chain.registerSkill("heldFire", {
     filter: context => context.playerId === 0 && context.card.location.zone === "hand",
     modifyTraits: (_context, traits) => ({ ...traits, elements: ["fire"] }),
@@ -84,7 +84,7 @@ test("有效属性查询支持双属性、空命格和英雄覆盖，原属性�
 });
 
 test("多个中毒是独立基础效果，先于虚弱逐牌处理；其他基础效果默认不叠加", async () => {
-  const game = new Game({ shuffleDeck: false });
+  const game = new Game({ heroRules: false, shuffleDeck: false });
   const poisons = game.deck.filter(card => card.name === "poison").slice(0, 2);
   for (const card of poisons) game.attachCard(card.id, 0, { effectId: "poison", sourcePlayerId: 1 });
   const weakness = take(game, "weakness");
@@ -101,14 +101,14 @@ test("多个中毒是独立基础效果，先于虚弱逐牌处理；其他基�
     return "skip";
   } });
   game.endTurn();
-  assert.deepEqual(game.timeline.filter(event => ![Timing.DAMAGE_BEFORE, Timing.DAMAGE_AFTER].includes(event.timing)).map(event => event.timing),
+  assert.deepEqual(game.timeline.filter(event => ![Timing.DAMAGE_BEFORE, Timing.HEALING_BEFORE, Timing.DAMAGE_ACTUAL_BEFORE, Timing.DAMAGE_ACTUAL, Timing.DAMAGE_AFTER].includes(event.timing)).map(event => event.timing),
     [Timing.TURN_START, Timing.ACTION_PHASE_BEFORE, Timing.ACTION_PHASE_SKIPPED, Timing.TURN_END]);
   assert.equal(game.assertCardLocations(), true);
 });
 
 test("回合明确区分普通和特殊路线，攻击/法术行动结束与回合结束各自触发", async () => {
   for (const route of ["attack", "spell", "special"]) {
-    const game = new Game({ shuffleDeck: false });
+    const game = new Game({ heroRules: false, shuffleDeck: false });
     game.registerSkill("startHook", { timings: [Timing.TURN_START], async resolve({ player }) { await Promise.resolve(); player.hero.state.started = true; } });
     game.player(0).hero.skills.push("startHook");
     await game.beginTurn(0);
@@ -138,7 +138,7 @@ test("回合明确区分普通和特殊路线，攻击/法术行动结束与回�
 
 test("呈现检查点不改变同步/异步结算，快照隔离后续牌移动并先播放再询问响应", async () => {
   const prepare = () => {
-    const game = new Game({ shuffleDeck: false, seed: 23 });
+    const game = new Game({ heroRules: false, shuffleDeck: false, seed: 23 });
     hand(game, 0, "waterStrike"); hand(game, 1, "waterStrike"); hand(game, 3, "holyLight");
     return game;
   };
@@ -170,7 +170,7 @@ test("呈现检查点不改变同步/异步结算，快照隔离后续牌移动�
 });
 
 test("魔弹与多个中毒呈现顺序来自实际结算，伤害摸牌在爆牌弃置前", async () => {
-  const game = new Game({ shuffleDeck: false });
+  const game = new Game({ heroRules: false, shuffleDeck: false });
   hand(game, 0, "magicBullet"); hand(game, 1, "magicBullet");
   const events = [];
   game.enablePresentation(batch => events.push(...batch));
@@ -190,7 +190,7 @@ test("魔弹与多个中毒呈现顺序来自实际结算，伤害摸牌在爆�
 
 test("无牌也等待响应，攻击链牌留场至结算结束；伤害类别与暗弃可见性供规则查询", async () => {
   for (const [name, damageType] of [["waterStrike", "attack"], ["magicBullet", "spell"]]) {
-    const game = new Game({ shuffleDeck: false });
+    const game = new Game({ heroRules: false, shuffleDeck: false });
     const used = hand(game, 0, name), events = [], contexts = [];
     game.enablePresentation(batch => events.push(...batch));
     game.registerSkill("damageObserver", { timings: [Timing.DAMAGE_BEFORE, Timing.DAMAGE_AFTER], resolve: ({ context }) => contexts.push(context.damageType) });

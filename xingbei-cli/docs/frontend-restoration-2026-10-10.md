@@ -229,3 +229,6 @@ ORIGINAL_EVIDENCE=xingbei-cli/artifacts/frontend/restoration/2026-10-10/six-orig
 按用户最新指示，将响应放弃入口统一改为“不响应”，同步当前接口说明和浏览器验证定位，交互与规则不变。本次用户已授权将动画工程及后续修正一起commit并直接push到main，覆盖此前仅保留工作区的要求。原项目、已有根目录package-lock.json及本地证据目录保留原状，不纳入本次代码提交。
 
 本次37项Node测试和53项两视口响应/伤害/暗弃专项检查通过，控制台与素材错误0；证据no-response-label/。服务TEST_MODE显示v0.3.3，Tailscale入口HTTP 200。提交沿用此前已记录的动画与几何验证，不把本次文字修正的专项结果描述为新的全量视觉验收。
+
+
+六英雄工程Goal 1（狂战士）已实施：独有技逐牌还原、六判定时点、完整狂战士技能及响应/治疗决策。40项Node与两视口17项英雄浏览器检查通过；范围和限制见[英雄实施记录](hero-implementation.md)。历史基础规则场景显式关闭英雄规则，正式页面启用已实现技能。各goal仅本地commit，不push。
