@@ -141,3 +141,19 @@ turnStart
 玩家选择圣光后需确认；攻击牌/魔弹点击目标才提交，期间可换牌。浏览器和终端均在拿到最终决定后交给规则结算，牌选择不会直接改变区域。
 
 当前实际英雄技能与具体专属牌规则尚未迁移。新基类、登记、动态技能与时点为真实扩展接口，不能把头像或测试用技能描述为已完成英雄。
+
+
+## 可选呈现检查点（v0.3.0）
+
+Game.enablePresentation(callback)记录结构化事件与独立展示快照，present()在结算/决策边界发出presentation请求。resolveAsync等待onPresentation回调，resolveSync只消费，不改变规则结果。终端默认关闭；网页按快照播放，Session取消终止旧迭代器。绘制、动画和时间控制均在web层，不把DOM或平台依赖加入规则引擎。详细事件和生命周期见 [动画说明](animation-restoration.md)。
+
+
+## 响应、伤害与弃牌（v0.3.1）
+
+攻击和魔弹总是发出response决策，即使valid为空。人类玩家始终使用相同响应标题与“不响应”按钮，点击“不响应”才放弃；无合法牌时也是同一界面，由统一合法性渲染禁用手牌，不按合法牌数量分支。选牌、确认或点目标的交互保持不变，AI无牌则返回null。
+
+`DamageType.ATTACK` / `DamageType.SPELL`分别为attack / spell。damageSteps接收damageType，damageBefore / damageAfter共享的context携带damageType，呈现事件也携带它；攻击使用attack，魔弹和中毒使用spell。技能可按context.damageType筛选或修改伤害类别，显示读取同一个字段。
+
+`DiscardVisibility.PUBLIC` / `DiscardVisibility.HIDDEN`分别为public / hidden。moveCard和discardCard接受visibility；牌在弃牌堆期间保存discardVisibility，离开弃牌堆清除该值。爆牌统一暗弃，动画只显示牌背，日志只记数量；无法行动展示重摸仍为明弃。它们共用弃牌堆，不新增区域；开发状态导出包含实际牌数据，属于调试接口，不是联网游戏的隐藏信息过滤接口。
+
+提交后playCard将攻击、响应攻击、魔弹和圣光从手牌移到field，并把牌ID登记到当前结算的resolutionCards。整条攻击/魔弹链完成（含响应、命中、伤害和爆牌选择）后，同一结算仍在field的牌一起明弃；不会收走其他技能放在场上的牌。中毒/圣盾/虚弱也先进入field，再移到目标status，结算清理不弃置已挂载的牌。取消待提交选牌不会移牌；场上的牌尚不在弃牌堆，因此不会在结算中被洗回牌库。

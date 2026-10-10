@@ -13,6 +13,7 @@ export class Card {
       elements: { value: Object.freeze([...elements]), enumerable: true },
       fates: { value: Object.freeze([...fates]), enumerable: true },
     });
+    this.discardVisibility = null;
     this.attachment = null; this.skills = Object.freeze([...skills]);
     this.category = "exclusive"; this.type = null;
   }
@@ -31,7 +32,7 @@ export class Card {
   toJSON() {
     return { id: this.id, name: this.name, category: this.category, type: this.type,
       element: this.element, fate: this.fate, elements: this.elements, fates: this.fates,
-      location: this.location, attachment: this.attachment };
+      location: this.location, discardVisibility: this.discardVisibility, attachment: this.attachment };
   }
 }
 
@@ -64,7 +65,8 @@ class EffectCard extends SpellCard {
     Object.defineProperty(this, "effectDefinition", { value: effectDefinition });
   }
   legalTargets({ game }) { return game.players.filter(player => game.canAttach(this, player.id, this.effectDefinition.id)).map(player => player.id); }
-  resolve({ game, actor, targetId }) {
+  resolve({ game, actor, targetId, options }) {
+    game.playCard(actor, actor.hand.indexOf(this), options);
     game.attachCard(this.id, targetId, { effectId: this.effectDefinition.id, sourcePlayerId: actor.id });
   }
 }

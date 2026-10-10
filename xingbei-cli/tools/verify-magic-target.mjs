@@ -12,6 +12,11 @@ await writeFile(resolve(output, "run.json"), JSON.stringify({ base, started: new
 const browser = await chromium.launch({ headless: true, args: process.env.BROWSER_NO_SANDBOX === "1" ? ["--no-sandbox"] : [], ...(process.env.BROWSER_EXECUTABLE ? { executablePath: process.env.BROWSER_EXECUTABLE } : {}) });
 const checks = [], issues = [];
 function check(label, value) { assert.ok(value, label); checks.push(label); }
+async function settle(page) {
+  await page.waitForFunction(() => !window.xingbeiDev.animations().playing && window.xingbeiDev.animations().active === 0, null, { timeout: 30000 });
+  await page.evaluate(async () => { await Promise.all(document.getAnimations().filter(animation => animation.playState === "running").map(animation => animation.finished.catch(() => {}))); });
+}
+
 try {
   for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) {
     const tag = `${viewport.width}x${viewport.height}`;
@@ -21,7 +26,7 @@ try {
     page.on("response", response => { if (response.status() >= 400) issues.push(response.url()); });
     const state = () => page.evaluate(() => window.xingbeiDev.exportState());
     const card = index => page.locator("#hand .card").nth(index);
-    const select = locator => viewport.width < 900 ? locator.tap() : locator.click();
+    const select = async locator => { await (viewport.width < 900 ? locator.tap() : locator.click()); await page.evaluate(async () => { await Promise.all(document.querySelector("#hand").getAnimations({ subtree: true }).map(animation => animation.finished.catch(() => {}))); }); };
     const target = id => page.locator(`.player.targetable[data-player="${id}"]`);
     async function start(scene) {
       await page.goto(`${base}/web/dev.html?scene=${scene}`, { waitUntil: "networkidle" });
@@ -53,7 +58,7 @@ try {
     await page.waitForFunction(() => window.xingbeiDev.exportState().current === 1);
     check(`${tag}: 点击唯一目标结算且双击仅出一张`, (await state()).game.discard.length === 1 && (await state()).game.players[1].hand.length === 2);
     const ownership = await beginLinked();
-    check(`${tag}: 蓝三实际传到玩家时才等待响应`, (await state()).game.discard.filter(item => item.name === "magicBullet").map(item => ownership.find(original => original.id === item.id).name).join(",") === "蓝三");
+    check(`${tag}: 蓝三实际传到玩家时才等待响应`, (await state()).game.field.filter(item => item.name === "magicBullet").map(item => ownership.find(original => original.id === item.id).name).join(",") === "蓝三");
     await select(card(0));
     check(`${tag}: 传递仅高亮蓝一且牌未消耗`, JSON.stringify((await state()).legalTargets) === "[1]" && (await state()).game.players[0].hand[0].name === "magicBullet");
     await page.screenshot({ path: resolve(output, `relay-${tag}.png`) });
@@ -69,22 +74,22 @@ try {
     check(`${tag}: 魔弹圣光可取消且不消耗牌`, (await state()).selectedCard === null && JSON.stringify((await state()).game) === JSON.stringify(beforeLight));
     await select(card(1));
     await page.getByRole("button", { name: "确认", exact: true }).evaluate(button => { button.click(); button.click(); });
-    await page.waitForFunction(() => window.xingbeiDev.exportState().pendingChoice === null);
+    await page.waitForFunction(() => window.xingbeiDev.exportState().pendingChoice === null); await settle(page);
     check(`${tag}: 魔弹圣光确认后才抵消`, (await state()).game.players[0].hand.length === 1 && (await state()).game.players[0].hand[0].name === "magicBullet" && (await state()).game.players[1].hand.length === 1);
     const relayOwnership = await beginLinked(); await select(card(0));
     await target(1).evaluate(node => { node.click(); node.click(); });
-    await page.waitForFunction(() => window.xingbeiDev.exportState().pendingChoice === null);
+    await page.waitForFunction(() => window.xingbeiDev.exportState().pendingChoice === null); await settle(page);
     check(`${tag}: 六人完整传递刷新后命中蓝三`, (await state()).game.players[5].hand.length === 6 && (await state()).game.discard.filter(item => item.name === "magicBullet").map(item => relayOwnership.find(original => original.id === item.id).name).join(",") === "蓝三,红一,蓝一,红二,蓝二,红三");
     check(`${tag}: 结算无目标和选牌残留`, (await state()).selectedCard === null && (await state()).legalTargets.length === 0);
     await beginLinked(); await select(card(0)); await page.locator("#dev-reset").evaluate(button => button.click());
-    await page.waitForTimeout(60);
+    await page.waitForTimeout(60); await settle(page);
     check(`${tag}: 传递目标等待重置无串局`, (await state()).game.discard.length === 0 && (await state()).pendingChoice === null && (await state()).current === 5);
     await start("magic"); await page.locator("#dev-step").evaluate(button => button.click());
     await page.waitForFunction(() => window.xingbeiDev.exportState().pendingChoice?.type === "hand");
     await select(card(0));
     check(`${tag}: 六人传递跳过本轮已参与的对手`, JSON.stringify((await state()).legalTargets) === "[1]");
-    await page.getByRole("button", { name: "不使用", exact: true }).click();
-    await page.waitForFunction(() => window.xingbeiDev.exportState().pendingChoice === null);
+    await page.getByRole("button", { name: "不响应", exact: true }).click();
+    await page.waitForFunction(() => window.xingbeiDev.exportState().pendingChoice === null); await settle(page);
     check(`${tag}: 传递选人时仍可放弃`, (await state()).game.players[0].hand.some(item => item.name === "magicBullet"));
     await page.close();
   }

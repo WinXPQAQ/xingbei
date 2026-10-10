@@ -13,8 +13,14 @@ const browser = await chromium.launch({ headless: true, args: process.env.BROWSE
 const issues = [], checks = [], captures = [];
 const viewports = [{ width: 1440, height: 900 }, { width: 390, height: 844 }];
 function check(label, value) { assert.ok(value, label); checks.push(label); }
+async function settle(page) {
+  await page.waitForFunction(() => !window.xingbeiDev.animations().playing && window.xingbeiDev.animations().active === 0, null, { timeout: 30000 });
+  await page.evaluate(async () => { await Promise.all(document.getAnimations().filter(animation => animation.playState === "running").map(animation => animation.finished.catch(() => {}))); });
+}
+
 async function state(page) { return page.evaluate(() => window.xingbeiDev.exportState()); }
 async function readyForScreenshot(page) {
+  await page.waitForFunction(() => !window.xingbeiDev.animations().playing && window.xingbeiDev.animations().active === 0);
   await page.evaluate(async () => {
     await document.fonts.ready;
     await Promise.all([...document.images].map(image => image.decode()));
@@ -43,7 +49,7 @@ try {
     async function scene(id) {
       await page.goto(`${base}/web/dev.html?scene=${id}`);
       await page.waitForFunction(() => !!window.xingbeiDev);
-      await page.waitForTimeout(60);
+      await page.waitForTimeout(60); await settle(page);
       await page.locator(".dev-tools").evaluate(toolbar => { toolbar.style.visibility = "hidden"; });
     }
     await scene("opening");
@@ -63,7 +69,7 @@ try {
       }
     }
     await page.locator("#dev-reset").evaluate(button => button.click());
-    await page.waitForTimeout(60);
+    await page.waitForTimeout(60); await settle(page);
     check(`${tag}: 固定开局可重复`, JSON.stringify((await state(page)).game) === JSON.stringify(initial.game));
     await page.locator("#toggle-log").click();
     check(`${tag}: 日志可打开`, await page.locator("#log-panel").isVisible());
@@ -103,7 +109,7 @@ try {
     await page.locator(".player.untargetable").first().click();
     check(`${tag}: 非法目标不会提交`, (await state(page)).phase === "target");
     await page.locator("#dev-scene").evaluate(select => { select.value = "opening"; select.dispatchEvent(new Event("change", { bubbles: true })); });
-    await page.waitForTimeout(60);
+    await page.waitForTimeout(60); await settle(page);
     check(`${tag}: 等待目标时重置无串局`, (await state(page)).phase === "action" && (await state(page)).selectedCard === null);
     await scene("unusable");
     await page.locator("#hand .card.unusable").first().click();
@@ -165,13 +171,15 @@ try {
     await page.locator("#hand").getByRole("button", { name: /地裂斩/ }).click();
     await page.locator('.player.targetable[data-player="2"]').click();
     // Further counterattacks can ask the human again; choosing not to respond ends that branch.
-    for (let attempt = 0; attempt < 12; attempt++) {
+    for (let attempt = 0; attempt < 600; attempt++) {
       await page.waitForTimeout(50);
       const snapshot = await state(page);
-      if (!snapshot.pendingChoice) break;
-      const decline = page.getByRole("button", { name: "不使用", exact: true });
+      if (snapshot.current === 2 && !snapshot.pendingChoice) break;
+      if (!snapshot.pendingChoice) continue;
+      const decline = page.getByRole("button", { name: "不响应", exact: true });
       if (await decline.isVisible()) await decline.click();
     }
+    await settle(page);
     check(`${tag}: 应战链结算`, !(await state(page)).pendingChoice && (await state(page)).game.discard.some(card => card.name === "earthStrike"));
     await scene("magic");
     await page.locator("#dev-step").evaluate(button => button.click());
@@ -179,7 +187,7 @@ try {
     await capture(page, `magic-${tag}`, viewport);
     await page.locator("#hand").getByRole("button", { name: /圣光/ }).click();
     await page.getByRole("button", { name: "确认", exact: true }).click();
-    await page.waitForTimeout(80);
+    await settle(page);
     check(`${tag}: 魔弹响应结算`, (await state(page)).current === 0 && !(await state(page)).pendingChoice);
     await scene("statuses");
     await capture(page, `statuses-${tag}`, viewport);
@@ -202,13 +210,13 @@ try {
     check(`${tag}: 爆牌结算`, (await state(page)).game.players[0].hand.length === 6 && (await state(page)).game.teams.red.morale === 13);
     await scene("overflow");
     await page.locator("#dev-scene").evaluate(select => { select.value = "opening"; select.dispatchEvent(new Event("change", { bubbles: true })); });
-    await page.waitForTimeout(60);
+    await page.waitForTimeout(60); await settle(page);
     check(`${tag}: 弹窗等待时重置无残留`, await page.locator("#modal").isHidden() && (await state(page)).game.players[0].hand.length === 4);
     await scene("purchase");
     await page.locator("#buy").click();
     await page.waitForFunction(() => window.xingbeiDev.exportState().current === 1);
     await page.evaluate(() => { window.xingbeiDev.step(); document.querySelector("#dev-scene").value = "opening"; window.xingbeiDev.reset(); });
-    await page.waitForTimeout(80);
+    await settle(page);
     check(`${tag}: AI等待时重置无串局`, (await state(page)).current === 0 && (await state(page)).game.players[0].hand.length === 4);
     await scene("end");
     await page.locator("#modal:not(.hidden)").waitFor();
@@ -219,15 +227,15 @@ try {
     await scene("purchase");
     await page.locator("#buy").click();
     await page.waitForFunction(() => window.xingbeiDev.exportState().current === 1);
-    await page.waitForTimeout(60); // Allow the paused turn gate to install after current changes.
+    await page.waitForTimeout(60); await settle(page); // Allow the paused turn gate to install after current changes.
     await page.locator("#dev-step").evaluate(button => button.click());
     // Six-player AI can legally reach the human through an attack/magic chain.
     // Complete that response before checking the next paused turn boundary.
-    for (let attempt = 0; attempt < 12; attempt++) {
-      await page.waitForTimeout(80);
+    for (let attempt = 0; attempt < 600; attempt++) {
+      await settle(page);
       const snapshot = await state(page);
       if (snapshot.current === 2) break;
-      const decline = page.getByRole("button", { name: "不使用", exact: true });
+      const decline = page.getByRole("button", { name: "不响应", exact: true });
       if (await decline.isVisible()) await decline.click();
       else if (snapshot.pendingChoice?.type === "hand") {
         for (const index of snapshot.pendingChoice.valid.slice(0, snapshot.pendingChoice.count)) await page.locator("#hand .card").nth(index).click();

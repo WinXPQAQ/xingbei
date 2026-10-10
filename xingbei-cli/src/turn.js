@@ -7,6 +7,7 @@ export class TurnFlow {
     if (this.state) throw new RuleError("上一回合尚未结束");
     const context = { playerId, skipped: false, route: null, actionType: null, completed: false, phase: Timing.TURN_START };
     this.state = context;
+    this.game.recordPresentation("turn", { playerId });
     yield* this.game.trigger(Timing.TURN_START, context, options);
     context.phase = Timing.ACTION_PHASE_BEFORE;
     yield* this.game.trigger(Timing.ACTION_PHASE_BEFORE, context, options);
@@ -31,6 +32,11 @@ export class TurnFlow {
   }
   *endAction() {
     const state = this.state;
+    yield* this.game.present();
+    if (!state || !state.completed) {
+      this.game.recordPresentation("clear");
+      yield* this.game.present();
+    }
     if (!state || state.completed || !state.actionType) return;
     state.phase = { attack: Timing.ATTACK_ACTION_END, spell: Timing.SPELL_ACTION_END, special: Timing.SPECIAL_ACTION_END }[state.actionType];
     yield* this.game.trigger(state.phase, state);

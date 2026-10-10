@@ -49,6 +49,7 @@ function randomItem(game, items) {
 }
 
 export function chooseAiResponse(game, context) {
+  if (!context.valid.length) return null;
   const picked = randomItem(game, context.valid);
   if (!picked) return null;
   const targetId = picked.card.type === "attack" ? randomItem(game, context.counterTargets).id : context.nextTarget?.id ?? null;

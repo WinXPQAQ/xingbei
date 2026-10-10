@@ -4,6 +4,7 @@ import { chooseAiAction, chooseAiResponse } from "/src/ai.js";
 import { compareHandCards } from "/src/cards.js";
 
 import { renderTeams, renderPlayers as paintPlayers, renderHand as paintHand, resizeStage, layoutHand, cardContents, cardLabel } from "/web/render.js";
+import { AnimationDirector, presentationView, preloadAnimationAssets } from "/web/animation.js";
 import { Session, Cancelled } from "/web/session.js";
 
 const humanId = 0;
@@ -20,6 +21,10 @@ $("#arena").append(elements.modal);
 elements.modal.append(elements.modalActions);
 
 let game;
+let director = null;
+let shownGame = null;
+let presenting = false;
+let animationMode = new URLSearchParams(location.search).get("motion") === "off" ? "off" : "normal";
 let acceptingAction = false;
 let selectedCard = null;
 let actionLog = [];
@@ -47,7 +52,9 @@ function launch(task) {
 
 function newGame(nextGame = null, nextSeed = Date.now(), id = null) {
   session.cancel();
+  director?.dispose();
   session = new Session();
+  shownGame = null; presenting = false;
   seed = nextSeed;
   sceneId = id;
   game = nextGame || new Game({ seed }).setup();
@@ -68,22 +75,69 @@ function newGame(nextGame = null, nextSeed = Date.now(), id = null) {
   elements.hint.textContent = "准备行动";
   render();
   const active = session;
-  launch(() => runTurns(active));
+  director = new AnimationDirector($("#arena"), active, { mode: animationMode });
+  const currentDirector = director;
+  presenting = true; render();
+  game.enablePresentation(async batch => {
+    active.assert(); presenting = true; render();
+    try {
+      for (const event of batch) {
+        active.assert();
+        const playerName = event.playerId != null ? game.player(event.playerId).name : "";
+        if (event.type === "move" && event.reason === "play") elements.hint.textContent = `${game.player(event.from.playerId).name}使用【${CARD_NAMES[event.card.name]}】`;
+        if (event.type === "draw") elements.hint.textContent = `${playerName}摸${event.cards.length}张牌`;
+        if (event.type === "relay") elements.hint.textContent = `${game.player(event.sourceId).name}向${playerName}传递【魔弹】`;
+        if (event.type === "damage") elements.hint.textContent = `${playerName}承受${event.amount}点${event.damageType === "spell" ? "法术" : "攻击"}伤害`;
+        if (event.type === "miss") elements.hint.textContent = `${playerName}：未命中`;
+        if (currentDirector.instant && ["damage", "miss", "winner"].includes(event.type)) {
+          const name = event.playerId != null ? game.player(event.playerId).name : "";
+          notify(event.type === "damage" ? `${name}承受${event.amount}点${event.damageType === "spell" ? "法术" : "攻击"}伤害` : event.type === "miss" ? `${name}：未命中` : `${event.team === "red" ? "红方" : "蓝方"}获胜`);
+        }
+        await currentDirector.show(event, snapshot => { active.assert(); shownGame = presentationView(snapshot, game); render(); });
+      }
+    } finally { if (session === active) { presenting = false; render(); } }
+  });
+  launch(async () => {
+    active.assert();
+    if (!nextGame) {
+      for (const player of game.players) {
+        game.recordPresentation("draw", { playerId: player.id, cards: player.hand.map(card => card.toJSON()) });
+        const view = game.presentationEvents.at(-1).view;
+        for (const later of view.players) if (later.id > player.id) later.hand = [];
+        view.deckCount = game.cards.size - view.players.reduce((total, member) => total + member.hand.length, 0);
+      }
+      // Start from empty hands visually; actual setup is already complete.
+      const snapshot = game.presentationEvents[0]?.view;
+      if (snapshot) {
+        const empty = structuredClone(snapshot);
+        for (const player of empty.players) player.hand = [];
+        empty.deckCount = game.cards.size;
+        shownGame = presentationView(empty, game); render();
+        await preloadAnimationAssets(); await document.fonts.ready; active.assert();
+        await game.onPresentation(game.presentationEvents.splice(0));
+      }
+    }
+    await preloadAnimationAssets(); await document.fonts.ready; active.assert();
+    presenting = false; render();
+    await runTurns(active);
+  });
 }
 
 function render() {
-  renderTeams(game, { red: elements.red, blue: elements.blue }, humanId);
-  elements.deck.textContent = game.deck.length;
-  elements.discard.textContent = game.discard.length;
-  elements.turn.textContent = game.player(game.current).name;
-  elements.handCount.textContent = `${game.player(humanId).hand.length} / ${game.player(humanId).handLimit}`;
-  renderPlayers();
-  paintHand(game, elements.hand, humanId, {
-    acceptingAction: acceptingAction || !!handChoice, selectedCard, locked: busy && !targetChoice && !handChoice, handChoice,
+  const view = shownGame || game;
+  renderTeams(view, { red: elements.red, blue: elements.blue }, humanId);
+  elements.deck.textContent = view.deck.length;
+  elements.discard.textContent = view.discard.length;
+  elements.turn.textContent = view.player(view.current).name;
+  elements.handCount.textContent = `${view.player(humanId).hand.length} / ${view.player(humanId).handLimit}`;
+  renderPlayers(view);
+  paintHand(view, elements.hand, humanId, {
+    acceptingAction: !presenting && (acceptingAction || !!handChoice), selectedCard, locked: presenting || (busy && !targetChoice && !handChoice), handChoice,
     onSelect: index => handChoice ? handChoice.select(index) : launch(() => selectCard(index)),
   });
   const player = game.player(humanId), stones = game.stoneCounts(player.team);
-  const locked = !acceptingAction || busy || !!targetChoice;
+  $("#sort-hand").disabled = presenting || busy || !!targetChoice || !!pendingChoice;
+  const locked = presenting || !acceptingAction || busy || !!targetChoice;
   elements.buy.disabled = locked || !game.canDrawSpecial(humanId);
   elements.synth.disabled = locked || !game.canDrawSpecial(humanId) || stones.total < 3;
   elements.refine.disabled = locked || stones.total < 1 || player.energy.gem + player.energy.crystal >= 3;
@@ -95,12 +149,13 @@ function render() {
   $(".center-hint").hidden = !!pendingChoice && pendingChoice.type !== "hand";
 }
 
-function renderPlayers() {
-  paintPlayers(game, elements.players, humanId, targetChoice?.targets);
-  if (targetChoice) {
+function renderPlayers(view = shownGame || game) {
+  paintPlayers(view, elements.players, humanId, presenting ? null : targetChoice?.targets);
+  for (const node of elements.players.children) node.onclick = null;
+  if (targetChoice && !presenting) {
     const choice = targetChoice;
     for (const node of elements.players.querySelectorAll(".targetable")) {
-      node.addEventListener("click", () => choice.resolve(Number(node.dataset.player)), { once: true });
+      node.onclick = () => choice.resolve(Number(node.dataset.player));
     }
   }
 }
@@ -119,6 +174,7 @@ function appendLog(message, turn = false) {
 }
 
 function flushLog() {
+  shownGame = null;
   if (game.log.length) appendLog(game.log.splice(0).join("\n"));
   render();
 }
@@ -148,7 +204,7 @@ function choose(title, choices, { cancel = false, detail = "" } = {}) {
     if (cancel) {
       const button = document.createElement("button");
       button.className = "ghost";
-      button.textContent = "不使用";
+      button.textContent = "不响应";
       button.addEventListener("click", () => { closeModal(); resolve(null); });
       elements.modalActions.append(button);
     }
@@ -165,6 +221,7 @@ function openModal() {
   render();
 }
 function closeModal() {
+  if (!elements.modal.classList.contains("hidden")) director?.closeDialog(elements.modal.querySelector(".dialog"));
   elements.modal.classList.add("hidden");
   $("#window").classList.remove("choosing", "choosing-hand");
   elements.modal.querySelector(".dialog").hidden = false;
@@ -188,10 +245,10 @@ function chooseHand(title, cards, { count = 1, valid = cards.map((_, index) => i
       confirm.disabled = selected.size !== count;
       render();
     } };
-    confirm.addEventListener("click", () => resolve([...selected]));
+    confirm.addEventListener("click", () => { director.captureHand(); resolve([...selected]); });
     elements.modalActions.append(confirm);
     if (cancel) {
-      const button = document.createElement("button"); button.textContent = "不使用";
+      const button = document.createElement("button"); button.textContent = "不响应";
       button.addEventListener("click", () => resolve(null)); elements.modalActions.append(button);
     }
     openModal();
@@ -221,7 +278,7 @@ function chooseResponseTarget(title, valid, targets, kind = "attack") {
     const cancel = document.createElement("button"); cancel.textContent = "取消"; cancel.hidden = true;
     const confirm = document.createElement("button"); confirm.textContent = "确认";
     confirm.addEventListener("click", () => {
-      if (picked?.card.name === "holyLight") resolve({ index: picked.index, targetId: null });
+      if (picked?.card.name === "holyLight") { director.captureHand(); resolve({ index: picked.index, targetId: null }); }
     });
     function clearSelection() {
       picked = null; selected.clear(); selectedCard = null; targetChoice = null;
@@ -245,18 +302,18 @@ function chooseResponseTarget(title, valid, targets, kind = "attack") {
       elements.hint.textContent = `${title}；选择${kind === "magic" ? "魔弹传递" : "应战攻击"}目标`;
       targetChoice = { targets, resolve(targetId) {
         if (targetId === null) { clearSelection(); return; }
-        if (targets.includes(targetId)) resolve({ index: picked.index, targetId });
+        if (targets.includes(targetId)) { director.captureHand(); resolve({ index: picked.index, targetId }); }
       } };
       render();
     } };
     cancel.addEventListener("click", clearSelection);
-    const decline = document.createElement("button"); decline.textContent = "不使用";
+    const decline = document.createElement("button"); decline.textContent = "不响应";
     decline.addEventListener("click", () => resolve(null));
     elements.modalActions.replaceChildren(cancel, decline);
     elements.hint.textContent = title;
     openModal(); elements.modal.querySelector(".dialog").hidden = true;
     $("#window").classList.add("choosing-hand"); render();
-    if (keyboardMode) elements.hand.querySelector("button:enabled")?.focus();
+    if (keyboardMode) (elements.hand.querySelector("button:enabled") || decline).focus();
     return () => {
       targetChoice = null; handChoice = null; pendingChoice = null; selectedCard = null;
       elements.hint.textContent = previousHint;
@@ -272,6 +329,8 @@ async function resolveHumanOverflow() {
   const indexes = await chooseCards("爆牌", player.hand, player.hand.length - player.handLimit);
   active.assert();
   game.resolveOverflow(humanId, indexes, player.pendingOverflow ?? {});
+  await game.flushPresentation();
+  active.assert();
   flushLog();
 }
 
@@ -315,7 +374,7 @@ function chooseTarget(targets, hint) {
   elements.hint.textContent = hint;
   return session.wait(resolve => {
     const choice = { targets, resolve(targetId) {
-      if (targetId === null || choice.targets.includes(targetId)) resolve(targetId);
+      if (targetId === null || choice.targets.includes(targetId)) { if (targetId !== null) director.captureHand(); resolve(targetId); }
     } };
     targetChoice = choice;
     render();
@@ -325,6 +384,7 @@ function chooseTarget(targets, hint) {
 
 let finishAction;
 async function completeHumanAction(action) {
+  director.captureHand();
   const active = session;
   acceptingAction = false;
   selectedCard = null;
@@ -344,6 +404,7 @@ async function waitForHumanAction() {
   acceptingAction = true;
   elements.hint.textContent = "[攻击行动]或者[法术行动]";
   render();
+  if (keyboardMode) elements.hand.querySelector("button:enabled")?.focus();
   return session.wait(resolve => { finishAction = resolve; return () => { finishAction = null; }; });
 }
 
@@ -421,14 +482,17 @@ async function runTurns(active) {
           await choose("无法行动", [{ value: true, label: "展示并重摸" }], { detail: "所有手牌当前不可使用、空余手牌位不超过2，且无法通过英雄技能行动。你将弃置并重摸全部手牌。" });
           await game.executeAction(humanId, { type: "refresh" }, { resolveOverflow: resolveHumanOverflow }); flushLog();
         } else await waitForHumanAction();
-      } else { await delay(isDev ? 0 : 650); await executeAi(player.id, isDev && ["attack", "attack-switch"].includes(sceneId) && events.length === 1 ? { type: "play", index: 0, targetId: humanId } : null); active.assert(); flushLog(); }
+      } else { await delay(isDev ? 0 : 150); await executeAi(player.id, isDev && ["attack", "attack-switch", "attack-empty", "shield-hit"].includes(sceneId) && events.length === 1 ? { type: "play", index: 0, targetId: humanId } : null); active.assert(); flushLog(); }
     }
     active.assert();
     events.push({ type: "turn-end", current: player.id });
     appendLog(`━━━━━━━━ ${player.name}回合结束 ━━━━━━━━`, true);
     await game.endTurnWithDecisions({ resolveOverflow: resolveHumanOverflow });
+    shownGame = null;
+    if (!game.winner) elements.hint.textContent = `${game.player(game.current).name}准备行动`;
+    render();
     if (game.winner) break;
-    await delay(isDev ? 0 : 350);
+    await delay(isDev ? 0 : 100);
   }
   acceptingAction = false;
   render();
@@ -520,12 +584,13 @@ $("#toggle-log").addEventListener("click", () => setLog($("#log-panel").hidden))
 $("#close-log").addEventListener("click", () => setLog(false));
 $("#deck-info").addEventListener("click", () => notify(`牌库 ${game.deck.length} 张，弃牌 ${game.discard.length} 张`));
 $("#sort-hand").addEventListener("click", () => {
-  if (busy || targetChoice || pendingChoice) return;
+  if (presenting || busy || targetChoice || pendingChoice) return;
+  shownGame = null;
   game.player(humanId).hand.sort(compareHandCards);
   selectedCard = null;
   render();
 });
-function resize() { resizeStage(); if (game) layoutHand(elements.hand); }
+function resize() { director?.finish(); resizeStage(); if (game) layoutHand(elements.hand); }
 window.addEventListener("resize", resize);
 resize();
 
@@ -542,7 +607,7 @@ if (isDev) {
     newGame(createScene(id), 20260905, id);
     // Enter actual supported interactions, rather than drawing a mock modal.
     const active = session;
-    if (id === "target") launch(async () => { await active.delay(0); await selectCard(0); });
+    if (id === "target") launch(async () => { while (!acceptingAction) await active.delay(16); active.assert(); await selectCard(0); });
   }
   select.addEventListener("change", resetScene);
   $("#dev-reset").addEventListener("click", resetScene);
@@ -555,10 +620,25 @@ if (isDev) {
   function exportState() {
     game.assertCardLocations();
     return { seed, scene: sceneId, paused, current: game.current, phase: targetChoice ? "target" : pendingChoice ? "choice" : acceptingAction ? "action" : "turn", selectedCard, legalTargets: targetChoice?.targets || [], pendingChoice, perspective: humanId,
-      game: { players: game.players.map(player => player.toJSON()), teams: game.teams, deck: game.deck, discard: game.discard, field: game.field, outside: game.outside, winner: game.winner, turn: game.turn.state, timeline: game.timeline }, events, log: actionLog };
+      game: { players: game.players.map(player => player.toJSON()), teams: game.teams, deck: game.deck.map(card => card.toJSON()), discard: game.discard.map(card => card.toJSON()), field: game.field.map(card => card.toJSON()), outside: game.outside.map(card => card.toJSON()), winner: game.winner, turn: game.turn.state, timeline: game.timeline }, events, log: actionLog };
   }
   // Developer-only interface shared with the browser verification tool.
-  window.xingbeiDev = { reset: resetScene, exportState, step: () => resumeTurn?.() };
+  window.xingbeiDev = { reset: resetScene, exportState, step: () => resumeTurn?.(),
+    animations: () => ({ playing: presenting, active: director.active.size, trace: director.trace }),
+    finishAnimations: () => director.finish(), pauseAnimations: value => director.pause(value), stepAnimation: () => director.step(),
+    setMotion: mode => { animationMode = mode === "off" ? "off" : "normal"; director.mode = animationMode; director.pause(false); director.finish(); },
+  };
+  const pauseEffects = document.createElement("button"); pauseEffects.textContent = "暂停效果";
+  pauseEffects.addEventListener("click", () => { director.pause(!director.paused); pauseEffects.textContent = director.paused ? "播放效果" : "暂停效果"; }); $(".dev-tools").append(pauseEffects);
+  const stepEffects = document.createElement("button"); stepEffects.textContent = "单步效果";
+  stepEffects.addEventListener("click", () => { director.step(); pauseEffects.textContent = "播放效果"; }); $(".dev-tools").append(stepEffects);
+  const finish = document.createElement("button"); finish.textContent = "结束当前动画";
+  finish.addEventListener("click", () => director.finish()); $(".dev-tools").append(finish);
+  const motion = document.createElement("button"); motion.textContent = animationMode === "off" ? "开启动画" : "关闭动画";
+  motion.addEventListener("click", () => {
+    animationMode = animationMode === "off" ? "normal" : "off"; director.mode = animationMode; director.pause(false); director.finish();
+    motion.textContent = animationMode === "off" ? "开启动画" : "关闭动画";
+  }); $(".dev-tools").append(motion);
   $("#dev-export").addEventListener("click", () => {
     const url = URL.createObjectURL(new Blob([JSON.stringify(exportState(), null, 2)], { type: "application/json" }));
     const link = document.createElement("a"); link.href = url; link.download = `xingbei-${sceneId}.json`; link.click();

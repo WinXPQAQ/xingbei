@@ -146,6 +146,7 @@ test("异步应战链会对每一次应战攻击重新询问目标", async () =>
     chooseResponse: async ({ target, valid, counterTargets }) => {
       asked.push(target.id);
       const picked = valid[0];
+      if (!picked) return null;
       if (picked.card.name === "holyLight") return { index: picked.index };
       return { index: picked.index, targetId: counterTargets[0].id };
     },
@@ -170,8 +171,8 @@ test("六人魔弹跳过已参与者，刷新后红二再传给蓝三", async ()
         targets.push(context.target.id); next.push(context.nextTarget.id);
         return context.valid[0];
       } });
-      assert.deepEqual(targets, [1, 3, 5, 4, 2, 3]);
-      assert.deepEqual(next, [3, 5, 4, 2, 3, 5]);
+      assert.deepEqual(targets, [1, 3, 5, 4, 2, 3, 5]);
+      assert.deepEqual(next, [3, 5, 4, 2, 3, 5, 0]);
     } else game.play(0, 0, 1, { autoRespond: true });
     assert.equal(game.players[5].hand.length, 6);
     assert.equal(game.discard.filter(item => item.id.startsWith("magic")).length, 7);
@@ -315,7 +316,7 @@ test("玩家爆牌可延迟选择，必须选择不同合法编号并按弃牌�
   assert.equal(discarded.length, 2);
   assert.equal(game.players[0].hand.length, 6);
   assert.equal(game.teams.red.morale, 13);
-  assert.match(game.log.join(" "), /爆牌，弃置【.+】、【.+】；己方士气-2/);
+  assert.match(game.log.join(" "), /爆牌，暗弃2张手牌；己方士气-2/);
 });
 
 test("AI爆牌随机弃置并立即降低士气", () => {

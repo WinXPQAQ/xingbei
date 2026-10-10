@@ -12,6 +12,11 @@ await writeFile(resolve(output, "run.json"), JSON.stringify({ base, started: new
 const browser = await chromium.launch({ headless: true, args: process.env.BROWSER_NO_SANDBOX === "1" ? ["--no-sandbox"] : [], ...(process.env.BROWSER_EXECUTABLE ? { executablePath: process.env.BROWSER_EXECUTABLE } : {}) });
 const checks = [], issues = [];
 function check(label, value) { assert.ok(value, label); checks.push(label); }
+async function settle(page) {
+  await page.waitForFunction(() => !window.xingbeiDev.animations().playing && window.xingbeiDev.animations().active === 0, null, { timeout: 30000 });
+  await page.evaluate(async () => { await Promise.all(document.getAnimations().filter(animation => animation.playState === "running").map(animation => animation.finished.catch(() => {}))); });
+}
+
 try {
   for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) {
     const tag = `${viewport.width}x${viewport.height}`;
@@ -21,7 +26,7 @@ try {
     page.on("response", response => { if (response.status() >= 400) issues.push(response.url()); });
     const state = () => page.evaluate(() => window.xingbeiDev.exportState());
     const card = index => page.locator("#hand .card").nth(index);
-    const select = locator => viewport.width < 900 ? locator.tap() : locator.click();
+    const select = async locator => { await (viewport.width < 900 ? locator.tap() : locator.click()); await page.evaluate(async () => { await Promise.all(document.querySelector("#hand").getAnimations({ subtree: true }).map(animation => animation.finished.catch(() => {}))); }); };
     async function start() {
       await page.goto(`${base}/web/dev.html?scene=attack-switch`, { waitUntil: "networkidle" });
       check(`${tag}: 六人指定座次及玩家红一`, (await state()).game.players.map(player => player.team).join(",") === "red,blue,blue,red,red,blue" && (await state()).perspective === 0);
@@ -58,9 +63,10 @@ try {
     for (let attempt = 0; attempt < 20; attempt++) {
       await page.waitForTimeout(30);
       if (!(await state()).pendingChoice) break;
-      const decline = page.getByRole("button", { name: "不使用", exact: true });
+      const decline = page.getByRole("button", { name: "不响应", exact: true });
       if (await decline.isVisible()) await decline.click();
     }
+    await settle(page);
     const settled = await state();
     check(`${tag}: 结算使用切换后的牌且仅弃一次`, settled.game.discard.filter(item => item.id === initial[1].id).length === 1 && settled.game.players[0].hand.some(item => item.id === initial[0].id));
     check(`${tag}: 结算后无选牌或目标残留`, settled.selectedCard === null && settled.pendingChoice === null && settled.legalTargets.length === 0);
@@ -75,15 +81,15 @@ try {
     check(`${tag}: 圣光可取消并保留原手牌`, (await state()).selectedCard === null && JSON.stringify((await state()).game) === JSON.stringify(beforeLight));
     await select(card(3));
     await page.getByRole("button", { name: "确认", exact: true }).evaluate(button => { button.click(); button.click(); });
-    await page.waitForFunction(() => window.xingbeiDev.exportState().pendingChoice === null);
+    await page.waitForFunction(() => window.xingbeiDev.exportState().pendingChoice === null); await settle(page);
     check(`${tag}: 应战圣光确认后才抵消且不消耗先前攻击牌`, (await state()).game.players[0].hand.some(item => item.name === "earthStrike") && (await state()).game.discard.some(item => item.name === "holyLight"));
     await start(); await select(card(0));
-    await page.getByRole("button", { name: "不使用", exact: true }).click();
-    await page.waitForFunction(() => window.xingbeiDev.exportState().pendingChoice === null);
+    await page.getByRole("button", { name: "不响应", exact: true }).click();
+    await page.waitForFunction(() => window.xingbeiDev.exportState().pendingChoice === null); await settle(page);
     const declinedHand = (await state()).game.players[0].hand;
     check(`${tag}: 选对手时仍可放弃应战`, declinedHand.length === 6 && initial.slice(0, 2).every(original => declinedHand.some(item => item.id === original.id)));
     await start(); await select(card(0)); await page.locator("#dev-reset").click();
-    await page.waitForTimeout(60);
+    await page.waitForTimeout(60); await settle(page);
     check(`${tag}: 重置取消旧应战等待`, (await state()).selectedCard === null && (await state()).pendingChoice === null && (await state()).current === 1);
     await page.close();
   }

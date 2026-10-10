@@ -75,7 +75,7 @@ test("有效属性查询支持双属性、空命格和英雄覆盖，原属性�
   const used = hand(chain, 0, "waterStrike");
   hand(chain, 1, "fireStrike");
   await chain.attackWithDecisions(0, 0, 1, { chooseResponse: context => {
-    assert.equal(used.location.zone, "discard");
+    assert.equal(used.location.zone, "field");
     assert.deepEqual(context.attackTraits.elements, ["fire"]);
     assert.equal(context.valid[0].card.name, "fireStrike");
     return null;
@@ -132,6 +132,89 @@ test("回合明确区分普通和特殊路线，攻击/法术行动结束与回�
     await game.endTurnWithDecisions();
     assert.deepEqual(game.timeline.slice(-2).map(event => event.timing), [Timing.ACTION_PHASE_END, Timing.TURN_END]);
     assert.equal(game.current, 1);
+    assert.equal(game.assertCardLocations(), true);
+  }
+});
+
+test("呈现检查点不改变同步/异步结算，快照隔离后续牌移动并先播放再询问响应", async () => {
+  const prepare = () => {
+    const game = new Game({ shuffleDeck: false, seed: 23 });
+    hand(game, 0, "waterStrike"); hand(game, 1, "waterStrike"); hand(game, 3, "holyLight");
+    return game;
+  };
+  const sync = prepare(), asyncGame = prepare(), batches = [];
+  sync.enablePresentation();
+  const responses = { 1: { index: 0, targetId: 3 }, 3: { index: 0 } };
+  sync.startTurn(0); sync.attack(0, 0, 1, { responses }); sync.endTurn();
+  asyncGame.enablePresentation(async events => { await Promise.resolve(); batches.push(...events); });
+  await asyncGame.beginTurn(0);
+  await asyncGame.attackWithDecisions(0, 0, 1, { chooseResponse: context => {
+    const lastMove = batches.filter(event => event.type === "move").at(-1);
+    assert.equal(lastMove.from.playerId, context.actor.id);
+    assert.equal(lastMove.reason, "play");
+    assert.equal(asyncGame.field.length, context.target.id === 1 ? 1 : 2);
+    assert.equal(asyncGame.discard.length, 0);
+    return responses[context.target.id];
+  } });
+  await asyncGame.endTurnWithDecisions();
+  assert.deepEqual(JSON.parse(JSON.stringify(asyncGame)), JSON.parse(JSON.stringify(sync)));
+  assert.deepEqual(batches.filter(event => event.type === "move").map(event => event.from.playerId), [0, 1, 3]);
+  const first = batches.find(event => event.type === "move");
+  assert.equal(first.view.players[1].hand.length, 1);
+  assert.equal(asyncGame.player(1).hand.length, 0);
+  assert.equal(asyncGame.field.length, 0);
+  assert.equal(batches.find(event => event.type === "cleanup").cardIds.length, 3);
+  assert.ok(batches.some(event => event.type === "miss" && event.cause === "holyLight"));
+  assert.equal(asyncGame.presentationEvents.length, 0);
+  assert.equal(sync.presentationEvents.length, 0);
+});
+
+test("魔弹与多个中毒呈现顺序来自实际结算，伤害摸牌在爆牌弃置前", async () => {
+  const game = new Game({ shuffleDeck: false });
+  hand(game, 0, "magicBullet"); hand(game, 1, "magicBullet");
+  const events = [];
+  game.enablePresentation(batch => events.push(...batch));
+  await game.playMagicWithDecisions(0, 0, { chooseResponse: context => context.target.id === 1 ? { index: 0 } : null });
+  assert.deepEqual(events.filter(event => event.type === "relay").map(event => [event.sourceId, event.playerId, event.amount]), [[0, 1, 2], [1, 3, 3]]);
+  for (const card of game.deck.filter(card => card.name === "poison").slice(0, 2)) game.attachCard(card.id, 0, { effectId: "poison", sourcePlayerId: 1 });
+  game.draw(0, 6);
+  events.length = 0; game.presentationEvents.length = 0;
+  await game.beginTurn(0);
+  const types = events.map(event => event.type);
+  assert.equal(events.filter(event => event.type === "effect" && event.effectId === "poison").length, 2);
+  assert.ok(types.indexOf("damage") < types.indexOf("draw"));
+  assert.ok(types.indexOf("draw") < types.indexOf("discard"));
+  assert.equal(game.assertCardLocations(), true);
+});
+
+
+test("无牌也等待响应，攻击链牌留场至结算结束；伤害类别与暗弃可见性供规则查询", async () => {
+  for (const [name, damageType] of [["waterStrike", "attack"], ["magicBullet", "spell"]]) {
+    const game = new Game({ shuffleDeck: false });
+    const used = hand(game, 0, name), events = [], contexts = [];
+    game.enablePresentation(batch => events.push(...batch));
+    game.registerSkill("damageObserver", { timings: [Timing.DAMAGE_BEFORE, Timing.DAMAGE_AFTER], resolve: ({ context }) => contexts.push(context.damageType) });
+    game.player(0).hero.skills.push("damageObserver");
+    let release, asked = 0;
+    const pending = game.playWithDecisions(0, 0, 1, { chooseResponse: ({ valid }) => {
+      asked++; assert.deepEqual(valid, []); assert.equal(used.location.zone, "field");
+      assert.equal(game.player(1).hand.length, 0);
+      return new Promise(resolve => { release = resolve; });
+    } });
+    while (!release) await new Promise(resolve => setImmediate(resolve));
+    assert.equal(asked, 1); assert.equal(events.some(event => event.type === "damage"), false);
+    release(null); await pending;
+    assert.deepEqual(contexts, [damageType, damageType]);
+    assert.equal(events.find(event => event.type === "damage").damageType, damageType);
+    assert.equal(used.location.zone, "discard"); assert.equal(used.discardVisibility, "public");
+    assert.equal(game.field.length, 0);
+    game.draw(1, 6, { overflow: "defer" }); events.length = 0; game.presentationEvents.length = 0;
+    const discarded = game.resolveOverflow(1, [0, 1]);
+    assert.ok(discarded.every(card => card.discardVisibility === "hidden"));
+    assert.equal(game.presentationEvents.find(event => event.type === "discard").visibility, "hidden");
+    assert.match(game.log.at(-1), /暗弃2张手牌/);
+    assert.ok(!game.log.at(-1).includes("【"));
+    game.moveCard(discarded[0].id, { zone: "deck" }); assert.equal(discarded[0].discardVisibility, null);
     assert.equal(game.assertCardLocations(), true);
   }
 });

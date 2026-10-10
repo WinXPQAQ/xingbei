@@ -1,0 +1,25 @@
+/* Timing and geometry adapted from original default/nova animation methods. */
+.animation-layer { position: absolute; inset: 0; pointer-events: none; z-index: 6; overflow: visible; }
+.animation-layer *, .animation-layer .card { pointer-events: none; }
+.animation-card { position: absolute; margin: 0; transform: translate(-50%, -50%); }
+.animation-card.card-back { background: url('/theme/cardback.png') center / 100% 100%; }
+.animation-line { position: absolute; height: 3px; border-radius: 4px; transform-origin: left center; background: linear-gradient(to right, transparent, #fff, #fff); box-shadow: 0 0 3px #fff8; }
+.animation-popup { position: absolute; font: 34px xinwei; white-space: nowrap; transform: translate(-50%, -50%); color: #fff; text-shadow: 0 0 2px #000, 0 0 5px #000; }
+.animation-popup.damage { font: 72px huangcao, xinwei; color: #efb16b; }
+.animation-popup.protection { color: #b4e2ff; }
+.animation-popup.effect { color: #c4b6ed; }
+.animation-popup.resource { font-size: 26px; }
+@media (prefers-reduced-motion: no-preference) {
+  .hand > .card { transition: transform .3s ease, box-shadow .2s, filter .2s; }
+  .player { transition: box-shadow .25s, opacity .2s; }
+  .stone-choice { transition: box-shadow .2s; }
+  .modal:not(.hidden) .dialog { animation: dialog-enter .18s ease-out; }
+  .modal:not(.hidden) .modal-actions { animation: dialog-enter .18s ease-out; }
+  @keyframes dialog-enter { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+}
+
+.animation-token { position: absolute; width: 26px; height: 26px; transform: translate(-50%, -50%); }
+.animation-dialog-exit { position: absolute; background: #0003; border-radius: 8px; transform: translate(-50%, -50%); overflow: hidden; }
+
+#arena[data-motion="off"] .hand > .card, #arena[data-motion="off"] .player, #arena[data-motion="off"] .stone-choice { transition: none; }
+#arena[data-motion="off"] .modal .dialog, #arena[data-motion="off"] .modal .modal-actions { animation: none; }

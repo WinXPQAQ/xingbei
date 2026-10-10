@@ -27,6 +27,9 @@ function shuffle(items, random) {
   return items;
 }
 
+export const DamageType = Object.freeze({ ATTACK: "attack", SPELL: "spell" });
+export const DiscardVisibility = Object.freeze({ PUBLIC: "public", HIDDEN: "hidden" });
+
 export class Game {
   constructor({ names = DEFAULT_NAMES, teams = DEFAULT_TEAMS, seed = Date.now(), shuffleDeck = true } = {}) {
     if (names.length !== 6 || teams.length !== 6 || teams.filter(team => team === "red").length !== 3 || teams.filter(team => team === "blue").length !== 3) throw new RuleError("当前对局需要6名玩家，红蓝各3人");
@@ -37,12 +40,34 @@ export class Game {
     this.cards = new Map();
     this.effects = new Map(Object.entries(BASIC_EFFECTS));
     this.skillDefinitions = new Map();
+    this.presentationEnabled = false; this.presentationEvents = []; this.presentationSequence = 0;
     this.turn = new TurnFlow(this); this.timeline = [];
     for (const card of createDeck()) this.registerCard(card, { zone: "deck" });
     if (shuffleDeck) shuffle(this.deck, this.random);
     this.current = 0;
     this.winner = null;
     this.log = [];
+  }
+
+  enablePresentation(onPresentation) { this.presentationEnabled = true; this.presentationEvents = []; this.onPresentation = onPresentation; }
+
+  recordPresentation(type, data = {}) {
+    if (!this.presentationEnabled) return;
+    // Detached checkpoint snapshots prevent later rule steps leaking into a frame.
+    const view = {
+      players: this.players.map(player => ({ ...player.toJSON(), hand: player.hand.map(card => ({ ...card.toJSON(), ...card.getTraits({ game: this, playerId: player.id, purpose: "hand" }) })) })),
+      teams: this.teams, current: this.current, winner: this.winner,
+      deckCount: this.deck.length, discardCount: this.discard.length,
+    };
+    this.presentationEvents.push(JSON.parse(JSON.stringify({ sequence: ++this.presentationSequence, type, ...data, view })));
+  }
+
+  *present() {
+    if (this.presentationEvents.length) yield { type: "presentation", events: this.presentationEvents.splice(0) };
+  }
+
+  flushPresentation() {
+    return resolveAsync(this.present(), () => null, this.onPresentation);
   }
 
   zone(location) {
@@ -68,18 +93,22 @@ export class Game {
     return card;
   }
 
-  moveCard(cardId, destination) {
+  moveCard(cardId, destination, { animate = true, reason = null, targetId = null, visibility = DiscardVisibility.PUBLIC } = {}) {
+    if (!Object.values(DiscardVisibility).includes(visibility)) throw new RuleError("无效的弃牌可见性");
     const card = this.cards.get(cardId);
     if (!card) throw new RuleError(`不存在牌 ${cardId}`);
     const next = this.zone(destination), previous = this.zone(card.location);
     if (destination.zone === "status") {
       if (!card.attachment || !this.canAttach(card, destination.playerId, card.attachment.effectId)) throw new RuleError("状态区需要合法且不重复的挂载效果");
     }
+    const from = card.location;
     const index = previous.indexOf(card);
     if (index < 0) throw new RuleError("牌位置与区域不一致");
     previous.splice(index, 1); next.push(card);
     card.setLocation(destination);
+    card.discardVisibility = destination.zone === "discard" ? visibility : null;
     if (destination.zone !== "status") card.attachment = null;
+    if (animate) this.recordPresentation("move", { card: card.toJSON(), from, to: card.location, reason, targetId, visibility });
     return card;
   }
 
@@ -127,6 +156,7 @@ export class Game {
   }
 
   *trigger(timing, context, options = {}) {
+    yield* this.present();
     this.timeline.push({ timing, playerId: context.playerId ?? context.targetId, cardId: context.card?.id ?? null });
     const ownerId = context.playerId ?? context.targetId;
     const effects = ownerId == null ? [] : this.player(ownerId).statuses.map(card => ({ card, player: this.player(ownerId), definition: this.effects.get(card.attachment.effectId) }));
@@ -138,9 +168,14 @@ export class Game {
       if (entry.sourceCard && (entry.sourceCard.location.zone !== "status" || entry.sourceCard.location.playerId !== entry.player.id)) continue;
       const payload = { game: this, timing, context, options, ...entry };
       if (entry.definition.filter && !entry.definition.filter(payload)) continue;
+      if (entry.card) {
+        this.recordPresentation("effect", { playerId: entry.player.id, card: entry.card.toJSON(), effectId: entry.card.attachment.effectId });
+        yield* this.present();
+      }
       const result = entry.definition.resolve?.(payload);
       if (result?.next) yield* result;
       else if (result?.then) yield { type: "promise", promise: result };
+      yield* this.present();
       if (this.winner) break;
     }
   }
@@ -176,15 +211,18 @@ export class Game {
 
   draw(id, count, { overflow = "first", moraleLoss = true } = {}) {
     const player = this.player(id);
+    const cards = [];
     for (let i = 0; i < count; i++) {
       if (!this.deck.length) {
         if (!this.discard.length) break;
-        for (const card of [...this.discard]) this.moveCard(card.id, { zone: "deck" });
+        for (const card of [...this.discard]) this.moveCard(card.id, { zone: "deck" }, { animate: false });
+        this.recordPresentation("shuffle");
         shuffle(this.deck, this.random);
         this.log.push("弃牌堆洗回牌库");
       }
-      this.moveCard(this.deck.at(-1).id, { zone: "hand", playerId: id });
+      cards.push(this.moveCard(this.deck.at(-1).id, { zone: "hand", playerId: id }, { animate: false }).toJSON());
     }
+    if (cards.length) this.recordPresentation("draw", { playerId: id, cards });
     const excess = Math.max(0, player.hand.length - player.handLimit);
     if (excess) {
       const policy = typeof overflow === "function" ? overflow(player, excess) : overflow;
@@ -214,26 +252,37 @@ export class Game {
         indexes.some(index => !Number.isInteger(index) || index < 0 || index >= player.hand.length)) {
       throw new RuleError(`爆牌必须选择${excess}张不同的合法手牌`);
     }
-    const discarded = [...indexes].sort((a, b) => b - a).map(index => this.discardCard(player, index));
+    const discarded = [...indexes].sort((a, b) => b - a).map(index => this.discardCard(player, index, { animate: false, visibility: DiscardVisibility.HIDDEN }));
+    this.recordPresentation("discard", { playerId: id, cards: discarded.map(card => card.toJSON()), visibility: DiscardVisibility.HIDDEN, reason: "overflow" });
     if (moraleLoss) this.changeMorale(player.team, -excess);
     delete player.pendingOverflow;
-    this.log.push(`${player.name}爆牌，弃置${discarded.map(cardName).join("、")}；己方士气-${moraleLoss ? excess : 0}`);
+    this.log.push(`${player.name}爆牌，暗弃${discarded.length}张手牌；己方士气-${moraleLoss ? excess : 0}`);
     return discarded;
   }
 
-  discardCard(player, index) {
+  discardCard(player, index, options = {}) {
     if (!Number.isInteger(index) || index < 0 || index >= player.hand.length) throw new RuleError("无效的手牌编号");
-    return this.moveCard(player.hand[index].id, { zone: "discard" });
+    return this.moveCard(player.hand[index].id, { zone: "discard" }, options);
+  }
+
+  playCard(player, index, options = {}) {
+    if (!Number.isInteger(index) || !player.hand[index]) throw new RuleError("无效的手牌编号");
+    const card = this.moveCard(player.hand[index].id, { zone: "field" }, { reason: "play", targetId: options.targetId });
+    options.resolutionCards?.push(card.id);
+    return card;
   }
 
   changeMorale(team, amount) {
     this.teams[team].morale = Math.min(15, this.teams[team].morale + amount);
+    this.recordPresentation("morale", { team, amount });
     this.checkWinner();
   }
 
   checkWinner() {
+    const previous = this.winner;
     if (this.teams.red.morale <= 0 || this.teams.blue.cups >= 5) this.winner = "blue";
     if (this.teams.blue.morale <= 0 || this.teams.red.cups >= 5) this.winner = "red";
+    if (this.winner && !previous) this.recordPresentation("winner", { team: this.winner });
     return this.winner;
   }
 
@@ -282,6 +331,7 @@ export class Game {
     const stones = this.teams[team].achievements;
     const added = Math.max(0, Math.min(count, 5 - stones.length));
     for (let i = 0; i < added; i++) stones.push(type);
+    if (added) this.recordPresentation("stones", { team, kind: type, amount: added });
     return added;
   }
 
@@ -298,6 +348,7 @@ export class Game {
         this.teams[team].achievements.splice(index, 1);
       }
     }
+    this.recordPresentation("stones", { team, amount: -(gem + crystal), gem, crystal });
   }
 
   purchase(actorId, options = {}) { return resolveSync(this.purchaseSteps(actorId, options), () => null); }
@@ -312,7 +363,7 @@ export class Game {
     else if (action.type === "refine") steps = this.refineSteps(actorId, action.stones);
     else if (action.type === "refresh") steps = this.refreshUnableHandSteps(actorId);
     else throw new RuleError("未知行动");
-    return resolveAsync(steps, request => this.interactiveDecision(request, options));
+    return resolveAsync(steps, request => this.interactiveDecision(request, options), options.onPresentation ?? this.onPresentation);
   }
 
   *purchaseSteps(actorId, options = {}) {
@@ -324,7 +375,9 @@ export class Game {
     const gems = this.addStones(player.team, "gem");
     const crystals = this.addStones(player.team, "crystal");
     this.log.push(`${player.name}执行购买，摸3张牌；己方战绩区获得${gems}个宝石和${crystals}个水晶${gems + crystals < 2 ? "（战绩区上限5个）" : ""}`);
+    yield* this.present();
     if (this.player(actorId).pendingOverflow) yield { type: "overflow", player: this.player(actorId) };
+    yield* this.present();
     yield* this.turn.endAction();
   }
 
@@ -341,11 +394,14 @@ export class Game {
     this.removeStones(player.team, { gem: gemCount, crystal: crystalCount });
     this.draw(actorId, 3, options);
     this.teams[player.team].cups++;
+    this.recordPresentation("cup", { team: player.team, playerId: actorId, amount: 1 });
     const enemyTeam = player.team === "red" ? "blue" : "red";
     this.changeMorale(enemyTeam, -1);
     this.log.push(`${player.name}消耗${gemCount}个宝石、${crystalCount}个水晶执行合成，摸3张牌；己方星杯+1，对方士气-1`);
     this.checkWinner();
+    yield* this.present();
     if (this.player(actorId).pendingOverflow) yield { type: "overflow", player: this.player(actorId) };
+    yield* this.present();
     yield* this.turn.endAction();
   }
 
@@ -362,8 +418,11 @@ export class Game {
     this.removeStones(player.team, { gem, crystal });
     player.energy.gem += gem;
     player.energy.crystal += crystal;
+    this.recordPresentation("energy", { playerId: actorId, gem, crystal });
     this.log.push(`${player.name}提炼${gem}个宝石、${crystal}个水晶；个人能量变为${player.energy.gem}宝石、${player.energy.crystal}水晶`);
+    yield* this.present();
     if (this.player(actorId).pendingOverflow) yield { type: "overflow", player: this.player(actorId) };
+    yield* this.present();
     yield* this.turn.endAction();
   }
 
@@ -374,22 +433,31 @@ export class Game {
     yield* this.turn.beginAction(actorId, "special");
     const count = player.hand.length;
     const revealed = player.hand.map(cardName).join("、");
-    while (player.hand.length) this.discardCard(player, 0);
+    const cards = player.hand.map(card => card.toJSON());
+    while (player.hand.length) this.discardCard(player, 0, { animate: false });
+    this.recordPresentation("discard", { playerId: actorId, cards, reason: "refresh", visibility: DiscardVisibility.PUBLIC });
     this.draw(actorId, count, { moraleLoss: false });
     this.log.push(`${player.name}无法行动，展示并弃置全部手牌：${revealed}；重摸${count}张`);
+    yield* this.present();
     if (this.player(actorId).pendingOverflow) yield { type: "overflow", player: this.player(actorId) };
+    yield* this.present();
     yield* this.turn.endAction();
   }
 
-  *damageSteps(targetId, amount, { sourceId = null, magic = false, overflow = "first", useHealing = 0 } = {}) {
+  *damageSteps(targetId, amount, { sourceId = null, damageType = DamageType.ATTACK, overflow = "first", useHealing = 0 } = {}) {
     const target = this.player(targetId);
-    const context = { targetId, sourceId, amount, magic };
+    if (!Object.values(DamageType).includes(damageType)) throw new RuleError("无效的伤害类别");
+    const context = { targetId, sourceId, amount, damageType };
     yield* this.trigger(Timing.DAMAGE_BEFORE, context, { overflow });
     const healing = Math.min(Math.max(0, context.amount), target.healing, Math.max(0, useHealing));
     target.healing -= healing;
+    if (healing) this.recordPresentation("healing", { playerId: targetId, amount: -healing });
     context.actual = Math.max(0, context.amount - healing);
+    this.recordPresentation("damage", { playerId: targetId, sourceId, amount: context.actual, damageType: context.damageType });
+    yield* this.present();
     if (context.actual) this.draw(targetId, context.actual, { overflow });
-    this.log.push(`${target.name}承受${context.actual}点${magic ? "法术" : "攻击"}伤害`);
+    yield* this.present();
+    this.log.push(`${target.name}承受${context.actual}点${context.damageType === DamageType.SPELL ? "法术" : "攻击"}伤害`);
     yield* this.trigger(Timing.DAMAGE_AFTER, context, { overflow });
     return context.actual;
   }
@@ -404,18 +472,24 @@ export class Game {
     const actor = this.player(actorId), card = actor.hand[handIndex];
     if (!card || !this.legalTargets(actorId, card).includes(targetId)) throw new RuleError("这张牌目前不能指定该目标");
     yield* this.turn.beginAction(actorId, card.type);
-    const result = card.resolve({ game: this, actor, targetId, options });
+    const resolutionCards = [];
+    const result = card.resolve({ game: this, actor, targetId, options: { ...options, resolutionCards } });
     if (result?.next) yield* result;
     else if (result?.then) yield { type: "promise", promise: result };
+    for (const id of resolutionCards) {
+      if (this.cards.get(id).location.zone === "field") this.moveCard(id, { zone: "discard" }, { animate: false });
+    }
+    if (resolutionCards.length) this.recordPresentation("cleanup", { cardIds: resolutionCards, visibility: DiscardVisibility.PUBLIC });
     if (card.type !== "attack" && card.name !== "magicBullet") this.log.push(`${actor.name}对${this.player(targetId).name}使用${cardName(card)}`);
     if (actor.pendingOverflow) yield { type: "overflow", player: actor };
+    yield* this.present();
     yield* this.turn.endAction();
   }
   play(actorId, handIndex, targetId, options = {}) {
     return resolveSync(this.actionSteps(actorId, handIndex, targetId, options), request => this.automaticDecision(request, options));
   }
   playWithDecisions(actorId, handIndex, targetId, options = {}) {
-    return resolveAsync(this.actionSteps(actorId, handIndex, targetId, options), request => this.interactiveDecision(request, options));
+    return resolveAsync(this.actionSteps(actorId, handIndex, targetId, options), request => this.interactiveDecision(request, options), options.onPresentation ?? this.onPresentation);
   }
 
   automaticDecision(request, options = {}) {
@@ -440,7 +514,7 @@ export class Game {
 
   attackWithDecisions(actorId, handIndex, targetId, options = {}) {
     if (this.player(actorId).hand[handIndex]?.type !== "attack") throw new RuleError("请选择攻击牌");
-    return resolveAsync(this.actionSteps(actorId, handIndex, targetId, options), request => this.interactiveDecision(request, options));
+    return resolveAsync(this.actionSteps(actorId, handIndex, targetId, options), request => this.interactiveDecision(request, options), options.onPresentation ?? this.onPresentation);
   }
 
   interactiveDecision(request, options) {
@@ -461,7 +535,7 @@ export class Game {
 
   playMagicWithDecisions(actorId, handIndex, options = {}) {
     if (this.player(actorId).hand[handIndex]?.name !== "magicBullet") throw new RuleError("请选择魔弹");
-    return resolveAsync(this.actionSteps(actorId, handIndex, this.nearestOpponent(actorId)?.id, options), request => this.interactiveDecision(request, options));
+    return resolveAsync(this.actionSteps(actorId, handIndex, this.nearestOpponent(actorId)?.id, options), request => this.interactiveDecision(request, options), options.onPresentation ?? this.onPresentation);
   }
 
   magicTarget(sourceId, participants) {
@@ -477,10 +551,10 @@ export class Game {
       if (request.type === "weakness") return decisions.chooseWeakness?.(request) ?? "skip";
       if (request.type === "overflow") return decisions.resolveOverflow?.(request);
       return decisions.choose?.(request);
-    });
+    }, decisions.onPresentation ?? this.onPresentation);
   }
   beginAction(playerId, actionType) { return resolveSync(this.turn.beginAction(playerId, actionType), () => null); }
   endAction() { return resolveSync(this.turn.endAction(), () => null); }
   endTurn() { return resolveSync(this.turn.end(), () => null); }
-  endTurnWithDecisions(options = {}) { return resolveAsync(this.turn.end(), request => this.interactiveDecision(request, options)); }
+  endTurnWithDecisions(options = {}) { return resolveAsync(this.turn.end(), request => this.interactiveDecision(request, options), options.onPresentation ?? this.onPresentation); }
 }

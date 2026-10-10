@@ -14,17 +14,24 @@ export function renderTeams(game, nodes, humanId) {
     const data = game.teams[team];
     const stones = game.stoneCounts(team);
     nodes[team].classList.toggle("highlight", game.player(humanId).team === team);
-    nodes[team].innerHTML = `<td>${data.morale}</td><td class="stones">${[...Array(stones.gem)].map(() => '<img src="/assets/stones/gem.png" alt="宝石">').join("")}${[...Array(stones.crystal)].map(() => '<img src="/assets/stones/crystal.png" alt="水晶">').join("")}</td><td>${data.cups}</td>`;
+    const markup = `<td>${data.morale}</td><td class="stones">${[...Array(stones.gem)].map(() => '<img src="/assets/stones/gem.png" alt="宝石">').join("")}${[...Array(stones.crystal)].map(() => '<img src="/assets/stones/crystal.png" alt="水晶">').join("")}</td><td>${data.cups}</td>`;
+    if (nodes[team]._markup !== markup) { nodes[team].innerHTML = markup; nodes[team]._markup = markup; }
   }
 }
 
 export function renderPlayers(game, container, humanId, targets = null) {
-  container.replaceChildren();
   container.dataset.number = game.players.length;
   container.closest("#arena").dataset.number = game.players.length;
   for (const player of game.players) {
-    const node = document.createElement("article");
-    node.className = `player${player.id === game.current ? " current" : ""}`;
+    let node = container.querySelector(`[data-player="${player.id}"]`);
+    if (!node) {
+      node = document.createElement("article"); node.className = "player";
+      node.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " ") { event.preventDefault(); node.click(); }
+      });
+      container.append(node);
+    }
+    node.classList.toggle("current", player.id === game.current);
     node.dataset.position = (player.id - humanId + game.players.length) % game.players.length;
     node.dataset.player = player.id;
     node.dataset.team = player.team;
@@ -39,30 +46,32 @@ export function renderPlayers(game, container, humanId, targets = null) {
     const energy = [
       ["crystal", "crystal", "水晶"], ["gem", "gem", "宝石"],
     ].filter(([kind]) => player.energy[kind] > 0).map(([kind, image, label]) => `<span><img src="/assets/stones/${image}.png" alt="${label}"><b>${player.energy[kind]}</b></span>`).join("");
-    node.innerHTML = `<img class="avatar" src="/assets/character/${player.hero.portrait}.jpg" alt=""><span class="player-name" title="${player.name}；头像仅作展示，角色技能尚未实现">${player.hero.name}</span><span class="identity"><span>${player.team === "red" ? "红" : "蓝"}</span></span><span class="count">${player.hand.length}/${player.handLimit}</span><span class="hp" title="治疗 ${player.healing}" aria-label="治疗 ${player.healing}">${[1, 0].map(index => `<span class="${index < player.healing ? "" : "lost"}"></span>`).join("")}</span><span class="energy" title="个人能量" style="top:${6 + marks.length * 28}px">${energy}</span><div class="marks">${marks.reverse().join("")}</div>`;
+    const markup = `<img class="avatar" src="/assets/character/${player.hero.portrait}.jpg" alt=""><span class="player-name" title="${player.name}；头像仅作展示，角色技能尚未实现">${player.hero.name}</span><span class="identity"><span>${player.team === "red" ? "红" : "蓝"}</span></span><span class="count">${player.hand.length}/${player.handLimit}</span><span class="hp" title="治疗 ${player.healing}" aria-label="治疗 ${player.healing}">${[1, 0].map(index => `<span class="${index < player.healing ? "" : "lost"}"></span>`).join("")}</span><span class="energy" title="个人能量" style="top:${6 + marks.length * 28}px">${energy}</span><div class="marks">${marks.reverse().join("")}</div>`;
+    if (node._markup !== markup) { node.innerHTML = markup; node._markup = markup; }
     if (player.energy.gem + player.energy.crystal === 0) node.querySelector(".energy").hidden = true;
-    node.addEventListener("keydown", event => {
-      if (event.key === "Enter" || event.key === " ") { event.preventDefault(); node.click(); }
-    });
-    container.append(node);
+
   }
 }
 
 export function renderHand(game, container, humanId, { acceptingAction, selectedCard, locked, onSelect, handChoice = null }) {
-  container.replaceChildren();
+  const existing = new Map([...container.children].map(node => [node.dataset.cardId, node]));
+  const activeIds = new Set(game.player(humanId).hand.map(card => card.id));
+  for (const node of [...container.children]) if (!activeIds.has(node.dataset.cardId)) node.remove();
   for (const [index, card] of game.player(humanId).hand.entries()) {
-    const button = document.createElement("button");
+    const button = existing.get(card.id) || document.createElement("button");
+    button.dataset.cardId = card.id; button.dataset.index = index;
     const usable = handChoice ? handChoice.valid.includes(index) : game.legalTargets(humanId, card).length > 0;
     const selected = handChoice ? handChoice.selected.has(index) : selectedCard === index;
     button.className = `card${selected ? " selected" : ""}${usable ? "" : " unusable"}`;
     button.disabled = !acceptingAction || locked || (handChoice && !usable);
     const context = { game, playerId: humanId, purpose: "hand" };
-    button.innerHTML = cardContents(card, context);
+    const markup = cardContents(card, context);
+    if (button._markup !== markup) { button.innerHTML = markup; button._markup = markup; }
     button.title = cardLabel(card, context);
     button.setAttribute("aria-label", cardLabel(card, context));
     button.setAttribute("aria-pressed", String(selected));
-    button.addEventListener("click", () => onSelect(index));
-    container.append(button);
+    button.onclick = () => onSelect(Number(button.dataset.index));
+    if (container.children[index] !== button) container.insertBefore(button, container.children[index] || null);
   }
   layoutHand(container);
 }

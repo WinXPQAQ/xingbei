@@ -21,3 +21,6 @@
 六人布局继续提取自 `layout/nova/layout.css` 的 `#arena[data-number="6"]` 座位规则（287–307行）。新增显示头像使用原资源 `image/character/shenGuan.jpg` 与 `image/character/anShaZhe.jpg`，沿用上述项目来源与许可说明；头像展示不包含角色技能。
 
 规则阶段来源：`noname/library/element/content.js` 的星杯回合与行动流程，`noname/library/index.js` 的中毒/虚弱/圣盾基础效果；具体位置和映射见 `docs/game-architecture.md`。新规则使用英文标识，原素材通过 `legacy-assets.json` 适配，原项目未修改。
+
+
+动画适配来源：`noname/library/element/player.js` 的 `$draw`（12006起）、`$throwordered2`（12667起）、`$damagepop`（13660起）、`$damage`（13708起），`noname/game/index.js` 的 `linexy`（4750起），以及 `layout/default/layout.css` 的默认过渡、浮字与线条样式。新版 `web/animation.js`、`web/animation.css`复用这些行为与比例，不引入旧引擎。`/theme/cardback.png`读取原版 `theme/style/cardback/image/xingBei1.png`；牌背继续保留原项目版权和素材说明。

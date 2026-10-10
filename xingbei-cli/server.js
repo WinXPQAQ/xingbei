@@ -10,7 +10,7 @@ const host = process.env.HOST || "0.0.0.0";
 const testMode = process.env.TEST_MODE === "1";
 const { version } = JSON.parse(await readFile(join(projectRoot, "package.json"), "utf8"));
 const legacyAssets = JSON.parse(await readFile(join(projectRoot, "legacy-assets.json"), "utf8"));
-const types = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".png": "image/png", ".jpg": "image/jpeg", ".svg": "image/svg+xml", ".woff2": "font/woff2" };
+const types = { ".webm": "video/webm", ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".png": "image/png", ".jpg": "image/jpeg", ".svg": "image/svg+xml", ".woff2": "font/woff2" };
 
 function within(root, suffix) {
   const file = resolve(root, `.${suffix}`);
@@ -19,6 +19,7 @@ function within(root, suffix) {
 
 function resolveRequest(pathname) {
   if (pathname === "/") return join(projectRoot, "web/index.html");
+  if (pathname === "/theme/cardback.png") return join(workspaceRoot, "xingbei-1.6.7-source/theme/style/cardback/image/xingBei1.png");
   if (pathname === "/theme/grid.png") return join(workspaceRoot, "xingbei-1.6.7-source/theme/music/grid.png");
   if (pathname === "/theme/wood3.png") return join(workspaceRoot, "xingbei-1.6.7-source/theme/music/wood3.png");
   if (pathname === "/theme/hp-xingBei1.png") return join(workspaceRoot, "xingbei-1.6.7-source/theme/style/hp/image/xingBei1.png");
