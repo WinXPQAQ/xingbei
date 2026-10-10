@@ -86,7 +86,7 @@ async function resolveHumanOverflow() {
       tui.console(`输入无效：请填写${excess}个不同的手牌编号（0-${player.hand.length - 1}）。`);
       continue;
     }
-    game.resolveOverflow(humanId, indexes, player.pendingOverflow ?? {});
+    await game.resolveOverflowWithDecisions(humanId, indexes, player.pendingOverflow ?? {});
   }
 }
 
@@ -119,6 +119,10 @@ async function humanTurn() {
         const selected = await askIndex(tui, "技能> ", entries.map((_, i) => i));
         if (selected == null) continue;
         const entry = entries[selected], cardIds = [], targetIds = [];
+        if (entry.spec.targetCounts) {
+          const count = await askIndex(tui, "目标人数> ", entry.spec.targetCounts); if (count == null) continue;
+          entry.spec = { ...entry.spec, targetCount: count };
+        }
         while (cardIds.length < (entry.spec.cardCount ?? 0)) {
           const valid = player.hand.flatMap((card, i) => !cardIds.includes(card.id) && (entry.spec.cardFilter?.(card) ?? true) ? [i] : []);
           const index = await askIndex(tui, "费用牌（回车取消）> ", valid); if (index == null) break;

@@ -341,7 +341,7 @@ async function resolveHumanOverflow() {
   if (player.hand.length <= player.handLimit) return;
   const indexes = await chooseCards("爆牌", player.hand, player.hand.length - player.handLimit);
   active.assert();
-  game.resolveOverflow(humanId, indexes, player.pendingOverflow ?? {});
+  await game.resolveOverflowWithDecisions(humanId, indexes, player.pendingOverflow ?? {});
   await game.flushPresentation();
   active.assert();
   flushLog();
@@ -439,7 +439,11 @@ async function selectSkillAction(skillId) {
   const active = session;
   busy = true; render();
   try {
-    const spec = entry.spec, player = game.player(humanId);
+    const spec = { ...entry.spec }, player = game.player(humanId);
+    if (spec.targetCounts) {
+      const count = await choose(`${entry.name}：目标人数`, spec.targetCounts.map(value => ({ value, label: `${value}人` })), { cancel: true });
+      active.assert(); if (count == null) return; spec.targetCount = count;
+    }
     let cardIds = [];
     if (spec.cardCount) {
       const valid = player.hand.flatMap((card, index) => (spec.cardFilter?.(card) ?? true) ? [index] : []);

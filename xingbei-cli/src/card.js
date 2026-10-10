@@ -1,3 +1,4 @@
+import { Timing } from "./timing.js";
 import { attackSteps } from "./resolution/attack.js";
 import { magicSteps } from "./resolution/magic.js";
 import { RuleError } from "./errors.js";
@@ -67,9 +68,10 @@ class EffectCard extends SpellCard {
     Object.defineProperty(this, "effectDefinition", { value: effectDefinition });
   }
   legalTargets({ game }) { return game.players.filter(player => game.canAttach(this, player.id, this.effectDefinition.id)).map(player => player.id); }
-  resolve({ game, actor, targetId, options }) {
+  *resolve({ game, actor, targetId, options }) {
     game.playCard(actor, actor.hand.indexOf(this), options);
     game.attachCard(this.id, targetId, { effectId: this.effectDefinition.id, sourcePlayerId: actor.id });
+    if (this.effectDefinition.id === "holyShield") yield* game.trigger(Timing.SHIELD_USED, { actorId: actor.id, targetId, card: this }, options);
   }
 }
 export class PoisonCard extends EffectCard {

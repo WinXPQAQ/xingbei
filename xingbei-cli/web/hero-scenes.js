@@ -25,5 +25,9 @@ export function createHeroScene(id, seed) {
     give(0, card => card.hasUniqueSkill("fireSeal")); give(0, card => card.name === "holyLight");
     give(1, card => card.name === "fireStrike"); game.player(0).energy.crystal = 2;
   }
+  if (heroId === "guardianAngel") {
+    give(0, card => card.hasUniqueSkill("angelWall")); give(0, card => card.element === "wind");
+    const poison = game.deck.find(card => card.name === "poison"); game.attachCard(poison.id, 1, { effectId: "poison" });
+  }
   game.log = []; game.assertCardLocations(); return game;
 }

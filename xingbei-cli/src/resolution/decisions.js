@@ -1,9 +1,9 @@
 // Both automatic play and interactive play drive the same rule iterator.
-export function resolveSync(steps, decide) {
+export function resolveSync(steps, decide, onPresentation = () => {}) {
   let step = steps.next();
   while (!step.done) {
     if (step.value.type === "promise") throw new Error("同步结算不能等待异步技能");
-    const choice = step.value.type === "presentation" ? null : decide(step.value);
+    const choice = step.value.type === "presentation" ? onPresentation(step.value.events) : decide(step.value);
     if (choice?.then) throw new Error("同步结算不能等待异步决定");
     step = steps.next(choice);
   }

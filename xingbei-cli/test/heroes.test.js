@@ -173,3 +173,58 @@ test("五系束缚是独立场外实体，优先级中毒→束缚→虚弱，�
   await skipped.executeAction(0, { type: "skill", skillId: "fivefoldBinding", targetIds: [1] });
   const result = await skipped.beginTurn(1); assert.equal(result.skipped, true); assert.equal(skipped.outside.length, 1);
 });
+
+test("守护天使移除基础效果并给治疗，不能移除专属；墙视为圣盾，天使之歌在回合开始前", async () => {
+  const game = new Game({ seed: 13, heroIds: ["guardianAngel", "none", "none", "none", "sealer", "none"] });
+  const binding = game.cards.get(game.player(4).hero.state.bindingCardId); game.attachCard(binding.id, 1, { effectId: "fivefoldBinding", sourcePlayerId: 4 });
+  named(game, 0, "windStrike");
+  assert.equal(game.legalSkillActions(0).some(entry => entry.skillId === "windCleansing"), false);
+  const poison = game.deck.find(card => card.name === "poison"); game.attachCard(poison.id, 1, { effectId: "poison" });
+  await game.executeAction(0, { type: "skill", skillId: "windCleansing", cardIds: [game.player(0).hand[0].id], targetIds: [1] });
+  assert.equal(poison.location.zone, "discard"); assert.equal(binding.location.zone, "status"); assert.equal(game.player(0).healing, 1);
+  const wall = take(game, 0, card => card.hasUniqueSkill("angelWall"));
+  await game.executeAction(0, { type: "skill", skillId: "angelWall", cardIds: [wall.id], targetIds: [2] });
+  assert.equal(game.player(0).healing, 2); assert.equal(wall.attachment.effectId, "holyShield");
+  named(game, 3, "fireStrike"); await game.attackWithDecisions(3, 0, 2, { chooseResponse: () => null });
+  assert.equal(wall.location.zone, "discard"); assert.equal(game.player(2).hand.length, 0);
+  const song = make("guardianAngel"); song.player(0).energy.crystal = 1;
+  const ownPoison = song.deck.find(card => card.name === "poison"); song.attachCard(ownPoison.id, 0, { effectId: "poison" });
+  await song.beginTurn(0, { choose: request => request.type === "skillChoice" ? true : request.defaultValue });
+  assert.equal(song.player(0).energy.crystal, 0); assert.equal(song.player(0).healing, 1); assert.equal(ownPoison.location.zone, "discard");
+  assert.equal(song.timeline[0].timing, Timing.TURN_BEFORE); assert.equal(song.timeline.some(entry => entry.timing === Timing.DAMAGE_BEFORE), false);
+  game.assertCardLocations(); song.assertCardLocations();
+});
+
+test("天使祝福单目标给2、双目标各给1，转移手牌不触发封印、不复制牌", async () => {
+  for (const targetIds of [[3], [3, 4]]) {
+    const game = make("guardianAngel"), water = named(game, 0, "waterStrike");
+    named(game, 3, "fireStrike"); named(game, 3, "earthStrike"); named(game, 4, "holyLight");
+    const seal = game.deck.find(card => card.hasUniqueSkill("fireSeal")); game.attachCard(seal.id, 3, { effectId: "fireSeal", sourcePlayerId: 1 });
+    await game.executeAction(0, { type: "skill", skillId: "angelBlessing", cardIds: [water.id], targetIds });
+    assert.equal(game.player(0).hand.length, 2); assert.equal(seal.location.zone, "status");
+    assert.equal(game.player(3).hand.length, targetIds.length === 1 ? 0 : 1); game.assertCardLocations();
+  }
+});
+
+test("神之庇护只抵御己方法术伤害的爆牌士气，伤害摸牌与暗弃不变；可拒绝且宝石可替水晶", async () => {
+  for (const [damageType, accepted] of [["spell", true], ["spell", false], ["attack", true]]) {
+    const game = make("guardianAngel"); game.player(3).handLimit = 1; named(game, 3, "holyLight"); game.player(0).energy = { gem: 1, crystal: 1 };
+    let requested = 0;
+    const { resolveAsync } = await import("../src/resolution/decisions.js");
+    await resolveAsync(game.damageSteps(3, 2, { sourceId: 1, damageType, choose: request => request.defaultValue }), request => {
+      if (request.type === "numberChoice") { requested++; return accepted ? 2 : 0; } return request.defaultValue;
+    });
+    assert.equal(requested, damageType === "spell" ? 1 : 0);
+    assert.equal(game.teams.red.morale, damageType === "spell" && accepted ? 15 : 13);
+    assert.equal(game.player(3).hand.length, 1); assert.equal(game.discard.length, 2); assert.ok(game.discard.every(card => card.discardVisibility === "hidden"));
+    assert.equal(game.player(0).energy.gem + game.player(0).energy.crystal, damageType === "spell" && accepted ? 0 : 2);
+    game.assertCardLocations();
+  }
+  const deferred = make("guardianAngel"); deferred.player(3).handLimit = 1; deferred.player(0).energy.crystal = 1;
+  deferred.onDecision = async request => request.type === "numberChoice" ? 1 : request.defaultValue;
+  const { resolveAsync } = await import("../src/resolution/decisions.js");
+  await resolveAsync(deferred.damageSteps(3, 2, { sourceId: 1, damageType: "spell", overflow: "defer" }), request => request.type === "overflow" ? deferred.resolveOverflowWithDecisions(3, [0]) : request.defaultValue);
+  assert.equal(deferred.teams.red.morale, 15); assert.equal(deferred.player(0).energy.crystal, 0); deferred.assertCardLocations();
+  const direct = make("guardianAngel"); direct.player(3).handLimit = 1; direct.player(0).energy.crystal = 2;
+  direct.draw(3, 3); assert.equal(direct.teams.red.morale, 13); assert.equal(direct.player(0).energy.crystal, 2);
+});

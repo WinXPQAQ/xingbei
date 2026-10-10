@@ -102,7 +102,7 @@ test("多个中毒是独立基础效果，先于虚弱逐牌处理；其他基�
   } });
   game.endTurn();
   assert.deepEqual(game.timeline.filter(event => ![Timing.DAMAGE_BEFORE, Timing.HEALING_BEFORE, Timing.DAMAGE_ACTUAL_BEFORE, Timing.DAMAGE_ACTUAL, Timing.DAMAGE_AFTER].includes(event.timing)).map(event => event.timing),
-    [Timing.TURN_START, Timing.ACTION_PHASE_BEFORE, Timing.ACTION_PHASE_SKIPPED, Timing.TURN_END]);
+    [Timing.TURN_BEFORE, Timing.TURN_START, Timing.ACTION_PHASE_BEFORE, Timing.ACTION_PHASE_SKIPPED, Timing.TURN_END]);
   assert.equal(game.assertCardLocations(), true);
 });
 

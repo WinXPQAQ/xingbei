@@ -8,6 +8,9 @@ export class TurnFlow {
     const context = { playerId, skipped: false, route: null, actionType: null, completed: false, activationDone: false, attackCount: 0, pendingActions: [], usedSkills: {}, phase: Timing.TURN_START };
     this.state = context;
     this.game.recordPresentation("turn", { playerId });
+    context.phase = Timing.TURN_BEFORE;
+    yield* this.game.trigger(Timing.TURN_BEFORE, context, options);
+    context.phase = Timing.TURN_START;
     yield* this.game.trigger(Timing.TURN_START, context, options);
     context.phase = Timing.ACTION_PHASE_BEFORE;
     yield* this.game.trigger(Timing.ACTION_PHASE_BEFORE, context, options);
@@ -50,7 +53,7 @@ export class TurnFlow {
     if (state.route === "normal" && !state.activationDone) {
       state.activationDone = true;
       state.phase = Timing.ACTIVATION;
-      yield* this.game.trigger(Timing.ACTIVATION, state);
+      yield* this.game.trigger(Timing.ACTIVATION, state, options);
     }
     state.phase = { attack: Timing.ATTACK_ACTION_START, spell: Timing.SPELL_ACTION_START, special: Timing.SPECIAL_ACTION_START }[actionType];
     yield* this.game.trigger(state.phase, state, options);
