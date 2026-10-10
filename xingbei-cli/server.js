@@ -9,6 +9,7 @@ const port = Number(process.env.PORT || 4173);
 const host = process.env.HOST || "0.0.0.0";
 const testMode = process.env.TEST_MODE === "1";
 const { version } = JSON.parse(await readFile(join(projectRoot, "package.json"), "utf8"));
+const legacyAssets = JSON.parse(await readFile(join(projectRoot, "legacy-assets.json"), "utf8"));
 const types = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".png": "image/png", ".jpg": "image/jpeg", ".svg": "image/svg+xml", ".woff2": "font/woff2" };
 
 function within(root, suffix) {
@@ -25,8 +26,8 @@ function resolveRequest(pathname) {
   if (pathname.startsWith("/src/")) return within(projectRoot, pathname);
   if (pathname.startsWith("/web/")) return within(projectRoot, pathname);
   if (pathname.startsWith("/font/")) return within(join(workspaceRoot, "xingbei-1.6.7-source/font"), pathname.slice(5));
-  if (pathname.startsWith("/review/")) return within(join(projectRoot, "artifacts/frontend"), pathname.slice(7));
-  if (pathname.startsWith("/assets/")) return within(join(workspaceRoot, "xingbei-1.6.7-source/image"), pathname.slice(7));
+  if (pathname.startsWith("/review/")) return within(join(projectRoot, "artifacts/frontend"), `/${legacyAssets[pathname.slice(8)] || pathname.slice(8)}`);
+  if (pathname.startsWith("/assets/")) return within(join(workspaceRoot, "xingbei-1.6.7-source/image"), `/${legacyAssets[pathname.slice(8)] || pathname.slice(8)}`);
   return null;
 }
 

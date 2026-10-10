@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-import { ATTACKS, cardText } from "./cards.js";
+import { cardText } from "./cards.js";
 import { Game, RuleError } from "./engine.js";
-import { chooseAiAction } from "./ai.js";
+import { chooseAiAction, chooseAiResponse } from "./ai.js";
 import { askIndex, TerminalUI } from "./tui.js";
 
 const tui = new TerminalUI();
@@ -85,7 +85,7 @@ async function humanTurn() {
   const player = game.player(humanId);
   if (game.unusableCards(humanId).length >= 4) {
     tui.console("无法行动：至少有4张牌当前不可使用，将展示并替换全部手牌。");
-    game.refreshUnableHand(humanId); flushLog(); return true;
+    await game.executeAction(humanId, { type: "refresh" }); flushLog(); return true;
   }
   while (true) {
     showState();
@@ -93,17 +93,17 @@ async function humanTurn() {
     const [command, indexText, targetText] = line.split(/\s+/);
     if (command === "quit") return false;
     try {
-      if (command === "buy") game.purchase(humanId, { overflow: overflowPolicy });
-      else if (command === "synth") game.synthesize(humanId, await chooseSynthesis(player), { overflow: overflowPolicy });
-      else if (command === "refine") game.refine(humanId, await chooseRefinement(player));
+      if (command === "buy") await game.executeAction(humanId, { type: "purchase" }, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
+      else if (command === "synth") await game.executeAction(humanId, { type: "synthesize", gemCount: await chooseSynthesis(player) }, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
+      else if (command === "refine") await game.executeAction(humanId, { type: "refine", stones: await chooseRefinement(player) });
       else if (command === "play") {
         const index = Number(indexText), card = player.hand[index];
         if (!card) throw new RuleError("无效的手牌编号");
         const targets = game.legalTargets(humanId, card);
         if (!targets.length) throw new RuleError("这张牌目前不可使用");
-        const target = card.name === "moDan" ? null : Number(targetText);
-        if (card.name !== "moDan" && !targets.includes(target)) throw new RuleError(`合法目标：${targets.join("、")}`);
-        game.play(humanId, index, target, { autoRespond: true, overflow: overflowPolicy });
+        const target = card.name === "magicBullet" ? targets[0] : Number(targetText);
+        if (card.name !== "magicBullet" && !targets.includes(target)) throw new RuleError(`合法目标：${targets.join("、")}`);
+        await playCard(humanId, index, target);
       } else {
         tui.console("play 牌号 目标号；魔弹只需play 牌号；buy购买；synth合成；refine提炼；quit退出。Tab切换面板，PgUp/PgDn滚动。");
         continue;
@@ -116,61 +116,52 @@ async function humanTurn() {
   }
 }
 
-async function aiTurn(actorId) {
-  const action = chooseAiAction(game, actorId);
-  if (action.type === "refresh") return game.refreshUnableHand(actorId);
-  if (action.type === "purchase") return game.purchase(actorId, { overflow: "random" });
-  if (action.type === "synthesize") return game.synthesize(actorId, action.gemCount, { overflow: "random" });
-  if (action.type === "pass") return game.log.push(`${game.player(actorId).name}跳过行动`);
-
-  const card = game.player(actorId).hand[action.index];
-  const options = { autoRespond: id => id !== humanId, overflow: overflowPolicy };
-  if (ATTACKS.has(card.name) && action.targetId === humanId) {
-    const valid = game.player(humanId).hand
-      .map((response, index) => ({ response, index }))
-      .filter(item => game.canRespond(card, item.response));
-    if (valid.length) {
-      tui.console(`【应战】${game.player(actorId).name}对你使用主动攻击：${cardText(card)}`);
-      tui.console(valid.map(x => `${x.index}: ${cardText(x.response)} #${x.response.id}`).join("\n"));
-      const chosen = await askIndex(tui, "应战牌号（回车不应战）> ", valid.map(item => item.index));
-      if (chosen !== null) {
-        options.responseIndex = chosen;
-        const response = game.player(humanId).hand[options.responseIndex];
-        if (ATTACKS.has(response?.name)) {
-          const targets = game.players.filter(p => p.team !== game.player(humanId).team && p.id !== actorId).map(p => p.id);
-          options.responseTargetId = await askIndex(tui, `应战目标(${targets.join("/")})> `, targets, { allowBlank: false });
-        }
-      }
-    }
-  } else if (card.name === "moDan") {
-    const valid = game.player(humanId).hand
-      .map((response, index) => ({ response, index }))
-      .filter(item => item.response.name === "moDan" || item.response.name === "shengGuang");
-    if (valid.length) {
-      tui.console(`魔弹可能传递到你。可响应：${valid.map(x => `${x.index}:${cardText(x.response)}`).join("，")}`);
-      const chosen = await askIndex(tui, "魔弹响应牌号（回车不响应）> ", valid.map(item => item.index));
-      if (chosen !== null) {
-        options.responses = { [humanId]: chosen };
-      }
+async function chooseResponse(context) {
+  const { target, valid, actor } = context;
+  if (target.id !== humanId) return chooseAiResponse(game, context);
+  while (true) {
+    showState();
+    tui.console(`${actor.name}向你发动${context.attack ? "攻击" : "魔弹"}；可响应：${valid.map(item => `${item.index}:${cardText(item.card)}`).join("，")}`);
+    const index = await askIndex(tui, "响应牌号（回车放弃）> ", valid.map(item => item.index));
+    if (index == null) return null;
+    const picked = valid.find(item => item.index === index);
+    if (picked.card.name === "holyLight") {
+      if ((await tui.question("使用圣光？输入yes确认，回车重新选牌> ")).trim() === "yes") return { index };
+    } else {
+      const targets = context.attack ? context.counterTargets.map(player => player.id) : [context.nextTarget.id];
+      const targetId = await askIndex(tui, `目标(${targets.join("/")})，回车重新选牌> `, targets);
+      if (targetId != null) return { index, targetId };
     }
   }
-  game.play(actorId, action.index, action.targetId, options);
+}
+async function playCard(actorId, index, targetId) {
+  const card = game.player(actorId).hand[index];
+  const options = { chooseResponse, overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow };
+  if (card.type === "attack") return game.attackWithDecisions(actorId, index, targetId, options);
+  if (card.name === "magicBullet") return game.playMagicWithDecisions(actorId, index, options);
+  return game.playWithDecisions(actorId, index, targetId, options);
+}
+async function aiTurn(actorId) {
+  const action = chooseAiAction(game, actorId);
+  if (action.type === "refresh") return game.executeAction(actorId, action);
+  if (action.type === "purchase") return game.executeAction(actorId, action, { overflow: "random" });
+  if (action.type === "synthesize") return game.executeAction(actorId, action, { overflow: "random" });
+  if (action.type === "pass") return game.log.push(`${game.player(actorId).name}跳过行动`);
+  return playCard(actorId, action.index, action.targetId);
 }
 
-tui.console(`星杯传说 CLI v0.3，你控制${game.player(humanId).name}。Tab切换滚动面板，PgUp/PgDn滚动。`);
+tui.console(`星杯传说 CLI，你控制${game.player(humanId).name}。Tab切换滚动面板，PgUp/PgDn滚动。`);
 showState();
 let running = true;
 while (running && !game.winner) {
   const player = game.player(game.current);
   turnDivider(player.name, "开始");
-  let weakness = "skip";
-  if (player.weakness) {
-    if (player.id === humanId) {
-      const choice = (await tui.question("虚弱：draw摸3张，否则跳过> ")).trim();
-      weakness = choice === "draw" ? "draw" : "skip";
-    } else weakness = game.random() < 0.5 ? "draw" : "skip";
-  }
-  const turn = game.startTurn(player.id, { weakness, overflow: overflowPolicy });
+  const turn = await game.beginTurn(player.id, {
+    chooseWeakness: async () => player.id === humanId
+      ? ((await tui.question("虚弱：draw摸3张，否则跳过> ")).trim() === "draw" ? "draw" : "skip")
+      : (game.random() < .5 ? "draw" : "skip"),
+    resolveOverflow: resolveHumanOverflow,
+  }, { overflow: overflowPolicy });
   await resolveHumanOverflow();
   flushLog();
   if (!turn.skipped && !game.winner) {
@@ -179,7 +170,7 @@ while (running && !game.winner) {
   }
   turnDivider(player.name, "结束");
   showState();
-  game.current = (game.current + 1) % game.players.length;
+  await game.endTurnWithDecisions({ resolveOverflow: resolveHumanOverflow });
 }
 
 if (game.winner) tui.console(`游戏结束：${game.winner === "red" ? "红方" : "蓝方"}获胜！`);

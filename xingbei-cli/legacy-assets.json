@@ -1,0 +1,21 @@
+{
+  "card/darkStrike.png": "card/anMie.png",
+  "card/waterStrike.png": "card/shuiLianZhan.png",
+  "card/fireStrike.png": "card/huoYanZhan.png",
+  "card/windStrike.png": "card/fengShenZhan.png",
+  "card/lightningStrike.png": "card/leiGuangZhan.png",
+  "card/earthStrike.png": "card/diLieZhan.png",
+  "card/holyLight.png": "card/shengGuang.png",
+  "card/holyShield.png": "card/shengDun.png",
+  "card/weakness.png": "card/xuRuo.png",
+  "card/poison.png": "card/zhongDu.png",
+  "card/magicBullet.png": "card/moDan.png",
+  "character/berserker.jpg": "character/kuangZhanShi.jpg",
+  "character/magicalGirl.jpg": "character/moFaShaoNv.jpg",
+  "character/bard.jpg": "character/yinYouShiRen.jpg",
+  "character/swordEmperor.jpg": "character/jianDi.jpg",
+  "character/priest.jpg": "character/shenGuan.jpg",
+  "character/assassin.jpg": "character/anShaZhe.jpg",
+  "stones/gem.png": "card/xingShi/baoShi.png",
+  "stones/crystal.png": "card/xingShi/shuiJing.png"
+}
