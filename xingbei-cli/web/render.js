@@ -54,7 +54,7 @@ export function renderPlayers(game, container, humanId, targets = null) {
   }
 }
 
-export function renderHand(game, container, humanId, { acceptingAction, selectedCard, locked, onSelect, handChoice = null }) {
+export function renderHand(game, container, humanId, { acceptingAction, selectedCard, locked, onSelect, handChoice = null, restrictToLegal = false }) {
   const existing = new Map([...container.children].map(node => [node.dataset.cardId, node]));
   const activeIds = new Set(game.player(humanId).hand.map(card => card.id));
   for (const node of [...container.children]) if (!activeIds.has(node.dataset.cardId)) node.remove();
@@ -64,7 +64,7 @@ export function renderHand(game, container, humanId, { acceptingAction, selected
     const usable = handChoice ? handChoice.valid.includes(index) : game.legalTargets(humanId, card).length > 0;
     const selected = handChoice ? handChoice.selected.has(index) : selectedCard === index;
     button.className = `card${selected ? " selected" : ""}${usable ? "" : " unusable"}`;
-    button.disabled = !acceptingAction || locked || (handChoice && !usable);
+    button.disabled = !acceptingAction || locked || ((handChoice || restrictToLegal) && !usable);
     const context = { game, playerId: humanId, purpose: "hand" };
     const markup = cardContents(card, context);
     if (button._markup !== markup) { button.innerHTML = markup; button._markup = markup; }

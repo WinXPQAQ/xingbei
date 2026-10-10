@@ -10,5 +10,11 @@ export function createHeroScene(id, seed) {
     const shield = game.deck.find(card => card.name === "holyShield"); game.attachCard(shield.id, 1, { effectId: "holyShield" });
     game.player(0).energy.gem = 1;
   }
+  if (heroId === "windSwordmaster") {
+    give(0, card => card.type === "attack" && card.hasUniqueSkill("galeArt"));
+    give(0, card => card.type === "attack" && card.element === "wind");
+    give(0, card => card.type === "attack" && card.element === "earth");
+    game.player(0).energy.crystal = 1;
+  }
   game.log = []; game.assertCardLocations(); return game;
 }

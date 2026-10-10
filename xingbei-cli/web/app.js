@@ -133,12 +133,13 @@ function render() {
   elements.handCount.textContent = `${view.player(humanId).hand.length} / ${view.player(humanId).handLimit}`;
   renderPlayers(view);
   paintHand(view, elements.hand, humanId, {
-    acceptingAction: !presenting && (acceptingAction || !!handChoice), selectedCard, locked: presenting || (busy && !targetChoice && !handChoice), handChoice,
+    acceptingAction: !presenting && (acceptingAction || !!handChoice), selectedCard, locked: presenting || (busy && !targetChoice && !handChoice), handChoice, restrictToLegal: game.turn.hasExtraActions(),
     onSelect: index => handChoice ? handChoice.select(index) : launch(() => selectCard(index)),
   });
   const player = game.player(humanId), stones = game.stoneCounts(player.team);
   $("#sort-hand").disabled = presenting || busy || !!targetChoice || !!pendingChoice;
   const locked = presenting || !acceptingAction || busy || !!targetChoice;
+  endExtra.hidden = !game.turn.hasExtraActions(); endExtra.disabled = locked;
   elements.buy.disabled = locked || !game.canDrawSpecial(humanId);
   elements.synth.disabled = locked || !game.canDrawSpecial(humanId) || stones.total < 3;
   elements.refine.disabled = locked || stones.total < 1 || player.energy.gem + player.energy.crystal >= 3;
@@ -216,6 +217,10 @@ function choose(title, choices, { cancel = false, detail = "" } = {}) {
 }
 
 async function chooseRuleDecision(request) {
+  if (request.type === "cardChoice") {
+    if (request.playerId !== humanId) return request.defaultValue;
+    return chooseHand(request.title, game.player(humanId).hand, { count: request.count, valid: request.valid, cancel: request.optional });
+  }
   if (!request.choices) return null;
   if (request.playerId !== humanId) return chooseAiRuleDecision(request);
   return choose(request.title, request.choices);
@@ -409,7 +414,7 @@ async function completeHumanAction(action) {
 
 async function waitForHumanAction() {
   acceptingAction = true;
-  elements.hint.textContent = "[攻击行动]或者[法术行动]";
+  elements.hint.textContent = game.turn.hasExtraActions() ? "额外攻击行动，或结束回合" : "[攻击行动]或者[法术行动]";
   render();
   if (keyboardMode) elements.hand.querySelector("button:enabled")?.focus();
   return session.wait(resolve => { finishAction = resolve; return () => { finishAction = null; }; });
@@ -465,6 +470,12 @@ async function turnGate(active) {
   active.assert();
 }
 
+const endExtra = document.createElement("button"); endExtra.id = "end-extra"; endExtra.textContent = "结束回合";
+$("#control").append(endExtra);
+endExtra.addEventListener("click", () => {
+  if (acceptingAction && !busy && game.turn.hasExtraActions()) { game.skipExtraActions(humanId); acceptingAction = false; finishAction?.(); render(); }
+});
+
 async function runTurns(active) {
   while (!game.winner) {
     active.assert();
@@ -483,6 +494,7 @@ async function runTurns(active) {
     active.assert();
     await resolveHumanOverflow();
     flushLog();
+    do {
     if (!turn.skipped && !game.winner) {
       if (player.id === humanId) {
         if (game.canRefreshUnableHand(humanId)) {
@@ -491,6 +503,8 @@ async function runTurns(active) {
         } else await waitForHumanAction();
       } else { await delay(isDev ? 0 : 150); await executeAi(player.id, isDev && ["attack", "attack-switch", "attack-empty", "shield-hit"].includes(sceneId) && events.length === 1 ? { type: "play", index: 0, targetId: humanId } : null); active.assert(); flushLog(); }
     }
+    if (player.id !== humanId && game.turn.hasExtraActions() && !game.legalCards(player.id).length) game.skipExtraActions(player.id);
+    } while (game.turn.hasExtraActions() && !game.winner);
     active.assert();
     events.push({ type: "turn-end", current: player.id });
     appendLog(`━━━━━━━━ ${player.name}回合结束 ━━━━━━━━`, true);

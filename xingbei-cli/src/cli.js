@@ -11,6 +11,16 @@ game.player(humanId);
 const overflowPolicy = player => player.id === humanId ? "defer" : "random";
 
 game.onDecision = async request => {
+  if (request.type === "cardChoice") {
+    if (request.playerId !== humanId) return request.defaultValue;
+    const selected = [];
+    while (selected.length < request.count) {
+      showState(); const index = await askIndex(tui, `${request.title}> `, request.valid.filter(index => !selected.includes(index)));
+      if (index == null && request.optional) return null;
+      if (index != null) selected.push(index);
+    }
+    return selected;
+  }
   if (!request.choices) return null;
   if (request.playerId !== humanId) return chooseAiRuleDecision(request);
   tui.console(request.title);
@@ -101,6 +111,7 @@ async function humanTurn() {
     const line = (await tui.question("行动> ")).trim();
     const [command, indexText, targetText] = line.split(/\s+/);
     if (command === "quit") return false;
+    if (command === "end" && game.turn.hasExtraActions()) { game.skipExtraActions(humanId); return true; }
     try {
       if (command === "buy") await game.executeAction(humanId, { type: "purchase" }, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
       else if (command === "synth") await game.executeAction(humanId, { type: "synthesize", gemCount: await chooseSynthesis(player) }, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
@@ -114,7 +125,7 @@ async function humanTurn() {
         if (card.name !== "magicBullet" && !targets.includes(target)) throw new RuleError(`合法目标：${targets.join("、")}`);
         await playCard(humanId, index, target);
       } else {
-        tui.console("play 牌号 目标号；魔弹只需play 牌号；buy购买；synth合成；refine提炼；quit退出。Tab切换面板，PgUp/PgDn滚动。");
+        tui.console("play 牌号 目标号；魔弹只需play 牌号；buy购买；synth合成；refine提炼；end放弃额外行动；quit退出。Tab切换面板，PgUp/PgDn滚动。");
         continue;
       }
       await resolveHumanOverflow();
@@ -173,10 +184,13 @@ while (running && !game.winner) {
   }, { overflow: overflowPolicy });
   await resolveHumanOverflow();
   flushLog();
+  do {
   if (!turn.skipped && !game.winner) {
     if (player.id === humanId) running = await humanTurn();
     else { await aiTurn(player.id); await resolveHumanOverflow(); flushLog(); }
   }
+  if (player.id !== humanId && game.turn.hasExtraActions() && !game.legalCards(player.id).length) game.skipExtraActions(player.id);
+  } while (running && game.turn.hasExtraActions() && !game.winner);
   turnDivider(player.name, "结束");
   showState();
   await game.endTurnWithDecisions({ resolveOverflow: resolveHumanOverflow });

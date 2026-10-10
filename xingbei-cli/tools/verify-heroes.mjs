@@ -39,6 +39,20 @@ try {
       check(`${tag} 拒绝撕裂不扣费`, after.game.players[0].energy.gem === 1);
       check(`${tag} 六时点存在`, [1,2,3,4,5,6].every(point => after.game.timeline.some(entry => entry.point === point)));
     }
+    if (hero === "windSwordmaster") {
+      await page.locator('#hand .card[data-index="0"]').click(); await page.locator('.player.targetable[data-player="1"]').click();
+      for (const title of ["疾风技", "风怒追击", "剑影"]) {
+        await page.waitForFunction(title => window.xingbeiDev.exportState().pendingChoice?.title.includes(title), title);
+        await page.getByRole("button", { name: "发动", exact: true }).click();
+      }
+      await page.waitForFunction(() => window.xingbeiDev.exportState().phase === "action");
+      check(`${tag} 额外行动留在本回合`, (await state()).current === 0 && (await state()).game.turn.pendingActions.length === 3);
+      check(`${tag} 风系限制`, await page.locator('#hand .card[data-index="1"]').isDisabled());
+      check(`${tag} 剑影费用`, (await state()).game.players[0].energy.crystal === 0);
+      await page.getByRole("button", { name: "结束回合", exact: true }).click();
+      await page.waitForFunction(() => window.xingbeiDev.exportState().current === 1);
+      check(`${tag} 可以放弃所有额外行动`, (await state()).game.players[0].hand.length === 2);
+    }
     await page.screenshot({ path: resolve(output, `${tag}.png`) });
     await page.close();
   }

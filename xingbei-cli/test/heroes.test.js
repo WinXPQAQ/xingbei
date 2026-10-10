@@ -50,3 +50,40 @@ test("血腥咆哮在时点2命中，圣光和圣盾保留，治疗仍在时点4
   assert.equal(card.location.zone, "discard");
   assert.equal(game.timeline.find(entry => entry.timing === Timing.ATTACK_HIT_CHECK).point, 2);
 });
+
+test("风之剑圣连续三次主动攻击、额外行动可结束、圣剑摸弃与回合限定", async () => {
+  const game = make("windSwordmaster");
+  for (let i = 0; i < 3; i++) take(game, 0, card => card.type === "attack" && card.hasUniqueSkill("galeArt"));
+  game.player(0).energy.crystal = 1;
+  await game.beginTurn(0);
+  const options = { chooseResponse: () => null, choose: request => request.type === "skillChoice" ? ["galeArt", "swordShadow"].includes(request.skillId) : request.type === "numberChoice" ? 1 : request.defaultValue };
+  await game.attackWithDecisions(0, 0, 1, options);
+  assert.equal(game.turn.state.pendingActions.length, 2); assert.equal(game.turn.state.usedSkills.swordShadow, true);
+  await game.attackWithDecisions(0, 0, 2, options);
+  const shield = game.deck.find(card => card.name === "holyShield"); game.attachCard(shield.id, 5, { effectId: "holyShield" });
+  let asked = 0;
+  await game.attackWithDecisions(0, 0, 5, { ...options, chooseResponse: () => { asked++; return null; } });
+  assert.equal(asked, 0); assert.equal(shield.location.zone, "status");
+  assert.equal(game.turn.state.attackCount, 3); assert.equal(game.player(0).hand.length, 0);
+  assert.equal(game.player(0).energy.crystal, 0);
+  assert.equal(game.timeline.filter(entry => entry.timing === Timing.ACTIVATION).length, 1);
+  assert.equal(game.timeline.filter(entry => entry.timing === Timing.ATTACK_ACTION_END).length, 3);
+  game.skipExtraActions(0); assert.equal(game.turn.hasExtraActions(), false);
+  await game.endTurnWithDecisions(); assert.equal(game.current, 1); game.assertCardLocations();
+});
+
+test("风怒限制风系，烈风技允许圣光而不消耗圣盾，取消可选技能不扣费", async () => {
+  const game = make("windSwordmaster");
+  named(game, 0, "waterStrike"); named(game, 0, "windStrike"); named(game, 0, "earthStrike");
+  await game.beginTurn(0);
+  await game.attackWithDecisions(0, 0, 1, { chooseResponse: () => null, choose: request => request.skillId === "windFury" });
+  assert.ok(game.legalCards(0).every(action => action.card.element === "wind"));
+  game.skipExtraActions(0); game.endTurn();
+  const storm = make("windSwordmaster"); take(storm, 0, card => card.hasUniqueSkill("stormArt"));
+  named(storm, 1, "holyLight"); named(storm, 1, "windStrike");
+  const shield = storm.deck.find(card => card.name === "holyShield"); storm.attachCard(shield.id, 1, { effectId: "holyShield" });
+  await storm.attackWithDecisions(0, 0, 1, { choose: request => request.skillId === "stormArt", chooseResponse: request => {
+    assert.deepEqual(request.valid.map(item => item.card.name), ["holyLight"]); return { index: 0 };
+  } });
+  assert.equal(shield.location.zone, "status"); assert.equal(storm.player(1).hand.length, 1);
+});
