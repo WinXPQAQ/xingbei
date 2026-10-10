@@ -17,3 +17,7 @@
 字体、角色头像、卡牌、星石、music纹理和治疗槽图片通过服务器映射读取原目录，不复制或重新绘制。头像仅供展示；不表示已实现该角色技能。治疗槽读取共用引擎的 `healing` 值，不提供额外治疗操作。
 
 原项目附带 GPL-3.0 许可证，适用许可证全文保留在本目录的 `LICENSE`。复用和适配原代码时继续保留来源及原版权；素材仍保留原文件及其适用权利说明。本文件不将原项目第三方资源的权利重新授予或改写。
+
+六人布局继续提取自 `layout/nova/layout.css` 的 `#arena[data-number="6"]` 座位规则（287–307行）。新增显示头像使用原资源 `image/character/shenGuan.jpg` 与 `image/character/anShaZhe.jpg`，沿用上述项目来源与许可说明；头像展示不包含角色技能。
+
+规则阶段来源：`noname/library/element/content.js` 的星杯回合与行动流程，`noname/library/index.js` 的中毒/虚弱/圣盾基础效果；具体位置和映射见 `docs/game-architecture.md`。新规则使用英文标识，原素材通过 `legacy-assets.json` 适配，原项目未修改。

@@ -1,6 +1,18 @@
-import { ATTACKS, cardName, createDeck } from "./cards.js";
+import { cardName, createDeck } from "./cards.js";
 
-export class RuleError extends Error {}
+import { RuleError } from "./errors.js";
+export { RuleError } from "./errors.js";
+import { Card } from "./card.js";
+import { Player } from "./player.js";
+import { createDefaultHero } from "./hero.js";
+import { BASIC_EFFECTS } from "./effects.js";
+import { TurnFlow } from "./turn.js";
+import { Timing } from "./timing.js";
+import { resolveSync, resolveAsync } from "./resolution/decisions.js";
+export { Timing } from "./timing.js";
+
+export const DEFAULT_NAMES = ["红一", "蓝一", "蓝二", "红二", "红三", "蓝三"];
+export const DEFAULT_TEAMS = ["red", "blue", "blue", "red", "red", "blue"];
 
 function seededRandom(seed) {
   let state = seed >>> 0;
@@ -16,20 +28,139 @@ function shuffle(items, random) {
 }
 
 export class Game {
-  constructor({ names = ["红一", "蓝一", "红二", "蓝二"], seed = Date.now(), shuffleDeck = true } = {}) {
-    if (names.length !== 4) throw new RuleError("第一版仅支持 2v2（4 名玩家）");
+  constructor({ names = DEFAULT_NAMES, teams = DEFAULT_TEAMS, seed = Date.now(), shuffleDeck = true } = {}) {
+    if (names.length !== 6 || teams.length !== 6 || teams.filter(team => team === "red").length !== 3 || teams.filter(team => team === "blue").length !== 3) throw new RuleError("当前对局需要6名玩家，红蓝各3人");
     this.random = seededRandom(seed);
-    this.players = names.map((name, seat) => ({
-      id: seat, name, team: seat % 2 === 0 ? "red" : "blue", hand: [], shield: null,
-      weakness: null, poisons: [], healing: 0, energy: { gem: 0, crystal: 0 },
-    }));
+    this.players = names.map((name, seat) => new Player({ id: seat, name, team: teams[seat], hero: createDefaultHero(seat) }));
     this.teams = { red: { morale: 15, achievements: [], cups: 0 }, blue: { morale: 15, achievements: [], cups: 0 } };
-    this.deck = createDeck();
+    this.deck = []; this.discard = []; this.field = []; this.outside = [];
+    this.cards = new Map();
+    this.effects = new Map(Object.entries(BASIC_EFFECTS));
+    this.skillDefinitions = new Map();
+    this.turn = new TurnFlow(this); this.timeline = [];
+    for (const card of createDeck()) this.registerCard(card, { zone: "deck" });
     if (shuffleDeck) shuffle(this.deck, this.random);
-    this.discard = [];
     this.current = 0;
     this.winner = null;
     this.log = [];
+  }
+
+  zone(location) {
+    if (!location || !["deck", "discard", "hand", "field", "status", "outside"].includes(location.zone)) throw new RuleError("无效的牌区域");
+    if (["hand", "status"].includes(location.zone)) {
+      if (!Number.isInteger(location.playerId)) throw new RuleError("玩家区域需要明确玩家编号");
+      const player = this.player(location.playerId);
+      return location.zone === "hand" ? player.hand : player.statuses;
+    }
+    if (location.playerId != null) throw new RuleError("公共区域不能指定玩家");
+    return { deck: this.deck, discard: this.discard, field: this.field, outside: this.outside }[location.zone];
+  }
+
+  registerCard(card, location) {
+    if (!(card instanceof Card) || this.cards.has(card.id) || card.location) throw new RuleError("牌必须是尚未注册的唯一实体");
+    if (card.category === "basic" && location?.zone !== "deck") throw new RuleError("基础牌注册时必须在抽牌堆");
+    const destination = this.zone(location);
+    if (location.zone === "status" && !this.canAttach(card, location.playerId, card.attachment?.effectId ?? card.name)) throw new RuleError("不能重复挂载该效果");
+    this.cards.set(card.id, card);
+    card.setLocation(location);
+    if (location.zone === "status" && !card.attachment) card.attachment = { effectId: card.name, sourcePlayerId: null, sourceSkillId: null, data: {} };
+    destination.push(card);
+    return card;
+  }
+
+  moveCard(cardId, destination) {
+    const card = this.cards.get(cardId);
+    if (!card) throw new RuleError(`不存在牌 ${cardId}`);
+    const next = this.zone(destination), previous = this.zone(card.location);
+    if (destination.zone === "status") {
+      if (!card.attachment || !this.canAttach(card, destination.playerId, card.attachment.effectId)) throw new RuleError("状态区需要合法且不重复的挂载效果");
+    }
+    const index = previous.indexOf(card);
+    if (index < 0) throw new RuleError("牌位置与区域不一致");
+    previous.splice(index, 1); next.push(card);
+    card.setLocation(destination);
+    if (destination.zone !== "status") card.attachment = null;
+    return card;
+  }
+
+  registerEffect(id, definition) {
+    if (this.effects.has(id)) throw new RuleError(`效果已注册 ${id}`);
+    this.effects.set(id, { category: "basic", stackable: false, priority: 0, timings: [], ...definition });
+  }
+
+  canAttach(card, playerId, effectId) {
+    const player = this.player(playerId), definition = this.effects.get(effectId);
+    if (card.category === "basic" && (!definition || definition.category !== "basic")) return false;
+    return card.category === "exclusive" || definition.stackable || !player.getEffects(effectId).some(existing => existing !== card);
+  }
+
+  attachCard(cardId, playerId, { effectId, sourcePlayerId = null, sourceSkillId = null, data = {} }) {
+    const card = this.cards.get(cardId);
+    if (!card || !this.canAttach(card, playerId, effectId)) throw new RuleError("目标已有该基础效果或效果未注册");
+    const previous = card.attachment;
+    card.attachment = { effectId, sourcePlayerId, sourceSkillId, data: { ...data } };
+    try { return this.moveCard(card.id, { zone: "status", playerId }); }
+    catch (error) { card.attachment = previous; throw error; }
+  }
+
+  removeEffect(cardId, destination = { zone: "discard" }) {
+    const card = this.cards.get(cardId);
+    if (card?.location.zone !== "status") throw new RuleError("这张牌没有挂载效果");
+    return this.moveCard(cardId, destination);
+  }
+
+  registerSkill(id, definition) {
+    if (this.skillDefinitions.has(id)) throw new RuleError(`技能已注册 ${id}`);
+    this.skillDefinitions.set(id, { priority: 0, ...definition, id });
+  }
+
+  modifyTraits(card, printed, context) {
+    let traits = { elements: [...printed.elements], fates: [...printed.fates] };
+    const modifiers = this.players.flatMap(player => player.getSkills(context).map(source => ({ ...source, player })))
+      .map(source => ({ ...source, definition: typeof source.skill === "string" ? this.skillDefinitions.get(source.skill) : source.skill }))
+      .filter(source => source.definition?.modifyTraits).sort((a, b) => (a.definition.priority ?? 0) - (b.definition.priority ?? 0));
+    for (const { definition, player, sourceCard } of modifiers) {
+      if (definition.filter && !definition.filter({ game: this, player, card, sourceCard, context, ...context })) continue;
+      traits = definition.modifyTraits({ game: this, player, card, sourceCard, context, ...context }, traits) ?? traits;
+    }
+    return { elements: [...new Set(traits.elements)], fates: [...new Set(traits.fates)] };
+  }
+
+  *trigger(timing, context, options = {}) {
+    this.timeline.push({ timing, playerId: context.playerId ?? context.targetId, cardId: context.card?.id ?? null });
+    const ownerId = context.playerId ?? context.targetId;
+    const effects = ownerId == null ? [] : this.player(ownerId).statuses.map(card => ({ card, player: this.player(ownerId), definition: this.effects.get(card.attachment.effectId) }));
+    const skills = this.players.flatMap(player => player.getSkills(context).map(({ skill, sourceCard }) => ({ player, sourceCard, definition: typeof skill === "string" ? this.skillDefinitions.get(skill) : skill })));
+    const entries = [...effects, ...skills].filter(entry => entry.definition?.timings?.includes(timing))
+      .sort((a, b) => (b.definition.priority ?? 0) - (a.definition.priority ?? 0));
+    for (const entry of entries) {
+      if (entry.card && (entry.card.location.zone !== "status" || entry.card.location.playerId !== entry.player.id || this.effects.get(entry.card.attachment.effectId) !== entry.definition)) continue;
+      if (entry.sourceCard && (entry.sourceCard.location.zone !== "status" || entry.sourceCard.location.playerId !== entry.player.id)) continue;
+      const payload = { game: this, timing, context, options, ...entry };
+      if (entry.definition.filter && !entry.definition.filter(payload)) continue;
+      const result = entry.definition.resolve?.(payload);
+      if (result?.next) yield* result;
+      else if (result?.then) yield { type: "promise", promise: result };
+      if (this.winner) break;
+    }
+  }
+
+  assertCardLocations() {
+    const seen = new Set();
+    for (const location of [{ zone: "deck" }, { zone: "discard" }, { zone: "field" }, { zone: "outside" }, ...this.players.flatMap(player => [{ zone: "hand", playerId: player.id }, { zone: "status", playerId: player.id }])]) {
+      for (const card of this.zone(location)) {
+        if (seen.has(card.id) || this.cards.get(card.id) !== card || JSON.stringify(card.location) !== JSON.stringify(location)) throw new RuleError("牌登记或位置不一致");
+        if (location.zone !== "status" && card.attachment) throw new RuleError("非状态区牌不能承载挂载效果");
+        seen.add(card.id);
+      }
+    }
+    if (seen.size !== this.cards.size) throw new RuleError("登记牌不在任何区域");
+    return true;
+  }
+
+  toJSON() {
+    return { players: this.players, teams: this.teams, deck: this.deck, discard: this.discard, field: this.field, outside: this.outside,
+      current: this.current, winner: this.winner, log: this.log, turn: this.turn.state, timeline: this.timeline };
   }
 
   setup(handSize = 4) {
@@ -48,10 +179,11 @@ export class Game {
     for (let i = 0; i < count; i++) {
       if (!this.deck.length) {
         if (!this.discard.length) break;
-        this.deck = shuffle(this.discard.splice(0), this.random);
+        for (const card of [...this.discard]) this.moveCard(card.id, { zone: "deck" });
+        shuffle(this.deck, this.random);
         this.log.push("弃牌堆洗回牌库");
       }
-      player.hand.push(this.deck.pop());
+      this.moveCard(this.deck.at(-1).id, { zone: "hand", playerId: id });
     }
     const excess = Math.max(0, player.hand.length - 6);
     if (excess) {
@@ -91,9 +223,7 @@ export class Game {
 
   discardCard(player, index) {
     if (!Number.isInteger(index) || index < 0 || index >= player.hand.length) throw new RuleError("无效的手牌编号");
-    const [card] = player.hand.splice(index, 1);
-    this.discard.push(card);
-    return card;
+    return this.moveCard(player.hand[index].id, { zone: "discard" });
   }
 
   changeMorale(team, amount) {
@@ -108,14 +238,7 @@ export class Game {
   }
 
   legalTargets(actorId, card) {
-    const actor = this.player(actorId);
-    if (card.name === "shengGuang") return [];
-    if (card.name === "moDan") return this.nearestOpponent(actorId) ? [null] : [];
-    if (ATTACKS.has(card.name)) return this.players.filter(p => p.team !== actor.team).map(p => p.id);
-    if (card.name === "shengDun") return this.players.filter(p => !p.shield).map(p => p.id);
-    if (card.name === "xuRuo") return this.players.filter(p => !p.weakness).map(p => p.id);
-    if (card.name === "zhongDu") return this.players.map(p => p.id);
-    return [];
+    return card.legalTargets({ game: this, actor: this.player(actorId) });
   }
 
   legalCards(actorId) {
@@ -156,11 +279,13 @@ export class Game {
     return added;
   }
 
-  removeStones(team, { gem = 0, crystal = 0 }) {
+  validateStoneRemoval(team, { gem = 0, crystal = 0 }) {
     const counts = this.stoneCounts(team);
-    if (gem < 0 || crystal < 0 || gem > counts.gem || crystal > counts.crystal) {
-      throw new RuleError("战绩区没有足够的星石");
-    }
+    if (!Number.isInteger(gem) || !Number.isInteger(crystal) || gem < 0 || crystal < 0 || gem > counts.gem || crystal > counts.crystal) throw new RuleError("战绩区没有足够的星石");
+  }
+
+  removeStones(team, { gem = 0, crystal = 0 }) {
+    this.validateStoneRemoval(team, { gem, crystal });
     for (const [type, count] of [["gem", gem], ["crystal", crystal]]) {
       for (let i = 0; i < count; i++) {
         const index = this.teams[team].achievements.indexOf(type);
@@ -169,22 +294,44 @@ export class Game {
     }
   }
 
-  purchase(actorId, options = {}) {
+  purchase(actorId, options = {}) { return resolveSync(this.purchaseSteps(actorId, options), () => null); }
+  synthesize(actorId, gemCount, options = {}) { return resolveSync(this.synthesizeSteps(actorId, gemCount, options), () => null); }
+  refine(actorId, stones) { return resolveSync(this.refineSteps(actorId, stones), () => null); }
+  refreshUnableHand(actorId) { return resolveSync(this.refreshUnableHandSteps(actorId), () => null); }
+  executeAction(actorId, action, options = {}) {
+    if (action.type === "play") return this.playWithDecisions(actorId, action.index, action.targetId, options);
+    let steps;
+    if (action.type === "purchase") steps = this.purchaseSteps(actorId, options);
+    else if (action.type === "synthesize") steps = this.synthesizeSteps(actorId, action.gemCount, options);
+    else if (action.type === "refine") steps = this.refineSteps(actorId, action.stones);
+    else if (action.type === "refresh") steps = this.refreshUnableHandSteps(actorId);
+    else throw new RuleError("未知行动");
+    return resolveAsync(steps, request => this.interactiveDecision(request, options));
+  }
+
+  *purchaseSteps(actorId, options = {}) {
     if (!this.canDrawSpecial(actorId)) throw new RuleError("购买只能在手牌为0至3张时执行");
+    if (this.winner) throw new RuleError("游戏已经结束");
+    yield* this.turn.beginAction(actorId, "special");
     this.draw(actorId, 3, options);
     const player = this.player(actorId);
     const gems = this.addStones(player.team, "gem");
     const crystals = this.addStones(player.team, "crystal");
     this.log.push(`${player.name}执行购买，摸3张牌；己方战绩区获得${gems}个宝石和${crystals}个水晶${gems + crystals < 2 ? "（战绩区上限5个）" : ""}`);
+    if (this.player(actorId).pendingOverflow) yield { type: "overflow", player: this.player(actorId) };
+    yield* this.turn.endAction();
   }
 
-  synthesize(actorId, gemCount, options = {}) {
+  *synthesizeSteps(actorId, gemCount, options = {}) {
     if (!this.canDrawSpecial(actorId)) throw new RuleError("合成只能在手牌为0至3张时执行");
     const player = this.player(actorId);
     const counts = this.stoneCounts(player.team);
     if (counts.total < 3) throw new RuleError("合成需要3个星石");
     if (!Number.isInteger(gemCount) || gemCount < 0 || gemCount > 3) throw new RuleError("合成的宝石数量必须为0至3");
     const crystalCount = 3 - gemCount;
+    this.validateStoneRemoval(player.team, { gem: gemCount, crystal: crystalCount });
+    if (this.winner) throw new RuleError("游戏已经结束");
+    yield* this.turn.beginAction(actorId, "special");
     this.removeStones(player.team, { gem: gemCount, crystal: crystalCount });
     this.draw(actorId, 3, options);
     this.teams[player.team].cups++;
@@ -192,187 +339,109 @@ export class Game {
     this.changeMorale(enemyTeam, -1);
     this.log.push(`${player.name}消耗${gemCount}个宝石、${crystalCount}个水晶执行合成，摸3张牌；己方星杯+1，对方士气-1`);
     this.checkWinner();
+    if (this.player(actorId).pendingOverflow) yield { type: "overflow", player: this.player(actorId) };
+    yield* this.turn.endAction();
   }
 
-  refine(actorId, { gem = 0, crystal = 0 }) {
+  *refineSteps(actorId, { gem = 0, crystal = 0 }) {
     const player = this.player(actorId);
     const total = gem + crystal;
     if (!Number.isInteger(gem) || !Number.isInteger(crystal) || total < 1 || total > 2) {
       throw new RuleError("提炼必须选择1至2个星石");
     }
     if (player.energy.gem + player.energy.crystal + total > 3) throw new RuleError("角色能量上限为3");
+    this.validateStoneRemoval(player.team, { gem, crystal });
+    if (this.winner) throw new RuleError("游戏已经结束");
+    yield* this.turn.beginAction(actorId, "special");
     this.removeStones(player.team, { gem, crystal });
     player.energy.gem += gem;
     player.energy.crystal += crystal;
     this.log.push(`${player.name}提炼${gem}个宝石、${crystal}个水晶；个人能量变为${player.energy.gem}宝石、${player.energy.crystal}水晶`);
+    if (this.player(actorId).pendingOverflow) yield { type: "overflow", player: this.player(actorId) };
+    yield* this.turn.endAction();
   }
 
-  refreshUnableHand(actorId) {
+  *refreshUnableHandSteps(actorId) {
     const player = this.player(actorId);
     if (this.unusableCards(actorId).length < 4) throw new RuleError("未满足无法行动条件");
+    if (this.winner) throw new RuleError("游戏已经结束");
+    yield* this.turn.beginAction(actorId, "special");
     const count = player.hand.length;
     const revealed = player.hand.map(cardName).join("、");
     while (player.hand.length) this.discardCard(player, 0);
     this.draw(actorId, count, { moraleLoss: false });
     this.log.push(`${player.name}无法行动，展示并弃置全部手牌：${revealed}；重摸${count}张`);
+    if (this.player(actorId).pendingOverflow) yield { type: "overflow", player: this.player(actorId) };
+    yield* this.turn.endAction();
   }
 
-  damage(targetId, amount, { sourceId = null, magic = false, overflow = "first", useHealing = 0, shieldable = false } = {}) {
+  *damageSteps(targetId, amount, { sourceId = null, magic = false, overflow = "first", useHealing = 0 } = {}) {
     const target = this.player(targetId);
-    if (shieldable && target.shield) {
-      this.discard.push(target.shield); target.shield = null;
-      this.log.push(`${target.name}的${cardName("shengDun")}抵消了伤害`);
-      return 0;
-    }
-    const healing = Math.min(amount, target.healing, Math.max(0, useHealing));
+    const context = { targetId, sourceId, amount, magic };
+    yield* this.trigger(Timing.DAMAGE_BEFORE, context, { overflow });
+    const healing = Math.min(Math.max(0, context.amount), target.healing, Math.max(0, useHealing));
     target.healing -= healing;
-    const actual = amount - healing;
-    if (actual) this.draw(targetId, actual, { overflow });
-    this.log.push(`${target.name}承受${actual}点${magic ? "法术" : "攻击"}伤害`);
-    return actual;
+    context.actual = Math.max(0, context.amount - healing);
+    if (context.actual) this.draw(targetId, context.actual, { overflow });
+    this.log.push(`${target.name}承受${context.actual}点${magic ? "法术" : "攻击"}伤害`);
+    yield* this.trigger(Timing.DAMAGE_AFTER, context, { overflow });
+    return context.actual;
+  }
+  damage(targetId, amount, options = {}) { return resolveSync(this.damageSteps(targetId, amount, options), () => null); }
+
+  canRespond(attack, response, context = {}) {
+    return attack.canRespond(response, { game: this, ...context });
   }
 
-  canRespond(attack, response) {
-    if (response.name === "shengGuang") return true;
-    // 暗灭只能被圣光响应，不能被暗灭或其他攻击牌应战。
-    if (!ATTACKS.has(response.name) || attack.name === "anMie") return false;
-    return response.name === "anMie" || response.element === attack.element;
-  }
-
-  play(actorId, handIndex, targetId, options = {}) {
+  *actionSteps(actorId, handIndex, targetId, options = {}) {
     if (this.winner) throw new RuleError("游戏已经结束");
-    const actor = this.player(actorId);
-    const card = actor.hand[handIndex];
-    if (!card) throw new RuleError("无效的手牌编号");
-    if (card.name === "shengGuang") throw new RuleError("圣光只能用于响应攻击或魔弹");
-    if (ATTACKS.has(card.name)) return this.attack(actorId, handIndex, targetId, options);
-    const target = this.player(targetId);
-    if (card.name === "shengDun" && target.shield) throw new RuleError("目标已经拥有圣盾");
-    if (card.name === "xuRuo" && target.weakness) throw new RuleError("目标已经虚弱");
-    this.discardCard(actor, handIndex);
-    switch (card.name) {
-      case "shengDun":
-        target.shield = card; this.discard.pop(); break;
-      case "xuRuo":
-        target.weakness = card; this.discard.pop(); break;
-      case "zhongDu": target.poisons.push({ card, sourceId: actorId }); this.discard.pop(); break;
-      case "moDan":
-        this.log.push(`${actor.name}使用${cardName(card)}`);
-        return this.magicBullet(actorId, card, options);
-      default: throw new RuleError(`尚未实现 ${card.name}`);
+    const actor = this.player(actorId), card = actor.hand[handIndex];
+    if (!card || !this.legalTargets(actorId, card).includes(targetId)) throw new RuleError("这张牌目前不能指定该目标");
+    yield* this.turn.beginAction(actorId, card.type);
+    const result = card.resolve({ game: this, actor, targetId, options });
+    if (result?.next) yield* result;
+    else if (result?.then) yield { type: "promise", promise: result };
+    if (card.type !== "attack" && card.name !== "magicBullet") this.log.push(`${actor.name}对${this.player(targetId).name}使用${cardName(card)}`);
+    if (actor.pendingOverflow) yield { type: "overflow", player: actor };
+    yield* this.turn.endAction();
+  }
+  play(actorId, handIndex, targetId, options = {}) {
+    return resolveSync(this.actionSteps(actorId, handIndex, targetId, options), request => this.automaticDecision(request, options));
+  }
+  playWithDecisions(actorId, handIndex, targetId, options = {}) {
+    return resolveAsync(this.actionSteps(actorId, handIndex, targetId, options), request => this.interactiveDecision(request, options));
+  }
+
+  automaticDecision(request, options = {}) {
+    if (request.type !== "response") return options.choose?.(request) ?? null;
+    const { target, valid } = request;
+    const configured = options.responses?.[target.id];
+    let decision = typeof configured === "number" ? { index: configured } : configured;
+    if (!decision && !request.isCounter && options.responseIndex != null) decision = { index: options.responseIndex, targetId: options.responseTargetId };
+    const automatic = typeof options.autoRespond === "function" ? options.autoRespond(target.id) : options.autoRespond;
+    if (!decision && automatic && valid.length) {
+      const picked = valid[Math.floor(this.random() * valid.length)];
+      decision = { index: picked.index };
+      if (picked.card.type === "attack") decision.targetId = request.counterTargets[Math.floor(this.random() * request.counterTargets.length)].id;
     }
-    this.log.push(`${actor.name}对${target.name}使用${cardName(card)}`);
+    return decision ?? null;
   }
 
   attack(actorId, handIndex, targetId, options = {}) {
-    const actor = this.player(actorId), target = this.player(targetId);
-    if (actor.team === target.team) throw new RuleError("攻击只能指定对手");
-    const attack = this.discardCard(actor, handIndex);
-    this.log.push(`${actor.name}使用主动攻击${cardName(attack)}，目标是${target.name}`);
-    return this.resolveAttack(actorId, targetId, attack, options, false);
+    if (this.player(actorId).hand[handIndex]?.type !== "attack") throw new RuleError("请选择攻击牌");
+    return resolveSync(this.actionSteps(actorId, handIndex, targetId, options), request => this.automaticDecision(request, options));
   }
 
-  async attackWithDecisions(actorId, handIndex, targetId, {
-    overflow = "first",
-    chooseResponse,
-    chooseTarget,
-  } = {}) {
-    let actor = this.player(actorId);
-    let target = this.player(targetId);
-    if (actor.team === target.team) throw new RuleError("攻击只能指定对手");
-    let attack = this.discardCard(actor, handIndex);
-    let isCounter = false;
-    this.log.push(`${actor.name}使用主动攻击${cardName(attack)}，目标是${target.name}`);
-
-    while (true) {
-      const counterTargets = this.players.filter(player => player.team !== target.team && player.id !== actor.id);
-      const valid = target.hand.map((card, index) => ({ card, index })).filter(item => {
-        if (!this.canRespond(attack, item.card)) return false;
-        return item.card.name === "shengGuang" || counterTargets.length > 0;
-      });
-
-      let decision = null;
-      if (valid.length) {
-        decision = chooseResponse
-          ? await chooseResponse({ actor, target, attack, valid, counterTargets, isCounter })
-          : null;
-      }
-
-      if (!decision) {
-        this.resolveUnansweredAttack(actor.id, target.id, attack, { overflow }, isCounter);
-        return;
-      }
-
-      const picked = valid.find(item => item.index === decision.index);
-      if (!picked) throw new RuleError("选择的牌不能应战此次攻击");
-      const response = this.discardCard(target, picked.index);
-      if (response.name === "shengGuang") {
-        this.log.push(`${target.name}使用${cardName(response)}抵消攻击，原攻击未命中`);
-        return;
-      }
-
-      this.log.push(`${target.name}使用应战攻击${cardName(response)}，原攻击未命中`);
-      let nextTargetId = decision.targetId;
-      if (nextTargetId == null && chooseTarget) {
-        nextTargetId = await chooseTarget({ actor: target, previousActor: actor, attack: response, targets: counterTargets });
-      }
-      const nextTarget = counterTargets.find(player => player.id === nextTargetId);
-      if (!nextTarget) throw new RuleError("应战攻击目标不合法");
-      this.log.push(`${target.name}的应战攻击目标是${nextTarget.name}`);
-      actor = target;
-      target = nextTarget;
-      attack = response;
-      isCounter = true;
-    }
+  attackWithDecisions(actorId, handIndex, targetId, options = {}) {
+    if (this.player(actorId).hand[handIndex]?.type !== "attack") throw new RuleError("请选择攻击牌");
+    return resolveAsync(this.actionSteps(actorId, handIndex, targetId, options), request => this.interactiveDecision(request, options));
   }
 
-  resolveAttack(actorId, targetId, attack, { responseIndex = null, responseTargetId = null, responses = {}, overflow = "first", useHealing = 0, autoRespond = false } = {}, isCounter = false) {
-    const actor = this.player(actorId), target = this.player(targetId);
-    const configured = responses[targetId];
-    let selectedIndex = configured?.index ?? responseIndex;
-    let selectedTarget = configured?.targetId ?? responseTargetId;
-    const mayAutoRespond = typeof autoRespond === "function" ? autoRespond(target.id) : autoRespond;
-    if (selectedIndex == null && mayAutoRespond) {
-      const counterTargets = this.players.filter(p => p.team !== target.team && p.id !== actor.id);
-      const valid = target.hand.map((card, index) => ({ card, index })).filter(x => {
-        if (!this.canRespond(attack, x.card)) return false;
-        return x.card.name === "shengGuang" || counterTargets.length > 0;
-      });
-      if (valid.length) {
-        const picked = valid[Math.floor(this.random() * valid.length)];
-        selectedIndex = picked.index;
-        if (ATTACKS.has(picked.card.name)) {
-          selectedTarget = counterTargets[Math.floor(this.random() * counterTargets.length)].id;
-        }
-      }
-    }
-    if (selectedIndex !== null && selectedIndex !== undefined) {
-      const response = target.hand[selectedIndex];
-      if (!response || !this.canRespond(attack, response)) throw new RuleError("该牌不能应战此次攻击");
-      this.discardCard(target, selectedIndex);
-      if (response.name === "shengGuang") this.log.push(`${target.name}使用${cardName(response)}抵消攻击，原攻击未命中`);
-      else this.log.push(`${target.name}使用应战攻击${cardName(response)}，原攻击未命中`);
-      if (ATTACKS.has(response.name)) {
-        const nextTarget = this.player(selectedTarget);
-        if (nextTarget.team === target.team || nextTarget.id === actor.id) throw new RuleError("应战攻击须指定原攻击者之外的对手");
-        this.log.push(`${target.name}的应战攻击目标是${nextTarget.name}`);
-        return this.resolveAttack(target.id, nextTarget.id, response, { responses, overflow, autoRespond }, true);
-      }
-      return;
-    }
-    this.resolveUnansweredAttack(actorId, targetId, attack, { overflow, useHealing }, isCounter);
-  }
-
-  resolveUnansweredAttack(actorId, targetId, card, options, isCounter) {
-    this.log.push(`${this.player(actorId).name}的${cardName(card)}命中${this.player(targetId).name}`);
-    const shielded = Boolean(this.player(targetId).shield);
-    this.damage(targetId, 2, { ...options, sourceId: actorId, shieldable: true });
-    if (!shielded) {
-      const team = this.player(actorId).team;
-      const stone = isCounter ? "crystal" : "gem";
-      const added = this.addStones(team, stone);
-      this.log.push(`${isCounter ? "应战攻击" : "主动攻击"}命中，${this.player(actorId).name}一方战绩区${added ? `获得1个${stone === "gem" ? "宝石" : "水晶"}` : "已满5个星石，未增加星石"}`);
-    }
+  interactiveDecision(request, options) {
+    if (request.type === "response") return options.chooseResponse?.(request) ?? this.automaticDecision(request, options);
+    if (request.type === "target") return options.chooseTarget?.(request);
+    if (request.type === "overflow") return options.resolveOverflow?.(request);
+    return options.choose?.(request);
   }
 
   nearestOpponent(fromId, excluded = new Set()) {
@@ -384,57 +453,28 @@ export class Game {
     return null;
   }
 
-  magicBullet(actorId, card, { responses = {}, overflow = "first", autoRespond = false } = {}) {
-    let targetedThisRound = new Set([actorId]);
-    let sourceId = actorId, damage = 2;
-    while (true) {
-      let target = this.nearestOpponent(sourceId, targetedThisRound);
-      if (!target) {
-        targetedThisRound = new Set();
-        this.log.push("所有玩家均已被魔弹指定，刷新魔弹指定记录");
-        target = this.nearestOpponent(sourceId, targetedThisRound);
-      }
-      if (!target) return;
-      targetedThisRound.add(target.id);
-      let responseIndex = responses[target.id];
-      const mayAutoRespond = typeof autoRespond === "function" ? autoRespond(target.id) : autoRespond;
-      if (responseIndex === undefined && mayAutoRespond) {
-        const valid = target.hand.map((card, index) => ({ card, index })).filter(x => x.card.name === "moDan" || x.card.name === "shengGuang");
-        if (valid.length) responseIndex = valid[Math.floor(this.random() * valid.length)].index;
-      }
-      const response = responseIndex === undefined ? null : target.hand[responseIndex];
-      if (response?.name === "shengGuang") {
-        this.discardCard(target, responseIndex);
-        this.log.push(`${target.name}用${cardName(response)}抵消${cardName("moDan")}`); return;
-      }
-      if (response?.name === "moDan") {
-        this.discardCard(target, responseIndex); damage++; sourceId = target.id;
-        this.log.push(`${target.name}用${cardName(response)}传递${cardName("moDan")}，伤害增至${damage}`); continue;
-      }
-      this.damage(target.id, damage, { sourceId, magic: true, overflow, shieldable: true });
-      return;
-    }
+  playMagicWithDecisions(actorId, handIndex, options = {}) {
+    if (this.player(actorId).hand[handIndex]?.name !== "magicBullet") throw new RuleError("请选择魔弹");
+    return resolveAsync(this.actionSteps(actorId, handIndex, this.nearestOpponent(actorId)?.id, options), request => this.interactiveDecision(request, options));
   }
 
-  startTurn(playerId, { weakness = "skip", overflow = "first", poisonHealing = 0 } = {}) {
-    const player = this.player(playerId);
-    for (const poison of player.poisons.splice(0)) {
-      this.damage(playerId, 1, { sourceId: poison.sourceId, magic: true, overflow, useHealing: poisonHealing });
-      this.discard.push(poison.card);
-    }
-    if (player.weakness) {
-      const weaknessCard = player.weakness;
-      this.log.push(`${player.name}回合开始，触发${cardName(weaknessCard)}`);
-      this.discard.push(weaknessCard);
-      player.weakness = null;
-      if (weakness === "draw") {
-        this.draw(playerId, 3, { overflow });
-        this.log.push(`${player.name}选择摸3张牌取消${cardName(weaknessCard)}，本回合继续行动`);
-        return { skipped: false };
-      }
-      this.log.push(`${player.name}选择不摸牌，因${cardName(weaknessCard)}跳过本回合行动`);
-      return { skipped: true };
-    }
-    return { skipped: false };
+  magicTarget(sourceId, participants) {
+    return this.nearestOpponent(sourceId, participants.size === this.players.length ? new Set() : participants);
   }
+
+  startTurn(playerId, options = {}) {
+    return resolveSync(this.turn.start(playerId, options), request => request.type === "weakness" ? options.weakness ?? "skip" : null);
+  }
+
+  async beginTurn(playerId, decisions = {}, options = {}) {
+    return resolveAsync(this.turn.start(playerId, options), request => {
+      if (request.type === "weakness") return decisions.chooseWeakness?.(request) ?? "skip";
+      if (request.type === "overflow") return decisions.resolveOverflow?.(request);
+      return decisions.choose?.(request);
+    });
+  }
+  beginAction(playerId, actionType) { return resolveSync(this.turn.beginAction(playerId, actionType), () => null); }
+  endAction() { return resolveSync(this.turn.endAction(), () => null); }
+  endTurn() { return resolveSync(this.turn.end(), () => null); }
+  endTurnWithDecisions(options = {}) { return resolveAsync(this.turn.end(), request => this.interactiveDecision(request, options)); }
 }
