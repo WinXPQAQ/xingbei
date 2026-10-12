@@ -215,9 +215,10 @@ export class AnimationDirector {
             const token = document.createElement("img"); token.className = "animation-token"; token.src = `/assets/stones/${kind}.png`;
             this.layer.append(token); tokens.push(this.travel(token, this.point(team), point, 450, true));
           }
-          await Promise.all([this.popup(point, `提炼 ${event.gem + event.crystal}`, "resource"), ...tokens]);
+          await Promise.all([this.popup(point, `${event.gem + event.crystal < 0 ? "消耗" : "提炼"} ${Math.abs(event.gem + event.crystal)}`, "resource"), ...tokens]);
         }
         if (event.type === "winner") await this.popup(this.center(), `${event.team === "red" ? "红方" : "蓝方"}获胜`, "protection");
+        if (["skill", "extraAction"].includes(event.type)) await this.popup(point, event.label, "protection");
         if (event.type === "healing") await this.popup(point, `治疗 ${event.amount}`, "protection");
         if (event.type === "shuffle") await this.popup(this.center(), "洗牌", "resource");
         if (event.type === "clear") await this.clear();

@@ -74,9 +74,13 @@ try {
     const beforeLight = (await state()).game;
     await select(card(0)); await select(card(3));
     check(`${tag}: 应战圣光选中后等待确认且未结算`, (await state()).selectedCard === 3 && (await state()).legalTargets.length === 0 && JSON.stringify((await state()).game) === JSON.stringify(beforeLight));
+    check(`${tag}: 圣光只显示确认且提示使用圣光`, (await page.locator("#modal-actions button:visible").allTextContents()).join() === "确认" && await page.locator("#hint").textContent() === `${(await state()).pendingChoice.title}，确认使用圣光`);
     await page.screenshot({ path: resolve(output, `light-confirm-${tag}.png`) });
     await select(card(1));
     check(`${tag}: 圣光确认前可改选攻击牌且改为选对手`, (await state()).selectedCard === 1 && (await state()).phase === "target" && await page.getByRole("button", { name: "确认", exact: true }).count() === 0);
+    check(`${tag}: 选应战牌后不能直接不响应`, await page.getByRole("button", { name: "不响应", exact: true }).count() === 0);
+    await select(card(3)); await select(card(3));
+    check(`${tag}: 再点圣光撤回后恢复不响应`, (await state()).selectedCard === null && (await page.locator("#modal-actions button:visible").allTextContents()).join() === "不响应" && JSON.stringify((await state()).game) === JSON.stringify(beforeLight));
     await select(card(3)); await page.keyboard.press("Escape");
     check(`${tag}: 圣光可取消并保留原手牌`, (await state()).selectedCard === null && JSON.stringify((await state()).game) === JSON.stringify(beforeLight));
     await select(card(3));
@@ -84,10 +88,11 @@ try {
     await page.waitForFunction(() => window.xingbeiDev.exportState().pendingChoice === null); await settle(page);
     check(`${tag}: 应战圣光确认后才抵消且不消耗先前攻击牌`, (await state()).game.players[0].hand.some(item => item.name === "earthStrike") && (await state()).game.discard.some(item => item.name === "holyLight"));
     await start(); await select(card(0));
+    await select(card(0));
     await page.getByRole("button", { name: "不响应", exact: true }).click();
     await page.waitForFunction(() => window.xingbeiDev.exportState().pendingChoice === null); await settle(page);
     const declinedHand = (await state()).game.players[0].hand;
-    check(`${tag}: 选对手时仍可放弃应战`, declinedHand.length === 6 && initial.slice(0, 2).every(original => declinedHand.some(item => item.id === original.id)));
+    check(`${tag}: 撤回应战选牌后可不响应`, declinedHand.length === 6 && initial.slice(0, 2).every(original => declinedHand.some(item => item.id === original.id)));
     await start(); await select(card(0)); await page.locator("#dev-reset").click();
     await page.waitForTimeout(60); await settle(page);
     check(`${tag}: 重置取消旧应战等待`, (await state()).selectedCard === null && (await state()).pendingChoice === null && (await state()).current === 1);

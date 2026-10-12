@@ -1,3 +1,4 @@
+import { Timing } from "./timing.js";
 import { attackSteps } from "./resolution/attack.js";
 import { magicSteps } from "./resolution/magic.js";
 import { RuleError } from "./errors.js";
@@ -5,7 +6,7 @@ import { BASIC_EFFECTS } from "./effects.js";
 
 export class Card {
   #location = null;
-  constructor({ id, name, elements = [], fates = [], skills = [] }) {
+  constructor({ id, name, elements = [], fates = [], skills = [], uniqueSkills = [] }) {
     if (!id || !name) throw new RuleError("牌必须有唯一编号和牌名");
     Object.defineProperty(this, "id", { value: id, enumerable: true });
     this.name = name;
@@ -14,6 +15,7 @@ export class Card {
       fates: { value: Object.freeze([...fates]), enumerable: true },
     });
     this.discardVisibility = null;
+    this.uniqueSkills = Object.freeze([...uniqueSkills]);
     this.attachment = null; this.skills = Object.freeze([...skills]);
     this.category = "exclusive"; this.type = null;
   }
@@ -26,13 +28,14 @@ export class Card {
   getTraits(context = {}) {
     return context.game ? context.game.modifyTraits(this, this.getPrintedTraits(), context) : this.getPrintedTraits();
   }
+  hasUniqueSkill(id) { return this.uniqueSkills.includes(id); }
   legalTargets() { return []; }
   canRespond() { return false; }
   resolve() { throw new RuleError(`尚未实现 ${this.name}`); }
   toJSON() {
     return { id: this.id, name: this.name, category: this.category, type: this.type,
       element: this.element, fate: this.fate, elements: this.elements, fates: this.fates,
-      location: this.location, discardVisibility: this.discardVisibility, attachment: this.attachment };
+      uniqueSkills: this.uniqueSkills, location: this.location, discardVisibility: this.discardVisibility, attachment: this.attachment };
   }
 }
 
@@ -65,9 +68,10 @@ class EffectCard extends SpellCard {
     Object.defineProperty(this, "effectDefinition", { value: effectDefinition });
   }
   legalTargets({ game }) { return game.players.filter(player => game.canAttach(this, player.id, this.effectDefinition.id)).map(player => player.id); }
-  resolve({ game, actor, targetId, options }) {
+  *resolve({ game, actor, targetId, options }) {
     game.playCard(actor, actor.hand.indexOf(this), options);
     game.attachCard(this.id, targetId, { effectId: this.effectDefinition.id, sourcePlayerId: actor.id });
+    if (this.effectDefinition.id === "holyShield") yield* game.trigger(Timing.SHIELD_USED, { actorId: actor.id, targetId, card: this }, options);
   }
 }
 export class PoisonCard extends EffectCard {

@@ -1,4 +1,4 @@
-# 游戏规则结构（v0.2.0）
+# 游戏规则结构（v0.5.1）
 
 默认六人3v3，座次红蓝蓝红红蓝，玩家控制0号红一。代码使用英文标识，玩家可见文字保持中文。所有模块为原生ES Modules，规则层没有DOM或终端依赖。
 
@@ -10,7 +10,8 @@
 | `src/card.js` | 牌继承层级、原属性/有效属性查询、合法目标、应战条件与自身结算入口 |
 | `src/cards.js`、`src/card-labels.js` | 150张基础牌配置、生成牌堆与排序；独立显示名模块避免牌和结算模块循环导入 |
 | `src/player.js` | `Player`：手牌、状态区、能量、治疗、所属英雄；查询效果与汇总技能 |
-| `src/hero.js` | `Hero`基类：英雄固定信息、技能清单、每个实例独立的`state` |
+| `src/hero-base.js`、`src/hero.js`、`src/heroes/` | Hero公共绑定/判断、英雄注册与六个子类，每个实例独立的技能清单和state |
+| `src/triggers.js` | 六个玩家的事件订阅索引，角色/行为/时点分派、优先级与注册注销 |
 | `src/effects.js` | 效果规则定义；每个实例仍由一张实际牌承载，不创建附加状态类 |
 | `src/turn.js`、`src/timing.js` | 回合状态与明确的触发时点 |
 | `src/resolution/attack.js` | 攻击与连续应战流程 |
@@ -100,12 +101,13 @@ card.attachment = {
 
 `Player.getSkills()`组合英雄技能和当前状态区牌授予的技能，并保留`sourceCard`。牌移走即失去它授予的技能。英雄可变的专属计数等保存在`hero.state`，公共能量等保存在`Player`。
 
-`Player.handLimit`默认6，抽牌爆牌和界面共用该上限。`Game.canRefreshUnableHand(playerId)`仅在所有手牌不可使用、空余位不超过2且`Hero.canActWithSkills`为false时允许展示并重摸。英雄行动技能尚未实现，标记默认false，后续技能须根据实际可行动条件更新；终端、网页和AI不复制条件。
+`Player.handLimit`默认6，抽牌爆牌和界面共用该上限。`Game.canRefreshUnableHand(playerId)`仅在所有手牌不可使用、空余位不超过2且`Hero.canActWithSkills`为false时允许展示并重摸。标记默认false，同时检查legalSkillActions是否存在当前合法英雄行动；终端、网页和AI不复制条件。
 
 ## 回合与触发时点
 
 ```text
-turnStart
+turnBefore（天使之歌）
+→ turnStart
 → actionPhaseBefore（中毒、虚弱）
 → actionPhaseStart
   ├─ 普通路线：activation → attackActionStart / spellActionStart
@@ -117,7 +119,7 @@ turnStart
 
 虚弱跳过时为`actionPhaseBefore → actionPhaseSkipped → turnEnd`，不会触发启动和行动开始/结束。`endTurn`由引擎推进下一座位，浏览器和终端不再各自增加`current`。正常客户端使用`beginTurn()`、`executeAction()`或牌结算异步入口、`endTurnWithDecisions()`；无回合状态时允许独立规则操作，供隔离规则测试使用。
 
-`TurnFlow.state`记录当前玩家、阶段、普通/特殊路线、行动类型与是否完成。`Game.timeline`记录实际触发顺序，开发导出包含它。启动时点已经存在，但真实英雄启动技能、额外行动与路线替换仍待逐个实现，当前不提供虚构技能。
+`TurnFlow.state`记录当前玩家、阶段、普通/特殊路线、行动类型与是否完成。`Game.timeline`记录实际触发顺序，开发导出包含它。启动支持神圣契约；额外攻击队列支持风系限制、第三次主动攻击计数和主动放弃。行动结束后按队列再次进入对应行动开始，启动每回合只执行一次。
 
 ### 原版查证
 
@@ -140,7 +142,7 @@ turnStart
 
 玩家选择圣光后需确认；攻击牌/魔弹点击目标才提交，期间可换牌。浏览器和终端均在拿到最终决定后交给规则结算，牌选择不会直接改变区域。
 
-当前实际英雄技能与具体专属牌规则尚未迁移。新基类、登记、动态技能与时点为真实扩展接口，不能把头像或测试用技能描述为已完成英雄。
+六位英雄的技能定义位于src/heroes/，包括真实五系束缚专属实体。未实现其他英雄，不将牌面其他独有技标签解释为当前英雄能力。
 
 
 ## 可选呈现检查点（v0.3.0）
@@ -150,10 +152,72 @@ Game.enablePresentation(callback)记录结构化事件与独立展示快照，pr
 
 ## 响应、伤害与弃牌（v0.3.1）
 
-攻击和魔弹总是发出response决策，即使valid为空。人类玩家始终使用相同响应标题与“不响应”按钮，点击“不响应”才放弃；无合法牌时也是同一界面，由统一合法性渲染禁用手牌，不按合法牌数量分支。选牌、确认或点目标的交互保持不变，AI无牌则返回null。
+普通攻击和魔弹总是发出response决策，即使valid为空；强制命中执行攻击时点2后省略响应。人类玩家始终使用相同响应标题与“不响应”按钮，点击“不响应”才放弃；无合法牌时也是同一界面，由统一合法性渲染禁用手牌，不按合法牌数量分支。选牌、确认或点目标的交互保持不变，AI无牌则返回null。
 
 `DamageType.ATTACK` / `DamageType.SPELL`分别为attack / spell。damageSteps接收damageType，damageBefore / damageAfter共享的context携带damageType，呈现事件也携带它；攻击使用attack，魔弹和中毒使用spell。技能可按context.damageType筛选或修改伤害类别，显示读取同一个字段。
 
 `DiscardVisibility.PUBLIC` / `DiscardVisibility.HIDDEN`分别为public / hidden。moveCard和discardCard接受visibility；牌在弃牌堆期间保存discardVisibility，离开弃牌堆清除该值。爆牌统一暗弃，动画只显示牌背，日志只记数量；无法行动展示重摸仍为明弃。它们共用弃牌堆，不新增区域；开发状态导出包含实际牌数据，属于调试接口，不是联网游戏的隐藏信息过滤接口。
 
 提交后playCard将攻击、响应攻击、魔弹和圣光从手牌移到field，并把牌ID登记到当前结算的resolutionCards。整条攻击/魔弹链完成（含响应、命中、伤害和爆牌选择）后，同一结算仍在field的牌一起明弃；不会收走其他技能放在场上的牌。中毒/圣盾/虚弱也先进入field，再移到目标status，结算清理不弃置已挂载的牌。取消待提交选牌不会移牌；场上的牌尚不在弃牌堆，因此不会在结算中被洗回牌库。
+
+
+六英雄工程Goal 1（狂战士）已实施：独有技逐牌还原、六判定时点、完整狂战士技能及响应/治疗决策。40项Node与两视口17项英雄浏览器检查通过；范围和限制见[英雄实施记录](hero-implementation.md)。历史基础规则场景显式关闭英雄规则，正式页面启用已实现技能。各goal仅本地commit，不push。
+
+
+## 六英雄接口（v0.4.5）
+
+`src/unique-skills.js`按原牌表逐张提供uniqueSkills，Card.hasUniqueSkill查询。六英雄技能对象声明timings/filter/resolve，主动技能声明action/resolveAction。Game.legalSkillActions与skillActionSpec返回目前合法的费用和目标要求；executeAction接收`{type:"skill",skillId,cardIds,targetIds,mode}`，验证后共用TurnFlow与规则迭代器。浏览器只准备最终命令；取消选择不移牌、不付费。启动改变能量或选项使原行动失效时，保留已完成启动，重新选择行动。
+
+攻击六判定点由context.point明确保存：声明1；决定命中、响应、命中检查2；准备伤害3；治疗4；准备实际伤害5；实际伤害及开始摸牌6。强制命中在2落实，保证命中且不消耗圣盾，但仍经过2及3—6。非伤害直接摸牌不经过伤害时点。draw的cause传入pendingOverflow，overflowSteps在moraleBefore允许调整实际士气损失；同步与异步共用同一个生成器。
+
+cardExposed保留离开手牌前的有效属性、origin、visibility、covered。playCard、明弃、showCardsSteps登记公开事件；暗弃和covered不登记。flushRuleEvents在规则检查点驱动封印，不由动画驱动。主动移除基础效果使用removeBasicEffectSteps以触发天使羁绊；自然效果消耗及封印破碎收入手牌不算天使的主动移除。神之庇护只响应cause.type=damage且damageType=spell的己方士气下降。
+
+普通治疗上限2，getHealingLimit组合技能修正；神官上限6且healingBefore限制每次防御最多1。changeHealing的正增量不削减已超上限治疗。神圣契约使用limit=4转移并扣除选择数量，超过队友4点容纳量的部分不会获得，按旧代码处理。五系束缚仅有封印师时注册在outside，挂载时为exclusive效果，触发后回outside，不属于基础效果。
+
+完整范围、来源、验收及选择依据见[六英雄实施记录](hero-implementation.md)。
+
+## 开局角色选择（v0.4.6）
+
+`getAvailableHeroes()`返回已注册完整技能的角色ID与中文名称，目前为六位。后续注册新的英雄定义会自动进入列表。`createHeroRoster(playerHeroId, playerSeat)`生成六人阵容，当前六英雄通过交换座位保持各出现一次；新增非默认英雄替换玩家座位。
+
+共用引擎入口为 `new Game({ seed: 13, playerHeroId: "guardianAngel", playerSeat: 0 }).setup()`。选定角色后才初始化手牌及专属牌，封印师的场外牌按实际座位登记。非法角色、非法座位及同时传入`heroIds`和`playerHeroId`均拒绝。未传选择参数时仍保留原默认阵容，显式`heroIds`仍用于隔离场景。
+
+网页版开局和重新开始先显示角色选择，提交后才发开局手牌、开始回合；等待选择时不允许行动。终端启动同样先选择角色。开发场景继续使用指定阵容，不弹出选择窗口。
+
+## 响应按钮补充（v0.4.7）
+
+圣光待提交时只保留“确认”，提示为“xxx对你使用xxx，确认使用圣光”。再次点击当前牌或Esc撤回，切换合法响应牌仍有效；不响应仅在未选牌时显示。选应战攻击/魔弹期间保留取消与目标选择，点合法目标提交。天使之墙的实际牌仍是攻击牌，attachment.effectId为holyShield，因此状态标记按效果显示圣盾图标，不按牌面类型显示；这点不改变其规则实体。
+
+## 按玩家绑定技能（v0.5.0）
+
+六英雄分别由Berserker、WindSwordmaster、Marksman、Sealer、GuardianAngel、Priest继承Hero。基类独立于注册表，避免子类循环导入；`hero.js`保留工厂与Hero再导出。技能对象由实例构建，不共享可变技能数组或state。基类复用`isOwnAttack(payload)`、`isActiveAttack(context)`、`isCounterAttack(context)`、`hasUniqueSkill(context, id)`与`isAttackAction(context)`。
+
+技能声明用基类生成绑定，不再在filter中重复检查归属：
+
+```js
+{
+  id: "rage", name: "狂化",
+  ...hero.onOwnAttack([Timing.ATTACK_DECLARED, Timing.ATTACK_HIT]),
+  priority: 0,
+  resolve({ timing, context }) {
+    if (timing === Timing.ATTACK_DECLARED || context.sourceHandCount > 3) context.amount++;
+  },
+}
+```
+
+`onOwnAttack(timings)`绑定自身actor，`onOwnTurn(timings)`绑定自身player，`onDamage(timings, role, damageTypes)`绑定造成/受到的指定伤害类别。通用`bind(role, timings, players, damageTypes)`支持actor/target/player/team；players为self、all、team或玩家ID数组。监听所有人的攻击可用`hero.bind("actor", timings, "all")`，注册时展开到六人，技能持有者仍是原英雄。多角色、多时点绑定可直接声明bindings并限定每条timings。
+
+六个Map各有20个基础订阅槽：时点1/2的攻击actor/target共4个，时点3至6的attackDamage/spellDamage各actor/target共16个，总120个；每槽内按具体Timing存储。回合、行动结束、公开牌及士气事件另按玩家绑定。时点2仍区分决定、命中检查、命中与未命中，时点6仍区分实际伤害与伤害结束。魔弹命中检查保持独立target事件，魔弹伤害进入法术伤害3至6。无来源伤害只检查target；自伤同时匹配actor/target时同一订阅去重。damageSteps统一提供actorId=sourceId和targetId。
+
+Game.trigger不再收集全体技能或扫描状态数组；从当前actor/target的对应槽获取条目，合并后按priority降序执行，默认0。相同优先级保持效果牌优先、玩家ID及注册顺序稳定；同一英雄内按技能声明顺序。优先级只决定同一具体Timing内部顺序，不跨越时点。filter在执行前检查剩余条件，前一技能的修改可影响后一技能。
+
+初始化注册英雄；状态牌进入status时注册效果和授予技能，离开/转移时注销或重新注册，已排队但已失效的条目跳过。hero.skills数组只读，使用addSkills/removeSkill通知引擎更新绑定；registerSkill后的字符串引用仍受支持。未声明bindings的扩展技能保留兼容：注册时按事件角色展开到六人，效果牌默认绑定持有者。新技能优先显式声明绑定。属性修正与主动行动合法性查询保留原有独立接口。
+
+## 撕裂命中响应（v0.5.1）
+
+撕裂绑定自身actor的ATTACK_HIT，属于时点2确认命中后；priority=-1，普通优先级0的狂化/血影狂刀等命中技能先执行。旧代码character/shiZhouNian.js的siLie绑定source:gongJiMingZhongAfter。仅在真正命中时询问撕裂，接受后扣1宝石并修改本次攻击伤害，随后进入时点3的DAMAGE_BEFORE；拒绝不扣费。圣光、应战及圣盾使原攻击未命中时不询问。通用攻击伤害事件不会单独触发撕裂。
+
+
+## Review：技能目标直接选人（v0.5.2）
+
+共用playerChoice在网页复用chooseTarget，直接点击高亮的合法角色提交，不弹出姓名按钮；天使羁绊、神圣契约及以后同类技能统一采用此接口。规则要求的必选目标不允许Esc/取消跳过，非法目标无效。Session重开后旧选择的清理不得覆盖新局。终端/AI仍消费同一规则请求，具体呈现由各端处理。

@@ -1,12 +1,13 @@
+import { UNIQUE_SKILL_NAMES } from "/src/unique-skills.js";
 // Presentation adapted from v1.6.7 UI, music and nova. See SOURCES.md.
 import { CARD_NAMES, ELEMENT_NAMES, FATE_NAMES } from "/src/cards.js";
 
 export function cardContents(card, context = {}) {
-  return `<img class="image" src="/assets/card/${card.name}.png" alt=""><span class="info"><span>${card.getTraits(context).elements.map(element => ELEMENT_NAMES[element]).join("/")}${card.getTraits(context).fates.map(fate => FATE_NAMES[fate]).join("/")}</span></span><span class="name" aria-hidden="true"></span>`;
+  return `<img class="image" src="/assets/card/${card.name}.png" alt=""><span class="info"><span>${card.getTraits(context).elements.map(element => ELEMENT_NAMES[element]).join("/")}${card.getTraits(context).fates.map(fate => FATE_NAMES[fate]).join("/")}</span></span><span class="name" aria-hidden="true"></span><span class="range">${(card.uniqueSkills ?? []).map(id => UNIQUE_SKILL_NAMES[id] ?? id).join("<br>")}</span>`;
 }
 
 export function cardLabel(card, context = {}) {
-  return `${CARD_NAMES[card.name] ?? card.name} · ${card.getTraits(context).elements.map(element => ELEMENT_NAMES[element]).join("/") || "无"}系 · ${card.getTraits(context).fates.map(fate => FATE_NAMES[fate]).join("/") || "无"}命格`;
+  return `${CARD_NAMES[card.name] ?? card.name} · ${card.getTraits(context).elements.map(element => ELEMENT_NAMES[element]).join("/") || "无"}系 · ${card.getTraits(context).fates.map(fate => FATE_NAMES[fate]).join("/") || "无"}命格${card.uniqueSkills?.length ? " · " + card.uniqueSkills.map(id => UNIQUE_SKILL_NAMES[id] ?? id).join(" / ") : ""}`;
 }
 
 export function renderTeams(game, nodes, humanId) {
@@ -43,17 +44,21 @@ export function renderPlayers(game, container, humanId, targets = null) {
     if (player.getStatus("holyShield")[0]) marks.push('<img src="/assets/card/holyShield.png" title="圣盾" alt="圣盾">');
     if (player.getStatus("weakness")[0]) marks.push('<img src="/assets/card/weakness.png" title="虚弱" alt="虚弱">');
     if (player.getStatus("poison").length) marks.push(`<span class="poison-mark"><img src="/assets/card/poison.png" title="中毒" alt="中毒"><b>${player.getStatus("poison").length}</b></span>`);
+    for (const card of player.statuses.filter(card => !["holyShield", "weakness", "poison"].includes(card.attachment.effectId))) {
+      const id = card.attachment.effectId, label = UNIQUE_SKILL_NAMES[id] ?? CARD_NAMES[id] ?? id;
+      marks.push(`<span class="poison-mark"><img src="/assets/card/${card.name}.png" title="${label}" alt="${label}"><b>${label.startsWith("五") ? "" : label[0]}</b></span>`);
+    }
     const energy = [
       ["crystal", "crystal", "水晶"], ["gem", "gem", "宝石"],
     ].filter(([kind]) => player.energy[kind] > 0).map(([kind, image, label]) => `<span><img src="/assets/stones/${image}.png" alt="${label}"><b>${player.energy[kind]}</b></span>`).join("");
-    const markup = `<img class="avatar" src="/assets/character/${player.hero.portrait}.jpg" alt=""><span class="player-name" title="${player.name}；头像仅作展示，角色技能尚未实现">${player.hero.name}</span><span class="identity"><span>${player.team === "red" ? "红" : "蓝"}</span></span><span class="count">${player.hand.length}/${player.handLimit}</span><span class="hp" title="治疗 ${player.healing}" aria-label="治疗 ${player.healing}">${[1, 0].map(index => `<span class="${index < player.healing ? "" : "lost"}"></span>`).join("")}</span><span class="energy" title="个人能量" style="top:${6 + marks.length * 28}px">${energy}</span><div class="marks">${marks.reverse().join("")}</div>`;
+    const markup = `<img class="avatar" src="/assets/character/${player.hero.portrait}.jpg" alt=""><span class="player-name" title="${player.name}；${player.hero.implemented || player.hero.skills?.length ? "已实现角色技能" : "角色技能尚未实现"}">${player.hero.name}</span><span class="identity"><span>${player.team === "red" ? "红" : "蓝"}</span></span><span class="count">${player.hand.length}/${player.handLimit}</span><span class="hp" title="治疗 ${player.healing}" aria-label="治疗 ${player.healing}">${Array.from({ length: Math.max(player.healing, game.getHealingLimit?.(player.id) ?? (player.hero.id === "priest" && (player.hero.implemented || player.hero.skills?.length) ? 6 : 2)) }, (_, index) => index).reverse().map(index => `<span class="${index < player.healing ? "" : "lost"}"></span>`).join("")}</span><span class="energy" title="个人能量" style="top:${6 + marks.length * 28}px">${energy}</span><div class="marks">${marks.reverse().join("")}</div>`;
     if (node._markup !== markup) { node.innerHTML = markup; node._markup = markup; }
     if (player.energy.gem + player.energy.crystal === 0) node.querySelector(".energy").hidden = true;
 
   }
 }
 
-export function renderHand(game, container, humanId, { acceptingAction, selectedCard, locked, onSelect, handChoice = null }) {
+export function renderHand(game, container, humanId, { acceptingAction, selectedCard, locked, onSelect, handChoice = null, restrictToLegal = false }) {
   const existing = new Map([...container.children].map(node => [node.dataset.cardId, node]));
   const activeIds = new Set(game.player(humanId).hand.map(card => card.id));
   for (const node of [...container.children]) if (!activeIds.has(node.dataset.cardId)) node.remove();
@@ -63,7 +68,7 @@ export function renderHand(game, container, humanId, { acceptingAction, selected
     const usable = handChoice ? handChoice.valid.includes(index) : game.legalTargets(humanId, card).length > 0;
     const selected = handChoice ? handChoice.selected.has(index) : selectedCard === index;
     button.className = `card${selected ? " selected" : ""}${usable ? "" : " unusable"}`;
-    button.disabled = !acceptingAction || locked || (handChoice && !usable);
+    button.disabled = !acceptingAction || locked || ((handChoice || restrictToLegal) && !usable);
     const context = { game, playerId: humanId, purpose: "hand" };
     const markup = cardContents(card, context);
     if (button._markup !== markup) { button.innerHTML = markup; button._markup = markup; }

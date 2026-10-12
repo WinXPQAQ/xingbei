@@ -167,7 +167,7 @@ try {
     await page.locator("#dev-step").evaluate(button => button.click());
     await page.locator("#modal:not(.hidden)").waitFor();
     await capture(page, `attack-${tag}`, viewport);
-    check(`${tag}: 应战等待阶段`, (await state(page)).pendingChoice.title.includes("主动攻击"));
+    check(`${tag}: 应战等待阶段`, (await state(page)).pendingChoice.type === "hand" && (await state(page)).pendingChoice.title.includes("对你使用"));
     await page.locator("#hand").getByRole("button", { name: /地裂斩/ }).click();
     await page.locator('.player.targetable[data-player="2"]').click();
     // Further counterattacks can ask the human again; choosing not to respond ends that branch.
@@ -207,6 +207,8 @@ try {
     await page.locator("#hand .card").nth(0).click();
     await page.locator("#hand .card").nth(1).click();
     await page.getByRole("button", { name: "确认弃置" }).click();
+    await page.waitForFunction(() => window.xingbeiDev.exportState().game.teams.red.morale === 13);
+    await settle(page);
     check(`${tag}: 爆牌结算`, (await state(page)).game.players[0].hand.length === 6 && (await state(page)).game.teams.red.morale === 13);
     await scene("overflow");
     await page.locator("#dev-scene").evaluate(select => { select.value = "opening"; select.dispatchEvent(new Event("change", { bubbles: true })); });
@@ -223,6 +225,9 @@ try {
     await capture(page, `end-${tag}`, viewport);
     await page.getByRole("button", { name: "再来一局", exact: true }).click();
     await page.waitForFunction(() => window.xingbeiDev.exportState().game.winner === null);
+    await page.getByRole("heading", { name: "选择角色" }).waitFor();
+    await page.getByRole("button", { name: "狂战士", exact: true }).click();
+    await page.waitForFunction(() => window.xingbeiDev.exportState().game.players[0].hand.length === 4);
     check(`${tag}: 结束后重开`, await page.locator("#modal").isHidden());
     await scene("purchase");
     await page.locator("#buy").click();
@@ -248,6 +253,8 @@ try {
   }
   const page = await browser.newPage({ viewport: viewports[0] });
   await page.goto(base);
+  await page.getByRole("button", { name: "狂战士", exact: true }).click();
+  await page.waitForFunction(() => document.querySelectorAll("#hand .card").length === 4);
   const font = await page.request.get(`${base}/font/xingkai.woff2`);
   check("字体路由与MIME正确", font.status() === 200 && font.headers()["content-type"] === "font/woff2");
   check("正常网页不暴露开发工具", await page.locator(".dev-tools").count() === 0 && await page.evaluate(() => !window.xingbeiDev));

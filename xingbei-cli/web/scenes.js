@@ -1,14 +1,16 @@
+import { createHeroScene } from "./hero-scenes.js";
 import { Game } from "../src/engine.js";
 
 export const sceneNames = {
-  opening: "六人开局", "hand-0": "零张手牌", "hand-1": "一张手牌", "hand-4": "四张手牌", "hand-6": "六张手牌",
+  "hero-priest": "英雄：神官", "hero-guardianAngel": "英雄：守护天使", "hero-sealer": "英雄：封印师", "hero-marksman": "英雄：神箭手", "hero-windSwordmaster": "英雄：风之剑圣", "hero-berserker": "英雄：狂战士", opening: "六人开局", "hand-0": "零张手牌", "hand-1": "一张手牌", "hand-4": "四张手牌", "hand-6": "六张手牌",
   "opponent-draw": "对手摸牌", "poison-stack": "连续中毒", "shield-hit": "圣盾抵消", unable: "无法行动重摸", ending: "合成第五杯",
   target: "选牌与目标", unusable: "不可主动使用的牌", purchase: "购买", synthesize: "合成材料", refine: "提炼材料",
   "attack-empty": "无牌应战", "magic-empty": "无牌魔弹响应", attack: "应战链", "attack-switch": "应战切牌", magic: "魔弹响应", "magic-start": "魔弹发起", "magic-linked": "六人魔弹传递", weakness: "虚弱", statuses: "状态标记", overflow: "爆牌", end: "结束",
 };
 
 export function createScene(id, seed = 20260905) {
-  const game = new Game({ seed }).setup();
+  if (id.startsWith("hero-")) return createHeroScene(id, seed);
+  const game = new Game({ seed, heroRules: false }).setup();
   const player = game.player(0);
   // Move actual card instances between zones; never invent or duplicate a card.
   const returnHand = member => { for (const card of [...member.hand]) game.moveCard(card.id, { zone: "deck" }); };

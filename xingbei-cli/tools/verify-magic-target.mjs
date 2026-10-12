@@ -67,11 +67,14 @@ try {
     const beforeLight = (await state()).game;
     await select(card(0)); await select(card(1));
     check(`${tag}: 魔弹圣光选中后等待确认且未结算`, (await state()).selectedCard === 1 && (await state()).legalTargets.length === 0 && JSON.stringify((await state()).game) === JSON.stringify(beforeLight));
+    check(`${tag}: 魔弹圣光只显示确认与使用提示`, (await page.locator("#modal-actions button:visible").allTextContents()).join() === "确认" && await page.locator("#hint").textContent() === `${(await state()).pendingChoice.title}，确认使用圣光`);
     await page.screenshot({ path: resolve(output, `light-confirm-${tag}.png`) });
     await select(card(0));
     check(`${tag}: 圣光确认前可改选魔弹且仍等待目标`, (await state()).selectedCard === 0 && JSON.stringify((await state()).legalTargets) === "[1]" && await page.getByRole("button", { name: "确认", exact: true }).count() === 0);
-    await select(card(1)); await page.getByRole("button", { name: "取消", exact: true }).click();
+    check(`${tag}: 已选魔弹不可直接不响应`, await page.getByRole("button", { name: "不响应", exact: true }).count() === 0);
+    await select(card(1)); await select(card(1));
     check(`${tag}: 魔弹圣光可取消且不消耗牌`, (await state()).selectedCard === null && JSON.stringify((await state()).game) === JSON.stringify(beforeLight));
+    check(`${tag}: 撤回圣光只显示不响应`, (await page.locator("#modal-actions button:visible").allTextContents()).join() === "不响应");
     await select(card(1));
     await page.getByRole("button", { name: "确认", exact: true }).evaluate(button => { button.click(); button.click(); });
     await page.waitForFunction(() => window.xingbeiDev.exportState().pendingChoice === null); await settle(page);
@@ -88,9 +91,10 @@ try {
     await page.waitForFunction(() => window.xingbeiDev.exportState().pendingChoice?.type === "hand");
     await select(card(0));
     check(`${tag}: 六人传递跳过本轮已参与的对手`, JSON.stringify((await state()).legalTargets) === "[1]");
+    await select(card(0));
     await page.getByRole("button", { name: "不响应", exact: true }).click();
     await page.waitForFunction(() => window.xingbeiDev.exportState().pendingChoice === null); await settle(page);
-    check(`${tag}: 传递选人时仍可放弃`, (await state()).game.players[0].hand.some(item => item.name === "magicBullet"));
+    check(`${tag}: 撤回魔弹选牌后可不响应`, (await state()).game.players[0].hand.some(item => item.name === "magicBullet"));
     await page.close();
   }
   check("魔弹全部场景无控制台与素材错误", issues.length === 0);

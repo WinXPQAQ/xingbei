@@ -1,20 +1,43 @@
 #!/usr/bin/env node
+import { getAvailableHeroes } from "./hero.js";
 import { cardText } from "./cards.js";
 import { Game, RuleError } from "./engine.js";
-import { chooseAiAction, chooseAiResponse } from "./ai.js";
+import { chooseAiAction, chooseAiResponse, chooseAiRuleDecision } from "./ai.js";
 import { askIndex, TerminalUI } from "./tui.js";
 
 const tui = new TerminalUI();
 const humanId = Number(process.argv[2] ?? 0);
-const game = new Game({ seed: Date.now() }).setup();
-game.player(humanId);
+if (!Number.isInteger(humanId) || humanId < 0 || humanId >= 6) { tui.close(); throw new RuleError("无效的玩家座位"); }
+const heroes = getAvailableHeroes();
+heroes.forEach((hero, index) => tui.console(`${index}: ${hero.name}`));
+const heroIndex = await askIndex(tui, "开局选择角色> ", heroes.map((_, index) => index), { allowBlank: false });
+const game = new Game({ seed: Date.now(), playerHeroId: heroes[heroIndex].id, playerSeat: humanId }).setup();
 const overflowPolicy = player => player.id === humanId ? "defer" : "random";
+
+game.onDecision = async request => {
+  if (request.type === "cardChoice") {
+    if (request.playerId !== humanId) return chooseAiRuleDecision(request);
+    const selected = [];
+    while (selected.length < request.count) {
+      showState(); const index = await askIndex(tui, `${request.title}> `, request.valid.filter(index => !selected.includes(index)));
+      if (index == null && request.optional) return null;
+      if (index != null) selected.push(index);
+    }
+    return selected;
+  }
+  if (!request.choices) return null;
+  if (request.playerId !== humanId) return chooseAiRuleDecision(request);
+  tui.console(request.title);
+  request.choices.forEach((choice, index) => tui.console(`${index}: ${choice.label}`));
+  const index = await askIndex(tui, "选择（回车不发动）> ", request.choices.map((_, index) => index));
+  return index == null ? request.defaultValue : request.choices[index].value;
+};
 
 function showState() {
   const red = game.stoneCounts("red"), blue = game.stoneCounts("blue");
   const lines = [`红方 士气${game.teams.red.morale} 星杯${game.teams.red.cups} 星石${red.gem}宝/${red.crystal}晶 | 蓝方 士气${game.teams.blue.morale} 星杯${game.teams.blue.cups} 星石${blue.gem}宝/${blue.crystal}晶`];
   for (const p of game.players) {
-    const effects = `盾:${p.getStatus("holyShield")[0] ? 1 : 0} 虚弱:${p.getStatus("weakness")[0] ? 1 : 0} 中毒:${p.getStatus("poison").length} 能量:${p.energy.gem}宝/${p.energy.crystal}晶`;
+    const effects = `盾:${p.getStatus("holyShield")[0] ? 1 : 0} 虚弱:${p.getStatus("weakness")[0] ? 1 : 0} 中毒:${p.getStatus("poison").length} ${p.statuses.filter(card => !["holyShield", "weakness", "poison"].includes(card.attachment.effectId)).map(card => game.effects.get(card.attachment.effectId)?.name ?? card.attachment.effectId).join("、")} 治疗:${p.healing}/${game.getHealingLimit(p.id)} 能量:${p.energy.gem}宝/${p.energy.crystal}晶`;
     if (p.id === humanId) {
       lines.push(`▶ ${p.id}:${p.name}[${p.team === "red" ? "红" : "蓝"}] 手牌(${p.hand.length}/${p.handLimit}) ${effects}`);
       p.hand.forEach((card, i) => lines.push(`  ${i}:${cardText(card)} #${card.id}`));
@@ -41,6 +64,7 @@ async function chooseSynthesis(player) {
 }
 
 async function chooseRefinement(player) {
+  if (!game.canRefine(player.id)) throw new RuleError("当前不能提炼");
   const stones = game.stoneCounts(player.team);
   const capacity = 3 - player.energy.gem - player.energy.crystal;
   const totals = [1, 2].filter(total => total <= stones.total && total <= capacity);
@@ -67,7 +91,7 @@ async function resolveHumanOverflow() {
       tui.console(`输入无效：请填写${excess}个不同的手牌编号（0-${player.hand.length - 1}）。`);
       continue;
     }
-    game.resolveOverflow(humanId, indexes, player.pendingOverflow ?? {});
+    await game.resolveOverflowWithDecisions(humanId, indexes, player.pendingOverflow ?? {});
   }
 }
 
@@ -92,8 +116,37 @@ async function humanTurn() {
     const line = (await tui.question("行动> ")).trim();
     const [command, indexText, targetText] = line.split(/\s+/);
     if (command === "quit") return false;
+    if (command === "end" && game.turn.hasExtraActions()) { game.skipExtraActions(humanId); return true; }
     try {
-      if (command === "buy") await game.executeAction(humanId, { type: "purchase" }, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
+      if (command === "skill") {
+        const entries = game.legalSkillActions(humanId);
+        entries.forEach((entry, i) => tui.console(`${i}: ${entry.name}`));
+        const selected = await askIndex(tui, "技能> ", entries.map((_, i) => i));
+        if (selected == null) continue;
+        const entry = entries[selected], cardIds = [], targetIds = [];
+        let mode;
+        if (entry.spec.modes) {
+          entry.spec.modes.forEach((choice, i) => tui.console(`${i}: ${choice.label}`));
+          const index = await askIndex(tui, "效果> ", entry.spec.modes.map((_, i) => i)); if (index == null) continue;
+          mode = entry.spec.modes[index].value; entry.spec = game.skillActionSpec(humanId, { skillId: entry.skillId, mode });
+        }
+        if (entry.spec.targetCounts) {
+          const count = await askIndex(tui, "目标人数> ", entry.spec.targetCounts); if (count == null) continue;
+          entry.spec = { ...entry.spec, targetCount: count };
+        }
+        while (cardIds.length < (entry.spec.cardCount ?? 0)) {
+          const valid = player.hand.flatMap((card, i) => !cardIds.includes(card.id) && (entry.spec.cardFilter?.(card) ?? true) ? [i] : []);
+          const index = await askIndex(tui, "费用牌（回车取消）> ", valid); if (index == null) break;
+          cardIds.push(player.hand[index].id);
+        }
+        if (cardIds.length !== (entry.spec.cardCount ?? 0)) continue;
+        while (targetIds.length < (entry.spec.targetCount ?? 1)) {
+          const id = await askIndex(tui, "目标（回车取消）> ", entry.spec.targets.filter(id => !targetIds.includes(id))); if (id == null) break;
+          targetIds.push(id);
+        }
+        if (targetIds.length !== (entry.spec.targetCount ?? 1)) continue;
+        await game.executeAction(humanId, { type: "skill", skillId: entry.skillId, mode, cardIds, targetIds }, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
+      } else if (command === "buy") await game.executeAction(humanId, { type: "purchase" }, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
       else if (command === "synth") await game.executeAction(humanId, { type: "synthesize", gemCount: await chooseSynthesis(player) }, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
       else if (command === "refine") await game.executeAction(humanId, { type: "refine", stones: await chooseRefinement(player) });
       else if (command === "play") {
@@ -105,7 +158,7 @@ async function humanTurn() {
         if (card.name !== "magicBullet" && !targets.includes(target)) throw new RuleError(`合法目标：${targets.join("、")}`);
         await playCard(humanId, index, target);
       } else {
-        tui.console("play 牌号 目标号；魔弹只需play 牌号；buy购买；synth合成；refine提炼；quit退出。Tab切换面板，PgUp/PgDn滚动。");
+        tui.console("play 牌号 目标号；魔弹只需play 牌号；buy购买；synth合成；refine提炼；skill英雄技能；end放弃额外行动；quit退出。Tab切换面板，PgUp/PgDn滚动。");
         continue;
       }
       await resolveHumanOverflow();
@@ -146,6 +199,8 @@ async function aiTurn(actorId) {
   if (action.type === "refresh") return game.executeAction(actorId, action);
   if (action.type === "purchase") return game.executeAction(actorId, action, { overflow: "random" });
   if (action.type === "synthesize") return game.executeAction(actorId, action, { overflow: "random" });
+  if (action.type === "refine") return game.executeAction(actorId, action);
+  if (action.type === "skill") return game.executeAction(actorId, action, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
   if (action.type === "pass") return game.log.push(`${game.player(actorId).name}跳过行动`);
   return playCard(actorId, action.index, action.targetId);
 }
@@ -164,10 +219,13 @@ while (running && !game.winner) {
   }, { overflow: overflowPolicy });
   await resolveHumanOverflow();
   flushLog();
+  do {
   if (!turn.skipped && !game.winner) {
     if (player.id === humanId) running = await humanTurn();
     else { await aiTurn(player.id); await resolveHumanOverflow(); flushLog(); }
   }
+  if (player.id !== humanId && game.turn.hasExtraActions() && !game.legalCards(player.id).length) game.skipExtraActions(player.id);
+  } while (running && game.turn.hasExtraActions() && !game.winner);
   turnDivider(player.name, "结束");
   showState();
   await game.endTurnWithDecisions({ resolveOverflow: resolveHumanOverflow });

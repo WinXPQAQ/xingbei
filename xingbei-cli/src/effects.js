@@ -6,7 +6,7 @@ export const BASIC_EFFECTS = {
     id: "poison",
     category: "basic", stackable: true, priority: 3, timings: [Timing.ACTION_PHASE_BEFORE],
     *resolve({ game, player, card, options }) {
-      yield* game.damageSteps(player.id, 1, { sourceId: card.attachment.sourcePlayerId, damageType: "spell", overflow: options.overflow, useHealing: options.poisonHealing ?? 0 });
+      yield* game.damageSteps(player.id, 1, { sourceId: card.attachment.sourcePlayerId, damageType: "spell", overflow: options.overflow, useHealing: options.poisonHealing });
       game.removeEffect(card.id);
       yield* game.present();
       if (player.pendingOverflow) yield { type: "overflow", player };

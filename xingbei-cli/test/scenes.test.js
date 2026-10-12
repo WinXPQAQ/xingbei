@@ -9,8 +9,8 @@ test("每个开发场景保持150张实际牌实例且可重复重置", () => {
     assert.equal(game.players[0].name, "红一", id);
     game.assertCardLocations();
     const cards = [...game.cards.values()];
-    assert.equal(cards.length, 150, id);
-    assert.equal(new Set(cards.map(card => card.id)).size, 150, id);
+    assert.equal(cards.filter(card => card.category === "basic").length, 150, id);
+    assert.equal(new Set(cards.map(card => card.id)).size, cards.length, id);
     assert.equal(JSON.stringify(game), JSON.stringify(createScene(id)), id);
   }
 });
