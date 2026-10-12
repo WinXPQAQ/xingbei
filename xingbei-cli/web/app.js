@@ -1,3 +1,4 @@
+import { getAvailableHeroes } from "/src/hero.js";
 import { CARD_NAMES, ELEMENT_NAMES, FATE_NAMES } from "/src/cards.js";
 import { Game } from "/src/engine.js";
 import { chooseAiAction, chooseAiResponse, chooseAiRuleDecision } from "/src/ai.js";
@@ -57,7 +58,7 @@ function newGame(nextGame = null, nextSeed = Date.now(), id = null) {
   shownGame = null; presenting = false;
   seed = nextSeed;
   sceneId = id;
-  game = nextGame || new Game({ seed }).setup();
+  game = nextGame || new Game({ seed });
   game.onDecision = chooseRuleDecision;
   acceptingAction = false;
   busy = false;
@@ -79,7 +80,7 @@ function newGame(nextGame = null, nextSeed = Date.now(), id = null) {
   director = new AnimationDirector($("#arena"), active, { mode: animationMode });
   const currentDirector = director;
   presenting = true; render();
-  game.enablePresentation(async batch => {
+  const onPresentation = async batch => {
     active.assert(); presenting = true; render();
     try {
       for (const event of batch) {
@@ -97,10 +98,17 @@ function newGame(nextGame = null, nextSeed = Date.now(), id = null) {
         await currentDirector.show(event, snapshot => { active.assert(); shownGame = presentationView(snapshot, game); render(); });
       }
     } finally { if (session === active) { presenting = false; render(); } }
-  });
+  };
+  game.enablePresentation(onPresentation);
   launch(async () => {
     active.assert();
     if (!nextGame) {
+      const playerHeroId = await choose("选择角色", getAvailableHeroes().map(hero => ({ value: hero.id, label: hero.name })));
+      active.assert();
+      game = new Game({ seed, playerHeroId, playerSeat: humanId }).setup();
+      game.onDecision = chooseRuleDecision;
+      game.enablePresentation(onPresentation);
+      render();
       for (const player of game.players) {
         game.recordPresentation("draw", { playerId: player.id, cards: player.hand.map(card => card.toJSON()) });
         const view = game.presentationEvents.at(-1).view;
@@ -207,7 +215,7 @@ function choose(title, choices, { cancel = false, detail = "" } = {}) {
     if (cancel) {
       const button = document.createElement("button");
       button.className = "ghost";
-      button.textContent = cancelLabel;
+      button.textContent = "取消";
       button.addEventListener("click", () => { closeModal(); resolve(null); });
       elements.modalActions.append(button);
     }
@@ -296,7 +304,7 @@ function chooseResponseTarget(title, valid, targets, kind = "attack") {
     function clearSelection() {
       picked = null; selected.clear(); selectedCard = null; targetChoice = null;
       pendingChoice.selected = []; cancel.hidden = true;
-      elements.modalActions.replaceChildren(cancel, decline);
+      elements.modalActions.replaceChildren(decline);
       elements.hint.textContent = title; render();
     }
     handChoice = { valid: pendingChoice.valid, selected, cancel: clearSelection, select(index) {
@@ -307,11 +315,11 @@ function chooseResponseTarget(title, valid, targets, kind = "attack") {
       pendingChoice.selected = [index]; cancel.hidden = false;
       targetChoice = null;
       if (next.card.name === "holyLight") {
-        elements.modalActions.replaceChildren(confirm, cancel, decline);
-        elements.hint.textContent = `${title}；确认使用【圣光】，或更换手牌`;
+        elements.modalActions.replaceChildren(confirm);
+        elements.hint.textContent = `${title}，确认使用圣光`;
         render(); return;
       }
-      elements.modalActions.replaceChildren(cancel, decline);
+      elements.modalActions.replaceChildren(cancel);
       elements.hint.textContent = `${title}；选择${kind === "magic" ? "魔弹传递" : "应战攻击"}目标`;
       targetChoice = { targets, resolve(targetId) {
         if (targetId === null) { clearSelection(); return; }
@@ -322,7 +330,7 @@ function chooseResponseTarget(title, valid, targets, kind = "attack") {
     cancel.addEventListener("click", clearSelection);
     const decline = document.createElement("button"); decline.textContent = "不响应";
     decline.addEventListener("click", () => resolve(null));
-    elements.modalActions.replaceChildren(cancel, decline);
+    elements.modalActions.replaceChildren(decline);
     elements.hint.textContent = title;
     openModal(); elements.modal.querySelector(".dialog").hidden = true;
     $("#window").classList.add("choosing-hand"); render();
@@ -504,8 +512,8 @@ async function resolveAttackChain(actorId, handIndex, targetId) {
     overflow: overflowPolicy,
     resolveOverflow: resolveHumanOverflow,
     chooseResponse: context => {
-      const { actor, target, valid, counterTargets, isCounter } = context;
-      if (target.id === humanId) return chooseResponseTarget(`${actor.name}对你发动${isCounter ? "应战攻击" : "主动攻击"}【${CARD_NAMES[context.attack.name]}】`, valid, counterTargets.map(player => player.id));
+      const { actor, target, valid, counterTargets } = context;
+      if (target.id === humanId) return chooseResponseTarget(`${actor.name}对你使用【${CARD_NAMES[context.attack.name]}】`, valid, counterTargets.map(player => player.id));
       return chooseAiResponse(game, context);
     },
   });
@@ -517,7 +525,7 @@ async function resolveMagicChain(actorId, handIndex) {
     resolveOverflow: resolveHumanOverflow,
     chooseResponse: context => {
       const { actor, target, valid, nextTarget } = context;
-      if (target.id === humanId) return chooseResponseTarget(`${actor.name}向你传递【魔弹】`, valid, nextTarget ? [nextTarget.id] : [], "magic");
+      if (target.id === humanId) return chooseResponseTarget(`${actor.name}对你使用【魔弹】`, valid, nextTarget ? [nextTarget.id] : [], "magic");
       return chooseAiResponse(game, context);
     },
   });

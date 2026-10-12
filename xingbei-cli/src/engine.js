@@ -5,7 +5,7 @@ import { RuleError } from "./errors.js";
 export { RuleError } from "./errors.js";
 import { Card } from "./card.js";
 import { Player } from "./player.js";
-import { createDefaultHero, createHero } from "./hero.js";
+import { createDefaultHero, createHero, createHeroRoster } from "./hero.js";
 import { BASIC_EFFECTS } from "./effects.js";
 import { TurnFlow } from "./turn.js";
 import { Timing } from "./timing.js";
@@ -32,8 +32,13 @@ export const DamageType = Object.freeze({ ATTACK: "attack", SPELL: "spell" });
 export const DiscardVisibility = Object.freeze({ PUBLIC: "public", HIDDEN: "hidden" });
 
 export class Game {
-  constructor({ names = DEFAULT_NAMES, teams = DEFAULT_TEAMS, seed = Date.now(), shuffleDeck = true, heroRules = true, heroIds = null } = {}) {
+  constructor({ names = DEFAULT_NAMES, teams = DEFAULT_TEAMS, seed = Date.now(), shuffleDeck = true, heroRules = true, heroIds = null, playerHeroId = null, playerSeat = 0 } = {}) {
     if (names.length !== 6 || teams.length !== 6 || teams.filter(team => team === "red").length !== 3 || teams.filter(team => team === "blue").length !== 3) throw new RuleError("当前对局需要6名玩家，红蓝各3人");
+    if (playerHeroId != null) {
+      if (heroIds != null) throw new RuleError("不能同时指定玩家角色与完整角色阵容");
+      try { heroIds = createHeroRoster(playerHeroId, playerSeat); }
+      catch (error) { throw new RuleError(error.message); }
+    }
     this.random = seededRandom(seed);
     this.players = names.map((name, seat) => new Player({ id: seat, name, team: teams[seat], hero: heroIds ? createHero(heroIds[seat], heroRules) : createDefaultHero(seat, heroRules) }));
     this.teams = { red: { morale: 15, achievements: [], cups: 0 }, blue: { morale: 15, achievements: [], cups: 0 } };

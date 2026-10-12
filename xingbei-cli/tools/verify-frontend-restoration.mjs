@@ -225,6 +225,9 @@ try {
     await capture(page, `end-${tag}`, viewport);
     await page.getByRole("button", { name: "再来一局", exact: true }).click();
     await page.waitForFunction(() => window.xingbeiDev.exportState().game.winner === null);
+    await page.getByRole("heading", { name: "选择角色" }).waitFor();
+    await page.getByRole("button", { name: "狂战士", exact: true }).click();
+    await page.waitForFunction(() => window.xingbeiDev.exportState().game.players[0].hand.length === 4);
     check(`${tag}: 结束后重开`, await page.locator("#modal").isHidden());
     await scene("purchase");
     await page.locator("#buy").click();
@@ -250,6 +253,8 @@ try {
   }
   const page = await browser.newPage({ viewport: viewports[0] });
   await page.goto(base);
+  await page.getByRole("button", { name: "狂战士", exact: true }).click();
+  await page.waitForFunction(() => document.querySelectorAll("#hand .card").length === 4);
   const font = await page.request.get(`${base}/font/xingkai.woff2`);
   check("字体路由与MIME正确", font.status() === 200 && font.headers()["content-type"] === "font/woff2");
   check("正常网页不暴露开发工具", await page.locator(".dev-tools").count() === 0 && await page.evaluate(() => !window.xingbeiDev));

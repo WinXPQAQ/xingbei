@@ -92,10 +92,12 @@ try {
       check(`${tag} 墙待目标不移动牌`, (await state()).game.players[0].hand.length === 2);
       await page.locator('.player.targetable[data-player="1"]').click();
       await page.waitForFunction(() => window.xingbeiDev.exportState().pendingChoice?.title.includes("天使羁绊"));
+      check(`${tag} 羁绊选择期间墙已显示圣盾图标`, await page.locator('.player[data-player="1"] .marks img[alt="圣盾"]').count() === 1);
       await page.getByRole("button", { name: "红一 · 守护天使", exact: true }).click();
       await page.waitForFunction(() => window.xingbeiDev.exportState().current === 1);
       const after = await state();
       check(`${tag} 墙成为实际基础圣盾`, after.game.players[1].statuses.some(card => card.attachment.effectId === "holyShield" && card.type === "attack"));
+      check(`${tag} 墙使用已加载的圣盾图标`, await page.locator('.player[data-player="1"] .marks img[alt="圣盾"]').evaluate(image => image.getAttribute("src") === "/assets/card/holyShield.png" && image.complete && image.naturalWidth > 0));
       check(`${tag} 羁绊给治疗`, after.game.players[0].healing === 1);
       check(`${tag} 保留其他基础效果`, after.game.players[1].statuses.some(card => card.attachment.effectId === "poison"));
     }
@@ -127,6 +129,7 @@ try {
     if (hero === "priest") {
       await page.addInitScript(() => { Date.now = () => 13; });
       await page.goto("http://127.0.0.1:4173/?motion=off");
+      await page.getByRole("button", { name: "狂战士", exact: true }).click();
       await page.waitForFunction(() => document.querySelector("#hint").textContent.includes("[攻击行动]"));
       check(`${tag} 正式页面六英雄阵容`, (await page.locator(".player-name").allTextContents()).join() === "狂战士,风之剑圣,神箭手,封印师,守护天使,神官");
       check(`${tag} 正式六人开局手牌`, await page.locator("#hand .card").count() === 4);

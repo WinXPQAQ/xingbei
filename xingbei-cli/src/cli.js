@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { getAvailableHeroes } from "./hero.js";
 import { cardText } from "./cards.js";
 import { Game, RuleError } from "./engine.js";
 import { chooseAiAction, chooseAiResponse, chooseAiRuleDecision } from "./ai.js";
@@ -6,8 +7,11 @@ import { askIndex, TerminalUI } from "./tui.js";
 
 const tui = new TerminalUI();
 const humanId = Number(process.argv[2] ?? 0);
-const game = new Game({ seed: Date.now() }).setup();
-game.player(humanId);
+if (!Number.isInteger(humanId) || humanId < 0 || humanId >= 6) { tui.close(); throw new RuleError("无效的玩家座位"); }
+const heroes = getAvailableHeroes();
+heroes.forEach((hero, index) => tui.console(`${index}: ${hero.name}`));
+const heroIndex = await askIndex(tui, "开局选择角色> ", heroes.map((_, index) => index), { allowBlank: false });
+const game = new Game({ seed: Date.now(), playerHeroId: heroes[heroIndex].id, playerSeat: humanId }).setup();
 const overflowPolicy = player => player.id === humanId ? "defer" : "random";
 
 game.onDecision = async request => {

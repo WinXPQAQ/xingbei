@@ -308,3 +308,23 @@ test("六英雄默认阵容完整AI对局：逐回合、额外行动、实例守
     assert.ok(game.winner, `种子${seed}应在500回合内结束`);
   }
 });
+
+
+test("开局自由选已实现角色：交换阵容、固定六人坐次，生成正确专属牌且拒绝非法设置", async () => {
+  const { getAvailableHeroes, createHeroRoster } = await import("../src/hero.js");
+  assert.equal(getAvailableHeroes().length, 6);
+  for (const { id } of getAvailableHeroes()) {
+    const game = new Game({ seed: 13, playerHeroId: id }).setup();
+    assert.equal(game.player(0).hero.id, id);
+    assert.equal(new Set(game.players.map(player => player.hero.id)).size, 6);
+    assert.deepEqual(game.players.map(player => player.team), ["red", "blue", "blue", "red", "red", "blue"]);
+    assert.ok(game.players.every(player => player.hand.length === 4));
+    const sealer = game.players.find(player => player.hero.id === "sealer");
+    assert.equal(game.outside.length, 1); assert.equal(game.outside[0].id, sealer.hero.state.bindingCardId);
+    game.assertCardLocations();
+  }
+  assert.equal(createHeroRoster("guardianAngel", 2)[2], "guardianAngel");
+  assert.throws(() => new Game({ playerHeroId: "unknown" }), /角色/);
+  assert.throws(() => new Game({ playerHeroId: "priest", playerSeat: 6 }), /座位/);
+  assert.throws(() => new Game({ playerHeroId: "priest", heroIds: [] }), /同时/);
+});

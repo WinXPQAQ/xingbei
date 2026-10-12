@@ -27,3 +27,16 @@ export function createHero(id, enabled = true) {
 }
 export const DEFAULT_HERO_IDS = ["berserker", "windSwordmaster", "marksman", "sealer", "guardianAngel", "priest"];
 export function createDefaultHero(seat, enabled = true) { return createHero(enabled ? DEFAULT_HERO_IDS[seat] : definitions[seat][0], enabled); }
+
+export function getAvailableHeroes() {
+  const ids = [...new Set([...DEFAULT_HERO_IDS, ...Object.keys(HERO_DEFINITIONS)])];
+  return ids.map(id => ({ id, name: HERO_DEFINITIONS[id].name }));
+}
+export function createHeroRoster(playerHeroId, playerSeat = 0) {
+  if (!Object.hasOwn(HERO_DEFINITIONS, playerHeroId)) throw new Error("角色尚未实现或不存在");
+  if (!Number.isInteger(playerSeat) || playerSeat < 0 || playerSeat >= DEFAULT_HERO_IDS.length) throw new Error("无效的玩家座位");
+  const roster = [...DEFAULT_HERO_IDS], previousSeat = roster.indexOf(playerHeroId);
+  if (previousSeat >= 0) [roster[playerSeat], roster[previousSeat]] = [roster[previousSeat], roster[playerSeat]];
+  else roster[playerSeat] = playerHeroId;
+  return roster;
+}
