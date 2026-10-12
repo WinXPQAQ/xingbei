@@ -269,3 +269,11 @@ v0.4.6新增开局/重新开始角色选择，开放六位已实现英雄，共�
 共用playerChoice在网页复用chooseTarget，直接点击高亮的合法角色提交，不弹出姓名按钮；天使羁绊、神圣契约及以后同类技能统一采用此接口。规则要求的必选目标不允许Esc/取消跳过，非法目标无效。Session重开后旧选择的清理不得覆盖新局。终端/AI仍消费同一规则请求，具体呈现由各端处理。
 
 验证：57项Node通过；桌面1440×900与触屏390×844的天使19项、神官29项、整体86项，共134项浏览器检查通过，控制台及资源错误0。证据artifacts/heroes/review-target-angel/、review-target-priest-final/、review-target-regression/。神官首轮被开发工具栏遮挡目标，脚本改为隐藏诊断栏后执行真实点击，失败证据review-target-priest/保留；正式页面不含该工具栏。
+
+
+## 开发工具精简（2026-10-12）
+
+PR #2已合并main。tools的13个脚本精简为8个：三项响应脚本合成verify-responses.mjs，共用浏览器与圣光待确认检查，保留攻击/魔弹/无牌/暗弃独有分支；移除四人历史baseline、original-restoration和comparison生成脚本。保留原版六人布局与动画采集，两者覆盖不同证据；历史产物未删除。当前命令与旧入口对应见[tools说明](../tools/README.md)，历史报告内旧命令只记录当时运行。
+旧静态采集中仍需要的手牌数量、目标、星石、状态和结束采集合入六人采集的CAPTURE_STATES=1模式。原版4180服务当前未运行，本次仅完成该模式语法检查，未重新实跑，不据此新增原版验收结论。
+
+精简后57项Node测试通过；新verify-responses.mjs在1440×900桌面和390×844触屏通过155个唯一命名检查，重复调用仍断言，控制台/资源错误0，证据artifacts/tools/compact-responses-final/。8个.mjs均通过node --check。脚本行数从1414降至1092；此计数不包含说明文档。

@@ -197,3 +197,11 @@ Web 默认端口是 `4173`，可通过 `PORT` 修改；`server.js` 未指定 `HO
 
 - 网页playerChoice统一复用直接点击角色选目标；不弹出姓名选项。必选技能目标不得取消绕过规则。
 - 用户已授权完成review后合并PR到main，并精简tools直接push main，不再等待review。
+
+## tools精简与合并（2026-10-12）
+
+- PR #2已完成review并合并main。用户授权本批整理直接push main。
+- 三项响应脚本改用tools/verify-responses.mjs，共用圣光检查；旧入口已移除。
+- 四人历史采集/对照生成脚本已移除，保留capture-original-six-player.mjs及capture-original-animation.mjs。旧截图、HTML和报告不得顺带删除；历史命令以tools/README.md迁移说明为准。
+- 六人原版采集支持CAPTURE_STATES=1扩展静态状态，替代旧四人restoration的独有采集能力；本批未实跑原版服务，该限制见tools说明。
+- 整理后57项Node、两视口155个唯一命名响应检查通过；8个工具语法检查通过。未将原版采集的语法通过描述为实跑通过。
