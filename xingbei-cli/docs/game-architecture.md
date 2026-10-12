@@ -216,3 +216,8 @@ Game.trigger不再收集全体技能或扫描状态数组；从当前actor/targe
 ## 撕裂命中响应（v0.5.1）
 
 撕裂绑定自身actor的ATTACK_HIT，属于时点2确认命中后；priority=-1，普通优先级0的狂化/血影狂刀等命中技能先执行。旧代码character/shiZhouNian.js的siLie绑定source:gongJiMingZhongAfter。仅在真正命中时询问撕裂，接受后扣1宝石并修改本次攻击伤害，随后进入时点3的DAMAGE_BEFORE；拒绝不扣费。圣光、应战及圣盾使原攻击未命中时不询问。通用攻击伤害事件不会单独触发撕裂。
+
+
+## Review：技能目标直接选人（v0.5.2）
+
+共用playerChoice在网页复用chooseTarget，直接点击高亮的合法角色提交，不弹出姓名按钮；天使羁绊、神圣契约及以后同类技能统一采用此接口。规则要求的必选目标不允许Esc/取消跳过，非法目标无效。Session重开后旧选择的清理不得覆盖新局。终端/AI仍消费同一规则请求，具体呈现由各端处理。

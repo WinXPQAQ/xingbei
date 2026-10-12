@@ -157,7 +157,7 @@ function render() {
   elements.refine.hidden = !game.canRefine(humanId) || !!targetChoice;
   $("#cancel-target").hidden = !targetChoice;
   $("#control").hidden = !!pendingChoice;
-  $(".center-hint").hidden = !!pendingChoice && pendingChoice.type !== "hand";
+  $(".center-hint").hidden = !!pendingChoice && !["hand", "target"].includes(pendingChoice.type);
 }
 
 function renderPlayers(view = shownGame || game) {
@@ -226,6 +226,17 @@ function choose(title, choices, { cancel = false, detail = "" } = {}) {
 }
 
 async function chooseRuleDecision(request) {
+  if (request.type === "playerChoice") {
+    if (request.playerId !== humanId) return chooseAiRuleDecision(request);
+    const active = session;
+    const previousHint = elements.hint.textContent;
+    pendingChoice = { title: request.title, type: "target", valid: request.choices.map(choice => choice.value) };
+    try {
+      return await chooseTarget(pendingChoice.valid, request.title, { canCancel: false });
+    } finally {
+      if (session === active) { pendingChoice = null; elements.hint.textContent = previousHint; render(); }
+    }
+  }
   if (request.type === "cardChoice") {
     if (request.playerId !== humanId) return chooseAiRuleDecision(request);
     return chooseHand(request.title, game.player(humanId).hand, { count: request.count, valid: request.valid, cancel: request.optional });
@@ -401,6 +412,7 @@ function chooseTarget(targets, hint, selection = {}) {
   elements.hint.textContent = hint;
   return session.wait(resolve => {
     const choice = { targets, ...selection, resolve(targetId) {
+      if (targetId === null && choice.canCancel === false) return;
       if (targetId === null || choice.targets.includes(targetId)) { if (targetId !== null) director.captureHand(); resolve(targetId); }
     } };
     targetChoice = choice;

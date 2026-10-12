@@ -17,6 +17,7 @@ try {
     page.on("response", response => { if (response.status() >= 400) issues.push(`${response.status()} ${response.url()}`); });
     await page.goto(`http://127.0.0.1:4173/web/dev.html?scene=hero-${hero}`);
     await page.waitForFunction(() => window.xingbeiDev?.exportState().phase === "action");
+    await page.locator(".dev-tools").evaluate(toolbar => { toolbar.style.visibility = "hidden"; });
     const state = () => page.evaluate(() => window.xingbeiDev.exportState());
     const tag = `${viewport.width}x${viewport.height}`;
     check(`${tag} 六人坐次`, (await state()).game.players.map(player => player.team).join() === "red,blue,blue,red,red,blue");
@@ -94,7 +95,8 @@ try {
       await page.locator('.player.targetable[data-player="1"]').click();
       await page.waitForFunction(() => window.xingbeiDev.exportState().pendingChoice?.title.includes("天使羁绊"));
       check(`${tag} 羁绊选择期间墙已显示圣盾图标`, await page.locator('.player[data-player="1"] .marks img[alt="圣盾"]').count() === 1);
-      await page.getByRole("button", { name: "红一 · 守护天使", exact: true }).click();
+      check(`${tag} 羁绊直接高亮角色且没有选项弹窗`, await page.locator(".player.targetable").count() === 6 && await page.locator("#modal").isHidden());
+      await page.locator('.player.targetable[data-player="0"]').click();
       await page.waitForFunction(() => window.xingbeiDev.exportState().current === 1);
       const after = await state();
       check(`${tag} 墙成为实际基础圣盾`, after.game.players[1].statuses.some(card => card.attachment.effectId === "holyShield" && card.type === "attack"));
@@ -114,10 +116,14 @@ try {
       check(`${tag} 祈福上限6及明弃`, (await state()).game.players[0].healing === 6 && (await state()).game.discard.every(card => card.discardVisibility === "public"));
       await page.goto(`http://127.0.0.1:4173/web/dev.html?scene=hero-priest`);
       await page.waitForFunction(() => window.xingbeiDev?.exportState().phase === "action");
+    await page.locator(".dev-tools").evaluate(toolbar => { toolbar.style.visibility = "hidden"; });
       await page.locator('#hand .card[data-index="2"]').click(); await page.locator('.player.targetable[data-player="1"]').click();
       await page.waitForFunction(() => window.xingbeiDev.exportState().pendingChoice?.title === "神圣契约");
       await page.getByRole("button", { name: "发动", exact: true }).click();
-      await page.getByRole("button", { name: "红二 · 剑帝", exact: true }).click();
+      check(`${tag} 契约只允许直接选择队友`, await page.locator(".player.targetable").count() === 2 && await page.locator("#modal").isHidden());
+      await page.locator('.player[data-player="0"]').evaluate(node => node.click());
+      check(`${tag} 契约非法目标不推进`, (await state()).pendingChoice.type === "target");
+      await page.locator('.player.targetable[data-player="3"]').click();
       await page.getByRole("button", { name: "4点", exact: true }).click();
       await page.waitForFunction(() => window.xingbeiDev.exportState().current === 1);
       const after = await state();

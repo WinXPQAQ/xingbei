@@ -192,3 +192,8 @@ Web 默认端口是 `4173`，可通过 `PORT` 修改；`server.js` 未指定 `HO
 
 - 撕裂绑定自身ATTACK_HIT（时点2），priority=-1，普通命中技能先执行；随后进入伤害时点3。不得改回DAMAGE_BEFORE或在命中检查前询问。
 - 57项Node、两视口狂战士19项浏览器检查通过，证据xingbei-cli/artifacts/heroes/rend-point-2/。
+
+## Review目标与工具整理（v0.5.2）
+
+- 网页playerChoice统一复用直接点击角色选目标；不弹出姓名选项。必选技能目标不得取消绕过规则。
+- 用户已授权完成review后合并PR到main，并精简tools直接push main，不再等待review。
