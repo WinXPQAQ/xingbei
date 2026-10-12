@@ -85,8 +85,8 @@
 以下路径相对于 `xingbei-cli/`：
 
 - `src/card.js`：牌实体与继承层级；`src/cards.js`：基础牌、属性、命格和牌堆数据。
-- `src/player.js`、`src/hero.js`：玩家与英雄组合；`src/effects.js`：牌承载的效果定义。
-- `src/turn.js`、`src/timing.js`：回合状态与触发时点；`src/resolution/`：共用结算流程和决策驱动。
+- `src/player.js`、`src/hero-base.js`、`src/hero.js`、`src/heroes/`：玩家组合英雄基类与具体子类；`src/effects.js`：牌承载的效果定义。
+- `src/turn.js`、`src/timing.js`、`src/triggers.js`：回合、触发时点与按玩家绑定的订阅；`src/resolution/`：共用结算流程和决策驱动。
 - `src/engine.js`：规则与游戏状态。保持可被浏览器和 Node.js 共用，不引入 DOM、终端输入输出或专属平台依赖。
 - `src/ai.js`：AI 行动选择。
 - `src/cli.js`、`src/tui.js`：终端流程与呈现。
@@ -177,3 +177,13 @@ Web 默认端口是 `4173`，可通过 `PORT` 修改；`server.js` 未指定 `HO
 - 圣光选中后只显示确认，不显示取消/不响应；再次点牌或Esc撤回。不响应仅在没有选牌时显示；已选应战攻击/魔弹可先取消再不响应。
 - 天使之墙按holyShield效果显示圣盾图标，已确认实际加载成功；保持按效果而非牌种绘制状态。
 - 54项Node及两视口182项专项浏览器检查通过，范围与证据见最新还原报告。
+
+
+## 按玩家绑定与英雄继承（v0.5.0）
+
+- 六英雄继承Hero，通用绑定/主动攻击/应战攻击/独有技判断放hero-base.js；hero.js仅保留注册与工厂，避免循环导入。
+- TriggerRegistry为六玩家分别维护Map，总120个基础攻击/伤害槽，具体Timing作为槽内索引。只查询actor/target相关订阅，全体影响展开绑定六人；不存在全体事件桶。非战斗事件按player/actor/target/team绑定。
+- 同一具体Timing内合并订阅后按priority降序执行，默认0；同优先级稳定。不得跳过时点2的内部流程或混合攻击/法术伤害。
+- 英雄技能用addSkills/removeSkill更新，只读skills数组禁止直接push；状态牌效果和授予技能随移动注册注销，保留原持有者及每张牌的独立实例。
+- 用户现已授权将此重构及此前六英雄、选角、响应修正上传并更新review PR，不直接merge main。
+- 当前57项Node、两视口351项浏览器检查通过，六英雄100项、整体86项、应战55项、魔弹57项、响应/暗弃53项；证据`xingbei-cli/artifacts/heroes/bindings-*`。

@@ -1,4 +1,4 @@
-# 游戏规则结构（v0.4.7）
+# 游戏规则结构（v0.5.0）
 
 默认六人3v3，座次红蓝蓝红红蓝，玩家控制0号红一。代码使用英文标识，玩家可见文字保持中文。所有模块为原生ES Modules，规则层没有DOM或终端依赖。
 
@@ -10,7 +10,8 @@
 | `src/card.js` | 牌继承层级、原属性/有效属性查询、合法目标、应战条件与自身结算入口 |
 | `src/cards.js`、`src/card-labels.js` | 150张基础牌配置、生成牌堆与排序；独立显示名模块避免牌和结算模块循环导入 |
 | `src/player.js` | `Player`：手牌、状态区、能量、治疗、所属英雄；查询效果与汇总技能 |
-| `src/hero.js` | `Hero`基类：英雄固定信息、技能清单、每个实例独立的`state` |
+| `src/hero-base.js`、`src/hero.js`、`src/heroes/` | Hero公共绑定/判断、英雄注册与六个子类，每个实例独立的技能清单和state |
+| `src/triggers.js` | 六个玩家的事件订阅索引，角色/行为/时点分派、优先级与注册注销 |
 | `src/effects.js` | 效果规则定义；每个实例仍由一张实际牌承载，不创建附加状态类 |
 | `src/turn.js`、`src/timing.js` | 回合状态与明确的触发时点 |
 | `src/resolution/attack.js` | 攻击与连续应战流程 |
@@ -186,3 +187,28 @@ cardExposed保留离开手牌前的有效属性、origin、visibility、covered�
 ## 响应按钮补充（v0.4.7）
 
 圣光待提交时只保留“确认”，提示为“xxx对你使用xxx，确认使用圣光”。再次点击当前牌或Esc撤回，切换合法响应牌仍有效；不响应仅在未选牌时显示。选应战攻击/魔弹期间保留取消与目标选择，点合法目标提交。天使之墙的实际牌仍是攻击牌，attachment.effectId为holyShield，因此状态标记按效果显示圣盾图标，不按牌面类型显示；这点不改变其规则实体。
+
+## 按玩家绑定技能（v0.5.0）
+
+六英雄分别由Berserker、WindSwordmaster、Marksman、Sealer、GuardianAngel、Priest继承Hero。基类独立于注册表，避免子类循环导入；`hero.js`保留工厂与Hero再导出。技能对象由实例构建，不共享可变技能数组或state。基类复用`isOwnAttack(payload)`、`isActiveAttack(context)`、`isCounterAttack(context)`、`hasUniqueSkill(context, id)`与`isAttackAction(context)`。
+
+技能声明用基类生成绑定，不再在filter中重复检查归属：
+
+```js
+{
+  id: "rage", name: "狂化",
+  ...hero.onOwnAttack([Timing.ATTACK_DECLARED, Timing.ATTACK_HIT]),
+  priority: 0,
+  resolve({ timing, context }) {
+    if (timing === Timing.ATTACK_DECLARED || context.sourceHandCount > 3) context.amount++;
+  },
+}
+```
+
+`onOwnAttack(timings)`绑定自身actor，`onOwnTurn(timings)`绑定自身player，`onDamage(timings, role, damageTypes)`绑定造成/受到的指定伤害类别。通用`bind(role, timings, players, damageTypes)`支持actor/target/player/team；players为self、all、team或玩家ID数组。监听所有人的攻击可用`hero.bind("actor", timings, "all")`，注册时展开到六人，技能持有者仍是原英雄。多角色、多时点绑定可直接声明bindings并限定每条timings。
+
+六个Map各有20个基础订阅槽：时点1/2的攻击actor/target共4个，时点3至6的attackDamage/spellDamage各actor/target共16个，总120个；每槽内按具体Timing存储。回合、行动结束、公开牌及士气事件另按玩家绑定。时点2仍区分决定、命中检查、命中与未命中，时点6仍区分实际伤害与伤害结束。魔弹命中检查保持独立target事件，魔弹伤害进入法术伤害3至6。无来源伤害只检查target；自伤同时匹配actor/target时同一订阅去重。damageSteps统一提供actorId=sourceId和targetId。
+
+Game.trigger不再收集全体技能或扫描状态数组；从当前actor/target的对应槽获取条目，合并后按priority降序执行，默认0。相同优先级保持效果牌优先、玩家ID及注册顺序稳定；同一英雄内按技能声明顺序。优先级只决定同一具体Timing内部顺序，不跨越时点。filter在执行前检查剩余条件，前一技能的修改可影响后一技能。
+
+初始化注册英雄；状态牌进入status时注册效果和授予技能，离开/转移时注销或重新注册，已排队但已失效的条目跳过。hero.skills数组只读，使用addSkills/removeSkill通知引擎更新绑定；registerSkill后的字符串引用仍受支持。未声明bindings的扩展技能保留兼容：注册时按事件角色展开到六人，效果牌默认绑定持有者。新技能优先显式声明绑定。属性修正与主动行动合法性查询保留原有独立接口。

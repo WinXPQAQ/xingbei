@@ -59,7 +59,7 @@ test("有效属性查询支持双属性、空命格和英雄覆盖，原属性�
     priority: -10, filter: context => context.playerId === 1 && context.purpose === "response",
     modifyTraits: (_context, traits) => ({ ...traits, elements: ["earth"] }),
   });
-  game.player(1).hero.skills.push("fireResponse", "lowerPriority");
+  game.player(1).hero.addSkills("fireResponse", "lowerPriority");
   const printed = response.getPrintedTraits();
   assert.equal(game.canRespond(attack, response, { actorId: 0, targetId: 1 }), true);
   assert.equal(game.canRespond(attack, response, { actorId: 0, targetId: 2 }), false);
@@ -71,7 +71,7 @@ test("有效属性查询支持双属性、空命格和英雄覆盖，原属性�
     filter: context => context.playerId === 0 && context.card.location.zone === "hand",
     modifyTraits: (_context, traits) => ({ ...traits, elements: ["fire"] }),
   });
-  chain.player(0).hero.skills.push("heldFire");
+  chain.player(0).hero.addSkills("heldFire");
   const used = hand(chain, 0, "waterStrike");
   hand(chain, 1, "fireStrike");
   await chain.attackWithDecisions(0, 0, 1, { chooseResponse: context => {
@@ -110,7 +110,7 @@ test("回合明确区分普通和特殊路线，攻击/法术行动结束与回�
   for (const route of ["attack", "spell", "special"]) {
     const game = new Game({ heroRules: false, shuffleDeck: false });
     game.registerSkill("startHook", { timings: [Timing.TURN_START], async resolve({ player }) { await Promise.resolve(); player.hero.state.started = true; } });
-    game.player(0).hero.skills.push("startHook");
+    game.player(0).hero.addSkills("startHook");
     await game.beginTurn(0);
     assert.equal(game.player(0).hero.state.started, true);
     if (route === "attack") {
@@ -194,7 +194,7 @@ test("无牌也等待响应，攻击链牌留场至结算结束；伤害类别�
     const used = hand(game, 0, name), events = [], contexts = [];
     game.enablePresentation(batch => events.push(...batch));
     game.registerSkill("damageObserver", { timings: [Timing.DAMAGE_BEFORE, Timing.DAMAGE_AFTER], resolve: ({ context }) => contexts.push(context.damageType) });
-    game.player(0).hero.skills.push("damageObserver");
+    game.player(0).hero.addSkills("damageObserver");
     let release, asked = 0;
     const pending = game.playWithDecisions(0, 0, 1, { chooseResponse: ({ valid }) => {
       asked++; assert.deepEqual(valid, []); assert.equal(used.location.zone, "field");

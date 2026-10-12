@@ -9,6 +9,7 @@ import { createDefaultHero, createHero, createHeroRoster } from "./hero.js";
 import { BASIC_EFFECTS } from "./effects.js";
 import { TurnFlow } from "./turn.js";
 import { Timing } from "./timing.js";
+import { TriggerRegistry } from "./triggers.js";
 import { resolveSync, resolveAsync } from "./resolution/decisions.js";
 export { Timing } from "./timing.js";
 
@@ -46,6 +47,7 @@ export class Game {
     this.cards = new Map();
     this.effects = new Map(Object.entries(BASIC_EFFECTS));
     this.skillDefinitions = new Map(); this.pendingRuleEvents = []; this.processingRuleEvents = false;
+    this.triggers = new TriggerRegistry(this);
     this.presentationEnabled = false; this.presentationEvents = []; this.presentationSequence = 0;
     this.turn = new TurnFlow(this); this.timeline = [];
     for (const card of createDeck()) this.registerCard(card, { zone: "deck" });
@@ -54,6 +56,10 @@ export class Game {
     this.winner = null;
     this.log = [];
     initializeSealer(this);
+    for (const player of this.players) {
+      this.triggers.registerHero(player);
+      player.hero.onSkillsChanged = () => this.triggers.registerHero(player);
+    }
   }
 
   enablePresentation(onPresentation) { this.presentationEnabled = true; this.presentationEvents = []; this.onPresentation = onPresentation; }
@@ -97,6 +103,7 @@ export class Game {
     card.setLocation(location);
     if (location.zone === "status" && !card.attachment) card.attachment = { effectId: card.name, sourcePlayerId: null, sourceSkillId: null, data: {} };
     destination.push(card);
+    if (location.zone === "status") this.triggers.registerCard(card);
     return card;
   }
 
@@ -115,6 +122,7 @@ export class Game {
     card.setLocation(destination);
     card.discardVisibility = destination.zone === "discard" ? visibility : null;
     if (destination.zone !== "status") card.attachment = null;
+    if (from.zone === "status" || destination.zone === "status") this.triggers.registerCard(card);
     if (animate) this.recordPresentation("move", { card: card.toJSON(), from, to: card.location, reason, targetId, visibility });
     return card;
   }
@@ -148,6 +156,10 @@ export class Game {
   registerSkill(id, definition) {
     if (this.skillDefinitions.has(id)) throw new RuleError(`技能已注册 ${id}`);
     this.skillDefinitions.set(id, { priority: 0, ...definition, id });
+    for (const player of this.players) {
+      this.triggers.registerHero(player);
+      for (const card of player.statuses) this.triggers.registerCard(card);
+    }
   }
 
   modifyTraits(card, printed, context) {
@@ -166,12 +178,9 @@ export class Game {
     if (timing !== Timing.CARD_EXPOSED) yield* this.flushRuleEvents(options);
     yield* this.present();
     this.timeline.push({ timing, playerId: context.playerId ?? context.targetId, cardId: context.card?.id ?? null, point: context.point ?? null });
-    const ownerId = context.playerId ?? context.targetId;
-    const effects = ownerId == null ? [] : this.player(ownerId).statuses.map(card => ({ card, player: this.player(ownerId), definition: this.effects.get(card.attachment.effectId) }));
-    const skills = this.players.flatMap(player => player.getSkills(context).map(({ skill, sourceCard }) => ({ player, sourceCard, definition: typeof skill === "string" ? this.skillDefinitions.get(skill) : skill })));
-    const entries = [...effects, ...skills].filter(entry => entry.definition?.timings?.includes(timing))
-      .sort((a, b) => (b.definition.priority ?? 0) - (a.definition.priority ?? 0));
+    const entries = this.triggers.get(timing, context);
     for (const entry of entries) {
+      if (!entry.active) continue;
       if (entry.card && (entry.card.location.zone !== "status" || entry.card.location.playerId !== entry.player.id || this.effects.get(entry.card.attachment.effectId) !== entry.definition)) continue;
       if (entry.sourceCard && (entry.sourceCard.location.zone !== "status" || entry.sourceCard.location.playerId !== entry.player.id)) continue;
       const payload = { game: this, timing, context, options, ...entry };
@@ -616,7 +625,7 @@ export class Game {
     const target = this.player(targetId);
     if (!Object.values(DamageType).includes(damageType)) throw new RuleError("无效的伤害类别");
     const context = attackContext ?? { targetId, sourceId, amount, damageType };
-    Object.assign(context, { targetId, sourceId, amount, damageType, point: 3 });
+    Object.assign(context, { actorId: sourceId, targetId, sourceId, amount, damageType, point: 3 });
     yield* this.trigger(Timing.DAMAGE_BEFORE, context, options);
     context.point = 4; context.healingLimit = Math.min(Math.max(0, context.amount), target.healing);
     yield* this.trigger(Timing.HEALING_BEFORE, context, options);

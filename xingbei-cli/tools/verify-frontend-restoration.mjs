@@ -167,7 +167,7 @@ try {
     await page.locator("#dev-step").evaluate(button => button.click());
     await page.locator("#modal:not(.hidden)").waitFor();
     await capture(page, `attack-${tag}`, viewport);
-    check(`${tag}: 应战等待阶段`, (await state(page)).pendingChoice.title.includes("主动攻击"));
+    check(`${tag}: 应战等待阶段`, (await state(page)).pendingChoice.type === "hand" && (await state(page)).pendingChoice.title.includes("对你使用"));
     await page.locator("#hand").getByRole("button", { name: /地裂斩/ }).click();
     await page.locator('.player.targetable[data-player="2"]').click();
     // Further counterattacks can ask the human again; choosing not to respond ends that branch.
