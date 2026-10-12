@@ -22,7 +22,30 @@ test("狂战士完整链：增伤在正确时点，撕裂可拒绝；主动与�
     for (let i = 0; i < 4; i++) named(game, 0, "holyLight");
     named(game, 1, "poison"); named(game, 1, "weakness");
     game.player(0).energy.gem = 1;
-    await game.attackWithDecisions(0, 0, 1, { chooseResponse: () => null, choose: request => request.skillId === "bloodBlade" || (request.skillId === "rend" && extra) });
+    let rendAsked = 0;
+    game.player(0).hero.addSkills({
+      id: "rendHitOrderProbe", ...game.player(0).hero.onOwnAttack([Timing.ATTACK_HIT]),
+      resolve() { assert.equal(rendAsked, 0, "普通命中技能先于撕裂执行"); },
+    });
+    game.player(0).hero.addSkills({
+      id: "rendOrderProbe", ...game.player(0).hero.onDamage([Timing.DAMAGE_BEFORE], "actor", ["attack"]),
+      resolve({ context }) {
+        assert.equal(rendAsked, 1);
+        assert.equal(context.amount, extra ? 8 : 6);
+        assert.equal(game.player(0).energy.gem, extra ? 0 : 1);
+      },
+    });
+    await game.attackWithDecisions(0, 0, 1, { chooseResponse: () => null, choose: request => {
+      if (request.skillId === "rend") {
+        rendAsked++;
+        assert.equal(game.timeline.at(-1).timing, Timing.ATTACK_HIT);
+        assert.equal(game.timeline.at(-1).point, 2);
+        assert.equal(game.timeline.some(entry => entry.timing === Timing.DAMAGE_BEFORE), false);
+        assert.equal(game.player(0).energy.gem, 1);
+        return extra;
+      }
+      return request.skillId === "bloodBlade";
+    } });
     assert.equal(game.player(1).hand.length, 6);
     assert.equal(game.player(0).energy.gem, extra ? 0 : 1);
     const expected = [Timing.ATTACK_DECLARED, Timing.ATTACK_DECISION, Timing.DAMAGE_BEFORE, Timing.HEALING_BEFORE, Timing.DAMAGE_ACTUAL_BEFORE, Timing.DAMAGE_ACTUAL];
@@ -36,6 +59,19 @@ test("狂战士完整链：增伤在正确时点，撕裂可拒绝；主动与�
   assert.equal(game.player(2).hand.length, 3, "狂化也增强应战攻击");
   const before = game.player(2).hand.length;
   game.damage(2, 1, { sourceId: 0, damageType: "spell" }); assert.equal(game.player(2).hand.length, before + 1);
+  for (const response of ["holyLight", "holyShield", "counter"]) {
+    const blocked = make("berserker"); named(blocked, 0, "fireStrike"); blocked.player(0).energy.gem = 1;
+    if (response === "holyShield") blocked.attachCard(blocked.deck.find(card => card.name === "holyShield").id, 1, { effectId: "holyShield" });
+    else named(blocked, 1, response === "counter" ? "fireStrike" : "holyLight");
+    let asked = 0;
+    await blocked.attackWithDecisions(0, 0, 1, {
+      chooseResponse: context => context.target.id !== 1 || response === "holyShield" ? null : { index: 0, targetId: response === "counter" ? 3 : null },
+      choose: request => { if (request.skillId === "rend") asked++; return false; },
+    });
+    assert.equal(asked, 0, `${response}使原攻击未命中，不询问撕裂`);
+    assert.equal(blocked.player(0).energy.gem, 1);
+    blocked.assertCardLocations();
+  }
 });
 
 test("血腥咆哮在时点2命中，圣光和圣盾保留，治疗仍在时点4抵挡", async () => {

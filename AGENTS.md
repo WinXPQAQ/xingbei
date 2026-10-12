@@ -187,3 +187,8 @@ Web 默认端口是 `4173`，可通过 `PORT` 修改；`server.js` 未指定 `HO
 - 英雄技能用addSkills/removeSkill更新，只读skills数组禁止直接push；状态牌效果和授予技能随移动注册注销，保留原持有者及每张牌的独立实例。
 - 用户现已授权将此重构及此前六英雄、选角、响应修正上传并更新review PR，不直接merge main。
 - 当前57项Node、两视口351项浏览器检查通过，六英雄100项、整体86项、应战55项、魔弹57项、响应/暗弃53项；证据`xingbei-cli/artifacts/heroes/bindings-*`。
+
+## 撕裂命中响应（v0.5.1）
+
+- 撕裂绑定自身ATTACK_HIT（时点2），priority=-1，普通命中技能先执行；随后进入伤害时点3。不得改回DAMAGE_BEFORE或在命中检查前询问。
+- 57项Node、两视口狂战士19项浏览器检查通过，证据xingbei-cli/artifacts/heroes/rend-point-2/。

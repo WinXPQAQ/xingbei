@@ -31,6 +31,7 @@ try {
       await page.waitForFunction(() => window.xingbeiDev.exportState().pendingChoice?.title.includes("血腥咆哮"));
       await page.getByRole("button", { name: "发动", exact: true }).click();
       await page.waitForFunction(() => window.xingbeiDev.exportState().pendingChoice?.title.includes("撕裂"));
+      check(`${tag} 撕裂在时点2命中后且早于伤害时点3询问`, (await state()).game.timeline.at(-1).timing === "attackHit" && (await state()).game.timeline.at(-1).point === 2 && !(await state()).game.timeline.some(entry => entry.timing === "damageBefore"));
       await page.getByRole("button", { name: "不发动", exact: true }).click();
       await page.waitForFunction(() => window.xingbeiDev.exportState().current === 1);
       const after = await state();

@@ -13,8 +13,8 @@ function createSkills(hero) {
     { id: "bloodyRoar", name: "血腥咆哮", ...hero.onOwnAttack([Timing.ATTACK_DECLARED]),
       filter: payload => hero.isActiveAttack(payload.context) && hero.hasUniqueSkill(payload.context, "bloodyRoar") && payload.game.player(payload.context.targetId).healing === 2,
       *resolve({ game, player, context }) { if (yield* game.offerSkill(player.id, "bloodyRoar", "血腥咆哮")) context.forceHitRequested = true; } },
-    { id: "rend", name: "撕裂", ...hero.onDamage([Timing.DAMAGE_BEFORE], "actor", ["attack"]),
-      filter: ({ game, player, context }) => context.hit && game.canPayEnergy(player.id, "gem"),
+    { id: "rend", name: "撕裂", ...hero.onOwnAttack([Timing.ATTACK_HIT]), priority: -1,
+      filter: ({ game, player }) => game.canPayEnergy(player.id, "gem"),
       *resolve({ game, player, context }) { if (yield* game.offerSkill(player.id, "rend", "撕裂（消耗1宝石）")) { game.payEnergy(player.id, "gem"); context.amount += 2; } } },
   ];
 }
