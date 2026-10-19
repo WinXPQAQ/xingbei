@@ -1,0 +1,210 @@
+{
+  "sha": "7cd8138d1cc90719947d0036023a2ba17714156c",
+  "games": 1728,
+  "protocolExhaustiveUnique": true,
+  "pairedSeedsStartsColorsRosters": true,
+  "allRecordedSummariesRecomputed": true,
+  "pairs": [
+    {
+      "pair": [
+        "v1.3",
+        "v1.2"
+      ],
+      "games": 576,
+      "wins": 356,
+      "losses": 220,
+      "truncated": 0,
+      "scoreRate": 0.6180555555555556,
+      "clusterBootstrap95": [
+        0.5833333333333334,
+        0.6493055555555555
+      ],
+      "groups": {
+        "mirrorAssault": {
+          "games": 144,
+          "wins": 91,
+          "losses": 53,
+          "truncated": 0,
+          "scoreRate": 0.6319444444444444
+        },
+        "mirrorMixed": {
+          "games": 144,
+          "wins": 110,
+          "losses": 34,
+          "truncated": 0,
+          "scoreRate": 0.7638888888888888
+        },
+        "asymmetric": {
+          "games": 144,
+          "wins": 82,
+          "losses": 62,
+          "truncated": 0,
+          "scoreRate": 0.5694444444444444
+        },
+        "asymmetricReverse": {
+          "games": 144,
+          "wins": 73,
+          "losses": 71,
+          "truncated": 0,
+          "scoreRate": 0.5069444444444444
+        }
+      }
+    },
+    {
+      "pair": [
+        "v1.3",
+        "v1.0"
+      ],
+      "games": 576,
+      "wins": 450,
+      "losses": 126,
+      "truncated": 0,
+      "scoreRate": 0.78125,
+      "clusterBootstrap95": [
+        0.7378472222222223,
+        0.8229166666666665
+      ],
+      "groups": {
+        "mirrorAssault": {
+          "games": 144,
+          "wins": 93,
+          "losses": 51,
+          "truncated": 0,
+          "scoreRate": 0.6458333333333334
+        },
+        "mirrorMixed": {
+          "games": 144,
+          "wins": 129,
+          "losses": 15,
+          "truncated": 0,
+          "scoreRate": 0.8958333333333334
+        },
+        "asymmetric": {
+          "games": 144,
+          "wins": 108,
+          "losses": 36,
+          "truncated": 0,
+          "scoreRate": 0.75
+        },
+        "asymmetricReverse": {
+          "games": 144,
+          "wins": 120,
+          "losses": 24,
+          "truncated": 0,
+          "scoreRate": 0.8333333333333334
+        }
+      }
+    },
+    {
+      "pair": [
+        "v1.2",
+        "v1.0"
+      ],
+      "games": 576,
+      "wins": 416,
+      "losses": 160,
+      "truncated": 0,
+      "scoreRate": 0.7222222222222222,
+      "clusterBootstrap95": [
+        0.6961805555555555,
+        0.7465277777777778
+      ],
+      "groups": {
+        "mirrorAssault": {
+          "games": 144,
+          "wins": 95,
+          "losses": 49,
+          "truncated": 0,
+          "scoreRate": 0.6597222222222222
+        },
+        "mirrorMixed": {
+          "games": 144,
+          "wins": 124,
+          "losses": 20,
+          "truncated": 0,
+          "scoreRate": 0.8611111111111112
+        },
+        "asymmetric": {
+          "games": 144,
+          "wins": 96,
+          "losses": 48,
+          "truncated": 0,
+          "scoreRate": 0.6666666666666666
+        },
+        "asymmetricReverse": {
+          "games": 144,
+          "wins": 101,
+          "losses": 43,
+          "truncated": 0,
+          "scoreRate": 0.7013888888888888
+        }
+      }
+    }
+  ],
+  "cases": [
+    {
+      "hero": "windSwordmaster",
+      "turn": 33,
+      "actorId": 2,
+      "legalCandidates": 11,
+      "bestScore": -6.566242190999379,
+      "allLegalScoresNegative": true,
+      "observationPrivacy": true,
+      "rawFrozenScoreReplay": true,
+      "naturalGameReplay": true
+    },
+    {
+      "hero": "marksman",
+      "turn": 28,
+      "actorId": 5,
+      "legalCandidates": 8,
+      "bestScore": -2.143159177252599,
+      "allLegalScoresNegative": true,
+      "observationPrivacy": true,
+      "rawFrozenScoreReplay": true,
+      "naturalGameReplay": true
+    },
+    {
+      "hero": "sealer",
+      "turn": 8,
+      "actorId": 1,
+      "legalCandidates": 7,
+      "bestScore": -3.389295366428577,
+      "allLegalScoresNegative": true,
+      "observationPrivacy": true,
+      "rawFrozenScoreReplay": true,
+      "naturalGameReplay": true
+    },
+    {
+      "hero": "priest",
+      "turn": 18,
+      "actorId": 5,
+      "legalCandidates": 14,
+      "bestScore": -0.6878179019158921,
+      "allLegalScoresNegative": true,
+      "observationPrivacy": true,
+      "rawFrozenScoreReplay": true,
+      "naturalGameReplay": true
+    },
+    {
+      "hero": "guardianAngel",
+      "turn": 62,
+      "actorId": 2,
+      "legalCandidates": 10,
+      "bestScore": -0.4737945028831225,
+      "allLegalScoresNegative": true,
+      "observationPrivacy": true,
+      "rawFrozenScoreReplay": true,
+      "naturalGameReplay": true
+    }
+  ],
+  "browser": {
+    "byteIdenticalToBaseline": true,
+    "sha256": "306ae49d7ab0491cf9c74f66f12eb4b3b0093c1980f5b33b2b61c70734b58b19",
+    "checks": 45,
+    "issues": [
+      "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    ],
+    "fullRunPassed": false
+  }
+}

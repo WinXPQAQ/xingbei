@@ -1,0 +1,17 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: 1440x900: 六人完整传递刷新后命中蓝三
+    at check (file:///workspace/xingbei/xingbei-cli/tools/verify-responses.mjs:13:42)
+    at checkMagic (file:///workspace/xingbei/xingbei-cli/tools/verify-responses.mjs:139:3)
+    at async file:///workspace/xingbei/xingbei-cli/tools/verify-responses.mjs:213:29 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0

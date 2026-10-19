@@ -228,6 +228,7 @@ while (running && !game.winner) {
   }
   if (player.id !== humanId && game.turn.hasExtraActions() && !game.legalCards(player.id).length) game.skipExtraActions(player.id);
   } while (running && game.turn.hasExtraActions() && !game.winner);
+  if (!running) break; // Quitting the client is not completing an ordinary action.
   turnDivider(player.name, "结束");
   showState();
   await game.endTurnWithDecisions({ resolveOverflow: resolveHumanOverflow });
