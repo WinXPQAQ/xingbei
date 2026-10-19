@@ -1,0 +1,10 @@
+{
+  "candidateCommit":"a9afb9614dde5af5a25bbb2fcdf11c5fc6ed44a3",
+  "reason":"Independent evaluation review: original asymmetric group balances colors but holds the candidate hero trio fixed. Add reverse assignment without changing policy or tuning.",
+  "timing":"Registered before reading primary v1.2/v1.0 matchup results; only reserve-style aggregate had completed (209/216).",
+  "firstSeed":72001,"seeds":6,"starts":[0,1,2,3,4,5],"colors":["red","blue"],
+  "baseRoster":["priest","berserker","marksman","sealer","windSwordmaster","guardianAngel"],
+  "pairs":"Same eight matchups as protocol.json",
+  "gamesPerPair":72,"totalGames":576,
+  "analysis":"Keep original 216-game protocol result separate. Also report combined 288 games per pair and balanced asymmetric subset across both assignments. No tuning from either result set."
+}
