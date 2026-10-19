@@ -4,15 +4,22 @@ export const weights = Object.freeze({ morale: 30, cup: 48, stone: 5, healing: 2
 import {costBeliefs} from '../v1.1/fusion.js';
 // History/beliefs are immutable for a decision. Cloning them at every simulated
 // branch made long-history wind sequences unusably slow without adding evidence.
-export const clone = s => {const {history,beliefs,...mutable}=s;return {...structuredClone(mutable),history,beliefs};};
+// Traits are immutable within one detached observation. Copy branch-mutable
+// records explicitly instead of repeatedly serializing six-seat trait tables.
+const freezeTree=x=>{if(x&&typeof x==='object'){for(const v of Object.values(x))freezeTree(v);Object.freeze(x);}return x;};
+const immutableTraits=c=>freezeTree(structuredClone(c.traits));
+const copyCard=c=>c?{...c,elements:[...c.elements],uniqueSkills:[...c.uniqueSkills]}:c;
+export const clone=s=>({...s,turn:structuredClone(s.turn),
+ players:s.players.map(p=>({...p,energy:{...p.energy},hand:p.hand.map(copyCard),known:p.known.map(copyCard),effects:p.effects.map(e=>({...e,card:copyCard(e.card)}))})),
+ teams:Object.fromEntries(Object.entries(s.teams).map(([id,t])=>[id,{...t}]))});
 export const traits = (c, id) => c?.traits?.[id]?.elements ?? c?.elements ?? [];
-export const cardData = c => ({id:c.id,name:c.name,type:c.type,elements:[...c.elements],uniqueSkills:[...c.uniqueSkills],traits:structuredClone(c.traits)});
+export const cardData = c => ({id:c.id,name:c.name,type:c.type,elements:[...c.elements],uniqueSkills:[...c.uniqueSkills],traits:immutableTraits(c)});
 export function stateOf(g, id, { economy = true } = {}) {
  return { observer: id, economy, current: g.current, turn: structuredClone(g.turn.state),
   players: g.players.map(p => ({ id:p.id,team:p.team,hero:p.hero.skills.length?p.hero.id:'none',limit:p.handLimit,
-   count:p.hand.length,hand:p.id===id?p.hand.map(c=>({id:c.id,name:c.name,type:c.type,elements:[...c.elements],uniqueSkills:[...c.uniqueSkills],traits:c.traits})):[],
+   count:p.hand.length,hand:p.id===id?p.hand.map(c=>({id:c.id,name:c.name,type:c.type,elements:[...c.elements],uniqueSkills:[...c.uniqueSkills],traits:immutableTraits(c)})):[],
    known:[],healing:p.healing,healingLimit:g.getHealingLimit(p.id),energy:{...p.energy},
-   effects:p.statuses.map(c=>({id:c.id,name:c.attachment.effectId,card:{id:c.id,name:c.name,type:c.type,elements:[...c.elements],uniqueSkills:[...c.uniqueSkills],traits:c.traits}})) })),
+   effects:p.statuses.map(c=>({id:c.id,name:c.attachment.effectId,card:{id:c.id,name:c.name,type:c.type,elements:[...c.elements],uniqueSkills:[...c.uniqueSkills],traits:immutableTraits(c)}})) })),
   teams:Object.fromEntries(Object.entries(g.teams).map(([t,v])=>[t,{morale:v.morale,cups:v.cups,...g.stoneCounts(t)}])),
   history:Object.freeze(structuredClone(g.publicHistory?.events??[]).map(e=>{if(e.elements)Object.freeze(e.elements);return Object.freeze(e);})),
   beliefs:Object.freeze(Object.fromEntries([...costBeliefs(g)].map(([id,gaps])=>[id,Object.freeze(gaps)]))) };

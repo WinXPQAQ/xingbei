@@ -19,7 +19,7 @@ export function enumerate(g,id) {
  return actions;
 }
 export function createEconomyPolicy({sequence=true,economy=true}={}) {
- const version=!economy?'experimental/economy-2-no-hand':!sequence?'experimental/economy-2-no-sequence':'experimental/economy-2';
+ const version=!economy?'experimental/economy-3-no-hand':!sequence?'experimental/economy-3-no-sequence':'experimental/economy-3';
  const state=(g,id)=>stateOf(g,id,{economy});
  const raw={...baseline,
   rankAiActions(g,id) {const s=state(g,id);return enumerate(g,id).map(action=>{const plan=actionPlan(s,id,action,{sequence});return {action,score:plan.score,reason:'expected-state-difference',explanation:explain(s,plan)};}).sort((a,b)=>b.score-a.score);},
@@ -70,7 +70,10 @@ export function createEconomyPolicy({sequence=true,economy=true}={}) {
     return value(next)+Math.max(0,bestAttack(next,id,{sequence,depth:1}).score)>value(s)?'draw':'skip';
    }
    if(r.type==='effectChoice')return removeEffectOptions(s,id,[...new Set(r.choices.map(c=>g.cards.get(c.value)?.location.playerId).filter(x=>x!=null))],{take:r.skillId==='sealBreaking'}).find(e=>r.choices.some(c=>c.value===e.id))?.id??r.defaultValue;
-   if(r.type==='playerChoice') {
+   // Only angelBond actually adds one healing. Contract transfers a variable
+   // quantity and retains its explicit legal baseline helper. Unknown future
+   // request kinds must not inherit an invented healing effect.
+   if(r.type==='playerChoice'&&r.skillId==='angelBond') {
     return [...r.choices].sort((a,b)=>{const score=choice=>{const next=clone(s);heal(next,choice.value,1);return value(next);};return score(b)-score(a);})[0]?.value??r.defaultValue;
    }
    if(r.type==='skillChoice') {

@@ -26,7 +26,7 @@ function createSkills(hero) {
       } },
     { id: "angelBond", name: "天使羁绊", ...hero.bind("actor", [Timing.BASIC_EFFECT_REMOVED, Timing.SHIELD_USED]),
       *resolve({ game, player }) {
-        const id = yield* game.choosePlayer(player.id, allTargets(game), "天使羁绊：目标角色+1治疗"); game.logSkill(player.id, "angelBond", `给予${game.actorLabel(id)}1治疗`); game.changeHealing(id, 1);
+        const id = yield* game.choosePlayer(player.id, allTargets(game), "天使羁绊：目标角色+1治疗", { skillId: "angelBond" }); game.logSkill(player.id, "angelBond", `给予${game.actorLabel(id)}1治疗`); game.changeHealing(id, 1);
       } },
     { id: "angelWall", name: "天使之墙", action(game, player) {
         const card = player.hand.find(card => card.hasUniqueSkill("angelWall"));

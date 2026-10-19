@@ -7,7 +7,7 @@ import {captureObservation,observationView} from '../src/ai/observation.js';
 import {stateOf,value,clone,damage,nextTurnRisk} from '../src/ai/v1.3/model.js';
 import {piercingOptions,actionPlan} from '../src/ai/v1.3/planner.js';
 import {SEARCH_LIMIT} from '../src/ai/v1.3/planner.js';
-const p=getPolicy('experimental/economy-2');
+const p=getPolicy('experimental/economy-3');
 const take=(g,id,name)=>g.moveCard(g.deck.find(typeof name==='function'?name:c=>c.name===name).id,{zone:'hand',playerId:id});
 const fill=(g,id,n)=>{while(g.player(id).hand.length<n)take(g,id,c=>c.type==='attack');};
 const model=(g,id=0)=>stateOf(observationView(captureObservation(g,id,{actions:true})),id);
@@ -107,7 +107,7 @@ test('six-seat hidden permutations preserve action/nested traces for candidate a
    {type:'healing',playerId:id,choices:[{value:0}],context:{amount:2}},
    {type:'skillChoice',playerId:id,skillId:'spellExcitation'},
    {type:'response',target:g.player(id),actor:g.players.find(p=>p.team!==g.player(id).team),valid:g.player(id).hand.filter(c=>c.name==='holyLight').map(c=>({card:c,index:g.player(id).hand.indexOf(c)})),counterTargets:[],shieldable:true}];
-  const names=['experimental/economy-2','experimental/economy-2-no-sequence','experimental/economy-2-no-hand'];
+  const names=['experimental/economy-3','experimental/economy-3-no-sequence','experimental/economy-3-no-hand'];
   const before=snapshot(g),expected=names.map(n=>requests.map(r=>getPolicy(n).traceDecision(g,id,r)));assert.equal(snapshot(g),before);
   expected.forEach((traces,i)=>traces.forEach(t=>assert.deepEqual(getPolicy(names[i]).replayTrace(JSON.parse(JSON.stringify(t))),t.request?t.decision:t.candidates)));
   const observation=captureObservation(g,id,{actions:true}),counts=g.players.map(p=>p.hand.length);

@@ -1,0 +1,20 @@
+{
+  "candidate":"experimental/economy-3",
+  "status":"Preregistered before any new holdout run; freeze source before execution",
+  "developmentEvidence":"61001 training;72001-72006 rejected a9;82001-82006 economy-2 acceptance now development evidence after playerChoice correction. Latency uses development seeds61011-61014, no tuning on new holdout.",
+  "primary":{"firstSeed":92001,"seeds":30,"starts":[0,1,2,3,4,5],"colors":["red","blue"],"rosters":["mirrorAssault","mirrorMixed","asymmetric","asymmetricReverse"],"gamesPerPair":1440,"pairs":[["experimental/economy-3","v1.2"],["experimental/economy-3","v1.0"],["v1.2","v1.2"],["v1.2","v1.0"]]},
+  "styles":{"firstSeed":94001,"seeds":6,"starts":[0,1,2,3,4,5],"colors":["red","blue"],"rosters":["mirrorAssault","mirrorMixed","asymmetric","asymmetricReverse"],"gamesPerPair":288,"pairs":[["experimental/economy-3","experimental/style-flow"],["v1.2","experimental/style-flow"],["experimental/economy-3","experimental/style-reserve"],["v1.2","experimental/style-reserve"]]},
+  "totalGames":6912,
+  "turnLimit":300,
+  "clusterUnit":"Whole seed across lineups, starts and colors; paired same-seed differences against corresponding v1.2 control. 10000 deterministic bootstrap resamples. Six style seed clusters are separate from 30 primary clusters.",
+  "gates":{
+    "overallImprovement":"Candidate-v1.2 score >=0.53 and 95% seed-cluster lower bound >0.50; paired score improvement over v1.2-v1.2 mean >=0.03 and 95% lower bound >0",
+    "versusV10":"Candidate-v1.0 95% score lower bound >0.50 AND paired candidate-v1.0 minus v1.2-v1.0 95% lower bound >-0.05",
+    "majorLineupNoninferiority":"For EACH of four lineups, paired candidate-v1.2 minus v1.2-v1.2 95% lower bound >-0.05. Also report simultaneous Bonferroni98.75% intervals; do not claim familywise noninferiority from marginal95% alone. Any interval crossing -0.05 is inconclusive, not evidence of no regression.",
+    "styles":"For each style, candidate score>=0.50 and paired candidate-minus-v1.2 95% lower bound >-0.05; only 6 clusters, limitations reported",
+    "truncation":"<=1% in EVERY pair; truncated scores0.5 and reported, never counted as wins",
+    "correctness":"All relevant tests pass, no unresolved semantic/privacy review blocker",
+    "performance":"Same-state six-hero latency distributions and v1.2 comparison reported. Candidate sampled action p95<250ms per hero and max<1000ms; fixed synthetic full-wind/history stress<2000ms on this host. These are observed timings, not universal wall-clock guarantees. Deterministic search budget remains128/root. If exceeded, optimize before source freeze and fresh holdout."
+  },
+  "limits":["No candidate changes after new holdout begins; if corrected, retain failed evidence and preregister fresh seeds","No user confirmation needed for routine iteration; do not publish until parent acceptance","No human-strength claim or complete unified hero-solving claim","Diagnostic high-hand rate alone is not an optimization objective"]
+}
