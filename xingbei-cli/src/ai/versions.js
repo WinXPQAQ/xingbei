@@ -1,3 +1,4 @@
+import { createEconomyPolicy as createCapabilityPolicy } from './economy-capability1/index.js';
 import { createFusionPolicy } from './v1.1/fusion.js';
 import { createEconomyPolicy as createEconomy4Policy } from './v1.3-economy4/index.js';
 import { createEconomyPolicy } from './v1.3/index.js';
@@ -11,6 +12,7 @@ import { createPolicy } from './v1.1/index.js';
 // Explicit matchups remain possible; no assumption that version ordering implies strength.
 const choices = {
   'v1.0': baseline,
+  'experimental/economy-capability-1': createCapabilityPolicy(),
   'experimental/economy-1': createFrozenEconomyPolicy(),
   'experimental/economy-2': createEconomy2Policy(),
   'experimental/economy-4': createEconomy4Policy(),
