@@ -94,3 +94,39 @@ test('baseline selfplay is identical under policy-label exchange, with all decis
   for(let i=0;i<results.length;i+=2){assert.deepEqual(results[i].initial,results[i+1].initial);assert.equal(results[i].winner,results[i+1].winner);assert.equal(results[i].turns,results[i+1].turns);}
   const s=summary(results);assert.equal(s.scoreRate,0.5);assert.equal(s.truncated,0);assert.deepEqual(s.clusterBootstrap95,[0.5,0.5]);
 });
+
+test('defense is independently selectable and never assumes four cards are safe',async()=>{
+  const {rankResponses}=await import('../src/ai/v1.1/defense.js');
+  const {futurePressure}=await import('../src/ai/v1.1/threats.js');
+  const g=new Game({heroIds:['priest','marksman','windSwordmaster','guardianAngel','sealer','berserker']});
+  const attack=take(g,1,'fireStrike');g.moveCard(attack.id,{zone:'field'});
+  take(g,0,'holyLight');for(let n=0;n<3;n++)take(g,0,'poison');
+  g.current=1;
+  take(g,2,'windStrike');take(g,2,'earthStrike');take(g,2,'fireStrike');g.player(2).energy.crystal=1;
+  g.player(5).energy.gem=1;take(g,5,'earthStrike');
+  const request={target:g.player(0),actor:g.player(1),attack,attackTraits:{elements:['fire']},valid:[{card:g.player(0).hand[0],index:0}],counterTargets:[g.player(2),g.player(5)],isCounter:false,shieldable:true};
+  assert.ok(futurePressure(g,0,true)>futurePressure(g,0,false));
+  assert.notEqual(rankResponses(g,request,{heroThreats:true})[0].value,null);
+  // A low-hand isolated situation may keep a precious light; not an unconditional pass.
+  const safe=new Game({heroRules:false});const fire=take(safe,1,'fireStrike');safe.moveCard(fire.id,{zone:'field'});const light=take(safe,0,'holyLight');safe.current=5;
+  const r={...request,target:safe.player(0),actor:safe.player(1),attack:fire,valid:[{card:light,index:0}],counterTargets:[safe.player(2),safe.player(5)]};
+  assert.equal(getPolicy('defense-1').chooseAiResponse(safe,r),null);
+  assert.notEqual(getPolicy('v1.0').chooseAiResponse(safe,r),null);
+  for(let n=0;n<5;n++)take(safe,0,'poison');safe.teams.red.morale=1;
+  assert.notEqual(getPolicy('defense-1').chooseAiResponse(safe,r),null);
+});
+
+test('defense and hero threats read public counts, not enemy spell or attack identities',()=>{
+  const g=new Game({seed:21}).setup();const light=take(g,0,'holyLight'),fire=take(g,1,'fireStrike');g.moveCard(fire.id,{zone:'field'});
+  const r={actor:g.player(1),target:g.player(0),attack:fire,attackTraits:{elements:['fire']},valid:[{card:light,index:g.player(0).hand.indexOf(light)}],counterTargets:[g.player(2),g.player(5)],shieldable:true};
+  const expected=getPolicy('all-1').chooseAiResponse(g,r);
+  for(const p of g.players.slice(1))p.hand=new Proxy(p.hand,{get:(t,k)=>{if(k==='length')return t.length;throw new Error('Hidden hand read')}});
+  assert.deepEqual(getPolicy('all-1').chooseAiResponse(g,r),expected);
+});
+
+test('standalone version runner owns nested decisions and restores engine fallback',()=>{
+  const g=new Game({seed:19}).setup();g.startTurn(0);
+  const fallback=()=>{throw new Error('production fallback must not run')};g.automaticDecision=fallback;
+  getPolicy('v1.0').runAiAction(g,0);
+  assert.equal(g.automaticDecision,fallback);g.assertCardLocations();
+});

@@ -1,0 +1,8918 @@
+{
+  "settings": {
+    "candidate": "read-1",
+    "opponent": "v1.0",
+    "split": "tune",
+    "firstSeed": 1,
+    "seeds": 3,
+    "selected": [
+      "assault",
+      "spell",
+      "support",
+      "mixed",
+      "tempo",
+      "pressure"
+    ],
+    "turnLimit": 500,
+    "starts": [
+      0,
+      1
+    ],
+    "colors": [
+      "red",
+      "blue"
+    ],
+    "rotation": "seed % 3",
+    "bootstrap": "4000 whole-seed resamples across lineups/colors/starts; percentile 95%; truncation scores 0.5"
+  },
+  "commit": "31007a8d38088a6d8678587f931c45fa2d2fb96a",
+  "status": "M xingbei-cli/src/engine.js\n?? xingbei-cli/docs/ai-v1.1-plan.md\n?? xingbei-cli/src/ai/public-history.js\n?? xingbei-cli/src/ai/v1.0/\n?? xingbei-cli/src/ai/v1.1/\n?? xingbei-cli/src/ai/versions.js\n?? xingbei-cli/tools/ai/\n?? xingbei-cli/tools/evaluate-ai.mjs",
+  "sourceHashes": {
+    "xingbei-cli/src/action-log.js": "72ee255311ee34c151dc0dc372e8e9718745ee9ee37f31adb6cd50fc18f01d50",
+    "xingbei-cli/src/ai.js": "cda2fff5a6a34fbc5df6d69530f729fce45d230a82b085af18fa8dfa50c67269",
+    "xingbei-cli/src/ai/actions.js": "a076a2b54159e27b0ae66cda8351c66802a227068b7e73563b9732df1da22bb4",
+    "xingbei-cli/src/ai/decisions.js": "1b422689523ae7c2fdeb4df16ee275a32ac0d5359e1103a5b2e9cef3045e4e11",
+    "xingbei-cli/src/ai/evaluation.js": "3ddffe24ea04591061932c1e0a72629b7de4eb07bdcdc5cdd823d792967ab56f",
+    "xingbei-cli/src/ai/public-history.js": "460da21610b13ddbf987c5772fb1033513e11af3fe1c67f4589d07b38e47b6fb",
+    "xingbei-cli/src/ai/v1.0/actions.js": "a076a2b54159e27b0ae66cda8351c66802a227068b7e73563b9732df1da22bb4",
+    "xingbei-cli/src/ai/v1.0/decisions.js": "1b422689523ae7c2fdeb4df16ee275a32ac0d5359e1103a5b2e9cef3045e4e11",
+    "xingbei-cli/src/ai/v1.0/evaluation.js": "3ddffe24ea04591061932c1e0a72629b7de4eb07bdcdc5cdd823d792967ab56f",
+    "xingbei-cli/src/ai/v1.0/index.js": "f8efd742a16596b43897794393cbb4e57e634e8a7ed4bef608699fbf494ba481",
+    "xingbei-cli/src/ai/v1.0/wind-plan.js": "18cc8af28e5acba0b238acd3ae0b44667de296445a282034a97c65b519412a1f",
+    "xingbei-cli/src/ai/v1.1/index.js": "af3f73c97adf03339a306591dfbaeac35c02f6e57c43f180f490beb88364316f",
+    "xingbei-cli/src/ai/v1.1/reading.js": "0a979cae8768e4615504d100cf0cabd358af6968075bded915ab80ea97ea3b85",
+    "xingbei-cli/src/ai/versions.js": "47edcc0f4ce281fcc9d988f893fa5ea02cf1362d63bae69285fd659c420d3927",
+    "xingbei-cli/src/ai/wind-plan.js": "18cc8af28e5acba0b238acd3ae0b44667de296445a282034a97c65b519412a1f",
+    "xingbei-cli/src/card-labels.js": "6109163ed8703c6f277303f5bb00685be706ea3192b6f74e29e09253239c1624",
+    "xingbei-cli/src/card.js": "820b1d4ff42a13671ef2aa0957579645e28fdeb21fa7b4ad8814ed3f06434eaf",
+    "xingbei-cli/src/cards.js": "19283697580c0a6252e478b59dea64bc9813d3a82a3b1fba25f747f5ac846076",
+    "xingbei-cli/src/cli.js": "d07645ab6124490e526ed2ac769d98a2ea2ae94b4d5d21bd00da4f5a2ece3817",
+    "xingbei-cli/src/effects.js": "98992d89ac7b2d3e8e21633a10a594410b916c2887b71a7be213552153ba8855",
+    "xingbei-cli/src/engine.js": "8ae9b443ef26c3732f600e87c76030cca5e1ca9a2767dfc409e90fddbe7b7cfb",
+    "xingbei-cli/src/errors.js": "3c17f69e627cf2051b1b5e593508b9c29aae9a75a27ae9ca125f7f21d4ee9383",
+    "xingbei-cli/src/hero-base.js": "9ac1e063902fa99d7ff97b8c8a9d0abd92967d3d9cc082313cdef0693b435c85",
+    "xingbei-cli/src/hero.js": "305cdcf9a2a4d04e6fc00e5fbed40d14d9c90be85a19b5b87ac8c12e528bfd25",
+    "xingbei-cli/src/heroes/berserker.js": "e919745801441f0230aec7a17d9c73deef19cfca14f981d7ecb58f14bab627e6",
+    "xingbei-cli/src/heroes/guardian-angel.js": "e5545fc76bf1e4ff86862d3c55ad8e46712f287901a16d717eb26c010b31c564",
+    "xingbei-cli/src/heroes/marksman.js": "7ec7528917da63daf2d35f49bc9343de1f83df7c537affa054001a3873b8b890",
+    "xingbei-cli/src/heroes/priest.js": "d3616f991cb54efe593f2f47e67b99d216897276399e36ec6fdb7db9e2e52a51",
+    "xingbei-cli/src/heroes/sealer.js": "4c46e2cfc24646d8b655140c6762f2e69f14077e976b093056dc63d111ac84b8",
+    "xingbei-cli/src/heroes/wind-swordmaster.js": "47f2a310a70532fa012d6db6d02f2ca1170c9f268b8462d429ef37cc9c597f84",
+    "xingbei-cli/src/player.js": "5541e46756ac8910a36844413b402b9e1513c90eb86b965161a98c742c6240db",
+    "xingbei-cli/src/resolution/attack.js": "91d0e117875f8c9968967bed673e8ed48a05139d702b6eabf4829e95e2ba3865",
+    "xingbei-cli/src/resolution/decisions.js": "91d0bb426226f6d134f91875a19171ca694935cc74629216b60d10f60e8d8e20",
+    "xingbei-cli/src/resolution/magic.js": "80e4bcbf3ddc49a0f658c14baec6de8cbf5fbb1bcdf358d689bbafa14d6317ab",
+    "xingbei-cli/src/timing.js": "f5a312a0907a3c33964a912e76f35c85e30f2b8e9a0b1728c87e1424a3260319",
+    "xingbei-cli/src/triggers.js": "ac3b215d99ad610247931d5c61d55483591cdeb1d05a63fac1a492e5e2d2a44a",
+    "xingbei-cli/src/tui.js": "686941b1e32fc6031cd4b852d8e8d4b97737dff91c9ef64653cdd2a0fe7e867a",
+    "xingbei-cli/src/turn.js": "b6b0f9c5a869b6ac50229cf7da338cca259aa26e1b90043fdf7f98d33a44ae58",
+    "xingbei-cli/src/unique-skills.js": "da164e9587e3aad9d43297b34f5cb71b6e96b6431c271cb3a146a0cd6b4ac01c",
+    "xingbei-cli/tools/ai/evaluate.mjs": "e8be2feb16cd911a95c851963823ea44639c6f1a4f8acc3aa3bfd3c6751d912b",
+    "xingbei-cli/tools/evaluate-ai.mjs": "ae88055b88862d51280750908d74f24b05cb284aea4b7448e2ecac0b89402e3c"
+  },
+  "node": "v24.19.0",
+  "started": "2026-10-19T08:09:24.607Z",
+  "elapsedSeconds": 3.934,
+  "summary": {
+    "games": 72,
+    "seeds": 3,
+    "wins": 46,
+    "losses": 26,
+    "draws": 0,
+    "truncated": 0,
+    "scoreRate": 0.6388888888888888,
+    "winRate": 0.6388888888888888,
+    "clusterBootstrap95": [
+      0.5,
+      0.7916666666666666
+    ],
+    "metrics": {
+      "candidate": {
+        "totals": {
+          "attacks": 2244,
+          "hits": 1137,
+          "damage": 2531,
+          "attackDamage": 2239,
+          "spellDamage": 292,
+          "moraleLost": 691,
+          "gems": 948,
+          "crystals": 553,
+          "cups": 272,
+          "actions": 2947
+        },
+        "hitRate": 0.5066844919786097,
+        "perGame": {
+          "attacks": 31.166666666666668,
+          "hits": 15.791666666666666,
+          "damage": 35.15277777777778,
+          "attackDamage": 31.09722222222222,
+          "spellDamage": 4.055555555555555,
+          "moraleLost": 9.597222222222221,
+          "gems": 13.166666666666666,
+          "crystals": 7.680555555555555,
+          "cups": 3.7777777777777777,
+          "actions": 40.93055555555556
+        }
+      },
+      "opponent": {
+        "totals": {
+          "attacks": 2275,
+          "hits": 998,
+          "damage": 2234,
+          "attackDamage": 1937,
+          "spellDamage": 297,
+          "moraleLost": 731,
+          "gems": 745,
+          "crystals": 504,
+          "cups": 223,
+          "actions": 2923
+        },
+        "hitRate": 0.43868131868131865,
+        "perGame": {
+          "attacks": 31.59722222222222,
+          "hits": 13.86111111111111,
+          "damage": 31.02777777777778,
+          "attackDamage": 26.90277777777778,
+          "spellDamage": 4.125,
+          "moraleLost": 10.152777777777779,
+          "gems": 10.347222222222221,
+          "crystals": 7,
+          "cups": 3.0972222222222223,
+          "actions": 40.59722222222222
+        }
+      }
+    }
+  },
+  "byLineup": {
+    "assault": {
+      "games": 12,
+      "seeds": 3,
+      "wins": 9,
+      "losses": 3,
+      "draws": 0,
+      "truncated": 0,
+      "scoreRate": 0.75,
+      "winRate": 0.75,
+      "clusterBootstrap95": [
+        0.75,
+        0.75
+      ],
+      "metrics": {
+        "candidate": {
+          "totals": {
+            "attacks": 310,
+            "hits": 149,
+            "damage": 369,
+            "attackDamage": 345,
+            "spellDamage": 24,
+            "moraleLost": 140,
+            "gems": 104,
+            "crystals": 70,
+            "cups": 35,
+            "actions": 269
+          },
+          "hitRate": 0.4806451612903226,
+          "perGame": {
+            "attacks": 25.833333333333332,
+            "hits": 12.416666666666666,
+            "damage": 30.75,
+            "attackDamage": 28.75,
+            "spellDamage": 2,
+            "moraleLost": 11.666666666666666,
+            "gems": 8.666666666666666,
+            "crystals": 5.833333333333333,
+            "cups": 2.9166666666666665,
+            "actions": 22.416666666666668
+          }
+        },
+        "opponent": {
+          "totals": {
+            "attacks": 313,
+            "hits": 127,
+            "damage": 318,
+            "attackDamage": 295,
+            "spellDamage": 23,
+            "moraleLost": 171,
+            "gems": 78,
+            "crystals": 63,
+            "cups": 30,
+            "actions": 256
+          },
+          "hitRate": 0.4057507987220447,
+          "perGame": {
+            "attacks": 26.083333333333332,
+            "hits": 10.583333333333334,
+            "damage": 26.5,
+            "attackDamage": 24.583333333333332,
+            "spellDamage": 1.9166666666666667,
+            "moraleLost": 14.25,
+            "gems": 6.5,
+            "crystals": 5.25,
+            "cups": 2.5,
+            "actions": 21.333333333333332
+          }
+        }
+      }
+    },
+    "spell": {
+      "games": 12,
+      "seeds": 3,
+      "wins": 6,
+      "losses": 6,
+      "draws": 0,
+      "truncated": 0,
+      "scoreRate": 0.5,
+      "winRate": 0.5,
+      "clusterBootstrap95": [
+        0.25,
+        0.75
+      ],
+      "metrics": {
+        "candidate": {
+          "totals": {
+            "attacks": 356,
+            "hits": 194,
+            "damage": 426,
+            "attackDamage": 342,
+            "spellDamage": 84,
+            "moraleLost": 141,
+            "gems": 156,
+            "crystals": 69,
+            "cups": 41,
+            "actions": 472
+          },
+          "hitRate": 0.5449438202247191,
+          "perGame": {
+            "attacks": 29.666666666666668,
+            "hits": 16.166666666666668,
+            "damage": 35.5,
+            "attackDamage": 28.5,
+            "spellDamage": 7,
+            "moraleLost": 11.75,
+            "gems": 13,
+            "crystals": 5.75,
+            "cups": 3.4166666666666665,
+            "actions": 39.333333333333336
+          }
+        },
+        "opponent": {
+          "totals": {
+            "attacks": 360,
+            "hits": 173,
+            "damage": 405,
+            "attackDamage": 311,
+            "spellDamage": 94,
+            "moraleLost": 122,
+            "gems": 129,
+            "crystals": 68,
+            "cups": 42,
+            "actions": 455
+          },
+          "hitRate": 0.48055555555555557,
+          "perGame": {
+            "attacks": 30,
+            "hits": 14.416666666666666,
+            "damage": 33.75,
+            "attackDamage": 25.916666666666668,
+            "spellDamage": 7.833333333333333,
+            "moraleLost": 10.166666666666666,
+            "gems": 10.75,
+            "crystals": 5.666666666666667,
+            "cups": 3.5,
+            "actions": 37.916666666666664
+          }
+        }
+      }
+    },
+    "support": {
+      "games": 12,
+      "seeds": 3,
+      "wins": 12,
+      "losses": 0,
+      "draws": 0,
+      "truncated": 0,
+      "scoreRate": 1,
+      "winRate": 1,
+      "clusterBootstrap95": [
+        1,
+        1
+      ],
+      "metrics": {
+        "candidate": {
+          "totals": {
+            "attacks": 489,
+            "hits": 250,
+            "damage": 561,
+            "attackDamage": 456,
+            "spellDamage": 105,
+            "moraleLost": 68,
+            "gems": 227,
+            "crystals": 140,
+            "cups": 60,
+            "actions": 793
+          },
+          "hitRate": 0.5112474437627812,
+          "perGame": {
+            "attacks": 40.75,
+            "hits": 20.833333333333332,
+            "damage": 46.75,
+            "attackDamage": 38,
+            "spellDamage": 8.75,
+            "moraleLost": 5.666666666666667,
+            "gems": 18.916666666666668,
+            "crystals": 11.666666666666666,
+            "cups": 5,
+            "actions": 66.08333333333333
+          }
+        },
+        "opponent": {
+          "totals": {
+            "attacks": 476,
+            "hits": 192,
+            "damage": 443,
+            "attackDamage": 348,
+            "spellDamage": 95,
+            "moraleLost": 90,
+            "gems": 157,
+            "crystals": 117,
+            "cups": 33,
+            "actions": 805
+          },
+          "hitRate": 0.40336134453781514,
+          "perGame": {
+            "attacks": 39.666666666666664,
+            "hits": 16,
+            "damage": 36.916666666666664,
+            "attackDamage": 29,
+            "spellDamage": 7.916666666666667,
+            "moraleLost": 7.5,
+            "gems": 13.083333333333334,
+            "crystals": 9.75,
+            "cups": 2.75,
+            "actions": 67.08333333333333
+          }
+        }
+      }
+    },
+    "mixed": {
+      "games": 12,
+      "seeds": 3,
+      "wins": 6,
+      "losses": 6,
+      "draws": 0,
+      "truncated": 0,
+      "scoreRate": 0.5,
+      "winRate": 0.5,
+      "clusterBootstrap95": [
+        0.25,
+        0.75
+      ],
+      "metrics": {
+        "candidate": {
+          "totals": {
+            "attacks": 363,
+            "hits": 153,
+            "damage": 392,
+            "attackDamage": 378,
+            "spellDamage": 14,
+            "moraleLost": 125,
+            "gems": 133,
+            "crystals": 109,
+            "cups": 39,
+            "actions": 483
+          },
+          "hitRate": 0.4214876033057851,
+          "perGame": {
+            "attacks": 30.25,
+            "hits": 12.75,
+            "damage": 32.666666666666664,
+            "attackDamage": 31.5,
+            "spellDamage": 1.1666666666666667,
+            "moraleLost": 10.416666666666666,
+            "gems": 11.083333333333334,
+            "crystals": 9.083333333333334,
+            "cups": 3.25,
+            "actions": 40.25
+          }
+        },
+        "opponent": {
+          "totals": {
+            "attacks": 386,
+            "hits": 155,
+            "damage": 369,
+            "attackDamage": 360,
+            "spellDamage": 9,
+            "moraleLost": 132,
+            "gems": 122,
+            "crystals": 109,
+            "cups": 41,
+            "actions": 482
+          },
+          "hitRate": 0.4015544041450777,
+          "perGame": {
+            "attacks": 32.166666666666664,
+            "hits": 12.916666666666666,
+            "damage": 30.75,
+            "attackDamage": 30,
+            "spellDamage": 0.75,
+            "moraleLost": 11,
+            "gems": 10.166666666666666,
+            "crystals": 9.083333333333334,
+            "cups": 3.4166666666666665,
+            "actions": 40.166666666666664
+          }
+        }
+      }
+    },
+    "tempo": {
+      "games": 12,
+      "seeds": 3,
+      "wins": 5,
+      "losses": 7,
+      "draws": 0,
+      "truncated": 0,
+      "scoreRate": 0.4166666666666667,
+      "winRate": 0.4166666666666667,
+      "clusterBootstrap95": [
+        0,
+        0.75
+      ],
+      "metrics": {
+        "candidate": {
+          "totals": {
+            "attacks": 402,
+            "hits": 205,
+            "damage": 440,
+            "attackDamage": 391,
+            "spellDamage": 49,
+            "moraleLost": 111,
+            "gems": 187,
+            "crystals": 82,
+            "cups": 46,
+            "actions": 554
+          },
+          "hitRate": 0.5099502487562189,
+          "perGame": {
+            "attacks": 33.5,
+            "hits": 17.083333333333332,
+            "damage": 36.666666666666664,
+            "attackDamage": 32.583333333333336,
+            "spellDamage": 4.083333333333333,
+            "moraleLost": 9.25,
+            "gems": 15.583333333333334,
+            "crystals": 6.833333333333333,
+            "cups": 3.8333333333333335,
+            "actions": 46.166666666666664
+          }
+        },
+        "opponent": {
+          "totals": {
+            "attacks": 418,
+            "hits": 201,
+            "damage": 418,
+            "attackDamage": 363,
+            "spellDamage": 55,
+            "moraleLost": 96,
+            "gems": 146,
+            "crystals": 86,
+            "cups": 42,
+            "actions": 554
+          },
+          "hitRate": 0.48086124401913877,
+          "perGame": {
+            "attacks": 34.833333333333336,
+            "hits": 16.75,
+            "damage": 34.833333333333336,
+            "attackDamage": 30.25,
+            "spellDamage": 4.583333333333333,
+            "moraleLost": 8,
+            "gems": 12.166666666666666,
+            "crystals": 7.166666666666667,
+            "cups": 3.5,
+            "actions": 46.166666666666664
+          }
+        }
+      }
+    },
+    "pressure": {
+      "games": 12,
+      "seeds": 3,
+      "wins": 8,
+      "losses": 4,
+      "draws": 0,
+      "truncated": 0,
+      "scoreRate": 0.6666666666666666,
+      "winRate": 0.6666666666666666,
+      "clusterBootstrap95": [
+        0.25,
+        1
+      ],
+      "metrics": {
+        "candidate": {
+          "totals": {
+            "attacks": 324,
+            "hits": 186,
+            "damage": 343,
+            "attackDamage": 327,
+            "spellDamage": 16,
+            "moraleLost": 106,
+            "gems": 141,
+            "crystals": 83,
+            "cups": 51,
+            "actions": 376
+          },
+          "hitRate": 0.5740740740740741,
+          "perGame": {
+            "attacks": 27,
+            "hits": 15.5,
+            "damage": 28.583333333333332,
+            "attackDamage": 27.25,
+            "spellDamage": 1.3333333333333333,
+            "moraleLost": 8.833333333333334,
+            "gems": 11.75,
+            "crystals": 6.916666666666667,
+            "cups": 4.25,
+            "actions": 31.333333333333332
+          }
+        },
+        "opponent": {
+          "totals": {
+            "attacks": 322,
+            "hits": 150,
+            "damage": 281,
+            "attackDamage": 260,
+            "spellDamage": 21,
+            "moraleLost": 120,
+            "gems": 113,
+            "crystals": 61,
+            "cups": 35,
+            "actions": 371
+          },
+          "hitRate": 0.4658385093167702,
+          "perGame": {
+            "attacks": 26.833333333333332,
+            "hits": 12.5,
+            "damage": 23.416666666666668,
+            "attackDamage": 21.666666666666668,
+            "spellDamage": 1.75,
+            "moraleLost": 10,
+            "gems": 9.416666666666666,
+            "crystals": 5.083333333333333,
+            "cups": 2.9166666666666665,
+            "actions": 30.916666666666668
+          }
+        }
+      }
+    }
+  },
+  "byColor": {
+    "red": {
+      "games": 36,
+      "seeds": 3,
+      "wins": 26,
+      "losses": 10,
+      "draws": 0,
+      "truncated": 0,
+      "scoreRate": 0.7222222222222222,
+      "winRate": 0.7222222222222222,
+      "clusterBootstrap95": [
+        0.5833333333333334,
+        0.9166666666666666
+      ],
+      "metrics": {
+        "candidate": {
+          "totals": {
+            "attacks": 1085,
+            "hits": 548,
+            "damage": 1215,
+            "attackDamage": 1060,
+            "spellDamage": 155,
+            "moraleLost": 331,
+            "gems": 451,
+            "crystals": 286,
+            "cups": 139,
+            "actions": 1426
+          },
+          "hitRate": 0.5050691244239631,
+          "perGame": {
+            "attacks": 30.13888888888889,
+            "hits": 15.222222222222221,
+            "damage": 33.75,
+            "attackDamage": 29.444444444444443,
+            "spellDamage": 4.305555555555555,
+            "moraleLost": 9.194444444444445,
+            "gems": 12.527777777777779,
+            "crystals": 7.944444444444445,
+            "cups": 3.861111111111111,
+            "actions": 39.611111111111114
+          }
+        },
+        "opponent": {
+          "totals": {
+            "attacks": 1100,
+            "hits": 470,
+            "damage": 1048,
+            "attackDamage": 921,
+            "spellDamage": 127,
+            "moraleLost": 383,
+            "gems": 365,
+            "crystals": 238,
+            "cups": 111,
+            "actions": 1406
+          },
+          "hitRate": 0.42727272727272725,
+          "perGame": {
+            "attacks": 30.555555555555557,
+            "hits": 13.055555555555555,
+            "damage": 29.11111111111111,
+            "attackDamage": 25.583333333333332,
+            "spellDamage": 3.5277777777777777,
+            "moraleLost": 10.63888888888889,
+            "gems": 10.13888888888889,
+            "crystals": 6.611111111111111,
+            "cups": 3.0833333333333335,
+            "actions": 39.05555555555556
+          }
+        }
+      }
+    },
+    "blue": {
+      "games": 36,
+      "seeds": 3,
+      "wins": 20,
+      "losses": 16,
+      "draws": 0,
+      "truncated": 0,
+      "scoreRate": 0.5555555555555556,
+      "winRate": 0.5555555555555556,
+      "clusterBootstrap95": [
+        0.4166666666666667,
+        0.6666666666666666
+      ],
+      "metrics": {
+        "candidate": {
+          "totals": {
+            "attacks": 1159,
+            "hits": 589,
+            "damage": 1316,
+            "attackDamage": 1179,
+            "spellDamage": 137,
+            "moraleLost": 360,
+            "gems": 497,
+            "crystals": 267,
+            "cups": 133,
+            "actions": 1521
+          },
+          "hitRate": 0.5081967213114754,
+          "perGame": {
+            "attacks": 32.19444444444444,
+            "hits": 16.36111111111111,
+            "damage": 36.55555555555556,
+            "attackDamage": 32.75,
+            "spellDamage": 3.8055555555555554,
+            "moraleLost": 10,
+            "gems": 13.805555555555555,
+            "crystals": 7.416666666666667,
+            "cups": 3.6944444444444446,
+            "actions": 42.25
+          }
+        },
+        "opponent": {
+          "totals": {
+            "attacks": 1175,
+            "hits": 528,
+            "damage": 1186,
+            "attackDamage": 1016,
+            "spellDamage": 170,
+            "moraleLost": 348,
+            "gems": 380,
+            "crystals": 266,
+            "cups": 112,
+            "actions": 1517
+          },
+          "hitRate": 0.4493617021276596,
+          "perGame": {
+            "attacks": 32.638888888888886,
+            "hits": 14.666666666666666,
+            "damage": 32.94444444444444,
+            "attackDamage": 28.22222222222222,
+            "spellDamage": 4.722222222222222,
+            "moraleLost": 9.666666666666666,
+            "gems": 10.555555555555555,
+            "crystals": 7.388888888888889,
+            "cups": 3.111111111111111,
+            "actions": 42.138888888888886
+          }
+        }
+      }
+    }
+  },
+  "byStart": {
+    "0": {
+      "games": 36,
+      "seeds": 3,
+      "wins": 25,
+      "losses": 11,
+      "draws": 0,
+      "truncated": 0,
+      "scoreRate": 0.6944444444444444,
+      "winRate": 0.6944444444444444,
+      "clusterBootstrap95": [
+        0.5833333333333334,
+        0.9166666666666666
+      ],
+      "metrics": {
+        "candidate": {
+          "totals": {
+            "attacks": 1149,
+            "hits": 581,
+            "damage": 1316,
+            "attackDamage": 1144,
+            "spellDamage": 172,
+            "moraleLost": 328,
+            "gems": 497,
+            "crystals": 296,
+            "cups": 145,
+            "actions": 1548
+          },
+          "hitRate": 0.5056570931244561,
+          "perGame": {
+            "attacks": 31.916666666666668,
+            "hits": 16.13888888888889,
+            "damage": 36.55555555555556,
+            "attackDamage": 31.77777777777778,
+            "spellDamage": 4.777777777777778,
+            "moraleLost": 9.11111111111111,
+            "gems": 13.805555555555555,
+            "crystals": 8.222222222222221,
+            "cups": 4.027777777777778,
+            "actions": 43
+          }
+        },
+        "opponent": {
+          "totals": {
+            "attacks": 1169,
+            "hits": 503,
+            "damage": 1132,
+            "attackDamage": 968,
+            "spellDamage": 164,
+            "moraleLost": 365,
+            "gems": 384,
+            "crystals": 259,
+            "cups": 111,
+            "actions": 1541
+          },
+          "hitRate": 0.43028229255774164,
+          "perGame": {
+            "attacks": 32.47222222222222,
+            "hits": 13.972222222222221,
+            "damage": 31.444444444444443,
+            "attackDamage": 26.88888888888889,
+            "spellDamage": 4.555555555555555,
+            "moraleLost": 10.13888888888889,
+            "gems": 10.666666666666666,
+            "crystals": 7.194444444444445,
+            "cups": 3.0833333333333335,
+            "actions": 42.80555555555556
+          }
+        }
+      }
+    },
+    "1": {
+      "games": 36,
+      "seeds": 3,
+      "wins": 21,
+      "losses": 15,
+      "draws": 0,
+      "truncated": 0,
+      "scoreRate": 0.5833333333333334,
+      "winRate": 0.5833333333333334,
+      "clusterBootstrap95": [
+        0.4166666666666667,
+        0.6666666666666666
+      ],
+      "metrics": {
+        "candidate": {
+          "totals": {
+            "attacks": 1095,
+            "hits": 556,
+            "damage": 1215,
+            "attackDamage": 1095,
+            "spellDamage": 120,
+            "moraleLost": 363,
+            "gems": 451,
+            "crystals": 257,
+            "cups": 127,
+            "actions": 1399
+          },
+          "hitRate": 0.5077625570776255,
+          "perGame": {
+            "attacks": 30.416666666666668,
+            "hits": 15.444444444444445,
+            "damage": 33.75,
+            "attackDamage": 30.416666666666668,
+            "spellDamage": 3.3333333333333335,
+            "moraleLost": 10.083333333333334,
+            "gems": 12.527777777777779,
+            "crystals": 7.138888888888889,
+            "cups": 3.5277777777777777,
+            "actions": 38.861111111111114
+          }
+        },
+        "opponent": {
+          "totals": {
+            "attacks": 1106,
+            "hits": 495,
+            "damage": 1102,
+            "attackDamage": 969,
+            "spellDamage": 133,
+            "moraleLost": 366,
+            "gems": 361,
+            "crystals": 245,
+            "cups": 112,
+            "actions": 1382
+          },
+          "hitRate": 0.4475587703435805,
+          "perGame": {
+            "attacks": 30.72222222222222,
+            "hits": 13.75,
+            "damage": 30.61111111111111,
+            "attackDamage": 26.916666666666668,
+            "spellDamage": 3.6944444444444446,
+            "moraleLost": 10.166666666666666,
+            "gems": 10.027777777777779,
+            "crystals": 6.805555555555555,
+            "cups": 3.111111111111111,
+            "actions": 38.388888888888886
+          }
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "lineup": "assault",
+      "seed": 1,
+      "start": 0,
+      "team": "red",
+      "heroIds": [
+        "windSwordmaster",
+        "windSwordmaster",
+        "marksman",
+        "marksman",
+        "berserker",
+        "berserker"
+      ],
+      "winner": "red",
+      "outcome": "win",
+      "turns": 47,
+      "elapsedMs": 74.49511999999999,
+      "metrics": {
+        "candidate": {
+          "attacks": 30,
+          "hits": 16,
+          "damage": 34,
+          "attackDamage": 32,
+          "spellDamage": 2,
+          "moraleLost": 14,
+          "gems": 11,
+          "crystals": 7,
+          "cups": 3,
+          "actions": 29
+        },
+        "opponent": {
+          "attacks": 29,
+          "hits": 13,
+          "damage": 36,
+          "attackDamage": 33,
+          "spellDamage": 3,
+          "moraleLost": 16,
+          "gems": 9,
+          "crystals": 6,
+          "cups": 2,
+          "actions": 23
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c56",
+            "c75",
+            "c104"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c8",
+            "c54",
+            "c112",
+            "c80"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c3",
+            "c91",
+            "c150",
+            "c59"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c82",
+            "c115",
+            "c32",
+            "c133"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "berserker",
+          "team": "red",
+          "cards": [
+            "c116",
+            "c44",
+            "c141",
+            "c70"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "berserker",
+          "team": "blue",
+          "cards": [
+            "c29",
+            "c14",
+            "c10",
+            "c41"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "assault",
+      "seed": 1,
+      "start": 0,
+      "team": "blue",
+      "heroIds": [
+        "windSwordmaster",
+        "windSwordmaster",
+        "marksman",
+        "marksman",
+        "berserker",
+        "berserker"
+      ],
+      "winner": "red",
+      "outcome": "loss",
+      "turns": 41,
+      "elapsedMs": 33.268575,
+      "metrics": {
+        "candidate": {
+          "attacks": 22,
+          "hits": 11,
+          "damage": 30,
+          "attackDamage": 29,
+          "spellDamage": 1,
+          "moraleLost": 15,
+          "gems": 7,
+          "crystals": 6,
+          "cups": 3,
+          "actions": 22
+        },
+        "opponent": {
+          "attacks": 28,
+          "hits": 13,
+          "damage": 31,
+          "attackDamage": 31,
+          "spellDamage": 0,
+          "moraleLost": 11,
+          "gems": 9,
+          "crystals": 4,
+          "cups": 3,
+          "actions": 25
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c56",
+            "c75",
+            "c104"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c8",
+            "c54",
+            "c112",
+            "c80"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c3",
+            "c91",
+            "c150",
+            "c59"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c82",
+            "c115",
+            "c32",
+            "c133"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "berserker",
+          "team": "red",
+          "cards": [
+            "c116",
+            "c44",
+            "c141",
+            "c70"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "berserker",
+          "team": "blue",
+          "cards": [
+            "c29",
+            "c14",
+            "c10",
+            "c41"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "assault",
+      "seed": 1,
+      "start": 1,
+      "team": "red",
+      "heroIds": [
+        "windSwordmaster",
+        "windSwordmaster",
+        "marksman",
+        "marksman",
+        "berserker",
+        "berserker"
+      ],
+      "winner": "red",
+      "outcome": "win",
+      "turns": 27,
+      "elapsedMs": 23.60828700000002,
+      "metrics": {
+        "candidate": {
+          "attacks": 22,
+          "hits": 14,
+          "damage": 27,
+          "attackDamage": 27,
+          "spellDamage": 0,
+          "moraleLost": 5,
+          "gems": 6,
+          "crystals": 7,
+          "cups": 2,
+          "actions": 17
+        },
+        "opponent": {
+          "attacks": 22,
+          "hits": 10,
+          "damage": 18,
+          "attackDamage": 18,
+          "spellDamage": 0,
+          "moraleLost": 15,
+          "gems": 7,
+          "crystals": 3,
+          "cups": 2,
+          "actions": 19
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c56",
+            "c75",
+            "c104"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c8",
+            "c54",
+            "c112",
+            "c80"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c3",
+            "c91",
+            "c150",
+            "c59"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c82",
+            "c115",
+            "c32",
+            "c133"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "berserker",
+          "team": "red",
+          "cards": [
+            "c116",
+            "c44",
+            "c141",
+            "c70"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "berserker",
+          "team": "blue",
+          "cards": [
+            "c29",
+            "c14",
+            "c10",
+            "c41"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "assault",
+      "seed": 1,
+      "start": 1,
+      "team": "blue",
+      "heroIds": [
+        "windSwordmaster",
+        "windSwordmaster",
+        "marksman",
+        "marksman",
+        "berserker",
+        "berserker"
+      ],
+      "winner": "blue",
+      "outcome": "win",
+      "turns": 46,
+      "elapsedMs": 34.02422200000001,
+      "metrics": {
+        "candidate": {
+          "attacks": 31,
+          "hits": 16,
+          "damage": 36,
+          "attackDamage": 32,
+          "spellDamage": 4,
+          "moraleLost": 9,
+          "gems": 11,
+          "crystals": 6,
+          "cups": 4,
+          "actions": 28
+        },
+        "opponent": {
+          "attacks": 26,
+          "hits": 8,
+          "damage": 24,
+          "attackDamage": 23,
+          "spellDamage": 1,
+          "moraleLost": 15,
+          "gems": 6,
+          "crystals": 4,
+          "cups": 1,
+          "actions": 22
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c56",
+            "c75",
+            "c104"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c8",
+            "c54",
+            "c112",
+            "c80"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c3",
+            "c91",
+            "c150",
+            "c59"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c82",
+            "c115",
+            "c32",
+            "c133"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "berserker",
+          "team": "red",
+          "cards": [
+            "c116",
+            "c44",
+            "c141",
+            "c70"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "berserker",
+          "team": "blue",
+          "cards": [
+            "c29",
+            "c14",
+            "c10",
+            "c41"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "assault",
+      "seed": 2,
+      "start": 0,
+      "team": "red",
+      "heroIds": [
+        "marksman",
+        "marksman",
+        "berserker",
+        "berserker",
+        "windSwordmaster",
+        "windSwordmaster"
+      ],
+      "winner": "red",
+      "outcome": "win",
+      "turns": 40,
+      "elapsedMs": 34.869463999999994,
+      "metrics": {
+        "candidate": {
+          "attacks": 27,
+          "hits": 12,
+          "damage": 31,
+          "attackDamage": 28,
+          "spellDamage": 3,
+          "moraleLost": 14,
+          "gems": 10,
+          "crystals": 4,
+          "cups": 3,
+          "actions": 23
+        },
+        "opponent": {
+          "attacks": 26,
+          "hits": 13,
+          "damage": 27,
+          "attackDamage": 23,
+          "spellDamage": 4,
+          "moraleLost": 16,
+          "gems": 8,
+          "crystals": 7,
+          "cups": 4,
+          "actions": 22
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c69",
+            "c28",
+            "c110"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c105",
+            "c17",
+            "c30",
+            "c68"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "berserker",
+          "team": "blue",
+          "cards": [
+            "c75",
+            "c99",
+            "c141",
+            "c15"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "berserker",
+          "team": "red",
+          "cards": [
+            "c79",
+            "c109",
+            "c64",
+            "c61"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c2",
+            "c46",
+            "c130",
+            "c55"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c118",
+            "c87",
+            "c95",
+            "c50"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "assault",
+      "seed": 2,
+      "start": 0,
+      "team": "blue",
+      "heroIds": [
+        "marksman",
+        "marksman",
+        "berserker",
+        "berserker",
+        "windSwordmaster",
+        "windSwordmaster"
+      ],
+      "winner": "red",
+      "outcome": "loss",
+      "turns": 40,
+      "elapsedMs": 36.62823300000002,
+      "metrics": {
+        "candidate": {
+          "attacks": 28,
+          "hits": 13,
+          "damage": 28,
+          "attackDamage": 28,
+          "spellDamage": 0,
+          "moraleLost": 16,
+          "gems": 9,
+          "crystals": 8,
+          "cups": 3,
+          "actions": 23
+        },
+        "opponent": {
+          "attacks": 25,
+          "hits": 10,
+          "damage": 30,
+          "attackDamage": 25,
+          "spellDamage": 5,
+          "moraleLost": 12,
+          "gems": 5,
+          "crystals": 7,
+          "cups": 3,
+          "actions": 19
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c69",
+            "c28",
+            "c110"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c105",
+            "c17",
+            "c30",
+            "c68"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "berserker",
+          "team": "blue",
+          "cards": [
+            "c75",
+            "c99",
+            "c141",
+            "c15"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "berserker",
+          "team": "red",
+          "cards": [
+            "c79",
+            "c109",
+            "c64",
+            "c61"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c2",
+            "c46",
+            "c130",
+            "c55"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c118",
+            "c87",
+            "c95",
+            "c50"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "assault",
+      "seed": 2,
+      "start": 1,
+      "team": "red",
+      "heroIds": [
+        "marksman",
+        "marksman",
+        "berserker",
+        "berserker",
+        "windSwordmaster",
+        "windSwordmaster"
+      ],
+      "winner": "red",
+      "outcome": "win",
+      "turns": 30,
+      "elapsedMs": 39.45366799999999,
+      "metrics": {
+        "candidate": {
+          "attacks": 24,
+          "hits": 10,
+          "damage": 30,
+          "attackDamage": 25,
+          "spellDamage": 5,
+          "moraleLost": 12,
+          "gems": 6,
+          "crystals": 6,
+          "cups": 3,
+          "actions": 17
+        },
+        "opponent": {
+          "attacks": 23,
+          "hits": 9,
+          "damage": 24,
+          "attackDamage": 24,
+          "spellDamage": 0,
+          "moraleLost": 15,
+          "gems": 5,
+          "crystals": 4,
+          "cups": 3,
+          "actions": 16
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c69",
+            "c28",
+            "c110"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c105",
+            "c17",
+            "c30",
+            "c68"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "berserker",
+          "team": "blue",
+          "cards": [
+            "c75",
+            "c99",
+            "c141",
+            "c15"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "berserker",
+          "team": "red",
+          "cards": [
+            "c79",
+            "c109",
+            "c64",
+            "c61"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c2",
+            "c46",
+            "c130",
+            "c55"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c118",
+            "c87",
+            "c95",
+            "c50"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "assault",
+      "seed": 2,
+      "start": 1,
+      "team": "blue",
+      "heroIds": [
+        "marksman",
+        "marksman",
+        "berserker",
+        "berserker",
+        "windSwordmaster",
+        "windSwordmaster"
+      ],
+      "winner": "blue",
+      "outcome": "win",
+      "turns": 34,
+      "elapsedMs": 23.06902500000001,
+      "metrics": {
+        "candidate": {
+          "attacks": 23,
+          "hits": 10,
+          "damage": 31,
+          "attackDamage": 31,
+          "spellDamage": 0,
+          "moraleLost": 12,
+          "gems": 8,
+          "crystals": 4,
+          "cups": 2,
+          "actions": 18
+        },
+        "opponent": {
+          "attacks": 28,
+          "hits": 12,
+          "damage": 28,
+          "attackDamage": 25,
+          "spellDamage": 3,
+          "moraleLost": 15,
+          "gems": 4,
+          "crystals": 8,
+          "cups": 2,
+          "actions": 20
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c69",
+            "c28",
+            "c110"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c105",
+            "c17",
+            "c30",
+            "c68"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "berserker",
+          "team": "blue",
+          "cards": [
+            "c75",
+            "c99",
+            "c141",
+            "c15"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "berserker",
+          "team": "red",
+          "cards": [
+            "c79",
+            "c109",
+            "c64",
+            "c61"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c2",
+            "c46",
+            "c130",
+            "c55"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c118",
+            "c87",
+            "c95",
+            "c50"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "assault",
+      "seed": 3,
+      "start": 0,
+      "team": "red",
+      "heroIds": [
+        "berserker",
+        "berserker",
+        "windSwordmaster",
+        "windSwordmaster",
+        "marksman",
+        "marksman"
+      ],
+      "winner": "red",
+      "outcome": "win",
+      "turns": 52,
+      "elapsedMs": 27.984049000000027,
+      "metrics": {
+        "candidate": {
+          "attacks": 27,
+          "hits": 12,
+          "damage": 28,
+          "attackDamage": 25,
+          "spellDamage": 3,
+          "moraleLost": 12,
+          "gems": 11,
+          "crystals": 7,
+          "cups": 5,
+          "actions": 27
+        },
+        "opponent": {
+          "attacks": 30,
+          "hits": 11,
+          "damage": 25,
+          "attackDamage": 25,
+          "spellDamage": 0,
+          "moraleLost": 13,
+          "gems": 6,
+          "crystals": 7,
+          "cups": 4,
+          "actions": 25
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "berserker",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c83",
+            "c130",
+            "c115"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "berserker",
+          "team": "blue",
+          "cards": [
+            "c56",
+            "c126",
+            "c92",
+            "c146"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c5",
+            "c107",
+            "c23",
+            "c111"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c76",
+            "c102",
+            "c95",
+            "c124"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c140",
+            "c48",
+            "c37",
+            "c40"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c78",
+            "c30",
+            "c53",
+            "c59"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "assault",
+      "seed": 3,
+      "start": 0,
+      "team": "blue",
+      "heroIds": [
+        "berserker",
+        "berserker",
+        "windSwordmaster",
+        "windSwordmaster",
+        "marksman",
+        "marksman"
+      ],
+      "winner": "blue",
+      "outcome": "win",
+      "turns": 34,
+      "elapsedMs": 21.007415000000037,
+      "metrics": {
+        "candidate": {
+          "attacks": 17,
+          "hits": 9,
+          "damage": 24,
+          "attackDamage": 22,
+          "spellDamage": 2,
+          "moraleLost": 3,
+          "gems": 7,
+          "crystals": 4,
+          "cups": 2,
+          "actions": 16
+        },
+        "opponent": {
+          "attacks": 15,
+          "hits": 5,
+          "damage": 12,
+          "attackDamage": 10,
+          "spellDamage": 2,
+          "moraleLost": 16,
+          "gems": 6,
+          "crystals": 3,
+          "cups": 1,
+          "actions": 17
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "berserker",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c83",
+            "c130",
+            "c115"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "berserker",
+          "team": "blue",
+          "cards": [
+            "c56",
+            "c126",
+            "c92",
+            "c146"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c5",
+            "c107",
+            "c23",
+            "c111"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c76",
+            "c102",
+            "c95",
+            "c124"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c140",
+            "c48",
+            "c37",
+            "c40"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c78",
+            "c30",
+            "c53",
+            "c59"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "assault",
+      "seed": 3,
+      "start": 1,
+      "team": "red",
+      "heroIds": [
+        "berserker",
+        "berserker",
+        "windSwordmaster",
+        "windSwordmaster",
+        "marksman",
+        "marksman"
+      ],
+      "winner": "red",
+      "outcome": "win",
+      "turns": 40,
+      "elapsedMs": 31.178221000000008,
+      "metrics": {
+        "candidate": {
+          "attacks": 29,
+          "hits": 11,
+          "damage": 36,
+          "attackDamage": 32,
+          "spellDamage": 4,
+          "moraleLost": 13,
+          "gems": 7,
+          "crystals": 6,
+          "cups": 2,
+          "actions": 25
+        },
+        "opponent": {
+          "attacks": 30,
+          "hits": 12,
+          "damage": 30,
+          "attackDamage": 28,
+          "spellDamage": 2,
+          "moraleLost": 16,
+          "gems": 6,
+          "crystals": 6,
+          "cups": 3,
+          "actions": 22
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "berserker",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c83",
+            "c130",
+            "c115"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "berserker",
+          "team": "blue",
+          "cards": [
+            "c56",
+            "c126",
+            "c92",
+            "c146"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c5",
+            "c107",
+            "c23",
+            "c111"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c76",
+            "c102",
+            "c95",
+            "c124"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c140",
+            "c48",
+            "c37",
+            "c40"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c78",
+            "c30",
+            "c53",
+            "c59"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "assault",
+      "seed": 3,
+      "start": 1,
+      "team": "blue",
+      "heroIds": [
+        "berserker",
+        "berserker",
+        "windSwordmaster",
+        "windSwordmaster",
+        "marksman",
+        "marksman"
+      ],
+      "winner": "red",
+      "outcome": "loss",
+      "turns": 40,
+      "elapsedMs": 28.990762000000018,
+      "metrics": {
+        "candidate": {
+          "attacks": 30,
+          "hits": 15,
+          "damage": 34,
+          "attackDamage": 34,
+          "spellDamage": 0,
+          "moraleLost": 15,
+          "gems": 11,
+          "crystals": 5,
+          "cups": 3,
+          "actions": 24
+        },
+        "opponent": {
+          "attacks": 31,
+          "hits": 11,
+          "damage": 33,
+          "attackDamage": 30,
+          "spellDamage": 3,
+          "moraleLost": 11,
+          "gems": 7,
+          "crystals": 4,
+          "cups": 2,
+          "actions": 26
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "berserker",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c83",
+            "c130",
+            "c115"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "berserker",
+          "team": "blue",
+          "cards": [
+            "c56",
+            "c126",
+            "c92",
+            "c146"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c5",
+            "c107",
+            "c23",
+            "c111"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c76",
+            "c102",
+            "c95",
+            "c124"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c140",
+            "c48",
+            "c37",
+            "c40"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c78",
+            "c30",
+            "c53",
+            "c59"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "spell",
+      "seed": 1,
+      "start": 0,
+      "team": "red",
+      "heroIds": [
+        "sealer",
+        "sealer",
+        "priest",
+        "priest",
+        "marksman",
+        "marksman"
+      ],
+      "winner": "blue",
+      "outcome": "loss",
+      "turns": 62,
+      "elapsedMs": 54.33232499999997,
+      "metrics": {
+        "candidate": {
+          "attacks": 28,
+          "hits": 12,
+          "damage": 24,
+          "attackDamage": 21,
+          "spellDamage": 3,
+          "moraleLost": 10,
+          "gems": 9,
+          "crystals": 3,
+          "cups": 2,
+          "actions": 35
+        },
+        "opponent": {
+          "attacks": 30,
+          "hits": 17,
+          "damage": 33,
+          "attackDamage": 33,
+          "spellDamage": 0,
+          "moraleLost": 6,
+          "gems": 10,
+          "crystals": 9,
+          "cups": 5,
+          "actions": 31
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c56",
+            "c75",
+            "c104"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c8",
+            "c54",
+            "c112",
+            "c80"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c3",
+            "c91",
+            "c150",
+            "c59"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c82",
+            "c115",
+            "c32",
+            "c133"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c116",
+            "c44",
+            "c141",
+            "c70"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c29",
+            "c14",
+            "c10",
+            "c41"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "spell",
+      "seed": 1,
+      "start": 0,
+      "team": "blue",
+      "heroIds": [
+        "sealer",
+        "sealer",
+        "priest",
+        "priest",
+        "marksman",
+        "marksman"
+      ],
+      "winner": "red",
+      "outcome": "loss",
+      "turns": 77,
+      "elapsedMs": 66.45228399999996,
+      "metrics": {
+        "candidate": {
+          "attacks": 35,
+          "hits": 21,
+          "damage": 48,
+          "attackDamage": 40,
+          "spellDamage": 8,
+          "moraleLost": 17,
+          "gems": 14,
+          "crystals": 9,
+          "cups": 4,
+          "actions": 42
+        },
+        "opponent": {
+          "attacks": 36,
+          "hits": 16,
+          "damage": 52,
+          "attackDamage": 28,
+          "spellDamage": 24,
+          "moraleLost": 6,
+          "gems": 12,
+          "crystals": 6,
+          "cups": 3,
+          "actions": 49
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c56",
+            "c75",
+            "c104"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c8",
+            "c54",
+            "c112",
+            "c80"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c3",
+            "c91",
+            "c150",
+            "c59"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c82",
+            "c115",
+            "c32",
+            "c133"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c116",
+            "c44",
+            "c141",
+            "c70"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c29",
+            "c14",
+            "c10",
+            "c41"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "spell",
+      "seed": 1,
+      "start": 1,
+      "team": "red",
+      "heroIds": [
+        "sealer",
+        "sealer",
+        "priest",
+        "priest",
+        "marksman",
+        "marksman"
+      ],
+      "winner": "red",
+      "outcome": "win",
+      "turns": 81,
+      "elapsedMs": 101.953079,
+      "metrics": {
+        "candidate": {
+          "attacks": 34,
+          "hits": 17,
+          "damage": 41,
+          "attackDamage": 31,
+          "spellDamage": 10,
+          "moraleLost": 12,
+          "gems": 14,
+          "crystals": 7,
+          "cups": 5,
+          "actions": 44
+        },
+        "opponent": {
+          "attacks": 37,
+          "hits": 16,
+          "damage": 38,
+          "attackDamage": 28,
+          "spellDamage": 10,
+          "moraleLost": 8,
+          "gems": 13,
+          "crystals": 5,
+          "cups": 3,
+          "actions": 46
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c56",
+            "c75",
+            "c104"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c8",
+            "c54",
+            "c112",
+            "c80"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c3",
+            "c91",
+            "c150",
+            "c59"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c82",
+            "c115",
+            "c32",
+            "c133"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c116",
+            "c44",
+            "c141",
+            "c70"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c29",
+            "c14",
+            "c10",
+            "c41"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "spell",
+      "seed": 1,
+      "start": 1,
+      "team": "blue",
+      "heroIds": [
+        "sealer",
+        "sealer",
+        "priest",
+        "priest",
+        "marksman",
+        "marksman"
+      ],
+      "winner": "red",
+      "outcome": "loss",
+      "turns": 141,
+      "elapsedMs": 106.89325199999996,
+      "metrics": {
+        "candidate": {
+          "attacks": 53,
+          "hits": 28,
+          "damage": 53,
+          "attackDamage": 50,
+          "spellDamage": 3,
+          "moraleLost": 9,
+          "gems": 23,
+          "crystals": 11,
+          "cups": 4,
+          "actions": 79
+        },
+        "opponent": {
+          "attacks": 50,
+          "hits": 21,
+          "damage": 50,
+          "attackDamage": 38,
+          "spellDamage": 12,
+          "moraleLost": 6,
+          "gems": 15,
+          "crystals": 10,
+          "cups": 5,
+          "actions": 65
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c56",
+            "c75",
+            "c104"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c8",
+            "c54",
+            "c112",
+            "c80"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c3",
+            "c91",
+            "c150",
+            "c59"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c82",
+            "c115",
+            "c32",
+            "c133"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c116",
+            "c44",
+            "c141",
+            "c70"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c29",
+            "c14",
+            "c10",
+            "c41"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "spell",
+      "seed": 2,
+      "start": 0,
+      "team": "red",
+      "heroIds": [
+        "priest",
+        "priest",
+        "marksman",
+        "marksman",
+        "sealer",
+        "sealer"
+      ],
+      "winner": "red",
+      "outcome": "win",
+      "turns": 71,
+      "elapsedMs": 52.058491000000004,
+      "metrics": {
+        "candidate": {
+          "attacks": 31,
+          "hits": 20,
+          "damage": 40,
+          "attackDamage": 34,
+          "spellDamage": 6,
+          "moraleLost": 12,
+          "gems": 18,
+          "crystals": 6,
+          "cups": 5,
+          "actions": 43
+        },
+        "opponent": {
+          "attacks": 29,
+          "hits": 14,
+          "damage": 32,
+          "attackDamage": 24,
+          "spellDamage": 8,
+          "moraleLost": 14,
+          "gems": 11,
+          "crystals": 3,
+          "cups": 3,
+          "actions": 40
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c69",
+            "c28",
+            "c110"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c105",
+            "c17",
+            "c30",
+            "c68"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c75",
+            "c99",
+            "c141",
+            "c15"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c79",
+            "c109",
+            "c64",
+            "c61"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c2",
+            "c46",
+            "c130",
+            "c55"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c118",
+            "c87",
+            "c95",
+            "c50"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "spell",
+      "seed": 2,
+      "start": 0,
+      "team": "blue",
+      "heroIds": [
+        "priest",
+        "priest",
+        "marksman",
+        "marksman",
+        "sealer",
+        "sealer"
+      ],
+      "winner": "blue",
+      "outcome": "win",
+      "turns": 66,
+      "elapsedMs": 41.66269999999997,
+      "metrics": {
+        "candidate": {
+          "attacks": 27,
+          "hits": 15,
+          "damage": 35,
+          "attackDamage": 25,
+          "spellDamage": 10,
+          "moraleLost": 9,
+          "gems": 11,
+          "crystals": 6,
+          "cups": 4,
+          "actions": 36
+        },
+        "opponent": {
+          "attacks": 29,
+          "hits": 13,
+          "damage": 29,
+          "attackDamage": 21,
+          "spellDamage": 8,
+          "moraleLost": 15,
+          "gems": 11,
+          "crystals": 6,
+          "cups": 4,
+          "actions": 36
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c69",
+            "c28",
+            "c110"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c105",
+            "c17",
+            "c30",
+            "c68"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c75",
+            "c99",
+            "c141",
+            "c15"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c79",
+            "c109",
+            "c64",
+            "c61"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c2",
+            "c46",
+            "c130",
+            "c55"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c118",
+            "c87",
+            "c95",
+            "c50"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "spell",
+      "seed": 2,
+      "start": 1,
+      "team": "red",
+      "heroIds": [
+        "priest",
+        "priest",
+        "marksman",
+        "marksman",
+        "sealer",
+        "sealer"
+      ],
+      "winner": "blue",
+      "outcome": "loss",
+      "turns": 28,
+      "elapsedMs": 24.14090400000009,
+      "metrics": {
+        "candidate": {
+          "attacks": 16,
+          "hits": 10,
+          "damage": 19,
+          "attackDamage": 17,
+          "spellDamage": 2,
+          "moraleLost": 15,
+          "gems": 8,
+          "crystals": 2,
+          "cups": 3,
+          "actions": 17
+        },
+        "opponent": {
+          "attacks": 14,
+          "hits": 9,
+          "damage": 22,
+          "attackDamage": 16,
+          "spellDamage": 6,
+          "moraleLost": 13,
+          "gems": 7,
+          "crystals": 2,
+          "cups": 2,
+          "actions": 16
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c69",
+            "c28",
+            "c110"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c105",
+            "c17",
+            "c30",
+            "c68"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c75",
+            "c99",
+            "c141",
+            "c15"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c79",
+            "c109",
+            "c64",
+            "c61"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c2",
+            "c46",
+            "c130",
+            "c55"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c118",
+            "c87",
+            "c95",
+            "c50"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "spell",
+      "seed": 2,
+      "start": 1,
+      "team": "blue",
+      "heroIds": [
+        "priest",
+        "priest",
+        "marksman",
+        "marksman",
+        "sealer",
+        "sealer"
+      ],
+      "winner": "red",
+      "outcome": "loss",
+      "turns": 28,
+      "elapsedMs": 22.543372999999974,
+      "metrics": {
+        "candidate": {
+          "attacks": 16,
+          "hits": 9,
+          "damage": 18,
+          "attackDamage": 15,
+          "spellDamage": 3,
+          "moraleLost": 15,
+          "gems": 7,
+          "crystals": 2,
+          "cups": 2,
+          "actions": 15
+        },
+        "opponent": {
+          "attacks": 16,
+          "hits": 10,
+          "damage": 23,
+          "attackDamage": 17,
+          "spellDamage": 6,
+          "moraleLost": 4,
+          "gems": 4,
+          "crystals": 6,
+          "cups": 3,
+          "actions": 17
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c69",
+            "c28",
+            "c110"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c105",
+            "c17",
+            "c30",
+            "c68"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c75",
+            "c99",
+            "c141",
+            "c15"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c79",
+            "c109",
+            "c64",
+            "c61"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c2",
+            "c46",
+            "c130",
+            "c55"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c118",
+            "c87",
+            "c95",
+            "c50"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "spell",
+      "seed": 3,
+      "start": 0,
+      "team": "red",
+      "heroIds": [
+        "marksman",
+        "marksman",
+        "sealer",
+        "sealer",
+        "priest",
+        "priest"
+      ],
+      "winner": "red",
+      "outcome": "win",
+      "turns": 89,
+      "elapsedMs": 51.146925999999894,
+      "metrics": {
+        "candidate": {
+          "attacks": 29,
+          "hits": 15,
+          "damage": 44,
+          "attackDamage": 28,
+          "spellDamage": 16,
+          "moraleLost": 7,
+          "gems": 13,
+          "crystals": 8,
+          "cups": 4,
+          "actions": 48
+        },
+        "opponent": {
+          "attacks": 33,
+          "hits": 15,
+          "damage": 31,
+          "attackDamage": 28,
+          "spellDamage": 3,
+          "moraleLost": 15,
+          "gems": 13,
+          "crystals": 6,
+          "cups": 3,
+          "actions": 46
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c83",
+            "c130",
+            "c115"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c56",
+            "c126",
+            "c92",
+            "c146"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c5",
+            "c107",
+            "c23",
+            "c111"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c76",
+            "c102",
+            "c95",
+            "c124"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c140",
+            "c48",
+            "c37",
+            "c40"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c78",
+            "c30",
+            "c53",
+            "c59"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "spell",
+      "seed": 3,
+      "start": 0,
+      "team": "blue",
+      "heroIds": [
+        "marksman",
+        "marksman",
+        "sealer",
+        "sealer",
+        "priest",
+        "priest"
+      ],
+      "winner": "red",
+      "outcome": "loss",
+      "turns": 52,
+      "elapsedMs": 27.233001999999942,
+      "metrics": {
+        "candidate": {
+          "attacks": 22,
+          "hits": 10,
+          "damage": 24,
+          "attackDamage": 18,
+          "spellDamage": 6,
+          "moraleLost": 15,
+          "gems": 9,
+          "crystals": 3,
+          "cups": 1,
+          "actions": 29
+        },
+        "opponent": {
+          "attacks": 22,
+          "hits": 12,
+          "damage": 31,
+          "attackDamage": 23,
+          "spellDamage": 8,
+          "moraleLost": 5,
+          "gems": 9,
+          "crystals": 5,
+          "cups": 4,
+          "actions": 28
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c83",
+            "c130",
+            "c115"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c56",
+            "c126",
+            "c92",
+            "c146"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c5",
+            "c107",
+            "c23",
+            "c111"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c76",
+            "c102",
+            "c95",
+            "c124"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c140",
+            "c48",
+            "c37",
+            "c40"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c78",
+            "c30",
+            "c53",
+            "c59"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "spell",
+      "seed": 3,
+      "start": 1,
+      "team": "red",
+      "heroIds": [
+        "marksman",
+        "marksman",
+        "sealer",
+        "sealer",
+        "priest",
+        "priest"
+      ],
+      "winner": "red",
+      "outcome": "win",
+      "turns": 75,
+      "elapsedMs": 43.65549299999998,
+      "metrics": {
+        "candidate": {
+          "attacks": 33,
+          "hits": 18,
+          "damage": 41,
+          "attackDamage": 33,
+          "spellDamage": 8,
+          "moraleLost": 9,
+          "gems": 14,
+          "crystals": 7,
+          "cups": 3,
+          "actions": 43
+        },
+        "opponent": {
+          "attacks": 33,
+          "hits": 15,
+          "damage": 33,
+          "attackDamage": 28,
+          "spellDamage": 5,
+          "moraleLost": 15,
+          "gems": 12,
+          "crystals": 5,
+          "cups": 4,
+          "actions": 38
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c83",
+            "c130",
+            "c115"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c56",
+            "c126",
+            "c92",
+            "c146"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c5",
+            "c107",
+            "c23",
+            "c111"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c76",
+            "c102",
+            "c95",
+            "c124"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c140",
+            "c48",
+            "c37",
+            "c40"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c78",
+            "c30",
+            "c53",
+            "c59"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "spell",
+      "seed": 3,
+      "start": 1,
+      "team": "blue",
+      "heroIds": [
+        "marksman",
+        "marksman",
+        "sealer",
+        "sealer",
+        "priest",
+        "priest"
+      ],
+      "winner": "blue",
+      "outcome": "win",
+      "turns": 75,
+      "elapsedMs": 46.58089199999995,
+      "metrics": {
+        "candidate": {
+          "attacks": 32,
+          "hits": 19,
+          "damage": 39,
+          "attackDamage": 30,
+          "spellDamage": 9,
+          "moraleLost": 11,
+          "gems": 16,
+          "crystals": 5,
+          "cups": 4,
+          "actions": 41
+        },
+        "opponent": {
+          "attacks": 31,
+          "hits": 15,
+          "damage": 31,
+          "attackDamage": 27,
+          "spellDamage": 4,
+          "moraleLost": 15,
+          "gems": 12,
+          "crystals": 5,
+          "cups": 3,
+          "actions": 43
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c83",
+            "c130",
+            "c115"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c56",
+            "c126",
+            "c92",
+            "c146"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c5",
+            "c107",
+            "c23",
+            "c111"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c76",
+            "c102",
+            "c95",
+            "c124"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c140",
+            "c48",
+            "c37",
+            "c40"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c78",
+            "c30",
+            "c53",
+            "c59"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "support",
+      "seed": 1,
+      "start": 0,
+      "team": "red",
+      "heroIds": [
+        "guardianAngel",
+        "guardianAngel",
+        "priest",
+        "priest",
+        "sealer",
+        "sealer"
+      ],
+      "winner": "red",
+      "outcome": "win",
+      "turns": 175,
+      "elapsedMs": 126.78311699999995,
+      "metrics": {
+        "candidate": {
+          "attacks": 47,
+          "hits": 26,
+          "damage": 54,
+          "attackDamage": 50,
+          "spellDamage": 4,
+          "moraleLost": 5,
+          "gems": 25,
+          "crystals": 15,
+          "cups": 5,
+          "actions": 94
+        },
+        "opponent": {
+          "attacks": 49,
+          "hits": 21,
+          "damage": 42,
+          "attackDamage": 39,
+          "spellDamage": 3,
+          "moraleLost": 6,
+          "gems": 23,
+          "crystals": 8,
+          "cups": 3,
+          "actions": 96
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c56",
+            "c75",
+            "c104"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c8",
+            "c54",
+            "c112",
+            "c80"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c3",
+            "c91",
+            "c150",
+            "c59"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c82",
+            "c115",
+            "c32",
+            "c133"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c116",
+            "c44",
+            "c141",
+            "c70"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c29",
+            "c14",
+            "c10",
+            "c41"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "support",
+      "seed": 1,
+      "start": 0,
+      "team": "blue",
+      "heroIds": [
+        "guardianAngel",
+        "guardianAngel",
+        "priest",
+        "priest",
+        "sealer",
+        "sealer"
+      ],
+      "winner": "blue",
+      "outcome": "win",
+      "turns": 126,
+      "elapsedMs": 111.67479400000002,
+      "metrics": {
+        "candidate": {
+          "attacks": 41,
+          "hits": 20,
+          "damage": 54,
+          "attackDamage": 36,
+          "spellDamage": 18,
+          "moraleLost": 11,
+          "gems": 19,
+          "crystals": 8,
+          "cups": 5,
+          "actions": 71
+        },
+        "opponent": {
+          "attacks": 39,
+          "hits": 19,
+          "damage": 54,
+          "attackDamage": 34,
+          "spellDamage": 20,
+          "moraleLost": 7,
+          "gems": 15,
+          "crystals": 10,
+          "cups": 4,
+          "actions": 72
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c56",
+            "c75",
+            "c104"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c8",
+            "c54",
+            "c112",
+            "c80"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c3",
+            "c91",
+            "c150",
+            "c59"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c82",
+            "c115",
+            "c32",
+            "c133"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c116",
+            "c44",
+            "c141",
+            "c70"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c29",
+            "c14",
+            "c10",
+            "c41"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "support",
+      "seed": 1,
+      "start": 1,
+      "team": "red",
+      "heroIds": [
+        "guardianAngel",
+        "guardianAngel",
+        "priest",
+        "priest",
+        "sealer",
+        "sealer"
+      ],
+      "winner": "red",
+      "outcome": "win",
+      "turns": 112,
+      "elapsedMs": 82.28434199999992,
+      "metrics": {
+        "candidate": {
+          "attacks": 38,
+          "hits": 19,
+          "damage": 44,
+          "attackDamage": 36,
+          "spellDamage": 8,
+          "moraleLost": 4,
+          "gems": 18,
+          "crystals": 15,
+          "cups": 5,
+          "actions": 63
+        },
+        "opponent": {
+          "attacks": 41,
+          "hits": 15,
+          "damage": 34,
+          "attackDamage": 26,
+          "spellDamage": 8,
+          "moraleLost": 6,
+          "gems": 15,
+          "crystals": 8,
+          "cups": 3,
+          "actions": 69
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c56",
+            "c75",
+            "c104"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c8",
+            "c54",
+            "c112",
+            "c80"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c3",
+            "c91",
+            "c150",
+            "c59"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c82",
+            "c115",
+            "c32",
+            "c133"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c116",
+            "c44",
+            "c141",
+            "c70"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c29",
+            "c14",
+            "c10",
+            "c41"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "support",
+      "seed": 1,
+      "start": 1,
+      "team": "blue",
+      "heroIds": [
+        "guardianAngel",
+        "guardianAngel",
+        "priest",
+        "priest",
+        "sealer",
+        "sealer"
+      ],
+      "winner": "blue",
+      "outcome": "win",
+      "turns": 115,
+      "elapsedMs": 85.059485,
+      "metrics": {
+        "candidate": {
+          "attacks": 45,
+          "hits": 21,
+          "damage": 41,
+          "attackDamage": 41,
+          "spellDamage": 0,
+          "moraleLost": 6,
+          "gems": 18,
+          "crystals": 13,
+          "cups": 5,
+          "actions": 63
+        },
+        "opponent": {
+          "attacks": 41,
+          "hits": 15,
+          "damage": 33,
+          "attackDamage": 26,
+          "spellDamage": 7,
+          "moraleLost": 10,
+          "gems": 12,
+          "crystals": 11,
+          "cups": 3,
+          "actions": 62
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c56",
+            "c75",
+            "c104"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c8",
+            "c54",
+            "c112",
+            "c80"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c3",
+            "c91",
+            "c150",
+            "c59"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c82",
+            "c115",
+            "c32",
+            "c133"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c116",
+            "c44",
+            "c141",
+            "c70"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c29",
+            "c14",
+            "c10",
+            "c41"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "support",
+      "seed": 2,
+      "start": 0,
+      "team": "red",
+      "heroIds": [
+        "priest",
+        "priest",
+        "sealer",
+        "sealer",
+        "guardianAngel",
+        "guardianAngel"
+      ],
+      "winner": "red",
+      "outcome": "win",
+      "turns": 100,
+      "elapsedMs": 79.06960099999992,
+      "metrics": {
+        "candidate": {
+          "attacks": 39,
+          "hits": 21,
+          "damage": 44,
+          "attackDamage": 33,
+          "spellDamage": 11,
+          "moraleLost": 5,
+          "gems": 18,
+          "crystals": 13,
+          "cups": 5,
+          "actions": 59
+        },
+        "opponent": {
+          "attacks": 33,
+          "hits": 13,
+          "damage": 30,
+          "attackDamage": 24,
+          "spellDamage": 6,
+          "moraleLost": 5,
+          "gems": 9,
+          "crystals": 8,
+          "cups": 2,
+          "actions": 52
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c69",
+            "c28",
+            "c110"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c105",
+            "c17",
+            "c30",
+            "c68"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c75",
+            "c99",
+            "c141",
+            "c15"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c79",
+            "c109",
+            "c64",
+            "c61"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c2",
+            "c46",
+            "c130",
+            "c55"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c118",
+            "c87",
+            "c95",
+            "c50"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "support",
+      "seed": 2,
+      "start": 0,
+      "team": "blue",
+      "heroIds": [
+        "priest",
+        "priest",
+        "sealer",
+        "sealer",
+        "guardianAngel",
+        "guardianAngel"
+      ],
+      "winner": "blue",
+      "outcome": "win",
+      "turns": 129,
+      "elapsedMs": 104.86454000000003,
+      "metrics": {
+        "candidate": {
+          "attacks": 38,
+          "hits": 17,
+          "damage": 44,
+          "attackDamage": 32,
+          "spellDamage": 12,
+          "moraleLost": 7,
+          "gems": 18,
+          "crystals": 11,
+          "cups": 5,
+          "actions": 70
+        },
+        "opponent": {
+          "attacks": 42,
+          "hits": 16,
+          "damage": 40,
+          "attackDamage": 29,
+          "spellDamage": 11,
+          "moraleLost": 7,
+          "gems": 13,
+          "crystals": 13,
+          "cups": 4,
+          "actions": 72
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c69",
+            "c28",
+            "c110"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c105",
+            "c17",
+            "c30",
+            "c68"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c75",
+            "c99",
+            "c141",
+            "c15"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c79",
+            "c109",
+            "c64",
+            "c61"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c2",
+            "c46",
+            "c130",
+            "c55"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c118",
+            "c87",
+            "c95",
+            "c50"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "support",
+      "seed": 2,
+      "start": 1,
+      "team": "red",
+      "heroIds": [
+        "priest",
+        "priest",
+        "sealer",
+        "sealer",
+        "guardianAngel",
+        "guardianAngel"
+      ],
+      "winner": "red",
+      "outcome": "win",
+      "turns": 111,
+      "elapsedMs": 79.250902,
+      "metrics": {
+        "candidate": {
+          "attacks": 46,
+          "hits": 25,
+          "damage": 55,
+          "attackDamage": 45,
+          "spellDamage": 10,
+          "moraleLost": 2,
+          "gems": 17,
+          "crystals": 14,
+          "cups": 5,
+          "actions": 61
+        },
+        "opponent": {
+          "attacks": 39,
+          "hits": 14,
+          "damage": 33,
+          "attackDamage": 26,
+          "spellDamage": 7,
+          "moraleLost": 10,
+          "gems": 9,
+          "crystals": 11,
+          "cups": 2,
+          "actions": 65
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c69",
+            "c28",
+            "c110"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c105",
+            "c17",
+            "c30",
+            "c68"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c75",
+            "c99",
+            "c141",
+            "c15"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c79",
+            "c109",
+            "c64",
+            "c61"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c2",
+            "c46",
+            "c130",
+            "c55"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c118",
+            "c87",
+            "c95",
+            "c50"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "support",
+      "seed": 2,
+      "start": 1,
+      "team": "blue",
+      "heroIds": [
+        "priest",
+        "priest",
+        "sealer",
+        "sealer",
+        "guardianAngel",
+        "guardianAngel"
+      ],
+      "winner": "blue",
+      "outcome": "win",
+      "turns": 103,
+      "elapsedMs": 87.21448099999998,
+      "metrics": {
+        "candidate": {
+          "attacks": 31,
+          "hits": 17,
+          "damage": 39,
+          "attackDamage": 33,
+          "spellDamage": 6,
+          "moraleLost": 6,
+          "gems": 17,
+          "crystals": 10,
+          "cups": 5,
+          "actions": 60
+        },
+        "opponent": {
+          "attacks": 37,
+          "hits": 17,
+          "damage": 34,
+          "attackDamage": 28,
+          "spellDamage": 6,
+          "moraleLost": 5,
+          "gems": 13,
+          "crystals": 8,
+          "cups": 2,
+          "actions": 58
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c69",
+            "c28",
+            "c110"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c105",
+            "c17",
+            "c30",
+            "c68"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c75",
+            "c99",
+            "c141",
+            "c15"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c79",
+            "c109",
+            "c64",
+            "c61"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c2",
+            "c46",
+            "c130",
+            "c55"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c118",
+            "c87",
+            "c95",
+            "c50"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "support",
+      "seed": 3,
+      "start": 0,
+      "team": "red",
+      "heroIds": [
+        "sealer",
+        "sealer",
+        "guardianAngel",
+        "guardianAngel",
+        "priest",
+        "priest"
+      ],
+      "winner": "red",
+      "outcome": "win",
+      "turns": 125,
+      "elapsedMs": 86.2797129999999,
+      "metrics": {
+        "candidate": {
+          "attacks": 42,
+          "hits": 21,
+          "damage": 46,
+          "attackDamage": 38,
+          "spellDamage": 8,
+          "moraleLost": 11,
+          "gems": 23,
+          "crystals": 14,
+          "cups": 5,
+          "actions": 69
+        },
+        "opponent": {
+          "attacks": 43,
+          "hits": 15,
+          "damage": 37,
+          "attackDamage": 27,
+          "spellDamage": 10,
+          "moraleLost": 9,
+          "gems": 13,
+          "crystals": 12,
+          "cups": 4,
+          "actions": 71
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c83",
+            "c130",
+            "c115"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c56",
+            "c126",
+            "c92",
+            "c146"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c5",
+            "c107",
+            "c23",
+            "c111"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c76",
+            "c102",
+            "c95",
+            "c124"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c140",
+            "c48",
+            "c37",
+            "c40"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c78",
+            "c30",
+            "c53",
+            "c59"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "support",
+      "seed": 3,
+      "start": 0,
+      "team": "blue",
+      "heroIds": [
+        "sealer",
+        "sealer",
+        "guardianAngel",
+        "guardianAngel",
+        "priest",
+        "priest"
+      ],
+      "winner": "blue",
+      "outcome": "win",
+      "turns": 146,
+      "elapsedMs": 168.190656,
+      "metrics": {
+        "candidate": {
+          "attacks": 57,
+          "hits": 27,
+          "damage": 63,
+          "attackDamage": 51,
+          "spellDamage": 12,
+          "moraleLost": 5,
+          "gems": 24,
+          "crystals": 7,
+          "cups": 5,
+          "actions": 80
+        },
+        "opponent": {
+          "attacks": 52,
+          "hits": 25,
+          "damage": 57,
+          "attackDamage": 48,
+          "spellDamage": 9,
+          "moraleLost": 5,
+          "gems": 19,
+          "crystals": 12,
+          "cups": 3,
+          "actions": 85
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c83",
+            "c130",
+            "c115"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c56",
+            "c126",
+            "c92",
+            "c146"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c5",
+            "c107",
+            "c23",
+            "c111"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c76",
+            "c102",
+            "c95",
+            "c124"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c140",
+            "c48",
+            "c37",
+            "c40"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c78",
+            "c30",
+            "c53",
+            "c59"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "support",
+      "seed": 3,
+      "start": 1,
+      "team": "red",
+      "heroIds": [
+        "sealer",
+        "sealer",
+        "guardianAngel",
+        "guardianAngel",
+        "priest",
+        "priest"
+      ],
+      "winner": "red",
+      "outcome": "win",
+      "turns": 64,
+      "elapsedMs": 35.15322699999979,
+      "metrics": {
+        "candidate": {
+          "attacks": 20,
+          "hits": 13,
+          "damage": 29,
+          "attackDamage": 24,
+          "spellDamage": 5,
+          "moraleLost": 4,
+          "gems": 11,
+          "crystals": 8,
+          "cups": 5,
+          "actions": 32
+        },
+        "opponent": {
+          "attacks": 20,
+          "hits": 5,
+          "damage": 14,
+          "attackDamage": 9,
+          "spellDamage": 5,
+          "moraleLost": 9,
+          "gems": 4,
+          "crystals": 3,
+          "cups": 1,
+          "actions": 37
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c83",
+            "c130",
+            "c115"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c56",
+            "c126",
+            "c92",
+            "c146"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c5",
+            "c107",
+            "c23",
+            "c111"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c76",
+            "c102",
+            "c95",
+            "c124"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c140",
+            "c48",
+            "c37",
+            "c40"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c78",
+            "c30",
+            "c53",
+            "c59"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "support",
+      "seed": 3,
+      "start": 1,
+      "team": "blue",
+      "heroIds": [
+        "sealer",
+        "sealer",
+        "guardianAngel",
+        "guardianAngel",
+        "priest",
+        "priest"
+      ],
+      "winner": "blue",
+      "outcome": "win",
+      "turns": 121,
+      "elapsedMs": 90.51911900000005,
+      "metrics": {
+        "candidate": {
+          "attacks": 45,
+          "hits": 23,
+          "damage": 48,
+          "attackDamage": 37,
+          "spellDamage": 11,
+          "moraleLost": 2,
+          "gems": 19,
+          "crystals": 12,
+          "cups": 5,
+          "actions": 71
+        },
+        "opponent": {
+          "attacks": 40,
+          "hits": 17,
+          "damage": 35,
+          "attackDamage": 32,
+          "spellDamage": 3,
+          "moraleLost": 11,
+          "gems": 12,
+          "crystals": 13,
+          "cups": 2,
+          "actions": 66
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c83",
+            "c130",
+            "c115"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c56",
+            "c126",
+            "c92",
+            "c146"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c5",
+            "c107",
+            "c23",
+            "c111"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c76",
+            "c102",
+            "c95",
+            "c124"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c140",
+            "c48",
+            "c37",
+            "c40"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c78",
+            "c30",
+            "c53",
+            "c59"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "mixed",
+      "seed": 1,
+      "start": 0,
+      "team": "red",
+      "heroIds": [
+        "guardianAngel",
+        "guardianAngel",
+        "priest",
+        "priest",
+        "berserker",
+        "berserker"
+      ],
+      "winner": "red",
+      "outcome": "win",
+      "turns": 83,
+      "elapsedMs": 53.910963999999694,
+      "metrics": {
+        "candidate": {
+          "attacks": 32,
+          "hits": 17,
+          "damage": 38,
+          "attackDamage": 37,
+          "spellDamage": 1,
+          "moraleLost": 4,
+          "gems": 10,
+          "crystals": 17,
+          "cups": 5,
+          "actions": 42
+        },
+        "opponent": {
+          "attacks": 36,
+          "hits": 10,
+          "damage": 26,
+          "attackDamage": 26,
+          "spellDamage": 0,
+          "moraleLost": 7,
+          "gems": 10,
+          "crystals": 6,
+          "cups": 0,
+          "actions": 41
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c56",
+            "c75",
+            "c104"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c8",
+            "c54",
+            "c112",
+            "c80"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c3",
+            "c91",
+            "c150",
+            "c59"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c82",
+            "c115",
+            "c32",
+            "c133"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "berserker",
+          "team": "red",
+          "cards": [
+            "c116",
+            "c44",
+            "c141",
+            "c70"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "berserker",
+          "team": "blue",
+          "cards": [
+            "c29",
+            "c14",
+            "c10",
+            "c41"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "mixed",
+      "seed": 1,
+      "start": 0,
+      "team": "blue",
+      "heroIds": [
+        "guardianAngel",
+        "guardianAngel",
+        "priest",
+        "priest",
+        "berserker",
+        "berserker"
+      ],
+      "winner": "red",
+      "outcome": "loss",
+      "turns": 71,
+      "elapsedMs": 37.737003999999615,
+      "metrics": {
+        "candidate": {
+          "attacks": 34,
+          "hits": 12,
+          "damage": 29,
+          "attackDamage": 29,
+          "spellDamage": 0,
+          "moraleLost": 15,
+          "gems": 7,
+          "crystals": 11,
+          "cups": 4,
+          "actions": 33
+        },
+        "opponent": {
+          "attacks": 35,
+          "hits": 15,
+          "damage": 35,
+          "attackDamage": 34,
+          "spellDamage": 1,
+          "moraleLost": 9,
+          "gems": 8,
+          "crystals": 11,
+          "cups": 5,
+          "actions": 35
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c56",
+            "c75",
+            "c104"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c8",
+            "c54",
+            "c112",
+            "c80"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c3",
+            "c91",
+            "c150",
+            "c59"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c82",
+            "c115",
+            "c32",
+            "c133"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "berserker",
+          "team": "red",
+          "cards": [
+            "c116",
+            "c44",
+            "c141",
+            "c70"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "berserker",
+          "team": "blue",
+          "cards": [
+            "c29",
+            "c14",
+            "c10",
+            "c41"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "mixed",
+      "seed": 1,
+      "start": 1,
+      "team": "red",
+      "heroIds": [
+        "guardianAngel",
+        "guardianAngel",
+        "priest",
+        "priest",
+        "berserker",
+        "berserker"
+      ],
+      "winner": "blue",
+      "outcome": "loss",
+      "turns": 38,
+      "elapsedMs": 17.313615000000027,
+      "metrics": {
+        "candidate": {
+          "attacks": 13,
+          "hits": 3,
+          "damage": 7,
+          "attackDamage": 6,
+          "spellDamage": 1,
+          "moraleLost": 15,
+          "gems": 3,
+          "crystals": 2,
+          "cups": 1,
+          "actions": 17
+        },
+        "opponent": {
+          "attacks": 18,
+          "hits": 10,
+          "damage": 27,
+          "attackDamage": 27,
+          "spellDamage": 0,
+          "moraleLost": 4,
+          "gems": 7,
+          "crystals": 7,
+          "cups": 4,
+          "actions": 18
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c56",
+            "c75",
+            "c104"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c8",
+            "c54",
+            "c112",
+            "c80"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c3",
+            "c91",
+            "c150",
+            "c59"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c82",
+            "c115",
+            "c32",
+            "c133"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "berserker",
+          "team": "red",
+          "cards": [
+            "c116",
+            "c44",
+            "c141",
+            "c70"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "berserker",
+          "team": "blue",
+          "cards": [
+            "c29",
+            "c14",
+            "c10",
+            "c41"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "mixed",
+      "seed": 1,
+      "start": 1,
+      "team": "blue",
+      "heroIds": [
+        "guardianAngel",
+        "guardianAngel",
+        "priest",
+        "priest",
+        "berserker",
+        "berserker"
+      ],
+      "winner": "red",
+      "outcome": "loss",
+      "turns": 88,
+      "elapsedMs": 52.16847599999983,
+      "metrics": {
+        "candidate": {
+          "attacks": 35,
+          "hits": 16,
+          "damage": 41,
+          "attackDamage": 40,
+          "spellDamage": 1,
+          "moraleLost": 15,
+          "gems": 13,
+          "crystals": 9,
+          "cups": 4,
+          "actions": 43
+        },
+        "opponent": {
+          "attacks": 34,
+          "hits": 15,
+          "damage": 42,
+          "attackDamage": 40,
+          "spellDamage": 2,
+          "moraleLost": 10,
+          "gems": 13,
+          "crystals": 6,
+          "cups": 3,
+          "actions": 43
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c56",
+            "c75",
+            "c104"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c8",
+            "c54",
+            "c112",
+            "c80"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c3",
+            "c91",
+            "c150",
+            "c59"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c82",
+            "c115",
+            "c32",
+            "c133"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "berserker",
+          "team": "red",
+          "cards": [
+            "c116",
+            "c44",
+            "c141",
+            "c70"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "berserker",
+          "team": "blue",
+          "cards": [
+            "c29",
+            "c14",
+            "c10",
+            "c41"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "mixed",
+      "seed": 2,
+      "start": 0,
+      "team": "red",
+      "heroIds": [
+        "priest",
+        "priest",
+        "berserker",
+        "berserker",
+        "guardianAngel",
+        "guardianAngel"
+      ],
+      "winner": "red",
+      "outcome": "win",
+      "turns": 112,
+      "elapsedMs": 94.0578760000003,
+      "metrics": {
+        "candidate": {
+          "attacks": 35,
+          "hits": 15,
+          "damage": 39,
+          "attackDamage": 36,
+          "spellDamage": 3,
+          "moraleLost": 7,
+          "gems": 14,
+          "crystals": 10,
+          "cups": 4,
+          "actions": 55
+        },
+        "opponent": {
+          "attacks": 36,
+          "hits": 15,
+          "damage": 35,
+          "attackDamage": 34,
+          "spellDamage": 1,
+          "moraleLost": 15,
+          "gems": 14,
+          "crystals": 9,
+          "cups": 4,
+          "actions": 54
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c69",
+            "c28",
+            "c110"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c105",
+            "c17",
+            "c30",
+            "c68"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "berserker",
+          "team": "blue",
+          "cards": [
+            "c75",
+            "c99",
+            "c141",
+            "c15"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "berserker",
+          "team": "red",
+          "cards": [
+            "c79",
+            "c109",
+            "c64",
+            "c61"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c2",
+            "c46",
+            "c130",
+            "c55"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c118",
+            "c87",
+            "c95",
+            "c50"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "mixed",
+      "seed": 2,
+      "start": 0,
+      "team": "blue",
+      "heroIds": [
+        "priest",
+        "priest",
+        "berserker",
+        "berserker",
+        "guardianAngel",
+        "guardianAngel"
+      ],
+      "winner": "red",
+      "outcome": "loss",
+      "turns": 130,
+      "elapsedMs": 78.85934600000019,
+      "metrics": {
+        "candidate": {
+          "attacks": 41,
+          "hits": 18,
+          "damage": 45,
+          "attackDamage": 43,
+          "spellDamage": 2,
+          "moraleLost": 14,
+          "gems": 19,
+          "crystals": 11,
+          "cups": 4,
+          "actions": 63
+        },
+        "opponent": {
+          "attacks": 50,
+          "hits": 23,
+          "damage": 47,
+          "attackDamage": 46,
+          "spellDamage": 1,
+          "moraleLost": 13,
+          "gems": 16,
+          "crystals": 15,
+          "cups": 5,
+          "actions": 64
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c69",
+            "c28",
+            "c110"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c105",
+            "c17",
+            "c30",
+            "c68"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "berserker",
+          "team": "blue",
+          "cards": [
+            "c75",
+            "c99",
+            "c141",
+            "c15"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "berserker",
+          "team": "red",
+          "cards": [
+            "c79",
+            "c109",
+            "c64",
+            "c61"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c2",
+            "c46",
+            "c130",
+            "c55"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c118",
+            "c87",
+            "c95",
+            "c50"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "mixed",
+      "seed": 2,
+      "start": 1,
+      "team": "red",
+      "heroIds": [
+        "priest",
+        "priest",
+        "berserker",
+        "berserker",
+        "guardianAngel",
+        "guardianAngel"
+      ],
+      "winner": "blue",
+      "outcome": "loss",
+      "turns": 97,
+      "elapsedMs": 55.36119400000007,
+      "metrics": {
+        "candidate": {
+          "attacks": 32,
+          "hits": 12,
+          "damage": 30,
+          "attackDamage": 28,
+          "spellDamage": 2,
+          "moraleLost": 7,
+          "gems": 12,
+          "crystals": 8,
+          "cups": 2,
+          "actions": 47
+        },
+        "opponent": {
+          "attacks": 30,
+          "hits": 11,
+          "damage": 25,
+          "attackDamage": 24,
+          "spellDamage": 1,
+          "moraleLost": 10,
+          "gems": 8,
+          "crystals": 15,
+          "cups": 5,
+          "actions": 47
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c69",
+            "c28",
+            "c110"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c105",
+            "c17",
+            "c30",
+            "c68"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "berserker",
+          "team": "blue",
+          "cards": [
+            "c75",
+            "c99",
+            "c141",
+            "c15"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "berserker",
+          "team": "red",
+          "cards": [
+            "c79",
+            "c109",
+            "c64",
+            "c61"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c2",
+            "c46",
+            "c130",
+            "c55"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c118",
+            "c87",
+            "c95",
+            "c50"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "mixed",
+      "seed": 2,
+      "start": 1,
+      "team": "blue",
+      "heroIds": [
+        "priest",
+        "priest",
+        "berserker",
+        "berserker",
+        "guardianAngel",
+        "guardianAngel"
+      ],
+      "winner": "blue",
+      "outcome": "win",
+      "turns": 32,
+      "elapsedMs": 23.54457100000036,
+      "metrics": {
+        "candidate": {
+          "attacks": 14,
+          "hits": 6,
+          "damage": 21,
+          "attackDamage": 21,
+          "spellDamage": 0,
+          "moraleLost": 10,
+          "gems": 4,
+          "crystals": 2,
+          "cups": 0,
+          "actions": 17
+        },
+        "opponent": {
+          "attacks": 17,
+          "hits": 8,
+          "damage": 22,
+          "attackDamage": 22,
+          "spellDamage": 0,
+          "moraleLost": 15,
+          "gems": 6,
+          "crystals": 4,
+          "cups": 3,
+          "actions": 15
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c69",
+            "c28",
+            "c110"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c105",
+            "c17",
+            "c30",
+            "c68"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "berserker",
+          "team": "blue",
+          "cards": [
+            "c75",
+            "c99",
+            "c141",
+            "c15"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "berserker",
+          "team": "red",
+          "cards": [
+            "c79",
+            "c109",
+            "c64",
+            "c61"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c2",
+            "c46",
+            "c130",
+            "c55"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c118",
+            "c87",
+            "c95",
+            "c50"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "mixed",
+      "seed": 3,
+      "start": 0,
+      "team": "red",
+      "heroIds": [
+        "berserker",
+        "berserker",
+        "guardianAngel",
+        "guardianAngel",
+        "priest",
+        "priest"
+      ],
+      "winner": "red",
+      "outcome": "win",
+      "turns": 62,
+      "elapsedMs": 31.481289999999717,
+      "metrics": {
+        "candidate": {
+          "attacks": 29,
+          "hits": 11,
+          "damage": 27,
+          "attackDamage": 26,
+          "spellDamage": 1,
+          "moraleLost": 5,
+          "gems": 10,
+          "crystals": 9,
+          "cups": 3,
+          "actions": 31
+        },
+        "opponent": {
+          "attacks": 29,
+          "hits": 8,
+          "damage": 20,
+          "attackDamage": 20,
+          "spellDamage": 0,
+          "moraleLost": 15,
+          "gems": 7,
+          "crystals": 9,
+          "cups": 3,
+          "actions": 29
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "berserker",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c83",
+            "c130",
+            "c115"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "berserker",
+          "team": "blue",
+          "cards": [
+            "c56",
+            "c126",
+            "c92",
+            "c146"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c5",
+            "c107",
+            "c23",
+            "c111"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c76",
+            "c102",
+            "c95",
+            "c124"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c140",
+            "c48",
+            "c37",
+            "c40"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c78",
+            "c30",
+            "c53",
+            "c59"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "mixed",
+      "seed": 3,
+      "start": 0,
+      "team": "blue",
+      "heroIds": [
+        "berserker",
+        "berserker",
+        "guardianAngel",
+        "guardianAngel",
+        "priest",
+        "priest"
+      ],
+      "winner": "blue",
+      "outcome": "win",
+      "turns": 132,
+      "elapsedMs": 89.79451399999971,
+      "metrics": {
+        "candidate": {
+          "attacks": 50,
+          "hits": 22,
+          "damage": 59,
+          "attackDamage": 57,
+          "spellDamage": 2,
+          "moraleLost": 9,
+          "gems": 21,
+          "crystals": 15,
+          "cups": 5,
+          "actions": 65
+        },
+        "opponent": {
+          "attacks": 49,
+          "hits": 18,
+          "damage": 38,
+          "attackDamage": 36,
+          "spellDamage": 2,
+          "moraleLost": 13,
+          "gems": 13,
+          "crystals": 13,
+          "cups": 3,
+          "actions": 66
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "berserker",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c83",
+            "c130",
+            "c115"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "berserker",
+          "team": "blue",
+          "cards": [
+            "c56",
+            "c126",
+            "c92",
+            "c146"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c5",
+            "c107",
+            "c23",
+            "c111"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c76",
+            "c102",
+            "c95",
+            "c124"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c140",
+            "c48",
+            "c37",
+            "c40"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c78",
+            "c30",
+            "c53",
+            "c59"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "mixed",
+      "seed": 3,
+      "start": 1,
+      "team": "red",
+      "heroIds": [
+        "berserker",
+        "berserker",
+        "guardianAngel",
+        "guardianAngel",
+        "priest",
+        "priest"
+      ],
+      "winner": "blue",
+      "outcome": "loss",
+      "turns": 71,
+      "elapsedMs": 38.70787700000028,
+      "metrics": {
+        "candidate": {
+          "attacks": 21,
+          "hits": 8,
+          "damage": 18,
+          "attackDamage": 17,
+          "spellDamage": 1,
+          "moraleLost": 15,
+          "gems": 9,
+          "crystals": 7,
+          "cups": 4,
+          "actions": 34
+        },
+        "opponent": {
+          "attacks": 26,
+          "hits": 12,
+          "damage": 27,
+          "attackDamage": 26,
+          "spellDamage": 1,
+          "moraleLost": 5,
+          "gems": 13,
+          "crystals": 7,
+          "cups": 3,
+          "actions": 34
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "berserker",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c83",
+            "c130",
+            "c115"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "berserker",
+          "team": "blue",
+          "cards": [
+            "c56",
+            "c126",
+            "c92",
+            "c146"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c5",
+            "c107",
+            "c23",
+            "c111"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c76",
+            "c102",
+            "c95",
+            "c124"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c140",
+            "c48",
+            "c37",
+            "c40"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c78",
+            "c30",
+            "c53",
+            "c59"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "mixed",
+      "seed": 3,
+      "start": 1,
+      "team": "blue",
+      "heroIds": [
+        "berserker",
+        "berserker",
+        "guardianAngel",
+        "guardianAngel",
+        "priest",
+        "priest"
+      ],
+      "winner": "blue",
+      "outcome": "win",
+      "turns": 73,
+      "elapsedMs": 38.58731799999987,
+      "metrics": {
+        "candidate": {
+          "attacks": 27,
+          "hits": 13,
+          "damage": 38,
+          "attackDamage": 38,
+          "spellDamage": 0,
+          "moraleLost": 9,
+          "gems": 11,
+          "crystals": 8,
+          "cups": 3,
+          "actions": 36
+        },
+        "opponent": {
+          "attacks": 26,
+          "hits": 10,
+          "damage": 25,
+          "attackDamage": 25,
+          "spellDamage": 0,
+          "moraleLost": 16,
+          "gems": 7,
+          "crystals": 7,
+          "cups": 3,
+          "actions": 36
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "berserker",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c83",
+            "c130",
+            "c115"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "berserker",
+          "team": "blue",
+          "cards": [
+            "c56",
+            "c126",
+            "c92",
+            "c146"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c5",
+            "c107",
+            "c23",
+            "c111"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c76",
+            "c102",
+            "c95",
+            "c124"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c140",
+            "c48",
+            "c37",
+            "c40"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c78",
+            "c30",
+            "c53",
+            "c59"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "tempo",
+      "seed": 1,
+      "start": 0,
+      "team": "red",
+      "heroIds": [
+        "sealer",
+        "sealer",
+        "guardianAngel",
+        "guardianAngel",
+        "windSwordmaster",
+        "windSwordmaster"
+      ],
+      "winner": "blue",
+      "outcome": "loss",
+      "turns": 62,
+      "elapsedMs": 43.92346399999997,
+      "metrics": {
+        "candidate": {
+          "attacks": 26,
+          "hits": 12,
+          "damage": 31,
+          "attackDamage": 22,
+          "spellDamage": 9,
+          "moraleLost": 10,
+          "gems": 12,
+          "crystals": 6,
+          "cups": 3,
+          "actions": 37
+        },
+        "opponent": {
+          "attacks": 31,
+          "hits": 15,
+          "damage": 31,
+          "attackDamage": 28,
+          "spellDamage": 3,
+          "moraleLost": 10,
+          "gems": 12,
+          "crystals": 7,
+          "cups": 5,
+          "actions": 39
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c56",
+            "c75",
+            "c104"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c8",
+            "c54",
+            "c112",
+            "c80"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c3",
+            "c91",
+            "c150",
+            "c59"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c82",
+            "c115",
+            "c32",
+            "c133"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c116",
+            "c44",
+            "c141",
+            "c70"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c29",
+            "c14",
+            "c10",
+            "c41"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "tempo",
+      "seed": 1,
+      "start": 0,
+      "team": "blue",
+      "heroIds": [
+        "sealer",
+        "sealer",
+        "guardianAngel",
+        "guardianAngel",
+        "windSwordmaster",
+        "windSwordmaster"
+      ],
+      "winner": "blue",
+      "outcome": "win",
+      "turns": 75,
+      "elapsedMs": 44.01832700000023,
+      "metrics": {
+        "candidate": {
+          "attacks": 31,
+          "hits": 17,
+          "damage": 35,
+          "attackDamage": 33,
+          "spellDamage": 2,
+          "moraleLost": 1,
+          "gems": 19,
+          "crystals": 4,
+          "cups": 5,
+          "actions": 43
+        },
+        "opponent": {
+          "attacks": 30,
+          "hits": 13,
+          "damage": 25,
+          "attackDamage": 23,
+          "spellDamage": 2,
+          "moraleLost": 10,
+          "gems": 11,
+          "crystals": 5,
+          "cups": 1,
+          "actions": 46
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c56",
+            "c75",
+            "c104"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c8",
+            "c54",
+            "c112",
+            "c80"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c3",
+            "c91",
+            "c150",
+            "c59"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c82",
+            "c115",
+            "c32",
+            "c133"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c116",
+            "c44",
+            "c141",
+            "c70"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c29",
+            "c14",
+            "c10",
+            "c41"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "tempo",
+      "seed": 1,
+      "start": 1,
+      "team": "red",
+      "heroIds": [
+        "sealer",
+        "sealer",
+        "guardianAngel",
+        "guardianAngel",
+        "windSwordmaster",
+        "windSwordmaster"
+      ],
+      "winner": "blue",
+      "outcome": "loss",
+      "turns": 68,
+      "elapsedMs": 54.393305000000055,
+      "metrics": {
+        "candidate": {
+          "attacks": 34,
+          "hits": 15,
+          "damage": 34,
+          "attackDamage": 30,
+          "spellDamage": 4,
+          "moraleLost": 9,
+          "gems": 12,
+          "crystals": 9,
+          "cups": 3,
+          "actions": 43
+        },
+        "opponent": {
+          "attacks": 36,
+          "hits": 16,
+          "damage": 34,
+          "attackDamage": 31,
+          "spellDamage": 3,
+          "moraleLost": 8,
+          "gems": 15,
+          "crystals": 4,
+          "cups": 5,
+          "actions": 46
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c56",
+            "c75",
+            "c104"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c8",
+            "c54",
+            "c112",
+            "c80"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c3",
+            "c91",
+            "c150",
+            "c59"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c82",
+            "c115",
+            "c32",
+            "c133"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c116",
+            "c44",
+            "c141",
+            "c70"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c29",
+            "c14",
+            "c10",
+            "c41"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "tempo",
+      "seed": 1,
+      "start": 1,
+      "team": "blue",
+      "heroIds": [
+        "sealer",
+        "sealer",
+        "guardianAngel",
+        "guardianAngel",
+        "windSwordmaster",
+        "windSwordmaster"
+      ],
+      "winner": "blue",
+      "outcome": "win",
+      "turns": 74,
+      "elapsedMs": 49.166335999999774,
+      "metrics": {
+        "candidate": {
+          "attacks": 34,
+          "hits": 20,
+          "damage": 39,
+          "attackDamage": 39,
+          "spellDamage": 0,
+          "moraleLost": 7,
+          "gems": 20,
+          "crystals": 5,
+          "cups": 5,
+          "actions": 51
+        },
+        "opponent": {
+          "attacks": 32,
+          "hits": 15,
+          "damage": 28,
+          "attackDamage": 26,
+          "spellDamage": 2,
+          "moraleLost": 8,
+          "gems": 10,
+          "crystals": 7,
+          "cups": 3,
+          "actions": 44
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c56",
+            "c75",
+            "c104"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c8",
+            "c54",
+            "c112",
+            "c80"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c3",
+            "c91",
+            "c150",
+            "c59"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c82",
+            "c115",
+            "c32",
+            "c133"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c116",
+            "c44",
+            "c141",
+            "c70"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c29",
+            "c14",
+            "c10",
+            "c41"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "tempo",
+      "seed": 2,
+      "start": 0,
+      "team": "red",
+      "heroIds": [
+        "guardianAngel",
+        "guardianAngel",
+        "windSwordmaster",
+        "windSwordmaster",
+        "sealer",
+        "sealer"
+      ],
+      "winner": "blue",
+      "outcome": "loss",
+      "turns": 48,
+      "elapsedMs": 34.22305499999993,
+      "metrics": {
+        "candidate": {
+          "attacks": 25,
+          "hits": 14,
+          "damage": 31,
+          "attackDamage": 28,
+          "spellDamage": 3,
+          "moraleLost": 15,
+          "gems": 13,
+          "crystals": 3,
+          "cups": 3,
+          "actions": 32
+        },
+        "opponent": {
+          "attacks": 21,
+          "hits": 10,
+          "damage": 27,
+          "attackDamage": 19,
+          "spellDamage": 8,
+          "moraleLost": 11,
+          "gems": 9,
+          "crystals": 1,
+          "cups": 2,
+          "actions": 31
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c69",
+            "c28",
+            "c110"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c105",
+            "c17",
+            "c30",
+            "c68"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c75",
+            "c99",
+            "c141",
+            "c15"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c79",
+            "c109",
+            "c64",
+            "c61"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c2",
+            "c46",
+            "c130",
+            "c55"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c118",
+            "c87",
+            "c95",
+            "c50"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "tempo",
+      "seed": 2,
+      "start": 0,
+      "team": "blue",
+      "heroIds": [
+        "guardianAngel",
+        "guardianAngel",
+        "windSwordmaster",
+        "windSwordmaster",
+        "sealer",
+        "sealer"
+      ],
+      "winner": "red",
+      "outcome": "loss",
+      "turns": 77,
+      "elapsedMs": 42.81772900000033,
+      "metrics": {
+        "candidate": {
+          "attacks": 29,
+          "hits": 15,
+          "damage": 29,
+          "attackDamage": 28,
+          "spellDamage": 1,
+          "moraleLost": 8,
+          "gems": 15,
+          "crystals": 8,
+          "cups": 3,
+          "actions": 45
+        },
+        "opponent": {
+          "attacks": 35,
+          "hits": 16,
+          "damage": 30,
+          "attackDamage": 28,
+          "spellDamage": 2,
+          "moraleLost": 4,
+          "gems": 15,
+          "crystals": 7,
+          "cups": 5,
+          "actions": 51
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c69",
+            "c28",
+            "c110"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c105",
+            "c17",
+            "c30",
+            "c68"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c75",
+            "c99",
+            "c141",
+            "c15"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c79",
+            "c109",
+            "c64",
+            "c61"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c2",
+            "c46",
+            "c130",
+            "c55"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c118",
+            "c87",
+            "c95",
+            "c50"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "tempo",
+      "seed": 2,
+      "start": 1,
+      "team": "red",
+      "heroIds": [
+        "guardianAngel",
+        "guardianAngel",
+        "windSwordmaster",
+        "windSwordmaster",
+        "sealer",
+        "sealer"
+      ],
+      "winner": "blue",
+      "outcome": "loss",
+      "turns": 92,
+      "elapsedMs": 61.85125900000003,
+      "metrics": {
+        "candidate": {
+          "attacks": 36,
+          "hits": 17,
+          "damage": 37,
+          "attackDamage": 32,
+          "spellDamage": 5,
+          "moraleLost": 15,
+          "gems": 16,
+          "crystals": 5,
+          "cups": 3,
+          "actions": 57
+        },
+        "opponent": {
+          "attacks": 42,
+          "hits": 25,
+          "damage": 50,
+          "attackDamage": 46,
+          "spellDamage": 4,
+          "moraleLost": 8,
+          "gems": 17,
+          "crystals": 12,
+          "cups": 4,
+          "actions": 54
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c69",
+            "c28",
+            "c110"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c105",
+            "c17",
+            "c30",
+            "c68"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c75",
+            "c99",
+            "c141",
+            "c15"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c79",
+            "c109",
+            "c64",
+            "c61"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c2",
+            "c46",
+            "c130",
+            "c55"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c118",
+            "c87",
+            "c95",
+            "c50"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "tempo",
+      "seed": 2,
+      "start": 1,
+      "team": "blue",
+      "heroIds": [
+        "guardianAngel",
+        "guardianAngel",
+        "windSwordmaster",
+        "windSwordmaster",
+        "sealer",
+        "sealer"
+      ],
+      "winner": "red",
+      "outcome": "loss",
+      "turns": 57,
+      "elapsedMs": 39.617027000000235,
+      "metrics": {
+        "candidate": {
+          "attacks": 28,
+          "hits": 13,
+          "damage": 29,
+          "attackDamage": 26,
+          "spellDamage": 3,
+          "moraleLost": 15,
+          "gems": 10,
+          "crystals": 7,
+          "cups": 2,
+          "actions": 35
+        },
+        "opponent": {
+          "attacks": 35,
+          "hits": 19,
+          "damage": 38,
+          "attackDamage": 34,
+          "spellDamage": 4,
+          "moraleLost": 3,
+          "gems": 14,
+          "crystals": 5,
+          "cups": 3,
+          "actions": 39
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c69",
+            "c28",
+            "c110"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c105",
+            "c17",
+            "c30",
+            "c68"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c75",
+            "c99",
+            "c141",
+            "c15"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c79",
+            "c109",
+            "c64",
+            "c61"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c2",
+            "c46",
+            "c130",
+            "c55"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c118",
+            "c87",
+            "c95",
+            "c50"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "tempo",
+      "seed": 3,
+      "start": 0,
+      "team": "red",
+      "heroIds": [
+        "windSwordmaster",
+        "windSwordmaster",
+        "sealer",
+        "sealer",
+        "guardianAngel",
+        "guardianAngel"
+      ],
+      "winner": "red",
+      "outcome": "win",
+      "turns": 77,
+      "elapsedMs": 39.97315200000003,
+      "metrics": {
+        "candidate": {
+          "attacks": 36,
+          "hits": 18,
+          "damage": 38,
+          "attackDamage": 34,
+          "spellDamage": 4,
+          "moraleLost": 4,
+          "gems": 15,
+          "crystals": 10,
+          "cups": 5,
+          "actions": 49
+        },
+        "opponent": {
+          "attacks": 37,
+          "hits": 13,
+          "damage": 28,
+          "attackDamage": 24,
+          "spellDamage": 4,
+          "moraleLost": 7,
+          "gems": 7,
+          "crystals": 8,
+          "cups": 2,
+          "actions": 42
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c83",
+            "c130",
+            "c115"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c56",
+            "c126",
+            "c92",
+            "c146"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c5",
+            "c107",
+            "c23",
+            "c111"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c76",
+            "c102",
+            "c95",
+            "c124"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c140",
+            "c48",
+            "c37",
+            "c40"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c78",
+            "c30",
+            "c53",
+            "c59"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "tempo",
+      "seed": 3,
+      "start": 0,
+      "team": "blue",
+      "heroIds": [
+        "windSwordmaster",
+        "windSwordmaster",
+        "sealer",
+        "sealer",
+        "guardianAngel",
+        "guardianAngel"
+      ],
+      "winner": "blue",
+      "outcome": "win",
+      "turns": 87,
+      "elapsedMs": 67.88582999999971,
+      "metrics": {
+        "candidate": {
+          "attacks": 41,
+          "hits": 23,
+          "damage": 55,
+          "attackDamage": 44,
+          "spellDamage": 11,
+          "moraleLost": 8,
+          "gems": 20,
+          "crystals": 9,
+          "cups": 5,
+          "actions": 58
+        },
+        "opponent": {
+          "attacks": 42,
+          "hits": 21,
+          "damage": 41,
+          "attackDamage": 34,
+          "spellDamage": 7,
+          "moraleLost": 12,
+          "gems": 12,
+          "crystals": 10,
+          "cups": 4,
+          "actions": 57
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c83",
+            "c130",
+            "c115"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c56",
+            "c126",
+            "c92",
+            "c146"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c5",
+            "c107",
+            "c23",
+            "c111"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c76",
+            "c102",
+            "c95",
+            "c124"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c140",
+            "c48",
+            "c37",
+            "c40"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c78",
+            "c30",
+            "c53",
+            "c59"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "tempo",
+      "seed": 3,
+      "start": 1,
+      "team": "red",
+      "heroIds": [
+        "windSwordmaster",
+        "windSwordmaster",
+        "sealer",
+        "sealer",
+        "guardianAngel",
+        "guardianAngel"
+      ],
+      "winner": "red",
+      "outcome": "win",
+      "turns": 78,
+      "elapsedMs": 46.05931099999998,
+      "metrics": {
+        "candidate": {
+          "attacks": 37,
+          "hits": 18,
+          "damage": 34,
+          "attackDamage": 33,
+          "spellDamage": 1,
+          "moraleLost": 7,
+          "gems": 16,
+          "crystals": 8,
+          "cups": 5,
+          "actions": 51
+        },
+        "opponent": {
+          "attacks": 29,
+          "hits": 12,
+          "damage": 36,
+          "attackDamage": 23,
+          "spellDamage": 13,
+          "moraleLost": 7,
+          "gems": 10,
+          "crystals": 8,
+          "cups": 3,
+          "actions": 48
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c83",
+            "c130",
+            "c115"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c56",
+            "c126",
+            "c92",
+            "c146"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c5",
+            "c107",
+            "c23",
+            "c111"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c76",
+            "c102",
+            "c95",
+            "c124"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c140",
+            "c48",
+            "c37",
+            "c40"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c78",
+            "c30",
+            "c53",
+            "c59"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "tempo",
+      "seed": 3,
+      "start": 1,
+      "team": "blue",
+      "heroIds": [
+        "windSwordmaster",
+        "windSwordmaster",
+        "sealer",
+        "sealer",
+        "guardianAngel",
+        "guardianAngel"
+      ],
+      "winner": "red",
+      "outcome": "loss",
+      "turns": 81,
+      "elapsedMs": 64.88262600000007,
+      "metrics": {
+        "candidate": {
+          "attacks": 45,
+          "hits": 23,
+          "damage": 48,
+          "attackDamage": 42,
+          "spellDamage": 6,
+          "moraleLost": 12,
+          "gems": 19,
+          "crystals": 8,
+          "cups": 4,
+          "actions": 53
+        },
+        "opponent": {
+          "attacks": 48,
+          "hits": 26,
+          "damage": 50,
+          "attackDamage": 47,
+          "spellDamage": 3,
+          "moraleLost": 8,
+          "gems": 14,
+          "crystals": 12,
+          "cups": 5,
+          "actions": 57
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c83",
+            "c130",
+            "c115"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c56",
+            "c126",
+            "c92",
+            "c146"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "sealer",
+          "team": "blue",
+          "cards": [
+            "c5",
+            "c107",
+            "c23",
+            "c111"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "sealer",
+          "team": "red",
+          "cards": [
+            "c76",
+            "c102",
+            "c95",
+            "c124"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "guardianAngel",
+          "team": "red",
+          "cards": [
+            "c140",
+            "c48",
+            "c37",
+            "c40"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "guardianAngel",
+          "team": "blue",
+          "cards": [
+            "c78",
+            "c30",
+            "c53",
+            "c59"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "pressure",
+      "seed": 1,
+      "start": 0,
+      "team": "red",
+      "heroIds": [
+        "marksman",
+        "marksman",
+        "priest",
+        "priest",
+        "windSwordmaster",
+        "windSwordmaster"
+      ],
+      "winner": "red",
+      "outcome": "win",
+      "turns": 58,
+      "elapsedMs": 42.9007730000003,
+      "metrics": {
+        "candidate": {
+          "attacks": 25,
+          "hits": 15,
+          "damage": 30,
+          "attackDamage": 27,
+          "spellDamage": 3,
+          "moraleLost": 10,
+          "gems": 9,
+          "crystals": 7,
+          "cups": 4,
+          "actions": 30
+        },
+        "opponent": {
+          "attacks": 27,
+          "hits": 14,
+          "damage": 24,
+          "attackDamage": 22,
+          "spellDamage": 2,
+          "moraleLost": 15,
+          "gems": 11,
+          "crystals": 5,
+          "cups": 4,
+          "actions": 32
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c56",
+            "c75",
+            "c104"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c8",
+            "c54",
+            "c112",
+            "c80"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c3",
+            "c91",
+            "c150",
+            "c59"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c82",
+            "c115",
+            "c32",
+            "c133"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c116",
+            "c44",
+            "c141",
+            "c70"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c29",
+            "c14",
+            "c10",
+            "c41"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "pressure",
+      "seed": 1,
+      "start": 0,
+      "team": "blue",
+      "heroIds": [
+        "marksman",
+        "marksman",
+        "priest",
+        "priest",
+        "windSwordmaster",
+        "windSwordmaster"
+      ],
+      "winner": "blue",
+      "outcome": "win",
+      "turns": 50,
+      "elapsedMs": 26.1604769999999,
+      "metrics": {
+        "candidate": {
+          "attacks": 22,
+          "hits": 15,
+          "damage": 23,
+          "attackDamage": 23,
+          "spellDamage": 0,
+          "moraleLost": 5,
+          "gems": 12,
+          "crystals": 8,
+          "cups": 5,
+          "actions": 29
+        },
+        "opponent": {
+          "attacks": 18,
+          "hits": 6,
+          "damage": 13,
+          "attackDamage": 11,
+          "spellDamage": 2,
+          "moraleLost": 6,
+          "gems": 5,
+          "crystals": 3,
+          "cups": 1,
+          "actions": 24
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c56",
+            "c75",
+            "c104"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c8",
+            "c54",
+            "c112",
+            "c80"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c3",
+            "c91",
+            "c150",
+            "c59"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c82",
+            "c115",
+            "c32",
+            "c133"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c116",
+            "c44",
+            "c141",
+            "c70"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c29",
+            "c14",
+            "c10",
+            "c41"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "pressure",
+      "seed": 1,
+      "start": 1,
+      "team": "red",
+      "heroIds": [
+        "marksman",
+        "marksman",
+        "priest",
+        "priest",
+        "windSwordmaster",
+        "windSwordmaster"
+      ],
+      "winner": "red",
+      "outcome": "win",
+      "turns": 58,
+      "elapsedMs": 41.49658200000022,
+      "metrics": {
+        "candidate": {
+          "attacks": 31,
+          "hits": 17,
+          "damage": 33,
+          "attackDamage": 32,
+          "spellDamage": 1,
+          "moraleLost": 13,
+          "gems": 13,
+          "crystals": 6,
+          "cups": 5,
+          "actions": 31
+        },
+        "opponent": {
+          "attacks": 35,
+          "hits": 15,
+          "damage": 33,
+          "attackDamage": 29,
+          "spellDamage": 4,
+          "moraleLost": 13,
+          "gems": 11,
+          "crystals": 6,
+          "cups": 4,
+          "actions": 34
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c56",
+            "c75",
+            "c104"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c8",
+            "c54",
+            "c112",
+            "c80"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c3",
+            "c91",
+            "c150",
+            "c59"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c82",
+            "c115",
+            "c32",
+            "c133"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c116",
+            "c44",
+            "c141",
+            "c70"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c29",
+            "c14",
+            "c10",
+            "c41"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "pressure",
+      "seed": 1,
+      "start": 1,
+      "team": "blue",
+      "heroIds": [
+        "marksman",
+        "marksman",
+        "priest",
+        "priest",
+        "windSwordmaster",
+        "windSwordmaster"
+      ],
+      "winner": "blue",
+      "outcome": "win",
+      "turns": 40,
+      "elapsedMs": 31.4962730000002,
+      "metrics": {
+        "candidate": {
+          "attacks": 23,
+          "hits": 17,
+          "damage": 27,
+          "attackDamage": 27,
+          "spellDamage": 0,
+          "moraleLost": 8,
+          "gems": 11,
+          "crystals": 6,
+          "cups": 3,
+          "actions": 24
+        },
+        "opponent": {
+          "attacks": 19,
+          "hits": 9,
+          "damage": 15,
+          "attackDamage": 15,
+          "spellDamage": 0,
+          "moraleLost": 15,
+          "gems": 7,
+          "crystals": 2,
+          "cups": 3,
+          "actions": 20
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c56",
+            "c75",
+            "c104"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c8",
+            "c54",
+            "c112",
+            "c80"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c3",
+            "c91",
+            "c150",
+            "c59"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c82",
+            "c115",
+            "c32",
+            "c133"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c116",
+            "c44",
+            "c141",
+            "c70"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c29",
+            "c14",
+            "c10",
+            "c41"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "pressure",
+      "seed": 2,
+      "start": 0,
+      "team": "red",
+      "heroIds": [
+        "priest",
+        "priest",
+        "windSwordmaster",
+        "windSwordmaster",
+        "marksman",
+        "marksman"
+      ],
+      "winner": "red",
+      "outcome": "win",
+      "turns": 41,
+      "elapsedMs": 32.371223999999984,
+      "metrics": {
+        "candidate": {
+          "attacks": 26,
+          "hits": 13,
+          "damage": 25,
+          "attackDamage": 24,
+          "spellDamage": 1,
+          "moraleLost": 5,
+          "gems": 7,
+          "crystals": 8,
+          "cups": 5,
+          "actions": 24
+        },
+        "opponent": {
+          "attacks": 26,
+          "hits": 11,
+          "damage": 19,
+          "attackDamage": 19,
+          "spellDamage": 0,
+          "moraleLost": 9,
+          "gems": 7,
+          "crystals": 6,
+          "cups": 2,
+          "actions": 24
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c69",
+            "c28",
+            "c110"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c105",
+            "c17",
+            "c30",
+            "c68"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c75",
+            "c99",
+            "c141",
+            "c15"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c79",
+            "c109",
+            "c64",
+            "c61"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c2",
+            "c46",
+            "c130",
+            "c55"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c118",
+            "c87",
+            "c95",
+            "c50"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "pressure",
+      "seed": 2,
+      "start": 0,
+      "team": "blue",
+      "heroIds": [
+        "priest",
+        "priest",
+        "windSwordmaster",
+        "windSwordmaster",
+        "marksman",
+        "marksman"
+      ],
+      "winner": "red",
+      "outcome": "loss",
+      "turns": 47,
+      "elapsedMs": 61.918529000000035,
+      "metrics": {
+        "candidate": {
+          "attacks": 25,
+          "hits": 14,
+          "damage": 24,
+          "attackDamage": 24,
+          "spellDamage": 0,
+          "moraleLost": 15,
+          "gems": 13,
+          "crystals": 6,
+          "cups": 3,
+          "actions": 28
+        },
+        "opponent": {
+          "attacks": 27,
+          "hits": 16,
+          "damage": 25,
+          "attackDamage": 25,
+          "spellDamage": 0,
+          "moraleLost": 4,
+          "gems": 13,
+          "crystals": 3,
+          "cups": 3,
+          "actions": 29
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c69",
+            "c28",
+            "c110"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c105",
+            "c17",
+            "c30",
+            "c68"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c75",
+            "c99",
+            "c141",
+            "c15"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c79",
+            "c109",
+            "c64",
+            "c61"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c2",
+            "c46",
+            "c130",
+            "c55"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c118",
+            "c87",
+            "c95",
+            "c50"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "pressure",
+      "seed": 2,
+      "start": 1,
+      "team": "red",
+      "heroIds": [
+        "priest",
+        "priest",
+        "windSwordmaster",
+        "windSwordmaster",
+        "marksman",
+        "marksman"
+      ],
+      "winner": "blue",
+      "outcome": "loss",
+      "turns": 44,
+      "elapsedMs": 33.433763,
+      "metrics": {
+        "candidate": {
+          "attacks": 24,
+          "hits": 14,
+          "damage": 22,
+          "attackDamage": 22,
+          "spellDamage": 0,
+          "moraleLost": 15,
+          "gems": 13,
+          "crystals": 4,
+          "cups": 4,
+          "actions": 26
+        },
+        "opponent": {
+          "attacks": 20,
+          "hits": 12,
+          "damage": 22,
+          "attackDamage": 20,
+          "spellDamage": 2,
+          "moraleLost": 11,
+          "gems": 9,
+          "crystals": 5,
+          "cups": 4,
+          "actions": 24
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c69",
+            "c28",
+            "c110"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c105",
+            "c17",
+            "c30",
+            "c68"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c75",
+            "c99",
+            "c141",
+            "c15"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c79",
+            "c109",
+            "c64",
+            "c61"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c2",
+            "c46",
+            "c130",
+            "c55"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c118",
+            "c87",
+            "c95",
+            "c50"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "pressure",
+      "seed": 2,
+      "start": 1,
+      "team": "blue",
+      "heroIds": [
+        "priest",
+        "priest",
+        "windSwordmaster",
+        "windSwordmaster",
+        "marksman",
+        "marksman"
+      ],
+      "winner": "red",
+      "outcome": "loss",
+      "turns": 81,
+      "elapsedMs": 50.458244999999806,
+      "metrics": {
+        "candidate": {
+          "attacks": 30,
+          "hits": 15,
+          "damage": 27,
+          "attackDamage": 25,
+          "spellDamage": 2,
+          "moraleLost": 14,
+          "gems": 12,
+          "crystals": 8,
+          "cups": 3,
+          "actions": 43
+        },
+        "opponent": {
+          "attacks": 39,
+          "hits": 21,
+          "damage": 38,
+          "attackDamage": 34,
+          "spellDamage": 4,
+          "moraleLost": 6,
+          "gems": 16,
+          "crystals": 9,
+          "cups": 5,
+          "actions": 47
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c69",
+            "c28",
+            "c110"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c105",
+            "c17",
+            "c30",
+            "c68"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c75",
+            "c99",
+            "c141",
+            "c15"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c79",
+            "c109",
+            "c64",
+            "c61"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c2",
+            "c46",
+            "c130",
+            "c55"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c118",
+            "c87",
+            "c95",
+            "c50"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "pressure",
+      "seed": 3,
+      "start": 0,
+      "team": "red",
+      "heroIds": [
+        "windSwordmaster",
+        "windSwordmaster",
+        "marksman",
+        "marksman",
+        "priest",
+        "priest"
+      ],
+      "winner": "red",
+      "outcome": "win",
+      "turns": 85,
+      "elapsedMs": 64.49700900000016,
+      "metrics": {
+        "candidate": {
+          "attacks": 35,
+          "hits": 19,
+          "damage": 37,
+          "attackDamage": 35,
+          "spellDamage": 2,
+          "moraleLost": 5,
+          "gems": 15,
+          "crystals": 10,
+          "cups": 5,
+          "actions": 44
+        },
+        "opponent": {
+          "attacks": 37,
+          "hits": 15,
+          "damage": 29,
+          "attackDamage": 28,
+          "spellDamage": 1,
+          "moraleLost": 6,
+          "gems": 10,
+          "crystals": 7,
+          "cups": 3,
+          "actions": 48
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c83",
+            "c130",
+            "c115"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c56",
+            "c126",
+            "c92",
+            "c146"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c5",
+            "c107",
+            "c23",
+            "c111"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c76",
+            "c102",
+            "c95",
+            "c124"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c140",
+            "c48",
+            "c37",
+            "c40"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c78",
+            "c30",
+            "c53",
+            "c59"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "pressure",
+      "seed": 3,
+      "start": 0,
+      "team": "blue",
+      "heroIds": [
+        "windSwordmaster",
+        "windSwordmaster",
+        "marksman",
+        "marksman",
+        "priest",
+        "priest"
+      ],
+      "winner": "blue",
+      "outcome": "win",
+      "turns": 42,
+      "elapsedMs": 21.809434999999667,
+      "metrics": {
+        "candidate": {
+          "attacks": 20,
+          "hits": 13,
+          "damage": 26,
+          "attackDamage": 24,
+          "spellDamage": 2,
+          "moraleLost": 0,
+          "gems": 10,
+          "crystals": 5,
+          "cups": 5,
+          "actions": 24
+        },
+        "opponent": {
+          "attacks": 13,
+          "hits": 3,
+          "damage": 10,
+          "attackDamage": 6,
+          "spellDamage": 4,
+          "moraleLost": 15,
+          "gems": 3,
+          "crystals": 2,
+          "cups": 0,
+          "actions": 20
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c83",
+            "c130",
+            "c115"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c56",
+            "c126",
+            "c92",
+            "c146"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c5",
+            "c107",
+            "c23",
+            "c111"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c76",
+            "c102",
+            "c95",
+            "c124"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c140",
+            "c48",
+            "c37",
+            "c40"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c78",
+            "c30",
+            "c53",
+            "c59"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "pressure",
+      "seed": 3,
+      "start": 1,
+      "team": "red",
+      "heroIds": [
+        "windSwordmaster",
+        "windSwordmaster",
+        "marksman",
+        "marksman",
+        "priest",
+        "priest"
+      ],
+      "winner": "red",
+      "outcome": "win",
+      "turns": 52,
+      "elapsedMs": 29.697811,
+      "metrics": {
+        "candidate": {
+          "attacks": 26,
+          "hits": 18,
+          "damage": 37,
+          "attackDamage": 32,
+          "spellDamage": 5,
+          "moraleLost": 4,
+          "gems": 13,
+          "crystals": 8,
+          "cups": 5,
+          "actions": 30
+        },
+        "opponent": {
+          "attacks": 23,
+          "hits": 9,
+          "damage": 16,
+          "attackDamage": 16,
+          "spellDamage": 0,
+          "moraleLost": 15,
+          "gems": 8,
+          "crystals": 3,
+          "cups": 1,
+          "actions": 27
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c83",
+            "c130",
+            "c115"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c56",
+            "c126",
+            "c92",
+            "c146"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c5",
+            "c107",
+            "c23",
+            "c111"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c76",
+            "c102",
+            "c95",
+            "c124"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c140",
+            "c48",
+            "c37",
+            "c40"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c78",
+            "c30",
+            "c53",
+            "c59"
+          ]
+        }
+      ]
+    },
+    {
+      "lineup": "pressure",
+      "seed": 3,
+      "start": 1,
+      "team": "blue",
+      "heroIds": [
+        "windSwordmaster",
+        "windSwordmaster",
+        "marksman",
+        "marksman",
+        "priest",
+        "priest"
+      ],
+      "winner": "red",
+      "outcome": "loss",
+      "turns": 78,
+      "elapsedMs": 39.832570999999916,
+      "metrics": {
+        "candidate": {
+          "attacks": 37,
+          "hits": 16,
+          "damage": 32,
+          "attackDamage": 32,
+          "spellDamage": 0,
+          "moraleLost": 12,
+          "gems": 13,
+          "crystals": 7,
+          "cups": 4,
+          "actions": 43
+        },
+        "opponent": {
+          "attacks": 38,
+          "hits": 19,
+          "damage": 37,
+          "attackDamage": 35,
+          "spellDamage": 2,
+          "moraleLost": 5,
+          "gems": 13,
+          "crystals": 10,
+          "cups": 5,
+          "actions": 42
+        }
+      },
+      "initial": [
+        {
+          "id": 0,
+          "hero": "windSwordmaster",
+          "team": "red",
+          "cards": [
+            "c36",
+            "c83",
+            "c130",
+            "c115"
+          ]
+        },
+        {
+          "id": 1,
+          "hero": "windSwordmaster",
+          "team": "blue",
+          "cards": [
+            "c56",
+            "c126",
+            "c92",
+            "c146"
+          ]
+        },
+        {
+          "id": 2,
+          "hero": "marksman",
+          "team": "blue",
+          "cards": [
+            "c5",
+            "c107",
+            "c23",
+            "c111"
+          ]
+        },
+        {
+          "id": 3,
+          "hero": "marksman",
+          "team": "red",
+          "cards": [
+            "c76",
+            "c102",
+            "c95",
+            "c124"
+          ]
+        },
+        {
+          "id": 4,
+          "hero": "priest",
+          "team": "red",
+          "cards": [
+            "c140",
+            "c48",
+            "c37",
+            "c40"
+          ]
+        },
+        {
+          "id": 5,
+          "hero": "priest",
+          "team": "blue",
+          "cards": [
+            "c78",
+            "c30",
+            "c53",
+            "c59"
+          ]
+        }
+      ]
+    }
+  ]
+}

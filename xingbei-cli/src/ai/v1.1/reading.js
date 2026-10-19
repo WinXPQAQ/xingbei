@@ -22,8 +22,8 @@ export function hitEstimate(game, actorId, card, targetId, { counter = false, hi
   const responseRate = Math.min(0.95, counterRate + lightRate * (1 - (gap.light ?? 0)));
   return (1 - responseRate) ** target.hand.length;
 }
-export function readingAdjustment(game, actorId, card, targetId, weight = 1) {
-  const probability = hitEstimate(game, actorId, card, targetId);
+export function readingAdjustment(game, actorId, card, targetId, weight = 1, history = true) {
+  const probability = hitEstimate(game, actorId, card, targetId, { history });
   const actor = game.player(actorId), target = game.player(targetId);
   const damage = aiHeroId(actor) === 'berserker' ? 3 + Number(actor.hand.length > 4) : 2;
   return weight * (32 + 14 * predictedMoraleLoss(target, damage)) * (probability - 0.5);
