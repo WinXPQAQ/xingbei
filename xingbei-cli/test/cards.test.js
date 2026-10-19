@@ -335,7 +335,7 @@ test("显式random爆牌策略兼容随机弃置并立即降低士气", () => {
   assert.equal(game.teams.blue.morale, 13);
 });
 
-test("无法行动要求全部手牌不可用、空余位不超过2且英雄无法通过技能行动", () => {
+test("无法行动按当前合法非提炼行动判定，不使用静态技能标记或手牌上限", () => {
   const game = new Game({ heroRules: false, shuffleDeck: false });
   for (const player of game.players) {
     attach(game, player.id, card("holyShield"));
@@ -352,12 +352,10 @@ test("无法行动要求全部手牌不可用、空余位不超过2且英雄无�
   assert.throws(() => game.refreshUnableHand(0), RuleError);
   game.discardCard(game.player(0), 4);
   game.player(0).hero.canActWithSkills = true;
-  assert.equal(game.canRefreshUnableHand(0), false);
-  assert.throws(() => game.refreshUnableHand(0), RuleError);
+  assert.equal(game.canRefreshUnableHand(0), true);
   game.player(0).hero.canActWithSkills = false;
   game.player(0).handLimit = 7;
-  assert.equal(game.canRefreshUnableHand(0), false);
-  assert.throws(() => game.refreshUnableHand(0), RuleError);
+  assert.equal(game.canRefreshUnableHand(0), true);
   game.player(0).handLimit = 6;
   assert.throws(() => game.play(0, 0, 1), RuleError);
   game.refreshUnableHand(0);

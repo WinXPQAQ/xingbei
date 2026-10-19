@@ -3,7 +3,7 @@ import {execFileSync} from 'node:child_process';
 import assert from 'node:assert/strict';
 import {playEconomyMatch} from './ai/economy-evaluate.mjs';
 import {summary} from './ai/evaluate.mjs';
-const root=new URL('../',import.meta.url),path='artifacts/ai/mandatory-action/';
+const root=new URL('../',import.meta.url),path=process.argv[3]??'artifacts/ai/mandatory-action/';
 const protocol=JSON.parse(await readFile(new URL(path+'protocol.json',root)));
 const git=(...args)=>execFileSync('git',args,{encoding:'utf8'}).trim();
 const sha=git('rev-parse','HEAD');

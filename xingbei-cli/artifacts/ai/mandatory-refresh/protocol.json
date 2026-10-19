@@ -1,0 +1,67 @@
+{
+  "ruleVersion": "mandatory-refresh-2",
+  "firstSeed": 331001,
+  "seeds": 12,
+  "turnLimit": 300,
+  "pairs": [
+    [
+      "v1.3",
+      "v1.2"
+    ],
+    [
+      "v1.3",
+      "v1.0"
+    ],
+    [
+      "v1.2",
+      "v1.0"
+    ]
+  ],
+  "starts": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "colors": [
+    "red",
+    "blue"
+  ],
+  "rosters": {
+    "mirrorAssault": [
+      "berserker",
+      "berserker",
+      "windSwordmaster",
+      "windSwordmaster",
+      "marksman",
+      "marksman"
+    ],
+    "mirrorMixed": [
+      "sealer",
+      "sealer",
+      "guardianAngel",
+      "guardianAngel",
+      "priest",
+      "priest"
+    ],
+    "asymmetric": [
+      "berserker",
+      "priest",
+      "sealer",
+      "marksman",
+      "guardianAngel",
+      "windSwordmaster"
+    ],
+    "asymmetricReverse": [
+      "priest",
+      "berserker",
+      "marksman",
+      "sealer",
+      "windSwordmaster",
+      "guardianAngel"
+    ]
+  },
+  "analysis": "All games retained, truncations separate and half-point score. Seed-cluster bootstrap descriptive only; no promotion strength gate. 576 games per pair, 1728 total. No tuning after results. Record up to five reachable all-negative v1.3 decisions with detached public observations and separate outcomes. Refresh is a repeatable procedure, never a completed action. All previous 1728 results superseded; new independent seeds. Frozen historical policies unchanged."
+}

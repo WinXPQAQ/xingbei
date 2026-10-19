@@ -59,7 +59,7 @@ for(const seed of settings.seeds) {
     const action=driver.chooseAiAction(g,id);
     if(action.type==='pass'){g.skipExtraActions(id);break;}
     await g.executeAction(id,action,options);g.assertCardLocations();
-   }while(g.turn.hasExtraActions()&&!g.winner);
+   }while(g.turn.needsAction());
   }
   await g.endTurnWithDecisions(options);g.assertCardLocations();
  }

@@ -163,6 +163,7 @@ function render() {
   $("#sort-hand").disabled = playMode === "spectate" || presenting || busy || !!targetChoice || !!pendingChoice;
   const locked = presenting || !acceptingAction || busy || !!targetChoice;
   endExtra.hidden = !game.turn.hasExtraActions(); endExtra.disabled = locked;
+  refreshHand.hidden = !game.canRefreshUnableHand(humanId); refreshHand.disabled = locked;
   elements.buy.disabled = locked || !game.canDrawSpecial(humanId);
   elements.synth.disabled = locked || !game.canDrawSpecial(humanId) || stones.total < 3;
   elements.refine.disabled = locked || !game.canRefine(humanId);
@@ -542,7 +543,7 @@ async function selectSkillAction(skillId) {
 
 async function waitForHumanAction() {
   acceptingAction = true;
-  elements.hint.textContent = game.turn.hasExtraActions() ? "额外攻击行动，或结束回合" : "[攻击行动]或者[法术行动]";
+  elements.hint.textContent = game.canRefreshUnableHand(humanId) ? "除提炼外无合法行动，可申请换全手；换后仍须行动" : game.turn.hasExtraActions() ? "额外攻击行动，或结束回合" : "[攻击行动]或者[法术行动]";
   render();
   if (keyboardMode) elements.hand.querySelector("button:enabled")?.focus();
   return session.wait(resolve => { finishAction = resolve; return () => { finishAction = null; }; });
@@ -606,6 +607,17 @@ async function turnGate(active) {
   active.assert();
 }
 
+const refreshHand = document.createElement("button"); refreshHand.id = "refresh-unable"; refreshHand.textContent = "申请无法行动换牌";
+$("#control").append(refreshHand);
+refreshHand.addEventListener("click", () => launch(async () => {
+  if (!acceptingAction || busy || !game.canRefreshUnableHand(humanId)) return;
+  const active = session;
+  busy = true; render();
+  try {
+    await game.executeAction(humanId, { type: "refresh" }, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
+    active.assert(); flushLog(); acceptingAction = false; finishAction?.();
+  } finally { if (session === active) { busy = false; render(); } }
+}));
 const endExtra = document.createElement("button"); endExtra.id = "end-extra"; endExtra.textContent = "结束回合";
 $("#control").append(endExtra);
 endExtra.addEventListener("click", () => {
@@ -633,14 +645,11 @@ async function runTurns(active) {
     do {
     if (!turn.skipped && !game.winner) {
       if (isHuman(player.id)) {
-        if (game.canRefreshUnableHand(humanId)) {
-          await choose("无法行动", [{ value: true, label: "展示并重摸" }], { detail: "所有手牌当前不可使用、空余手牌位不超过2，且无法通过英雄技能行动。你将弃置并重摸全部手牌。" });
-          await game.executeAction(humanId, { type: "refresh" }, { resolveOverflow: resolveHumanOverflow }); flushLog();
-        } else await waitForHumanAction();
+        await waitForHumanAction();
       } else { await delay(isDev ? 0 : 150); await executeAi(player.id, isDev && ["attack", "attack-switch", "attack-empty", "shield-hit", "magic", "magic-empty", "magic-linked"].includes(sceneId) && events.length === 1 ? { type: "play", index: 0, targetId: humanId } : null); active.assert(); flushLog(); }
     }
     if (!isHuman(player.id) && game.turn.hasExtraActions() && !game.legalCards(player.id).length) game.skipExtraActions(player.id);
-    } while (game.turn.hasExtraActions() && !game.winner);
+    } while (game.turn.needsAction());
     active.assert();
     events.push({ type: "turn-end", current: player.id });
     appendLog(`━━━━━━━━ ${player.name}回合结束 ━━━━━━━━`, true);

@@ -9,6 +9,10 @@ export function legalPolicy(policy) {
   const adapted = { ...policy,
     rankAiActions(game, id) {
       const legal = legalActions(game,id), keys = new Set(legal.map(key));
+      // Frozen refresh evaluators treated exchange as a completed action. Never
+      // execute that obsolete model: exchange now, then ask the policy again.
+      if (legal.some(a => a.type === 'refresh')) return legal.map(action => ({ action, score: 0,
+        reason: 'unscored-inability-procedure', explanation: { completesAction: action.type !== 'refresh' } }));
       const ranked = policy.rankAiActions(game,id).filter(e => keys.has(key(e.action)));
       return ranked.length ? ranked : legal.map(action => ({action,score:-Infinity,reason:'required-legal-action'}));
     },

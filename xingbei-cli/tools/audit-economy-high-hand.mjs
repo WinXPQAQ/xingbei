@@ -43,7 +43,7 @@ for(const config of configs){
     const nextEventStart=events.length-1;if(count===1)for(const prior of arriving)prior.nextTurnFirstAction=normalize(action);
     if(action.type==='pass'){game.skipExtraActions(id);if(sample)sample.afterAction=snapshot(id);if(count===1)for(const prior of arriving){prior.afterNextTurnFirstAction=snapshot(id);prior.nextTurnFirstActionEvents=events.slice(nextEventStart);}break;}
     await game.executeAction(id,action,options);game.assertCardLocations();if(sample)sample.afterAction=snapshot(id);if(count===1)for(const prior of arriving){prior.afterNextTurnFirstAction=snapshot(id);prior.nextTurnFirstActionEvents=events.slice(nextEventStart);}
-   }while(game.turn.hasExtraActions()&&!game.winner);
+   }while(game.turn.needsAction());
   }
   await game.endTurnWithDecisions(options);game.assertCardLocations();
  }

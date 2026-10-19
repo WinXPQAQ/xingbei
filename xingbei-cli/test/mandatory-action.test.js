@@ -44,10 +44,12 @@ test('negative ranked actions beat illegal pass; omitted legal choices remain ex
  assert.equal(legalPolicy({rankAiActions:()=>[{action:{type:'pass'},score:0}]}).chooseAiAction(g,0).type,'purchase');
  assert.deepEqual(legalActions(g,1),[]);
 });
-test('unusable high hand refresh and low hand purchase are real mandatory actions',async()=>{
+test('unusable high hand refresh preserves mandatory action; low hand purchase completes it',async()=>{
  for(const count of [0,3,4,6]){
   const g=make();for(let i=0;i<count;i++)g.moveCard(g.deck.find(c=>c.name==='holyLight').id,{zone:'hand',playerId:0});
   g.startTurn(0);const a=getPolicy('v1.3').chooseAiAction(g,0);
-  assert.equal(a.type,count>=4?'refresh':'purchase');await g.executeAction(0,a);g.endTurn();g.assertCardLocations();
+  assert.equal(a.type,count>=4?'refresh':'purchase');await g.executeAction(0,a);
+  if(count>=4){assert.equal(g.turn.state.completed,false);assert.throws(()=>g.endTurn(),/必须完成/);}
+  else g.endTurn();g.assertCardLocations();
  }
 });

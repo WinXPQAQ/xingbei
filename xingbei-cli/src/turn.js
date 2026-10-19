@@ -29,6 +29,9 @@ export class TurnFlow {
     return [...state.pendingActions].reverse().find(action => action.element) ?? state.pendingActions[0] ?? null;
   }
   hasExtraActions() { return !!this.nextAction(); }
+  needsAction() {
+    return !!this.state && !this.game.winner && !this.state.skipped && (!this.state.completed || this.hasExtraActions());
+  }
   addAttackAction({ element = null, sourceSkillId = null } = {}) {
     if (!this.state) return;
     this.state.pendingActions.push({ type: "attack", element, sourceSkillId });

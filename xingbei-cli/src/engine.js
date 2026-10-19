@@ -366,10 +366,12 @@ export class Game {
   }
 
   canRefreshUnableHand(actorId) {
-    if (this.turn.state && (this.turn.state.playerId !== actorId || !this.turn.canUse("special"))) return false;
-    const player = this.player(actorId);
-    return player.handLimit - player.hand.length <= 2 &&
-      this.unusableCards(actorId).length === player.hand.length && !player.hero.canActWithSkills && !this.legalSkillActions(actorId).length;
+    const state = this.turn.state;
+    if (this.winner || this.players.some(player => player.pendingOverflow)) return false;
+    if (state && (state.playerId !== actorId || state.skipped || state.completed || state.actionType || state.phase !== Timing.ACTION_PHASE_START)) return false;
+    // Refinement does not prevent declaring inability. Exchange is a procedure,
+    // not a special action: activation restrictions stay in force afterward.
+    return !this.legalCards(actorId).length && !this.legalSkillActions(actorId).length && !this.canDrawSpecial(actorId);
   }
 
   canDrawSpecial(actorId) {
@@ -509,18 +511,18 @@ export class Game {
     const player = this.player(actorId);
     if (!this.canRefreshUnableHand(actorId)) throw new RuleError("未满足无法行动条件");
     if (this.winner) throw new RuleError("游戏已经结束");
-    yield* this.turn.beginAction(actorId, "special");
     const count = player.hand.length;
+    if (!count) throw new RuleError("无法行动但无手牌可换，需核查当前规则状态");
     const revealed = player.hand.map(cardName).join("、");
     const cards = player.hand.map(card => card.toJSON());
     while (player.hand.length) this.discardCard(player, 0, { animate: false });
     this.recordPresentation("discard", { playerId: actorId, cards, reason: "refresh", visibility: DiscardVisibility.PUBLIC });
     this.draw(actorId, count, { moraleLoss: false });
     this.log.push(`${player.name}无法行动，展示并弃置全部手牌：${revealed}；重摸${count}张`);
+    yield* this.flushRuleEvents(options);
     yield* this.present();
     if (this.player(actorId).pendingOverflow) yield { type: "overflow", player: this.player(actorId) };
     yield* this.present();
-    yield* this.turn.endAction(options);
   }
 
   queueExposure(playerId, cards, { reason = "show", visibility = "public", covered = false } = {}) {
@@ -713,7 +715,9 @@ export class Game {
     if (this.winner) throw new RuleError("游戏已经结束");
     const actor = this.player(actorId), card = actor.hand[handIndex];
     if (!card || !this.legalTargets(actorId, card).includes(targetId)) throw new RuleError("这张牌目前不能指定该目标");
-    yield* this.turn.beginAction(actorId, card.type, card, options);
+    yield* this.turn.beginAction(actorId, card.type, card, { ...options, validateAction: () => {
+      if (!actor.hand.includes(card) || !this.legalTargets(actorId, card).includes(targetId)) throw new RuleError("启动后原出牌不再合法，请重新选择行动");
+    } });
     const resolutionCards = [];
     const result = card.resolve({ game: this, actor, targetId, options: { ...options, resolutionCards } });
     if (result?.next) yield* result;

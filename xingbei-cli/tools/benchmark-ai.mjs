@@ -38,7 +38,7 @@ for (let seed = 1; seed <= seeds; seed++) for (const team of ["red", "blue"]) {
           }
         }
         game.assertCardLocations();
-      } while (game.turn.hasExtraActions() && !game.winner);
+      } while (game.turn.needsAction());
     }
     await game.endTurnWithDecisions(options); game.assertCardLocations();
   }

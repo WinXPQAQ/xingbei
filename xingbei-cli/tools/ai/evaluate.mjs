@@ -18,7 +18,7 @@ export function schedule({ firstSeed, seeds, selected = Object.keys(lineups) }) 
   return selected.flatMap(lineup => Array.from({ length: seeds }, (_, i) => firstSeed + i).flatMap(seed =>
     [0,1].flatMap(start => ['red','blue'].map(team => ({ lineup, seed, start, team })))));
 }
-const emptyMetrics = () => ({ attacks: 0, hits: 0, damage: 0, attackDamage: 0, spellDamage: 0, moraleLost: 0, gems: 0, crystals: 0, cups: 0, actions: 0 });
+const emptyMetrics = () => ({ attacks: 0, hits: 0, damage: 0, attackDamage: 0, spellDamage: 0, moraleLost: 0, gems: 0, crystals: 0, cups: 0, actions: 0, exchanges: 0 });
 export async function playMatch(config, { candidate = 'read-1', opponent = 'v1.0', turnLimit = 500, audit = false, observations = true } = {}) {
   const { lineup, seed, start, team } = config;
   const heroIds = mirrorRoster(lineups[lineup], seed % 3);
@@ -76,13 +76,13 @@ export async function playMatch(config, { candidate = 'read-1', opponent = 'v1.0
     if (!turn.skipped && !game.winner) {
       let actions = 0;
       do {
-        if (++actions > 20) throw new Error(`Action limit: ${JSON.stringify(config)}`);
         const action = policy(id).chooseAiAction(view(id), id);
-        metrics[game.player(id).team].actions++;
+        if (action.type !== 'refresh' && ++actions > 20) throw new Error(`Action limit: ${JSON.stringify(config)}`);
+        metrics[game.player(id).team][action.type==='refresh'?'exchanges':'actions']++;
         if (action.type === 'pass') { game.skipExtraActions(id); break; }
         await game.executeAction(id, action, options);
         game.assertCardLocations();
-      } while (game.turn.hasExtraActions() && !game.winner);
+      } while (game.turn.needsAction());
     }
     await game.endTurnWithDecisions(options);
     game.assertCardLocations();

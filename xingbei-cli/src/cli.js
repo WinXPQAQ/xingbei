@@ -107,18 +107,16 @@ function turnDivider(playerName, phase) {
 
 async function humanTurn() {
   const player = game.player(humanId);
-  if (game.canRefreshUnableHand(humanId)) {
-    tui.console("无法行动：所有手牌当前不可使用、空余手牌位不超过2，且无法通过英雄技能行动，将展示并替换全部手牌。");
-    await game.executeAction(humanId, { type: "refresh" }); flushLog(); return true;
-  }
   while (true) {
     showState();
+    if (game.canRefreshUnableHand(humanId)) tui.console("当前阶段除提炼外无合法行动：refresh申请换全手（换后仍须行动），或refine提炼。");
     const line = (await tui.question("行动> ")).trim();
     const [command, indexText, targetText] = line.split(/\s+/);
     if (command === "quit") return false;
     if (command === "end" && game.turn.hasExtraActions()) { game.skipExtraActions(humanId); return true; }
     try {
-      if (command === "skill") {
+      if (command === "refresh") await game.executeAction(humanId, { type: "refresh" }, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
+      else if (command === "skill") {
         const entries = game.legalSkillActions(humanId);
         entries.forEach((entry, i) => tui.console(`${i}: ${entry.name}`));
         const selected = await askIndex(tui, "技能> ", entries.map((_, i) => i));
@@ -158,7 +156,7 @@ async function humanTurn() {
         if (card.name !== "magicBullet" && !targets.includes(target)) throw new RuleError(`合法目标：${targets.join("、")}`);
         await playCard(humanId, index, target);
       } else {
-        tui.console("play 牌号 目标号；魔弹只需play 牌号；buy购买；synth合成；refine提炼；skill英雄技能；end放弃额外行动；quit退出。Tab切换面板，PgUp/PgDn滚动。");
+        tui.console("play 牌号 目标号；魔弹只需play 牌号；buy购买；synth合成；refine提炼；skill英雄技能；refresh申请无法行动换牌；end放弃额外行动；quit退出。Tab切换面板，PgUp/PgDn滚动。");
         continue;
       }
       await resolveHumanOverflow();
@@ -227,7 +225,7 @@ while (running && !game.winner) {
     else { await aiTurn(player.id); await resolveHumanOverflow(); flushLog(); }
   }
   if (player.id !== humanId && game.turn.hasExtraActions() && !game.legalCards(player.id).length) game.skipExtraActions(player.id);
-  } while (running && game.turn.hasExtraActions() && !game.winner);
+  } while (running && game.turn.needsAction());
   if (!running) break; // Quitting the client is not completing an ordinary action.
   turnDivider(player.name, "结束");
   showState();
