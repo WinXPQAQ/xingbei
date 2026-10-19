@@ -263,17 +263,15 @@ Web 默认端口是 `4173`，可通过 `PORT` 修改；`server.js` 未指定 `HO
 
 - 用户随后明确授权推送当前独立分支`ai/v1.1-public-inference`至origin；不强推、不合并main、不创建PR、不部署。推送后核对完整SHA及CI状态。
 
-## 单人开发发布约定（2026-10-19 最新授权）
+## 发布技术检查（2026-10-19）
 
-- 用户明确要求后续已完成并验收的星杯开发默认合入并正常推送`main`，不再停留在独立开发分支等待人工代码审查。此约定取代上述历史任务的“不合并main”限制。
-- 发布前仍须检查远端并发更新、运行适用测试并核验推送后的SHA；优先快进，必要时正常合并，不强推、不丢弃独有代码。不自行创建PR。
-- 仅清理已完全纳入main的开发分支；有未合并独有提交的分支保留并报告，绝不删除main。
-- 用户自行配置服务器跟踪main的更新脚本；本授权不包含修改服务器、部署脚本或部署设置。
+- 发布前检查远端并发更新、运行适用测试，推送后核验远端SHA；优先快进，必要时正常合并，不强推、不丢弃独有代码。
+- 分支清理前确认其提交已完全纳入main；保留并报告未合并独有提交，不删除main。
 - 本次将已验收AI v1.2提交`e858e75f898f8c9466262bceca73a2e6991d5183`快进纳入main，策略/规则代码未另行调整。
 
 ## 服务器自动部署（2026-10-19）
 
-- 本服务器更新任务另获用户明确授权，并指定自动跟踪GitHub main；不将其他任务的发布授权推断为部署配置授权。工具为 `xingbei-cli/tools/update-server.mjs`，unit模板位于 `xingbei-cli/deploy/`，说明见 `xingbei-cli/docs/server-updates.md`。
+- 当前服务器自动跟踪GitHub main。工具为 `xingbei-cli/tools/update-server.mjs`，unit模板位于 `xingbei-cli/deploy/`，说明见 `xingbei-cli/docs/server-updates.md`。
 - 部署使用独立裸仓库和SHA版本目录；不得通过pull/reset覆盖开发工作区。每分钟检查，有更新才跑npm test、隔离HTTP检查、切换current并重启；失败保留或回退旧版，同一失败提交需显式retry或等待后续新提交。
 - 当前服务使用 `~/.local/share/xingbei-deploy/current/xingbei-cli`，仍监听0.0.0.0:4173并显示TEST_MODE版本。开发工作区的未推送修改不会自动进入此服务；通过main合并上线。
 - 部署脚本的稳定运行副本在 `~/.local/share/xingbei-deploy/update-server.mjs`，修改部署脚本／unit需检查后重新安装，不在自动业务部署时替换控制程序。截图目录通过配置挂载，不能随release清理。
