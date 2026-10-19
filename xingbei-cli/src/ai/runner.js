@@ -22,8 +22,7 @@ export function runPolicyAction(policy, game, actorId, { autoRespond = true } = 
     else if (action.type === 'synthesize') game.synthesize(actorId, action.gemCount, options);
     else if (action.type === 'skill') resolveSync(game.skillActionSteps(actorId, action, options), request => game.automaticDecision(request, options));
     else if (action.type === 'play') game.play(actorId, action.index, action.targetId, options);
-    else if (game.turn.hasExtraActions()) game.skipExtraActions(actorId);
-    else game.log.push(`${game.player(actorId).name}跳过行动`);
+    else game.skipExtraActions(actorId);
     return action;
   } finally { game.automaticDecision = previous; }
 }

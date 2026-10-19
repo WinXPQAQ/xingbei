@@ -79,7 +79,7 @@ export async function playMatch(config, { candidate = 'read-1', opponent = 'v1.0
         if (++actions > 20) throw new Error(`Action limit: ${JSON.stringify(config)}`);
         const action = policy(id).chooseAiAction(view(id), id);
         metrics[game.player(id).team].actions++;
-        if (action.type === 'pass') { if (game.turn.hasExtraActions()) game.skipExtraActions(id); break; }
+        if (action.type === 'pass') { game.skipExtraActions(id); break; }
         await game.executeAction(id, action, options);
         game.assertCardLocations();
       } while (game.turn.hasExtraActions() && !game.winner);

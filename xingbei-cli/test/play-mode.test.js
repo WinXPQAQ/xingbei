@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { Session, Cancelled } from "../web/session.js";
 import { PlaybackGate } from "../web/play-mode.js";
+import { runAiAction } from "../src/ai.js";
 import { Game, Timing } from "../src/engine.js";
 
 test("观战暂停独立于动画，恢复释放检查点，重开取消旧等待", async () => {
@@ -23,7 +24,7 @@ test("测试重复回合完整经过结束和再次开始，不复制牌或复�
   assert.throws(() => game.turn.repeatLast(0));
   game.turn.state.attackCount = 3; game.turn.state.usedSkills.swordShadow = true;
   game.turn.addAttackAction({ sourceSkillId: "swordShadow" });
-  game.endTurn();
+  runAiAction(game, 0); game.endTurn();
   assert.equal(game.current, 1); assert.equal(game.timeline.at(-1).timing, Timing.TURN_END);
   assert.throws(() => game.turn.repeatLast(1));
   const cards = [...game.cards.keys()];
@@ -33,5 +34,5 @@ test("测试重复回合完整经过结束和再次开始，不复制牌或复�
   assert.equal(game.turn.state.attackCount, 0); assert.deepEqual(game.turn.state.usedSkills, {});
   assert.deepEqual(game.turn.state.pendingActions, []);
   assert.deepEqual([...game.cards.keys()], cards); game.assertCardLocations();
-  game.endTurn(); assert.equal(game.current, 1);
+  runAiAction(game, 0); game.endTurn(); assert.equal(game.current, 1);
 });

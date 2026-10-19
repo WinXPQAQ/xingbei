@@ -85,7 +85,8 @@ export class TurnFlow {
   *end(options = {}) {
     const state = this.state;
     if (!state) throw new RuleError("没有正在进行的回合");
-    yield* this.endAction(options);
+    if (!this.game.winner && !state.skipped && !state.completed) throw new RuleError("必须完成普通行动及其结算后才能结束回合");
+    if (this.game.players.some(player => player.pendingOverflow)) throw new RuleError("必须完成强制弃牌后才能结束回合");
     if (!state.skipped) {
       state.phase = Timing.ACTION_PHASE_END;
       yield* this.game.trigger(state.phase, state, options);

@@ -202,8 +202,7 @@ async function aiTurn(actorId) {
   if (action.type === "refine") return game.executeAction(actorId, action);
   if (action.type === "skill") return game.executeAction(actorId, action, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
   if (action.type === "pass") {
-    if (game.turn.hasExtraActions()) return game.skipExtraActions(actorId);
-    return game.log.push(`${game.player(actorId).name}跳过行动`);
+    return game.skipExtraActions(actorId);
   }
   return playCard(actorId, action.index, action.targetId);
 }

@@ -558,8 +558,7 @@ async function executeAi(actorId, scriptedAction = null) {
   else if (action.type === "refine") await game.executeAction(actorId, action, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
   else if (action.type === "skill") await game.executeAction(actorId, action, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
   else if (action.type === "pass") {
-    if (game.turn.hasExtraActions()) game.skipExtraActions(actorId);
-    else game.log.push(`${game.player(actorId).name}跳过行动`);
+    game.skipExtraActions(actorId);
   }
   else {
     const card = game.player(actorId).hand[action.index];

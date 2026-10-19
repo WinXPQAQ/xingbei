@@ -58,7 +58,7 @@ test('positive local state gain can be reversed by next-turn survival risk',()=>
  const g=new Game({seed:19,playerHeroId:'marksman'});for(let i=0;i<6;i++)take(g,0,c=>c.name==='fireStrike'&&!c.hasUniqueSkill('precisionShot')&&!c.hasUniqueSkill('flashTrap'));
  for(const id of [1,2,5])fill(g,id,3);g.player(0).healing=2;g.teams.red.morale=1;const seal=g.deck.find(c=>c.hasUniqueSkill('fireSeal'));g.attachCard(seal.id,0,{effectId:'fireSeal',sourcePlayerId:1});
  const ranks=p.rankAiActions(g,0),attack=ranks.find(r=>r.action.type==='play'&&r.action.targetId===1),parts=attack.explanation.parts;
- assert.ok(attack.score-parts.nextTurnRisk-parts.otherTurnRisk>0);assert.ok(attack.score<0);assert.equal(ranks[0].action.type,'pass');
+ assert.ok(attack.score-parts.nextTurnRisk-parts.otherTurnRisk>0);assert.ok(attack.score<0);assert.notEqual(ranks[0].action.type,'pass');
 });
 test('gift valuation uses public seal and full completed waterPower effect; trace never mutates overflow',async()=>{
  const g=new Game({seed:12,heroIds:['priest','berserker','sealer','marksman','guardianAngel','windSwordmaster']});

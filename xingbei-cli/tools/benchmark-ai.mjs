@@ -28,7 +28,7 @@ for (let seed = 1; seed <= seeds; seed++) for (const team of ["red", "blue"]) {
         let action = policy(id).chooseAiAction(game, id);
         maxDecisionMs = Math.max(maxDecisionMs, performance.now() - started);
         for (let retry = 0; ; retry++) {
-          if (action.type === "pass") { if (game.turn.hasExtraActions()) game.skipExtraActions(id); break; }
+          if (action.type === "pass") { game.skipExtraActions(id); break; }
           try { await game.executeAction(id, action, options); break; }
           catch (error) {
             // The old priest can spend its planned cost during activation. Let it

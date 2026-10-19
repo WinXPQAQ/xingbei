@@ -41,7 +41,7 @@ for(const config of configs){
     if(first||refine){seen.add(key);if(refine)seenRefine.add(key);const ranks=policy(id).rankAiActions(game,id);sample={config:{lineup:config.lineup,seed:config.seed,start:config.start,team:config.team},policy:names[p.team],actorId:id,hero:p.hero.id,turn:turns,reason:first?'first-high-hand':'first-high-hand-refine',before:snapshot(id),action,legalPlayIndices:[...new Set(ranks.filter(r=>r.action.type==='play').map(r=>r.action.index))],ranks:normalize(ranks),eventStart:events.length};samples.push(sample);pending.push(sample);}
     events.push({type:'action',turn:turns,actorId:id,action:normalize(action)});
     const nextEventStart=events.length-1;if(count===1)for(const prior of arriving)prior.nextTurnFirstAction=normalize(action);
-    if(action.type==='pass'){if(game.turn.hasExtraActions())game.skipExtraActions(id);if(sample)sample.afterAction=snapshot(id);if(count===1)for(const prior of arriving){prior.afterNextTurnFirstAction=snapshot(id);prior.nextTurnFirstActionEvents=events.slice(nextEventStart);}break;}
+    if(action.type==='pass'){game.skipExtraActions(id);if(sample)sample.afterAction=snapshot(id);if(count===1)for(const prior of arriving){prior.afterNextTurnFirstAction=snapshot(id);prior.nextTurnFirstActionEvents=events.slice(nextEventStart);}break;}
     await game.executeAction(id,action,options);game.assertCardLocations();if(sample)sample.afterAction=snapshot(id);if(count===1)for(const prior of arriving){prior.afterNextTurnFirstAction=snapshot(id);prior.nextTurnFirstActionEvents=events.slice(nextEventStart);}
    }while(game.turn.hasExtraActions()&&!game.winner);
   }

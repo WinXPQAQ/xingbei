@@ -57,7 +57,7 @@ for(const seed of settings.seeds) {
    do {
     assert.ok(++actions<=20,'Action loop');measure(g,id,'action',null,source);
     const action=driver.chooseAiAction(g,id);
-    if(action.type==='pass'){if(g.turn.hasExtraActions())g.skipExtraActions(id);break;}
+    if(action.type==='pass'){g.skipExtraActions(id);break;}
     await g.executeAction(id,action,options);g.assertCardLocations();
    }while(g.turn.hasExtraActions()&&!g.winner);
   }

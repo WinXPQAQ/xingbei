@@ -4,6 +4,7 @@ import { createEconomyPolicy } from './v1.3/index.js';
 import { createEconomyPolicy as createEconomy2Policy } from './v1.3-economy2/index.js';
 import { createEconomyPolicy as createFrozenEconomyPolicy } from './v1.3-a9/index.js';
 import { createChallenger } from './v1.3/challengers.js';
+import { legalPolicy } from './legal-policy.js';
 import { runPolicyAction } from './runner.js';
 import * as baseline from './v1.0/index.js';
 import { createPolicy } from './v1.1/index.js';
@@ -40,7 +41,7 @@ choices['v1.2'] = choices['fusion-1'];
 choices['v1.3'] = choices['experimental/economy-4'];
 choices['experimental/read-1'] = choices['read-1'];
 choices['experimental/fusion-1'] = choices['fusion-1'];
-export const policies = Object.freeze(Object.fromEntries(Object.entries(choices).map(([id, policy]) => [id, Object.freeze({ ...policy, runAiAction: (game, actorId, options) => runPolicyAction(policy, game, actorId, options) })])));
+export const policies = Object.freeze(Object.fromEntries(Object.entries(choices).map(([id, frozen]) => { const policy = legalPolicy(frozen); return [id, Object.freeze({ ...policy, runAiAction: (game, actorId, options) => runPolicyAction(policy, game, actorId, options) })]; })));
 export function getPolicy(id) {
   if (!Object.hasOwn(policies, id)) throw new Error(`Unknown AI policy: ${id}`);
   return policies[id];

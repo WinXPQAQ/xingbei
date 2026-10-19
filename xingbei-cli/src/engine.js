@@ -351,7 +351,7 @@ export class Game {
   }
 
   legalTargets(actorId, card) {
-    if (this.turn.state?.playerId === actorId && this.turn.state.completed && !this.turn.canUse(card.type, card)) return [];
+    if (this.turn.state && (this.turn.state.playerId !== actorId || !this.turn.canUse(card.type, card))) return [];
     return card.legalTargets({ game: this, actor: this.player(actorId) });
   }
 
@@ -366,14 +366,14 @@ export class Game {
   }
 
   canRefreshUnableHand(actorId) {
-    if (this.turn.state?.playerId === actorId && this.turn.state.completed) return false;
+    if (this.turn.state && (this.turn.state.playerId !== actorId || !this.turn.canUse("special"))) return false;
     const player = this.player(actorId);
     return player.handLimit - player.hand.length <= 2 &&
       this.unusableCards(actorId).length === player.hand.length && !player.hero.canActWithSkills && !this.legalSkillActions(actorId).length;
   }
 
   canDrawSpecial(actorId) {
-    return (!this.turn.state || this.turn.state.playerId !== actorId || this.turn.canUse("special")) && this.player(actorId).hand.length <= 3;
+    return (!this.turn.state || (this.turn.state.playerId === actorId && this.turn.canUse("special"))) && this.player(actorId).hand.length <= 3;
   }
 
   stoneCounts(team) {
@@ -478,6 +478,7 @@ export class Game {
   }
 
   canRefine(playerId) {
+    if (this.turn.state && this.turn.state.playerId !== playerId) return false;
     const player = this.player(playerId);
     return !this.winner && this.turn.canUse("special") && player.energy.gem + player.energy.crystal < 3 && this.stoneCounts(player.team).total > 0;
   }
@@ -557,6 +558,7 @@ export class Game {
   }
 
   legalSkillActions(playerId) {
+    if (this.turn.state && this.turn.state.playerId !== playerId) return [];
     const player = this.player(playerId);
     return player.getSkills().flatMap(({ skill }) => {
       const definition = typeof skill === "string" ? this.skillDefinitions.get(skill) : skill;

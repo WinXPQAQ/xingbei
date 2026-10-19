@@ -1,3 +1,4 @@
+import { runAiAction } from "../src/ai.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { Game, Timing } from "../src/engine.js";
@@ -199,7 +200,7 @@ test("五系束缚是独立场外实体，优先级中毒→束缚→虚弱，�
   await game.beginTurn(1, { choose: request => request.type === "bindingChoice" ? "draw" : request.defaultValue });
   assert.deepEqual(effectOrder, ["poison", "fivefoldBinding"]); assert.equal(game.turn.state.skipped, false);
   assert.equal(game.player(1).hand.length, 6); assert.equal(game.teams.blue.morale, 13);
-  assert.equal(game.player(1).statuses.length, 0); assert.equal(binding.location.zone, "outside"); game.endTurn();
+  assert.equal(game.player(1).statuses.length, 0); assert.equal(binding.location.zone, "outside"); runAiAction(game, 1); game.endTurn();
   await game.beginTurn(0);
   const collected = game.player(2).getBasicEffects()[0];
   await game.executeAction(0, { type: "skill", skillId: "sealBreaking", targetIds: [2] }, { choose: request => request.type === "effectChoice" ? collected.id : request.defaultValue });
@@ -296,6 +297,8 @@ test("神圣契约启动一次、队友可超过普通治疗上限；启动改�
   const changed = make("priest"); changed.changeHealing(0, 1); changed.player(0).energy.crystal = 1;
   const costs = [named(changed, 0, "holyLight"), named(changed, 0, "poison")]; await changed.beginTurn(0);
   await assert.rejects(changed.executeAction(0, { type: "skill", skillId: "sacredDomain", mode: "damage", cardIds: costs.map(card => card.id), targetIds: [1] }, { choose: request => request.type === "skillChoice" ? true : request.defaultValue }), /重新选择/);
+  assert.equal(changed.turn.state.completed, false);
+  await assert.rejects(changed.endTurnWithDecisions(), /必须完成/);
   assert.equal(changed.turn.state.actionType, null); assert.equal(changed.player(0).hand.length, 2);
   await changed.executeAction(0, { type: "skill", skillId: "prayer", cardIds: costs.map(card => card.id), targetIds: [] });
   assert.equal(changed.timeline.filter(entry => entry.timing === Timing.ACTIVATION).length, 1);

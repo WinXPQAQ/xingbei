@@ -22,7 +22,7 @@ test('economy-4 completed waterPower preserves over-cap recipient healing, and s
   assert.equal(plan.branches[0].state.players[3].healing,g.player(3).healing);assert.equal(g.player(3).healing,initial===4?4:2);g.assertCardLocations();
  }
 });
-test('shield stagnation permits a positive-costed advance but preserves refusal of lethal exposure',async()=>{
+test('ordinary action is mandatory even when frozen valuation predicts lethal exposure',async()=>{
  const build=()=>{
   const g=new Game({seed:45,heroIds:Array(6).fill('none')});
   for(let i=0;i<6;i++)take(g,0,c=>c.name==='fireStrike');
@@ -33,6 +33,6 @@ test('shield stagnation permits a positive-costed advance but preserves refusal 
  const p=getPolicy('experimental/economy-4'),g=build(),rank=p.rankAiActions(g,0)[0];assert.equal(rank.action.type,'play');assert.ok(rank.score>0);
  const target=rank.action.targetId;await g.executeAction(0,rank.action,{chooseResponse:()=>null,overflow:'ai'});assert.equal(g.player(target).getStatus('holyShield').length,0);assert.equal(g.teams.red.morale,15);g.assertCardLocations();
  const h=build(),seal=h.deck.find(c=>c.hasUniqueSkill('fireSeal'));h.attachCard(seal.id,0,{effectId:'fireSeal',sourcePlayerId:1});h.teams.red.morale=1;
- assert.equal(p.chooseAiAction(h,0).type,'pass');
+ assert.notEqual(p.chooseAiAction(h,0).type,'pass');
  await h.executeAction(0,{type:'play',index:0,targetId:1},{chooseResponse:()=>null,overflow:'ai'});assert.equal(h.winner,'blue');h.assertCardLocations();
 });

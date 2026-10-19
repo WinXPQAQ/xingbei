@@ -5,7 +5,7 @@ import {policyView,publicRequest} from './privacy.mjs';
 import {captureObservation,observationView} from '../../src/ai/observation.js';
 import {stateOf,energyPlan,burden,components} from '../../src/ai/v1.3/model.js';
 const emptyMetrics=()=>({attacks:0,hits:0,damage:0,attackDamage:0,spellDamage:0,moraleLost:0,gems:0,crystals:0,cups:0,actions:0,turns:0,highHandTurns:0,idleEnergyTurns:0,activeKeyCardsSpent:0,gifts:0,giftRecipientBurdenDelta:0,giftHandValueDelta:0,giftNextTurnHighHand:0,passes:0});
-export async function playEconomyMatch(config, { candidate = 'read-1', opponent = 'v1.0', turnLimit = 500, audit = false, observations = true } = {}) {
+export async function playEconomyMatch(config, { candidate = 'read-1', opponent = 'v1.0', turnLimit = 500, audit = false, observations = true, onOrdinaryDecision = null } = {}) {
   const { lineup, seed, start, team } = config;
   const heroIds = config.heroIds;
   const game = new Game({ seed, heroIds }).setup();
@@ -74,10 +74,16 @@ export async function playEconomyMatch(config, { candidate = 'read-1', opponent 
       do {
         if (++actions > 20) throw new Error(`Action limit: ${JSON.stringify(config)}`);
         const action = policy(id).chooseAiAction(view(id), id);
+        if (onOrdinaryDecision && !game.turn.state.completed) {
+          const version = game.player(id).team === team ? candidate : opponent;
+          if (version === 'v1.3') onOrdinaryDecision({ turn: turns, actorId: id, version,
+            observation: captureObservation(game,id,{actions:true}),
+            ranked: policy(id).rankAiActions(view(id),id), action });
+        }
         metrics[game.player(id).team].actions++;
         if(action.type==='pass')metrics[game.player(id).team].passes++;
         const handBefore=[...game.player(id).hand];
-        if (action.type === 'pass') { if (game.turn.hasExtraActions()) game.skipExtraActions(id); break; }
+        if (action.type === 'pass') { game.skipExtraActions(id); break; }
         await game.executeAction(id, action, options);
         metrics[game.player(id).team].activeKeyCardsSpent+=handBefore.filter(c=>['darkStrike','holyLight'].includes(c.name)&&!game.player(id).hand.includes(c)).length;
         game.assertCardLocations();
