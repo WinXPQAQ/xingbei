@@ -1,0 +1,1601 @@
+{
+  "selection": "First five candidate-loss/control-win pairs per asymmetric lineup, ordered seed,lineup,start,team; fixed before trajectory inspection",
+  "summary": {
+    "games": 20,
+    "actions": 1938,
+    "disagreements": 1228,
+    "overcapHealingChecks": 774,
+    "gifts": 64,
+    "contracts": 169,
+    "sealedActions": 108
+  },
+  "ruleBug": {
+    "model": "xingbei-cli/src/ai/v1.3/model.js:heal",
+    "engine": "xingbei-cli/src/engine.js:changeHealing",
+    "counterexample": {
+      "normalLimit": 2,
+      "before": 4,
+      "modelAfter": 2,
+      "engineAfter": 4
+    },
+    "actualHealingActions": [
+      {
+        "pair": 0,
+        "phase": "control",
+        "turn": 77,
+        "actor": 0,
+        "action": {
+          "type": "skill",
+          "skillId": "waterPower",
+          "cardIds": [
+            "c12"
+          ],
+          "targetIds": [
+            4
+          ]
+        },
+        "before": 4,
+        "modelAfter": 2,
+        "engineAfter": 4
+      },
+      {
+        "pair": 1,
+        "phase": "control",
+        "turn": 83,
+        "actor": 1,
+        "action": {
+          "type": "skill",
+          "skillId": "waterPower",
+          "cardIds": [
+            "c12"
+          ],
+          "targetIds": [
+            5
+          ]
+        },
+        "before": 4,
+        "modelAfter": 2,
+        "engineAfter": 4
+      },
+      {
+        "pair": 1,
+        "phase": "control",
+        "turn": 101,
+        "actor": 1,
+        "action": {
+          "type": "skill",
+          "skillId": "waterPower",
+          "cardIds": [
+            "c146"
+          ],
+          "targetIds": [
+            5
+          ]
+        },
+        "before": 4,
+        "modelAfter": 2,
+        "engineAfter": 4
+      },
+      {
+        "pair": 1,
+        "phase": "control",
+        "turn": 107,
+        "actor": 1,
+        "action": {
+          "type": "skill",
+          "skillId": "waterPower",
+          "cardIds": [
+            "c16"
+          ],
+          "targetIds": [
+            5
+          ]
+        },
+        "before": 4,
+        "modelAfter": 2,
+        "engineAfter": 4
+      },
+      {
+        "pair": 4,
+        "phase": "control",
+        "turn": 87,
+        "actor": 0,
+        "action": {
+          "type": "skill",
+          "skillId": "sacredDomain",
+          "mode": "heal",
+          "cardIds": [
+            "c86",
+            "c83"
+          ],
+          "targetIds": [
+            3
+          ]
+        },
+        "before": 4,
+        "modelAfter": 2,
+        "engineAfter": 4
+      },
+      {
+        "pair": 4,
+        "phase": "control",
+        "turn": 111,
+        "actor": 0,
+        "action": {
+          "type": "skill",
+          "skillId": "waterPower",
+          "cardIds": [
+            "c7"
+          ],
+          "targetIds": [
+            4
+          ]
+        },
+        "before": 4,
+        "modelAfter": 2,
+        "engineAfter": 4
+      },
+      {
+        "pair": 5,
+        "phase": "control",
+        "turn": 56,
+        "actor": 1,
+        "action": {
+          "type": "skill",
+          "skillId": "waterPower",
+          "cardIds": [
+            "c9"
+          ],
+          "targetIds": [
+            2
+          ]
+        },
+        "before": 4,
+        "modelAfter": 2,
+        "engineAfter": 4
+      },
+      {
+        "pair": 5,
+        "phase": "control",
+        "turn": 92,
+        "actor": 1,
+        "action": {
+          "type": "skill",
+          "skillId": "waterPower",
+          "cardIds": [
+            "c25"
+          ],
+          "targetIds": [
+            5
+          ]
+        },
+        "before": 3,
+        "modelAfter": 2,
+        "engineAfter": 3
+      },
+      {
+        "pair": 5,
+        "phase": "control",
+        "turn": 104,
+        "actor": 1,
+        "action": {
+          "type": "skill",
+          "skillId": "waterPower",
+          "cardIds": [
+            "c123"
+          ],
+          "targetIds": [
+            5
+          ]
+        },
+        "before": 3,
+        "modelAfter": 2,
+        "engineAfter": 3
+      },
+      {
+        "pair": 7,
+        "phase": "control",
+        "turn": 90,
+        "actor": 0,
+        "action": {
+          "type": "skill",
+          "skillId": "waterPower",
+          "cardIds": [
+            "c146"
+          ],
+          "targetIds": [
+            3
+          ]
+        },
+        "before": 4,
+        "modelAfter": 2,
+        "engineAfter": 4
+      },
+      {
+        "pair": 9,
+        "phase": "control",
+        "turn": 75,
+        "actor": 0,
+        "action": {
+          "type": "skill",
+          "skillId": "sacredDomain",
+          "mode": "heal",
+          "cardIds": [
+            "c106",
+            "c65"
+          ],
+          "targetIds": [
+            3
+          ]
+        },
+        "before": 3,
+        "modelAfter": 2,
+        "engineAfter": 3
+      }
+    ],
+    "angelBondSameState": [
+      {
+        "pair": 0,
+        "phase": "control",
+        "turn": 58,
+        "id": 5,
+        "chosen": 4,
+        "baseline": 2,
+        "targetHealing": 4,
+        "strictlyInferiorUnderCorrectTransition": false,
+        "scores": [
+          {
+            "id": 0,
+            "model": -2.5,
+            "ruleCorrected": -2.5
+          },
+          {
+            "id": 1,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 2,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 3,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 4,
+            "model": 5,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 5,
+            "model": 0,
+            "ruleCorrected": 0
+          }
+        ]
+      },
+      {
+        "pair": 0,
+        "phase": "control",
+        "turn": 82,
+        "id": 5,
+        "chosen": 4,
+        "baseline": 2,
+        "targetHealing": 4,
+        "strictlyInferiorUnderCorrectTransition": true,
+        "scores": [
+          {
+            "id": 0,
+            "model": -2.5,
+            "ruleCorrected": -2.5
+          },
+          {
+            "id": 1,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 2,
+            "model": 3.923828125,
+            "ruleCorrected": 3.923828125
+          },
+          {
+            "id": 3,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 4,
+            "model": 5,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 5,
+            "model": 0,
+            "ruleCorrected": 0
+          }
+        ]
+      },
+      {
+        "pair": 0,
+        "phase": "control",
+        "turn": 88,
+        "id": 5,
+        "chosen": 4,
+        "baseline": 2,
+        "targetHealing": 4,
+        "strictlyInferiorUnderCorrectTransition": true,
+        "scores": [
+          {
+            "id": 0,
+            "model": -2.499999999999986,
+            "ruleCorrected": -2.499999999999986
+          },
+          {
+            "id": 1,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 2,
+            "model": 3.7458496093750284,
+            "ruleCorrected": 3.7458496093750284
+          },
+          {
+            "id": 3,
+            "model": -6.5120605468749915,
+            "ruleCorrected": -6.5120605468749915
+          },
+          {
+            "id": 4,
+            "model": 5.000000000000028,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 5,
+            "model": 0,
+            "ruleCorrected": 0
+          }
+        ]
+      },
+      {
+        "pair": 0,
+        "phase": "control",
+        "turn": 94,
+        "id": 5,
+        "chosen": 4,
+        "baseline": 2,
+        "targetHealing": 4,
+        "strictlyInferiorUnderCorrectTransition": true,
+        "scores": [
+          {
+            "id": 0,
+            "model": -2.500000000000001,
+            "ruleCorrected": -2.500000000000001
+          },
+          {
+            "id": 1,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 2,
+            "model": 3.9238281249999964,
+            "ruleCorrected": 3.9238281249999964
+          },
+          {
+            "id": 3,
+            "model": -2.500000000000001,
+            "ruleCorrected": -2.500000000000001
+          },
+          {
+            "id": 4,
+            "model": 5,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 5,
+            "model": 0,
+            "ruleCorrected": 0
+          }
+        ]
+      },
+      {
+        "pair": 0,
+        "phase": "control",
+        "turn": 100,
+        "id": 5,
+        "chosen": 4,
+        "baseline": 2,
+        "targetHealing": 4,
+        "strictlyInferiorUnderCorrectTransition": true,
+        "scores": [
+          {
+            "id": 0,
+            "model": -2.5,
+            "ruleCorrected": -2.5
+          },
+          {
+            "id": 1,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 2,
+            "model": 2.5,
+            "ruleCorrected": 2.5
+          },
+          {
+            "id": 3,
+            "model": -2.5,
+            "ruleCorrected": -2.5
+          },
+          {
+            "id": 4,
+            "model": 5,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 5,
+            "model": 0,
+            "ruleCorrected": 0
+          }
+        ]
+      },
+      {
+        "pair": 1,
+        "phase": "control",
+        "turn": 80,
+        "id": 4,
+        "chosen": 5,
+        "baseline": 3,
+        "targetHealing": 4,
+        "strictlyInferiorUnderCorrectTransition": false,
+        "scores": [
+          {
+            "id": 0,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 1,
+            "model": -2.5,
+            "ruleCorrected": -2.5
+          },
+          {
+            "id": 2,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 3,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 4,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 5,
+            "model": 5,
+            "ruleCorrected": 0
+          }
+        ]
+      },
+      {
+        "pair": 1,
+        "phase": "control",
+        "turn": 86,
+        "id": 4,
+        "chosen": 5,
+        "baseline": 0,
+        "targetHealing": 4,
+        "strictlyInferiorUnderCorrectTransition": false,
+        "scores": [
+          {
+            "id": 0,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 1,
+            "model": -2.5,
+            "ruleCorrected": -2.5
+          },
+          {
+            "id": 2,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 3,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 4,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 5,
+            "model": 5,
+            "ruleCorrected": 0
+          }
+        ]
+      },
+      {
+        "pair": 1,
+        "phase": "control",
+        "turn": 104,
+        "id": 4,
+        "chosen": 2,
+        "baseline": 3,
+        "targetHealing": 4,
+        "strictlyInferiorUnderCorrectTransition": true,
+        "scores": [
+          {
+            "id": 0,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 1,
+            "model": -2.5,
+            "ruleCorrected": -2.5
+          },
+          {
+            "id": 2,
+            "model": 5,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 3,
+            "model": 2.5,
+            "ruleCorrected": 2.5
+          },
+          {
+            "id": 4,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 5,
+            "model": 5,
+            "ruleCorrected": 0
+          }
+        ]
+      },
+      {
+        "pair": 1,
+        "phase": "control",
+        "turn": 116,
+        "id": 4,
+        "chosen": 2,
+        "baseline": 3,
+        "targetHealing": 4,
+        "strictlyInferiorUnderCorrectTransition": true,
+        "scores": [
+          {
+            "id": 0,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 1,
+            "model": -2.5,
+            "ruleCorrected": -2.5
+          },
+          {
+            "id": 2,
+            "model": 5,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 3,
+            "model": 2.5,
+            "ruleCorrected": 2.5
+          },
+          {
+            "id": 4,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 5,
+            "model": 5,
+            "ruleCorrected": 0
+          }
+        ]
+      },
+      {
+        "pair": 1,
+        "phase": "control",
+        "turn": 122,
+        "id": 4,
+        "chosen": 2,
+        "baseline": 0,
+        "targetHealing": 4,
+        "strictlyInferiorUnderCorrectTransition": true,
+        "scores": [
+          {
+            "id": 0,
+            "model": 2.5,
+            "ruleCorrected": 2.5
+          },
+          {
+            "id": 1,
+            "model": -2.5,
+            "ruleCorrected": -2.5
+          },
+          {
+            "id": 2,
+            "model": 5,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 3,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 4,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 5,
+            "model": 0,
+            "ruleCorrected": 0
+          }
+        ]
+      },
+      {
+        "pair": 2,
+        "phase": "control",
+        "turn": 76,
+        "id": 4,
+        "chosen": 5,
+        "baseline": 3,
+        "targetHealing": 4,
+        "strictlyInferiorUnderCorrectTransition": true,
+        "scores": [
+          {
+            "id": 0,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 1,
+            "model": -2.5,
+            "ruleCorrected": -2.5
+          },
+          {
+            "id": 2,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 3,
+            "model": 2.5,
+            "ruleCorrected": 2.5
+          },
+          {
+            "id": 4,
+            "model": 2.5,
+            "ruleCorrected": 2.5
+          },
+          {
+            "id": 5,
+            "model": 5,
+            "ruleCorrected": 0
+          }
+        ]
+      },
+      {
+        "pair": 4,
+        "phase": "control",
+        "turn": 86,
+        "id": 5,
+        "chosen": 3,
+        "baseline": 1,
+        "targetHealing": 4,
+        "strictlyInferiorUnderCorrectTransition": false,
+        "scores": [
+          {
+            "id": 0,
+            "model": -2.5,
+            "ruleCorrected": -2.5
+          },
+          {
+            "id": 1,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 2,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 3,
+            "model": 5,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 4,
+            "model": 2.5,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 5,
+            "model": 0,
+            "ruleCorrected": 0
+          }
+        ]
+      },
+      {
+        "pair": 4,
+        "phase": "control",
+        "turn": 92,
+        "id": 5,
+        "chosen": 3,
+        "baseline": 2,
+        "targetHealing": 4,
+        "strictlyInferiorUnderCorrectTransition": false,
+        "scores": [
+          {
+            "id": 0,
+            "model": -2.5,
+            "ruleCorrected": -2.5
+          },
+          {
+            "id": 1,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 2,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 3,
+            "model": 5,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 4,
+            "model": 5,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 5,
+            "model": 0,
+            "ruleCorrected": 0
+          }
+        ]
+      },
+      {
+        "pair": 5,
+        "phase": "control",
+        "turn": 53,
+        "id": 4,
+        "chosen": 2,
+        "baseline": 4,
+        "targetHealing": 4,
+        "strictlyInferiorUnderCorrectTransition": true,
+        "scores": [
+          {
+            "id": 0,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 1,
+            "model": -2.5,
+            "ruleCorrected": -2.5
+          },
+          {
+            "id": 2,
+            "model": 5,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 3,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 4,
+            "model": 2.5,
+            "ruleCorrected": 2.5
+          },
+          {
+            "id": 5,
+            "model": 0,
+            "ruleCorrected": 0
+          }
+        ]
+      },
+      {
+        "pair": 5,
+        "phase": "control",
+        "turn": 53,
+        "id": 4,
+        "chosen": 2,
+        "baseline": 0,
+        "targetHealing": 4,
+        "strictlyInferiorUnderCorrectTransition": false,
+        "scores": [
+          {
+            "id": 0,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 1,
+            "model": -2.5,
+            "ruleCorrected": -2.5
+          },
+          {
+            "id": 2,
+            "model": 5,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 3,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 4,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 5,
+            "model": 0,
+            "ruleCorrected": 0
+          }
+        ]
+      },
+      {
+        "pair": 5,
+        "phase": "control",
+        "turn": 59,
+        "id": 4,
+        "chosen": 2,
+        "baseline": 0,
+        "targetHealing": 4,
+        "strictlyInferiorUnderCorrectTransition": false,
+        "scores": [
+          {
+            "id": 0,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 1,
+            "model": -2.5,
+            "ruleCorrected": -2.5
+          },
+          {
+            "id": 2,
+            "model": 5,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 3,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 4,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 5,
+            "model": 2.5,
+            "ruleCorrected": 0
+          }
+        ]
+      },
+      {
+        "pair": 5,
+        "phase": "control",
+        "turn": 65,
+        "id": 4,
+        "chosen": 2,
+        "baseline": 0,
+        "targetHealing": 4,
+        "strictlyInferiorUnderCorrectTransition": false,
+        "scores": [
+          {
+            "id": 0,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 1,
+            "model": -2.5,
+            "ruleCorrected": -2.5
+          },
+          {
+            "id": 2,
+            "model": 5,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 3,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 4,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 5,
+            "model": 2.5,
+            "ruleCorrected": 0
+          }
+        ]
+      },
+      {
+        "pair": 5,
+        "phase": "control",
+        "turn": 71,
+        "id": 4,
+        "chosen": 2,
+        "baseline": 0,
+        "targetHealing": 4,
+        "strictlyInferiorUnderCorrectTransition": false,
+        "scores": [
+          {
+            "id": 0,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 1,
+            "model": -2.5,
+            "ruleCorrected": -2.5
+          },
+          {
+            "id": 2,
+            "model": 5,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 3,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 4,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 5,
+            "model": 2.5,
+            "ruleCorrected": 0
+          }
+        ]
+      },
+      {
+        "pair": 7,
+        "phase": "control",
+        "turn": 83,
+        "id": 5,
+        "chosen": 3,
+        "baseline": 2,
+        "targetHealing": 4,
+        "strictlyInferiorUnderCorrectTransition": true,
+        "scores": [
+          {
+            "id": 0,
+            "model": -2.5,
+            "ruleCorrected": -2.5
+          },
+          {
+            "id": 1,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 2,
+            "model": 2.5,
+            "ruleCorrected": 2.5
+          },
+          {
+            "id": 3,
+            "model": 5,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 4,
+            "model": 2.5,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 5,
+            "model": 0,
+            "ruleCorrected": 0
+          }
+        ]
+      },
+      {
+        "pair": 7,
+        "phase": "control",
+        "turn": 89,
+        "id": 5,
+        "chosen": 3,
+        "baseline": 2,
+        "targetHealing": 4,
+        "strictlyInferiorUnderCorrectTransition": true,
+        "scores": [
+          {
+            "id": 0,
+            "model": -2.5,
+            "ruleCorrected": -2.5
+          },
+          {
+            "id": 1,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 2,
+            "model": 3.2475097656250114,
+            "ruleCorrected": 3.2475097656250114
+          },
+          {
+            "id": 3,
+            "model": 5,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 4,
+            "model": 2.5,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 5,
+            "model": 0,
+            "ruleCorrected": 0
+          }
+        ]
+      },
+      {
+        "pair": 7,
+        "phase": "control",
+        "turn": 95,
+        "id": 5,
+        "chosen": 3,
+        "baseline": 2,
+        "targetHealing": 4,
+        "strictlyInferiorUnderCorrectTransition": true,
+        "scores": [
+          {
+            "id": 0,
+            "model": -2.5,
+            "ruleCorrected": -2.5
+          },
+          {
+            "id": 1,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 2,
+            "model": 2.5,
+            "ruleCorrected": 2.5
+          },
+          {
+            "id": 3,
+            "model": 5,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 4,
+            "model": 2.5,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 5,
+            "model": 0,
+            "ruleCorrected": 0
+          }
+        ]
+      },
+      {
+        "pair": 8,
+        "phase": "control",
+        "turn": 81,
+        "id": 4,
+        "chosen": 5,
+        "baseline": 0,
+        "targetHealing": 4,
+        "strictlyInferiorUnderCorrectTransition": false,
+        "scores": [
+          {
+            "id": 0,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 1,
+            "model": -2.5,
+            "ruleCorrected": -2.5
+          },
+          {
+            "id": 2,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 3,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 4,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 5,
+            "model": 5,
+            "ruleCorrected": 0
+          }
+        ]
+      },
+      {
+        "pair": 8,
+        "phase": "control",
+        "turn": 93,
+        "id": 4,
+        "chosen": 5,
+        "baseline": 3,
+        "targetHealing": 4,
+        "strictlyInferiorUnderCorrectTransition": true,
+        "scores": [
+          {
+            "id": 0,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 1,
+            "model": -2.5,
+            "ruleCorrected": -2.5
+          },
+          {
+            "id": 2,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 3,
+            "model": 2.5,
+            "ruleCorrected": 2.5
+          },
+          {
+            "id": 4,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 5,
+            "model": 5,
+            "ruleCorrected": 0
+          }
+        ]
+      },
+      {
+        "pair": 8,
+        "phase": "control",
+        "turn": 99,
+        "id": 4,
+        "chosen": 5,
+        "baseline": 3,
+        "targetHealing": 4,
+        "strictlyInferiorUnderCorrectTransition": true,
+        "scores": [
+          {
+            "id": 0,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 1,
+            "model": -2.5,
+            "ruleCorrected": -2.5
+          },
+          {
+            "id": 2,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 3,
+            "model": 2.5,
+            "ruleCorrected": 2.5
+          },
+          {
+            "id": 4,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 5,
+            "model": 5,
+            "ruleCorrected": 0
+          }
+        ]
+      },
+      {
+        "pair": 8,
+        "phase": "control",
+        "turn": 105,
+        "id": 4,
+        "chosen": 5,
+        "baseline": 4,
+        "targetHealing": 4,
+        "strictlyInferiorUnderCorrectTransition": false,
+        "scores": [
+          {
+            "id": 0,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 1,
+            "model": -2.5,
+            "ruleCorrected": -2.5
+          },
+          {
+            "id": 2,
+            "model": -2.5,
+            "ruleCorrected": -2.5
+          },
+          {
+            "id": 3,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 4,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 5,
+            "model": 4.9999999999999964,
+            "ruleCorrected": 0
+          }
+        ]
+      },
+      {
+        "pair": 8,
+        "phase": "control",
+        "turn": 117,
+        "id": 4,
+        "chosen": 5,
+        "baseline": 4,
+        "targetHealing": 4,
+        "strictlyInferiorUnderCorrectTransition": true,
+        "scores": [
+          {
+            "id": 0,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 1,
+            "model": -2.5,
+            "ruleCorrected": -2.5
+          },
+          {
+            "id": 2,
+            "model": -2.5,
+            "ruleCorrected": -2.5
+          },
+          {
+            "id": 3,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 4,
+            "model": 2.5,
+            "ruleCorrected": 2.5
+          },
+          {
+            "id": 5,
+            "model": 5,
+            "ruleCorrected": 0
+          }
+        ]
+      },
+      {
+        "pair": 9,
+        "phase": "control",
+        "turn": 50,
+        "id": 5,
+        "chosen": 3,
+        "baseline": 5,
+        "targetHealing": 3,
+        "strictlyInferiorUnderCorrectTransition": true,
+        "scores": [
+          {
+            "id": 0,
+            "model": -2.5,
+            "ruleCorrected": -2.5
+          },
+          {
+            "id": 1,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 2,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 3,
+            "model": 2.5,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 4,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 5,
+            "model": 2.5,
+            "ruleCorrected": 2.5
+          }
+        ]
+      },
+      {
+        "pair": 9,
+        "phase": "control",
+        "turn": 74,
+        "id": 5,
+        "chosen": 3,
+        "baseline": 5,
+        "targetHealing": 3,
+        "strictlyInferiorUnderCorrectTransition": false,
+        "scores": [
+          {
+            "id": 0,
+            "model": -2.5,
+            "ruleCorrected": -2.5
+          },
+          {
+            "id": 1,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 2,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 3,
+            "model": 2.5,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 4,
+            "model": 2.5,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 5,
+            "model": 0,
+            "ruleCorrected": 0
+          }
+        ]
+      },
+      {
+        "pair": 9,
+        "phase": "control",
+        "turn": 80,
+        "id": 5,
+        "chosen": 3,
+        "baseline": 1,
+        "targetHealing": 3,
+        "strictlyInferiorUnderCorrectTransition": false,
+        "scores": [
+          {
+            "id": 0,
+            "model": -2.5,
+            "ruleCorrected": -2.5
+          },
+          {
+            "id": 1,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 2,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 3,
+            "model": 2.5,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 4,
+            "model": 2.5,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 5,
+            "model": 0,
+            "ruleCorrected": 0
+          }
+        ]
+      },
+      {
+        "pair": 9,
+        "phase": "control",
+        "turn": 86,
+        "id": 5,
+        "chosen": 3,
+        "baseline": 1,
+        "targetHealing": 3,
+        "strictlyInferiorUnderCorrectTransition": false,
+        "scores": [
+          {
+            "id": 0,
+            "model": -2.5,
+            "ruleCorrected": -2.5
+          },
+          {
+            "id": 1,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 2,
+            "model": 0,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 3,
+            "model": 2.5,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 4,
+            "model": 2.5,
+            "ruleCorrected": 0
+          },
+          {
+            "id": 5,
+            "model": 0,
+            "ruleCorrected": 0
+          }
+        ]
+      }
+    ],
+    "strictlyInferiorAngelChoices": 16
+  },
+  "descriptive": {
+    "candidate": {
+      "actions": 370,
+      "counts": {
+        "marksman:play": 34,
+        "guardianAngel:angelBlessing": 6,
+        "berserker:play": 44,
+        "marksman:purchase": 5,
+        "guardianAngel:synthesize": 6,
+        "guardianAngel:play": 28,
+        "marksman:synthesize": 6,
+        "marksman:pass": 4,
+        "guardianAngel:windCleansing": 6,
+        "guardianAngel:pass": 1,
+        "guardianAngel:refine": 1,
+        "marksman:flashTrap": 4,
+        "berserker:purchase": 2,
+        "guardianAngel:angelWall": 5,
+        "berserker:synthesize": 1,
+        "berserker:refine": 1,
+        "marksman:refine": 1,
+        "berserker:pass": 1,
+        "priest:play": 26,
+        "sealer:play": 44,
+        "windSwordmaster:play": 62,
+        "priest:pass": 7,
+        "priest:refine": 9,
+        "windSwordmaster:purchase": 2,
+        "priest:waterPower": 5,
+        "windSwordmaster:synthesize": 11,
+        "sealer:synthesize": 4,
+        "sealer:refine": 4,
+        "sealer:purchase": 7,
+        "sealer:fivefoldBinding": 3,
+        "sealer:pass": 5,
+        "priest:purchase": 6,
+        "windSwordmaster:pass": 7,
+        "sealer:fireSeal": 3,
+        "priest:synthesize": 2,
+        "sealer:thunderSeal": 2,
+        "windSwordmaster:refine": 2,
+        "sealer:earthSeal": 1,
+        "sealer:windSeal": 1,
+        "sealer:sealBreaking": 1
+      }
+    },
+    "control": {
+      "actions": 582,
+      "counts": {
+        "marksman:play": 41,
+        "guardianAngel:windCleansing": 14,
+        "berserker:play": 52,
+        "marksman:purchase": 6,
+        "guardianAngel:refine": 15,
+        "berserker:purchase": 8,
+        "marksman:refine": 13,
+        "guardianAngel:play": 28,
+        "marksman:snipe": 24,
+        "marksman:pass": 1,
+        "berserker:refine": 9,
+        "guardianAngel:angelWall": 7,
+        "guardianAngel:purchase": 9,
+        "marksman:flashTrap": 5,
+        "guardianAngel:synthesize": 3,
+        "berserker:synthesize": 4,
+        "marksman:synthesize": 5,
+        "guardianAngel:angelBlessing": 1,
+        "priest:waterPower": 18,
+        "sealer:play": 67,
+        "windSwordmaster:refine": 16,
+        "priest:play": 23,
+        "sealer:purchase": 11,
+        "windSwordmaster:play": 89,
+        "priest:refine": 15,
+        "sealer:windSeal": 5,
+        "windSwordmaster:purchase": 13,
+        "sealer:refine": 5,
+        "priest:sacredDomain": 11,
+        "sealer:fivefoldBinding": 10,
+        "sealer:synthesize": 5,
+        "sealer:pass": 12,
+        "windSwordmaster:synthesize": 6,
+        "priest:purchase": 3,
+        "sealer:fireSeal": 4,
+        "priest:synthesize": 9,
+        "sealer:thunderSeal": 4,
+        "sealer:waterSeal": 1,
+        "windSwordmaster:pass": 6,
+        "sealer:earthSeal": 3,
+        "priest:pass": 1
+      }
+    }
+  },
+  "limits": [
+    "Selected loss/control-win pairs are diagnostic, not representative win-rate evidence.",
+    "Only same-state policy comparisons; post-divergence random draws are not causal counterfactuals.",
+    "Projected states use documented approximations; a mismatch alone is not a rule bug.",
+    "Counts from loss/control-win selection are not causal comparisons; games have different duration.",
+    "Only three overcap-healing checks occurred in candidate trajectories; this bug alone does not explain the ten selected losses.",
+    "Thirty same-state angel choices select an overcap enemy; some are tied no-op outcomes because all allies are already full. Strictly inferior subset is separately reported."
+  ]
+}

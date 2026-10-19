@@ -1,0 +1,107 @@
+{
+  "candidate": "experimental/economy-4",
+  "status": "Preregistered before any new holdout run; freeze source before execution",
+  "developmentEvidence": "61001 training;72001-72006 rejected a9;82001-82006 economy-2 acceptance now development evidence after playerChoice correction. Latency uses development seeds61011-61014, no tuning on new holdout.; Entire92001-92030 and94001-94006 failed economy3 acceptance now development evidence; fixed10 loss/control-win pairs inspected, no new holdout inspected.",
+  "primary": {
+    "firstSeed": 120001,
+    "seeds": 120,
+    "starts": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "colors": [
+      "red",
+      "blue"
+    ],
+    "rosters": [
+      "mirrorAssault",
+      "mirrorMixed",
+      "asymmetric",
+      "asymmetricReverse"
+    ],
+    "gamesPerPair": 5760,
+    "pairs": [
+      [
+        "experimental/economy-4",
+        "v1.2"
+      ],
+      [
+        "experimental/economy-4",
+        "v1.0"
+      ],
+      [
+        "v1.2",
+        "v1.2"
+      ],
+      [
+        "v1.2",
+        "v1.0"
+      ]
+    ]
+  },
+  "styles": {
+    "firstSeed": 124001,
+    "seeds": 30,
+    "starts": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "colors": [
+      "red",
+      "blue"
+    ],
+    "rosters": [
+      "mirrorAssault",
+      "mirrorMixed",
+      "asymmetric",
+      "asymmetricReverse"
+    ],
+    "gamesPerPair": 1440,
+    "pairs": [
+      [
+        "experimental/economy-4",
+        "experimental/style-flow"
+      ],
+      [
+        "v1.2",
+        "experimental/style-flow"
+      ],
+      [
+        "experimental/economy-4",
+        "experimental/style-reserve"
+      ],
+      [
+        "v1.2",
+        "experimental/style-reserve"
+      ]
+    ]
+  },
+  "totalGames": 28800,
+  "turnLimit": 300,
+  "clusterUnit": "Whole seed:120 primary clusters and30 separate style clusters,10000 deterministic bootstrap resamples, paired identical hero assignments.",
+  "gates": {
+    "overallImprovement": "Candidate-v1.2 score >=0.53 and 95% seed-cluster lower bound >0.50; paired score improvement over v1.2-v1.2 mean >=0.03 and 95% lower bound >0",
+    "versusV10": "Candidate-v1.0 95% score lower bound >0.50 AND paired candidate-v1.0 minus v1.2-v1.0 95% lower bound >-0.05",
+    "majorLineupNoninferiority": "For EACH of four lineups, paired difference lower bound >-0.05 in BOTH marginal95% and Bonferroni98.75% intervals; familywise lineup requirement is part of release gate.",
+    "styles": "For each style, candidate score>=0.50 and paired candidate-minus-v1.2 95% lower bound >-0.05;30 independent style seed clusters",
+    "truncation": "<=1% in EVERY pair; truncated scores0.5 and reported, never counted as wins",
+    "correctness": "All relevant tests pass, no unresolved semantic/privacy review blocker",
+    "performance": "Same-state six-hero latency distributions and v1.2 comparison reported. Candidate sampled action p95<250ms per hero and max<1000ms; fixed synthetic full-wind/history stress<2000ms on this host. These are observed timings, not universal wall-clock guarantees. Deterministic search budget remains128/root. If exceeded, optimize before source freeze and fresh holdout."
+  },
+  "limits": [
+    "No candidate changes after new holdout begins; if corrected, retain failed evidence and preregister fresh seeds",
+    "No user confirmation needed for routine iteration; do not publish until parent acceptance",
+    "No human-strength claim or complete unified hero-solving claim",
+    "Diagnostic high-hand rate alone is not an optimization objective"
+  ],
+  "stopping": "Fixed28800 games. No interim score summaries; no optional stopping, no increasing sample after viewing result, no pooling prior failed results. Failure retained. Operational progress/errors only during execution.",
+  "sampleSizeRationale": "120 independent primary seed clusters, four times prior30; at development asymmetric SE about3.4pp/sqrt(4)=1.7pp, Bonferroni halfwidth roughly4.2pp under stable variance. This is a planning estimate, not a guarantee of pass.30 style clusters instead of6."
+}

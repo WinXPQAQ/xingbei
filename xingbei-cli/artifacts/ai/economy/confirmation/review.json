@@ -1,0 +1,16 @@
+{
+  "scope": "Final candidate only fixes heal; trial anti-loop override removed before freeze",
+  "modelReviewer": "review_economy_model",
+  "privacyReviewer": "review_economy_privacy",
+  "semanticFinding": "16 strictly harmful angelBond choices in same-state control-trajectory comparisons;30 total over-cap enemy choices incl14 no-op ties",
+  "fixedReplayGames": 20,
+  "loopFinding": "Permanent pass loops verified; rejected override not proven effective or safe; existing<=1% truncation gate retained",
+  "privacy": "Explicit observation only; no cross-game memory added; old policy implementations preserved",
+  "tests": "Final full-suite outcome in tests.log",
+  "decision": "No publish before complete new confirmation and parent acceptance",
+  "fullTests": 135,
+  "finalIndependentReview": {
+    "model": "Protocol120+30 clusters and28800 games verified; Bonferroni98.75% gates included; source-root guard anchored to script URL",
+    "privacy": "Final four files differ from economy3 only version and heal;3 real angelBond tests repassed; no override, old source and observation adapters unchanged"
+  }
+}

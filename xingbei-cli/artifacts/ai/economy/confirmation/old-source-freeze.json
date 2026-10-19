@@ -1,0 +1,229 @@
+{
+  "unchangedFiles": 56,
+  "files": [
+    {
+      "path": "action-log.js",
+      "sha256": "72ee255311ee34c151dc0dc372e8e9718745ee9ee37f31adb6cd50fc18f01d50"
+    },
+    {
+      "path": "ai/actions.js",
+      "sha256": "a076a2b54159e27b0ae66cda8351c66802a227068b7e73563b9732df1da22bb4"
+    },
+    {
+      "path": "ai/decisions.js",
+      "sha256": "1b422689523ae7c2fdeb4df16ee275a32ac0d5359e1103a5b2e9cef3045e4e11"
+    },
+    {
+      "path": "ai/evaluation.js",
+      "sha256": "3ddffe24ea04591061932c1e0a72629b7de4eb07bdcdc5cdd823d792967ab56f"
+    },
+    {
+      "path": "ai/observation.js",
+      "sha256": "09a1618baf835dfb4565509c13a7c1f5c4dba54ba7afb9c97bf1db639b49e65f"
+    },
+    {
+      "path": "ai/public-history.js",
+      "sha256": "961d05032c30a55d2f89f45e40e880acb1e92b56f07981a5e31fa4caab843723"
+    },
+    {
+      "path": "ai/runner.js",
+      "sha256": "aed83e0dc6685ebc9c6444baf683cd5531364c74d6803036cb5355a7677a8f45"
+    },
+    {
+      "path": "ai/v1.0/actions.js",
+      "sha256": "a076a2b54159e27b0ae66cda8351c66802a227068b7e73563b9732df1da22bb4"
+    },
+    {
+      "path": "ai/v1.0/decisions.js",
+      "sha256": "1b422689523ae7c2fdeb4df16ee275a32ac0d5359e1103a5b2e9cef3045e4e11"
+    },
+    {
+      "path": "ai/v1.0/evaluation.js",
+      "sha256": "3ddffe24ea04591061932c1e0a72629b7de4eb07bdcdc5cdd823d792967ab56f"
+    },
+    {
+      "path": "ai/v1.0/index.js",
+      "sha256": "f8efd742a16596b43897794393cbb4e57e634e8a7ed4bef608699fbf494ba481"
+    },
+    {
+      "path": "ai/v1.0/wind-plan.js",
+      "sha256": "18cc8af28e5acba0b238acd3ae0b44667de296445a282034a97c65b519412a1f"
+    },
+    {
+      "path": "ai/v1.1/defense.js",
+      "sha256": "764dabcff34b822a86bb2a60ec70c8d24bd3fcc2b03d9ed8909285952927b2fc"
+    },
+    {
+      "path": "ai/v1.1/fusion.js",
+      "sha256": "f082f869b1cb1db9e3d5232f318196fef0780323a85f6c5a6e61c73ce59c844b"
+    },
+    {
+      "path": "ai/v1.1/index.js",
+      "sha256": "27e2009d44115aece3752aa29c66d28f308849c908023550cf5c370da2d64d76"
+    },
+    {
+      "path": "ai/v1.1/reading.js",
+      "sha256": "5dd5a93c8e69275ff473f216b2c594d744886e6f8e90c5b92f197b4c12991841"
+    },
+    {
+      "path": "ai/v1.1/threats.js",
+      "sha256": "e8b5000f6a289fcd205835d019540415dcb785aedba5c8914823de8404dc7c3d"
+    },
+    {
+      "path": "ai/v1.3/challengers.js",
+      "sha256": "ea0a38634e566fbca492ee8ffdb9551d935fc4b7054a493942a6b51c806e15e6"
+    },
+    {
+      "path": "ai/v1.3/index.js",
+      "sha256": "70295c79673b573adf75c56d1e2fb343f23d073ef45404f1ead9c9c6b2ae6a32"
+    },
+    {
+      "path": "ai/v1.3/model.js",
+      "sha256": "20882f364d2008c297655ba9103bc73bbf916311812a514eb1763adc40fb25e3"
+    },
+    {
+      "path": "ai/v1.3/planner.js",
+      "sha256": "f6f17e2f0e9851d1ba02497aeeaf5fc00ec17d511b9b82b979b77973db55adb8"
+    },
+    {
+      "path": "ai/v1.3/trace.js",
+      "sha256": "9d09a5b26a29d47f0c75337c26d7c2bdb1b49be8857410bc7e1233aba3c6476b"
+    },
+    {
+      "path": "ai/v1.3-a9/index.js",
+      "sha256": "ee90ba6707731ef1395634b659f08c5e957f389581943df3d88dd43abb088dc6"
+    },
+    {
+      "path": "ai/v1.3-a9/model.js",
+      "sha256": "e36e9eea9a3b02148ef10719088177939e4b99141fc756bc5286cfd7d7f84cda"
+    },
+    {
+      "path": "ai/v1.3-a9/planner.js",
+      "sha256": "16a002881305934121829ad91aa22904167456f4944bdcaa7a8f07369fd43d2e"
+    },
+    {
+      "path": "ai/v1.3-a9/trace.js",
+      "sha256": "9d09a5b26a29d47f0c75337c26d7c2bdb1b49be8857410bc7e1233aba3c6476b"
+    },
+    {
+      "path": "ai/v1.3-economy2/index.js",
+      "sha256": "d4f6c92249f235dc4c25b790c3b1a20a52b6150ac223ac6165e7d6c8f4b0a8bf"
+    },
+    {
+      "path": "ai/v1.3-economy2/model.js",
+      "sha256": "2de21507b52c0d1cdb1e5abc12f6ded176a064f2ca200d777b6525f7a6b5b484"
+    },
+    {
+      "path": "ai/v1.3-economy2/planner.js",
+      "sha256": "f6f17e2f0e9851d1ba02497aeeaf5fc00ec17d511b9b82b979b77973db55adb8"
+    },
+    {
+      "path": "ai/v1.3-economy2/trace.js",
+      "sha256": "9d09a5b26a29d47f0c75337c26d7c2bdb1b49be8857410bc7e1233aba3c6476b"
+    },
+    {
+      "path": "ai/wind-plan.js",
+      "sha256": "18cc8af28e5acba0b238acd3ae0b44667de296445a282034a97c65b519412a1f"
+    },
+    {
+      "path": "ai.js",
+      "sha256": "c5285a58ff5c562b4077d5b2f3e145de12db9a1a65e03fe7014d399dba190d4a"
+    },
+    {
+      "path": "card-labels.js",
+      "sha256": "6109163ed8703c6f277303f5bb00685be706ea3192b6f74e29e09253239c1624"
+    },
+    {
+      "path": "card.js",
+      "sha256": "820b1d4ff42a13671ef2aa0957579645e28fdeb21fa7b4ad8814ed3f06434eaf"
+    },
+    {
+      "path": "cards.js",
+      "sha256": "19283697580c0a6252e478b59dea64bc9813d3a82a3b1fba25f747f5ac846076"
+    },
+    {
+      "path": "cli.js",
+      "sha256": "d07645ab6124490e526ed2ac769d98a2ea2ae94b4d5d21bd00da4f5a2ece3817"
+    },
+    {
+      "path": "effects.js",
+      "sha256": "98992d89ac7b2d3e8e21633a10a594410b916c2887b71a7be213552153ba8855"
+    },
+    {
+      "path": "engine.js",
+      "sha256": "66653c54dce5b6fce9b71bdb51a46fb8a5852f511bef9a67a9bb3dd275c9f29a"
+    },
+    {
+      "path": "errors.js",
+      "sha256": "3c17f69e627cf2051b1b5e593508b9c29aae9a75a27ae9ca125f7f21d4ee9383"
+    },
+    {
+      "path": "hero-base.js",
+      "sha256": "9ac1e063902fa99d7ff97b8c8a9d0abd92967d3d9cc082313cdef0693b435c85"
+    },
+    {
+      "path": "hero.js",
+      "sha256": "305cdcf9a2a4d04e6fc00e5fbed40d14d9c90be85a19b5b87ac8c12e528bfd25"
+    },
+    {
+      "path": "heroes/berserker.js",
+      "sha256": "e919745801441f0230aec7a17d9c73deef19cfca14f981d7ecb58f14bab627e6"
+    },
+    {
+      "path": "heroes/guardian-angel.js",
+      "sha256": "375660b0f194a1b2f05bb3df3098918726f1c57e42d926dc9a169e8959c3d56a"
+    },
+    {
+      "path": "heroes/marksman.js",
+      "sha256": "7ec7528917da63daf2d35f49bc9343de1f83df7c537affa054001a3873b8b890"
+    },
+    {
+      "path": "heroes/priest.js",
+      "sha256": "26ce0269ef3e88e8c23a85252a7e73fbd071d3940e4e9dc88f241390c38d4af5"
+    },
+    {
+      "path": "heroes/sealer.js",
+      "sha256": "062cef518f7544ff9c2716130bd2fcef5a3258cde944359c545c2b3a82155e62"
+    },
+    {
+      "path": "heroes/wind-swordmaster.js",
+      "sha256": "47f2a310a70532fa012d6db6d02f2ca1170c9f268b8462d429ef37cc9c597f84"
+    },
+    {
+      "path": "player.js",
+      "sha256": "5541e46756ac8910a36844413b402b9e1513c90eb86b965161a98c742c6240db"
+    },
+    {
+      "path": "resolution/attack.js",
+      "sha256": "91d0e117875f8c9968967bed673e8ed48a05139d702b6eabf4829e95e2ba3865"
+    },
+    {
+      "path": "resolution/decisions.js",
+      "sha256": "91d0bb426226f6d134f91875a19171ca694935cc74629216b60d10f60e8d8e20"
+    },
+    {
+      "path": "resolution/magic.js",
+      "sha256": "80e4bcbf3ddc49a0f658c14baec6de8cbf5fbb1bcdf358d689bbafa14d6317ab"
+    },
+    {
+      "path": "timing.js",
+      "sha256": "f5a312a0907a3c33964a912e76f35c85e30f2b8e9a0b1728c87e1424a3260319"
+    },
+    {
+      "path": "triggers.js",
+      "sha256": "ac3b215d99ad610247931d5c61d55483591cdeb1d05a63fac1a492e5e2d2a44a"
+    },
+    {
+      "path": "tui.js",
+      "sha256": "686941b1e32fc6031cd4b852d8e8d4b97737dff91c9ef64653cdd2a0fe7e867a"
+    },
+    {
+      "path": "turn.js",
+      "sha256": "b6b0f9c5a869b6ac50229cf7da338cca259aa26e1b90043fdf7f98d33a44ae58"
+    },
+    {
+      "path": "unique-skills.js",
+      "sha256": "da164e9587e3aad9d43297b34f5cb71b6e96b6431c271cb3a146a0cd6b4ac01c"
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 import { createFusionPolicy } from './v1.1/fusion.js';
+import { createEconomyPolicy as createEconomy4Policy } from './v1.3-economy4/index.js';
 import { createEconomyPolicy } from './v1.3/index.js';
 import { createEconomyPolicy as createEconomy2Policy } from './v1.3-economy2/index.js';
 import { createEconomyPolicy as createFrozenEconomyPolicy } from './v1.3-a9/index.js';
@@ -11,6 +12,7 @@ const choices = {
   'v1.0': baseline,
   'experimental/economy-1': createFrozenEconomyPolicy(),
   'experimental/economy-2': createEconomy2Policy(),
+  'experimental/economy-4': createEconomy4Policy(),
   'experimental/economy-3': createEconomyPolicy(),
   'experimental/economy-3-no-sequence': createEconomyPolicy({ sequence: false }),
   'experimental/economy-3-no-hand': createEconomyPolicy({ economy: false }),
