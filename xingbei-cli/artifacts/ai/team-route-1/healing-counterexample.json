@@ -1,0 +1,29 @@
+{
+  "frozenSHA": "746662a66117268ee3cbbff3e5c1ea01b499e7ba",
+  "setup": {
+    "observer": 0,
+    "imminentEnemy": 1,
+    "enemyCups": 4,
+    "enemyStones": 3,
+    "enemyHand": 3,
+    "enemyHealing": 2,
+    "otherEnemyHands": 6
+  },
+  "prediction": {
+    "targetHandCount": 5,
+    "targetHealing": 2,
+    "teamOpportunityBefore": 150.66000000000003,
+    "teamOpportunityAfter": 4.1850000000000005
+  },
+  "actual": {
+    "selectedHealing": 2,
+    "targetHandCount": 3,
+    "targetHealing": 0
+  },
+  "nextAction": {
+    "type": "synthesize",
+    "gemCount": 3
+  },
+  "winner": "blue",
+  "hiddenInformationUsedByCounterexample": false
+}

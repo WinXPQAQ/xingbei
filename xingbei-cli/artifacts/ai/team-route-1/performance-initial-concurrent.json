@@ -1,0 +1,19 @@
+{
+  "times": {
+    "experimental/economy-capability-1": {
+      "samples": 30,
+      "medianMs": 4.13480299999992,
+      "p95Ms": 86.59686099999999
+    },
+    "experimental/team-route-1": {
+      "samples": 30,
+      "medianMs": 7.8790100000001075,
+      "p95Ms": 132.83689900000013
+    }
+  },
+  "ratios": {
+    "median": 1.9055345563017778,
+    "p95": 1.533968985319227
+  },
+  "scope": "same-process 10 archived public observations ×3 measured repetitions; not entire match latency"
+}
