@@ -1,0 +1,17 @@
+✔ original wind energy remains stored in all first-attack branches; no invented forced sword shadow cost (14.76143ms)
+✔ public prior is normalized, buys produce expected defenses and real three-attack possibilities without playable invented cards (1.380079ms)
+✔ wind ordinary spell backlog differs from sealer spell-then-attack; support card retains meaningful value (6.403659ms)
+✔ gem allocation depends on public unmet teammate need and reverses when already supplied (1.073091ms)
+✔ sealer explanation splits first spell and optional attack and reconciles without treating entire path as spell cost (9.278882ms)
+✔ real earth lethal wins; optional storm art applies only against shield and does not consume energy (11.543162ms)
+✔ real purchase at low morale can lose to incoming damage, and public risk decreases with safer morale/defense (4.309645ms)
+✔ ordinary action candidates cannot pass; optional extra remains passable (26.170421ms)
+✔ joint draw categories do not invent two actions from one unknown card (0.587414ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 173.013874

@@ -1,0 +1,98 @@
+[
+  {
+    "accept": false,
+    "hand": [
+      "c14",
+      "c69",
+      "c120"
+    ],
+    "targetCount": 2,
+    "offered": [
+      {
+        "type": "skillChoice",
+        "skillId": "spellExcitation"
+      }
+    ],
+    "turn": {
+      "playerId": 1,
+      "skipped": false,
+      "route": "normal",
+      "actionType": "spell",
+      "completed": true,
+      "activationDone": true,
+      "attackCount": 0,
+      "pendingActions": [],
+      "usedSkills": {},
+      "phase": "spellActionEnd"
+    },
+    "actions": []
+  },
+  {
+    "accept": true,
+    "hand": [
+      "c14",
+      "c69",
+      "c120"
+    ],
+    "targetCount": 2,
+    "offered": [
+      {
+        "type": "skillChoice",
+        "skillId": "spellExcitation"
+      }
+    ],
+    "turn": {
+      "playerId": 1,
+      "skipped": false,
+      "route": "normal",
+      "actionType": "spell",
+      "completed": true,
+      "activationDone": true,
+      "attackCount": 0,
+      "pendingActions": [
+        {
+          "type": "attack",
+          "element": null,
+          "sourceSkillId": "spellExcitation"
+        }
+      ],
+      "usedSkills": {},
+      "phase": "spellActionEnd"
+    },
+    "actions": [
+      {
+        "type": "pass"
+      },
+      {
+        "type": "play",
+        "index": 0,
+        "targetId": 0
+      },
+      {
+        "type": "play",
+        "index": 0,
+        "targetId": 3
+      },
+      {
+        "type": "play",
+        "index": 0,
+        "targetId": 4
+      },
+      {
+        "type": "play",
+        "index": 1,
+        "targetId": 0
+      },
+      {
+        "type": "play",
+        "index": 1,
+        "targetId": 3
+      },
+      {
+        "type": "play",
+        "index": 1,
+        "targetId": 4
+      }
+    ]
+  }
+]

@@ -1,0 +1,6 @@
+{
+  "ordinaryOneUnknownCardDelta": -0.17957333333333292,
+  "twoCardPoolOneUnknownCardDelta": -0.3250000000000002,
+  "trueBacklogForEveryPossibleOneCardHand": 0,
+  "scope": "No known cards and exactly one unknown; every completion has at most one ordinary action. Tempo-only difference must be zero."
+}

@@ -1,3 +1,4 @@
+import { createEconomyPolicy as createActionValuePolicy } from './action-value1/index.js';
 import { createEconomyPolicy as createTeamRoute2Policy } from './team-route2/index.js';
 import { createEconomyPolicy as createTeamRoutePolicy } from './team-route1/index.js';
 import { createEconomyPolicy as createCapabilityPolicy } from './economy-capability1/index.js';
@@ -13,6 +14,11 @@ import * as baseline from './v1.0/index.js';
 import { createPolicy } from './v1.1/index.js';
 // Explicit matchups remain possible; no assumption that version ordering implies strength.
 const choices = {
+  'experimental/action-value-1': createActionValuePolicy(),
+  'experimental/action-value-1-no-draws': createActionValuePolicy({draws:false}),
+  'experimental/action-value-1-no-tempo': createActionValuePolicy({tempo:false}),
+  'experimental/action-value-1-no-energy': createActionValuePolicy({energy:false}),
+  'experimental/action-value-1-no-allocation': createActionValuePolicy({allocation:false}),
   'v1.0': baseline,
   'experimental/team-route-2': createTeamRoute2Policy(),
   'experimental/team-route-2-no-routes': createTeamRoute2Policy({routes:false}),
