@@ -1,0 +1,25 @@
+✔ CLI/Web shared default routes every exported decision to accepted v1.4 while old aliases remain explicit (195.199645ms)
+✔ v1.4 default exactly matches frozen candidate on 180 fixed legal public observations (5979.680047ms)
+✔ v1.0 frozen module hashes and disabled reading preserve the original policy (82.3506ms)
+✔ response rules: dark wildcard, dark attack, holy light, and actual trait intersection (0.967004ms)
+✔ public evidence is soft, expires on draws/discards/turns, and excludes forced/uncounterable hits (1.287833ms)
+✔ private movements expose only counts; public plays expose immutable traits, never snapshots (0.918235ms)
+✔ reading changes equal target rankings on public evidence without altering defense or rules (2.677911ms)
+✔ all six heroes: policy cannot inspect other hands, hidden registry, deck, logs or presentation snapshots (15.559681ms)
+✔ mirror schedule pairs seed, lineup and start identically, with both policy colors (0.50921ms)
+✔ baseline selfplay is identical under policy-label exchange, with all decisions routed (531.497142ms)
+✔ defense is independently selectable and never assumes four cards are safe (6.072729ms)
+✔ defense and hero threats read public counts, not enemy spell or attack identities (2.458913ms)
+✔ standalone version runner owns nested decisions and restores engine fallback (2.097045ms)
+✔ full games under a private-state capability guard match unrestricted policy decisions (2115.862762ms)
+✔ observation hooks never alter baseline rules, RNG or results (90.113289ms)
+✔ production v1.4 aliases accepted targeted-fixes-1 while historical stable aliases remain frozen (53.911366ms)
+✔ stable v1.2 and frozen fusion-1 produce identical full games across six lineups (2256.468283ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6327.367038
