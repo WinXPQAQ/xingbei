@@ -12,5 +12,18 @@
   "finalIndependentReview": {
     "model": "Protocol120+30 clusters and28800 games verified; Bonferroni98.75% gates included; source-root guard anchored to script URL",
     "privacy": "Final four files differ from economy3 only version and heal;3 real angelBond tests repassed; no override, old source and observation adapters unchanged"
+  },
+  "finalStatisticalReview": {
+    "reviewer": "review_economy_model",
+    "independentlyRecomputed": true,
+    "candidateCommit": "f11768dc96f6015dd4a2dfc71a76d84e3f31b381",
+    "games": 28800,
+    "chunks": 120,
+    "completeUniqueCartesianKeys": true,
+    "pairedHeroIdsMatch": true,
+    "sourceUnchanged": true,
+    "passed": true,
+    "simultaneousLineupNoninferiority": true,
+    "scope": "Numerical gates passed; no claim both asymmetric improvements significant; default unchanged pending parent acceptance"
   }
 }

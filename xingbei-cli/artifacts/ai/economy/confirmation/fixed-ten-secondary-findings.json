@@ -1,0 +1,2589 @@
+{
+  "source": "/tmp/economy3-fixed-ten-pairs-diagnosis.json",
+  "candidateCommit": "573890e24e892fe7e3f15790e4b66828f386df32",
+  "scope": "Only the previously fixed ten old loss/control-win pairs; no confirmation/chunks or new holdout outputs read.",
+  "boundaries": [
+    "Pair numbers are zero-based. These examples do not estimate win rates or causal attribution for the selected losses.",
+    "Observed downstream resource use is descriptive on that one trajectory, not proof that its earlier preparation was optimal.",
+    "Same-action model/engine comparisons are used only for deterministic public consequences; hidden draw identities are excluded.",
+    "Public-state player.limit in this diagnostic JSON is the healing limit, not the hand limit.",
+    "The already-confirmed heal error is fixed in the separate frozen economy-4 candidate; no policy changes proposed or made here."
+  ],
+  "findings": [
+    {
+      "category": "资源兑现",
+      "status": "本例公开结算一致，未发现新增规则错误；未来收益估值仍是启发式",
+      "conclusion": "pair5 turn14神官花1宝石提炼，手牌4不变、能量0→1、启示治疗0→1，模型与真实一致。5.4分拆为星石-5、合成机会-1.6、治疗+2.5、可用能量+9.5。turn26真实契约消耗该能量，说明这一条轨迹确实有用途；不能推出提炼优于当时所有替代。",
+      "evidence": {
+        "locator": {
+          "pair": 5,
+          "phase": "candidate",
+          "turn": 14,
+          "id": 1
+        },
+        "hero": "priest",
+        "before": {
+          "current": 1,
+          "teams": {
+            "red": {
+              "morale": 13,
+              "achievements": [
+                "gem"
+              ],
+              "cups": 0
+            },
+            "blue": {
+              "morale": 13,
+              "achievements": [
+                "gem"
+              ],
+              "cups": 0
+            }
+          },
+          "players": [
+            {
+              "id": 0,
+              "hero": "berserker",
+              "team": "red",
+              "count": 5,
+              "healing": 0,
+              "limit": 2,
+              "energy": {
+                "gem": 0,
+                "crystal": 0
+              },
+              "effects": []
+            },
+            {
+              "id": 1,
+              "hero": "priest",
+              "team": "blue",
+              "count": 4,
+              "healing": 0,
+              "limit": 6,
+              "energy": {
+                "gem": 0,
+                "crystal": 0
+              },
+              "effects": []
+            },
+            {
+              "id": 2,
+              "hero": "sealer",
+              "team": "blue",
+              "count": 6,
+              "healing": 0,
+              "limit": 2,
+              "energy": {
+                "gem": 0,
+                "crystal": 0
+              },
+              "effects": []
+            },
+            {
+              "id": 3,
+              "hero": "marksman",
+              "team": "red",
+              "count": 4,
+              "healing": 1,
+              "limit": 2,
+              "energy": {
+                "gem": 1,
+                "crystal": 1
+              },
+              "effects": []
+            },
+            {
+              "id": 4,
+              "hero": "guardianAngel",
+              "team": "red",
+              "count": 2,
+              "healing": 0,
+              "limit": 2,
+              "energy": {
+                "gem": 0,
+                "crystal": 0
+              },
+              "effects": []
+            },
+            {
+              "id": 5,
+              "hero": "windSwordmaster",
+              "team": "blue",
+              "count": 2,
+              "healing": 0,
+              "limit": 2,
+              "energy": {
+                "gem": 0,
+                "crystal": 0
+              },
+              "effects": []
+            }
+          ]
+        },
+        "chosen": {
+          "type": "refine",
+          "stones": {
+            "gem": 1,
+            "crystal": 0
+          }
+        },
+        "candidateTop": {
+          "action": {
+            "type": "refine",
+            "stones": {
+              "gem": 1,
+              "crystal": 0
+            }
+          },
+          "score": 5.400000000000002,
+          "explanation": {
+            "parts": {
+              "morale": 0,
+              "cups": 0,
+              "stones": -5,
+              "conversion": -1.6,
+              "ownHand": 0,
+              "otherHands": 0,
+              "healing": 2.5,
+              "energy": 9.5,
+              "effects": 0,
+              "nextTurnRisk": 0,
+              "otherTurnRisk": 0,
+              "terminal": 0
+            },
+            "branches": [
+              {
+                "probability": 1,
+                "path": [
+                  "refine"
+                ]
+              }
+            ],
+            "precision": null,
+            "search": {
+              "limit": 128,
+              "used": 0
+            }
+          }
+        },
+        "baselineTop": {
+          "action": {
+            "type": "skill",
+            "skillId": "waterPower",
+            "cardIds": [
+              "c27"
+            ],
+            "targetIds": [
+              5
+            ]
+          },
+          "score": 67.1,
+          "explanation": null
+        },
+        "projection": [
+          {
+            "probability": 1,
+            "path": [
+              "refine"
+            ],
+            "teams": {
+              "red": {
+                "morale": 13,
+                "cups": 0,
+                "gem": 1,
+                "crystal": 0,
+                "total": 1
+              },
+              "blue": {
+                "morale": 13,
+                "cups": 0,
+                "gem": 0,
+                "crystal": 0,
+                "total": 1
+              }
+            },
+            "players": [
+              {
+                "id": 0,
+                "count": 5,
+                "healing": 0,
+                "energy": {
+                  "gem": 0,
+                  "crystal": 0
+                },
+                "effects": []
+              },
+              {
+                "id": 1,
+                "count": 4,
+                "healing": 1,
+                "energy": {
+                  "gem": 1,
+                  "crystal": 0
+                },
+                "effects": []
+              },
+              {
+                "id": 2,
+                "count": 6,
+                "healing": 0,
+                "energy": {
+                  "gem": 0,
+                  "crystal": 0
+                },
+                "effects": []
+              },
+              {
+                "id": 3,
+                "count": 4,
+                "healing": 1,
+                "energy": {
+                  "gem": 1,
+                  "crystal": 1
+                },
+                "effects": []
+              },
+              {
+                "id": 4,
+                "count": 2,
+                "healing": 0,
+                "energy": {
+                  "gem": 0,
+                  "crystal": 0
+                },
+                "effects": []
+              },
+              {
+                "id": 5,
+                "count": 2,
+                "healing": 0,
+                "energy": {
+                  "gem": 0,
+                  "crystal": 0
+                },
+                "effects": []
+              }
+            ]
+          }
+        ],
+        "actualAfter": {
+          "current": 1,
+          "teams": {
+            "red": {
+              "morale": 13,
+              "achievements": [
+                "gem"
+              ],
+              "cups": 0
+            },
+            "blue": {
+              "morale": 13,
+              "achievements": [],
+              "cups": 0
+            }
+          },
+          "players": [
+            {
+              "id": 0,
+              "hero": "berserker",
+              "team": "red",
+              "count": 5,
+              "healing": 0,
+              "limit": 2,
+              "energy": {
+                "gem": 0,
+                "crystal": 0
+              },
+              "effects": []
+            },
+            {
+              "id": 1,
+              "hero": "priest",
+              "team": "blue",
+              "count": 4,
+              "healing": 1,
+              "limit": 6,
+              "energy": {
+                "gem": 1,
+                "crystal": 0
+              },
+              "effects": []
+            },
+            {
+              "id": 2,
+              "hero": "sealer",
+              "team": "blue",
+              "count": 6,
+              "healing": 0,
+              "limit": 2,
+              "energy": {
+                "gem": 0,
+                "crystal": 0
+              },
+              "effects": []
+            },
+            {
+              "id": 3,
+              "hero": "marksman",
+              "team": "red",
+              "count": 4,
+              "healing": 1,
+              "limit": 2,
+              "energy": {
+                "gem": 1,
+                "crystal": 1
+              },
+              "effects": []
+            },
+            {
+              "id": 4,
+              "hero": "guardianAngel",
+              "team": "red",
+              "count": 2,
+              "healing": 0,
+              "limit": 2,
+              "energy": {
+                "gem": 0,
+                "crystal": 0
+              },
+              "effects": []
+            },
+            {
+              "id": 5,
+              "hero": "windSwordmaster",
+              "team": "blue",
+              "count": 2,
+              "healing": 0,
+              "limit": 2,
+              "energy": {
+                "gem": 0,
+                "crystal": 0
+              },
+              "effects": []
+            }
+          ]
+        }
+      },
+      "observedLaterUse": {
+        "turn": 26,
+        "requests": [
+          {
+            "type": "skillChoice",
+            "chosen": true,
+            "candidate": true,
+            "baseline": true,
+            "request": {
+              "type": "skillChoice",
+              "playerId": 1,
+              "skillId": "holyContract",
+              "defaultValue": false,
+              "reservedEnergy": 0,
+              "reservedHealing": 0,
+              "energy": {
+                "gem": 1,
+                "crystal": 0
+              },
+              "choices": [
+                {
+                  "value": true,
+                  "label": "发动"
+                },
+                {
+                  "value": false,
+                  "label": "不发动"
+                }
+              ],
+              "context": {
+                "cardId": null
+              }
+            },
+            "state": {
+              "current": 1,
+              "teams": {
+                "red": {
+                  "morale": 12,
+                  "achievements": [],
+                  "cups": 0
+                },
+                "blue": {
+                  "morale": 12,
+                  "achievements": [
+                    "gem",
+                    "crystal",
+                    "gem",
+                    "gem",
+                    "gem"
+                  ],
+                  "cups": 0
+                }
+              },
+              "players": [
+                {
+                  "id": 0,
+                  "hero": "berserker",
+                  "team": "red",
+                  "count": 4,
+                  "healing": 1,
+                  "limit": 2,
+                  "energy": {
+                    "gem": 1,
+                    "crystal": 1
+                  },
+                  "effects": [
+                    "holyShield"
+                  ]
+                },
+                {
+                  "id": 1,
+                  "hero": "priest",
+                  "team": "blue",
+                  "count": 4,
+                  "healing": 1,
+                  "limit": 6,
+                  "energy": {
+                    "gem": 1,
+                    "crystal": 0
+                  },
+                  "effects": []
+                },
+                {
+                  "id": 2,
+                  "hero": "sealer",
+                  "team": "blue",
+                  "count": 4,
+                  "healing": 0,
+                  "limit": 2,
+                  "energy": {
+                    "gem": 0,
+                    "crystal": 0
+                  },
+                  "effects": []
+                },
+                {
+                  "id": 3,
+                  "hero": "marksman",
+                  "team": "red",
+                  "count": 4,
+                  "healing": 1,
+                  "limit": 2,
+                  "energy": {
+                    "gem": 1,
+                    "crystal": 1
+                  },
+                  "effects": []
+                },
+                {
+                  "id": 4,
+                  "hero": "guardianAngel",
+                  "team": "red",
+                  "count": 6,
+                  "healing": 0,
+                  "limit": 2,
+                  "energy": {
+                    "gem": 1,
+                    "crystal": 1
+                  },
+                  "effects": []
+                },
+                {
+                  "id": 5,
+                  "hero": "windSwordmaster",
+                  "team": "blue",
+                  "count": 3,
+                  "healing": 1,
+                  "limit": 2,
+                  "energy": {
+                    "gem": 0,
+                    "crystal": 0
+                  },
+                  "effects": []
+                }
+              ]
+            }
+          },
+          {
+            "type": "playerChoice",
+            "chosen": 2,
+            "candidate": 2,
+            "baseline": 2,
+            "request": {
+              "type": "playerChoice",
+              "playerId": 1,
+              "skillId": "holyContract",
+              "defaultValue": 2,
+              "choices": [
+                {
+                  "value": 2,
+                  "label": "蓝二 · 封印师"
+                },
+                {
+                  "value": 5,
+                  "label": "蓝三 · 风之剑圣"
+                }
+              ]
+            },
+            "state": {
+              "current": 1,
+              "teams": {
+                "red": {
+                  "morale": 12,
+                  "achievements": [],
+                  "cups": 0
+                },
+                "blue": {
+                  "morale": 12,
+                  "achievements": [
+                    "gem",
+                    "crystal",
+                    "gem",
+                    "gem",
+                    "gem"
+                  ],
+                  "cups": 0
+                }
+              },
+              "players": [
+                {
+                  "id": 0,
+                  "hero": "berserker",
+                  "team": "red",
+                  "count": 4,
+                  "healing": 1,
+                  "limit": 2,
+                  "energy": {
+                    "gem": 1,
+                    "crystal": 1
+                  },
+                  "effects": [
+                    "holyShield"
+                  ]
+                },
+                {
+                  "id": 1,
+                  "hero": "priest",
+                  "team": "blue",
+                  "count": 4,
+                  "healing": 1,
+                  "limit": 6,
+                  "energy": {
+                    "gem": 1,
+                    "crystal": 0
+                  },
+                  "effects": []
+                },
+                {
+                  "id": 2,
+                  "hero": "sealer",
+                  "team": "blue",
+                  "count": 4,
+                  "healing": 0,
+                  "limit": 2,
+                  "energy": {
+                    "gem": 0,
+                    "crystal": 0
+                  },
+                  "effects": []
+                },
+                {
+                  "id": 3,
+                  "hero": "marksman",
+                  "team": "red",
+                  "count": 4,
+                  "healing": 1,
+                  "limit": 2,
+                  "energy": {
+                    "gem": 1,
+                    "crystal": 1
+                  },
+                  "effects": []
+                },
+                {
+                  "id": 4,
+                  "hero": "guardianAngel",
+                  "team": "red",
+                  "count": 6,
+                  "healing": 0,
+                  "limit": 2,
+                  "energy": {
+                    "gem": 1,
+                    "crystal": 1
+                  },
+                  "effects": []
+                },
+                {
+                  "id": 5,
+                  "hero": "windSwordmaster",
+                  "team": "blue",
+                  "count": 3,
+                  "healing": 1,
+                  "limit": 2,
+                  "energy": {
+                    "gem": 0,
+                    "crystal": 0
+                  },
+                  "effects": []
+                }
+              ]
+            }
+          },
+          {
+            "type": "numberChoice",
+            "chosen": 1,
+            "candidate": 1,
+            "baseline": 1,
+            "request": {
+              "type": "numberChoice",
+              "playerId": 1,
+              "skillId": "holyContract",
+              "targetId": 2,
+              "defaultValue": 1,
+              "reservedHealing": 0,
+              "choices": [
+                {
+                  "value": 1,
+                  "label": "1点"
+                }
+              ]
+            },
+            "state": {
+              "current": 1,
+              "teams": {
+                "red": {
+                  "morale": 12,
+                  "achievements": [],
+                  "cups": 0
+                },
+                "blue": {
+                  "morale": 12,
+                  "achievements": [
+                    "gem",
+                    "crystal",
+                    "gem",
+                    "gem",
+                    "gem"
+                  ],
+                  "cups": 0
+                }
+              },
+              "players": [
+                {
+                  "id": 0,
+                  "hero": "berserker",
+                  "team": "red",
+                  "count": 4,
+                  "healing": 1,
+                  "limit": 2,
+                  "energy": {
+                    "gem": 1,
+                    "crystal": 1
+                  },
+                  "effects": [
+                    "holyShield"
+                  ]
+                },
+                {
+                  "id": 1,
+                  "hero": "priest",
+                  "team": "blue",
+                  "count": 4,
+                  "healing": 1,
+                  "limit": 6,
+                  "energy": {
+                    "gem": 1,
+                    "crystal": 0
+                  },
+                  "effects": []
+                },
+                {
+                  "id": 2,
+                  "hero": "sealer",
+                  "team": "blue",
+                  "count": 4,
+                  "healing": 0,
+                  "limit": 2,
+                  "energy": {
+                    "gem": 0,
+                    "crystal": 0
+                  },
+                  "effects": []
+                },
+                {
+                  "id": 3,
+                  "hero": "marksman",
+                  "team": "red",
+                  "count": 4,
+                  "healing": 1,
+                  "limit": 2,
+                  "energy": {
+                    "gem": 1,
+                    "crystal": 1
+                  },
+                  "effects": []
+                },
+                {
+                  "id": 4,
+                  "hero": "guardianAngel",
+                  "team": "red",
+                  "count": 6,
+                  "healing": 0,
+                  "limit": 2,
+                  "energy": {
+                    "gem": 1,
+                    "crystal": 1
+                  },
+                  "effects": []
+                },
+                {
+                  "id": 5,
+                  "hero": "windSwordmaster",
+                  "team": "blue",
+                  "count": 3,
+                  "healing": 1,
+                  "limit": 2,
+                  "energy": {
+                    "gem": 0,
+                    "crystal": 0
+                  },
+                  "effects": []
+                }
+              ]
+            }
+          }
+        ],
+        "actorAfter": {
+          "id": 1,
+          "hero": "priest",
+          "team": "blue",
+          "count": 3,
+          "healing": 0,
+          "limit": 6,
+          "energy": {
+            "gem": 0,
+            "crystal": 0
+          },
+          "effects": []
+        }
+      },
+      "limitation": "9分计划价值不是完整跨回合概率计算，模型没有证明准备一定成功兑现。"
+    },
+    {
+      "category": "神官赠牌",
+      "status": "本例支付/赠牌/治疗公开结果与模型一致；没有队友暗牌参与推断",
+      "conclusion": "pair5 turn20水之神力给风剑1张地攻击牌，神官6→4牌、风剑4→5牌，双方治疗0→1。候选21.175分并非无条件给牌奖：ownHand -0.2、otherHands -1.3，治疗+5、既有能量重新有用途+9、自身后续风险改善+8.675。受赠者仍有拥堵成本。",
+      "evidence": {
+        "locator": {
+          "pair": 5,
+          "phase": "candidate",
+          "turn": 20,
+          "id": 1
+        },
+        "hero": "priest",
+        "before": {
+          "current": 1,
+          "teams": {
+            "red": {
+              "morale": 13,
+              "achievements": [],
+              "cups": 0
+            },
+            "blue": {
+              "morale": 12,
+              "achievements": [
+                "gem",
+                "crystal"
+              ],
+              "cups": 0
+            }
+          },
+          "players": [
+            {
+              "id": 0,
+              "hero": "berserker",
+              "team": "red",
+              "count": 4,
+              "healing": 0,
+              "limit": 2,
+              "energy": {
+                "gem": 0,
+                "crystal": 0
+              },
+              "effects": []
+            },
+            {
+              "id": 1,
+              "hero": "priest",
+              "team": "blue",
+              "count": 6,
+              "healing": 0,
+              "limit": 6,
+              "energy": {
+                "gem": 1,
+                "crystal": 0
+              },
+              "effects": []
+            },
+            {
+              "id": 2,
+              "hero": "sealer",
+              "team": "blue",
+              "count": 5,
+              "healing": 0,
+              "limit": 2,
+              "energy": {
+                "gem": 0,
+                "crystal": 0
+              },
+              "effects": []
+            },
+            {
+              "id": 3,
+              "hero": "marksman",
+              "team": "red",
+              "count": 1,
+              "healing": 1,
+              "limit": 2,
+              "energy": {
+                "gem": 1,
+                "crystal": 1
+              },
+              "effects": []
+            },
+            {
+              "id": 4,
+              "hero": "guardianAngel",
+              "team": "red",
+              "count": 2,
+              "healing": 0,
+              "limit": 2,
+              "energy": {
+                "gem": 1,
+                "crystal": 1
+              },
+              "effects": []
+            },
+            {
+              "id": 5,
+              "hero": "windSwordmaster",
+              "team": "blue",
+              "count": 4,
+              "healing": 0,
+              "limit": 2,
+              "energy": {
+                "gem": 0,
+                "crystal": 0
+              },
+              "effects": []
+            }
+          ]
+        },
+        "chosen": {
+          "type": "skill",
+          "skillId": "waterPower",
+          "cardIds": [
+            "c15"
+          ],
+          "targetIds": [
+            5
+          ]
+        },
+        "candidateTop": {
+          "action": {
+            "type": "skill",
+            "skillId": "waterPower",
+            "cardIds": [
+              "c15"
+            ],
+            "targetIds": [
+              5
+            ]
+          },
+          "score": 21.175000000000004,
+          "explanation": {
+            "parts": {
+              "morale": 0,
+              "cups": 0,
+              "stones": 0,
+              "conversion": 0,
+              "ownHand": -0.19999999999999218,
+              "otherHands": -1.2999999999999998,
+              "healing": 5,
+              "energy": 9,
+              "effects": 0,
+              "nextTurnRisk": 8.674999999999997,
+              "otherTurnRisk": 0,
+              "terminal": 0
+            },
+            "branches": [
+              {
+                "probability": 1,
+                "path": [
+                  "waterPower"
+                ]
+              }
+            ],
+            "precision": null,
+            "search": {
+              "limit": 128,
+              "used": 0
+            }
+          }
+        },
+        "baselineTop": {
+          "action": {
+            "type": "skill",
+            "skillId": "waterPower",
+            "cardIds": [
+              "c15"
+            ],
+            "targetIds": [
+              2
+            ]
+          },
+          "score": 73.62,
+          "explanation": null
+        },
+        "projection": [
+          {
+            "probability": 1,
+            "path": [
+              "waterPower"
+            ],
+            "teams": {
+              "red": {
+                "morale": 13,
+                "cups": 0,
+                "gem": 0,
+                "crystal": 0,
+                "total": 0
+              },
+              "blue": {
+                "morale": 12,
+                "cups": 0,
+                "gem": 1,
+                "crystal": 1,
+                "total": 2
+              }
+            },
+            "players": [
+              {
+                "id": 0,
+                "count": 4,
+                "healing": 0,
+                "energy": {
+                  "gem": 0,
+                  "crystal": 0
+                },
+                "effects": []
+              },
+              {
+                "id": 1,
+                "count": 4,
+                "healing": 1,
+                "energy": {
+                  "gem": 1,
+                  "crystal": 0
+                },
+                "effects": []
+              },
+              {
+                "id": 2,
+                "count": 5,
+                "healing": 0,
+                "energy": {
+                  "gem": 0,
+                  "crystal": 0
+                },
+                "effects": []
+              },
+              {
+                "id": 3,
+                "count": 1,
+                "healing": 1,
+                "energy": {
+                  "gem": 1,
+                  "crystal": 1
+                },
+                "effects": []
+              },
+              {
+                "id": 4,
+                "count": 2,
+                "healing": 0,
+                "energy": {
+                  "gem": 1,
+                  "crystal": 1
+                },
+                "effects": []
+              },
+              {
+                "id": 5,
+                "count": 5,
+                "healing": 1,
+                "energy": {
+                  "gem": 0,
+                  "crystal": 0
+                },
+                "effects": []
+              }
+            ]
+          }
+        ],
+        "actualAfter": {
+          "current": 1,
+          "teams": {
+            "red": {
+              "morale": 13,
+              "achievements": [],
+              "cups": 0
+            },
+            "blue": {
+              "morale": 12,
+              "achievements": [
+                "gem",
+                "crystal"
+              ],
+              "cups": 0
+            }
+          },
+          "players": [
+            {
+              "id": 0,
+              "hero": "berserker",
+              "team": "red",
+              "count": 4,
+              "healing": 0,
+              "limit": 2,
+              "energy": {
+                "gem": 0,
+                "crystal": 0
+              },
+              "effects": []
+            },
+            {
+              "id": 1,
+              "hero": "priest",
+              "team": "blue",
+              "count": 4,
+              "healing": 1,
+              "limit": 6,
+              "energy": {
+                "gem": 1,
+                "crystal": 0
+              },
+              "effects": []
+            },
+            {
+              "id": 2,
+              "hero": "sealer",
+              "team": "blue",
+              "count": 5,
+              "healing": 0,
+              "limit": 2,
+              "energy": {
+                "gem": 0,
+                "crystal": 0
+              },
+              "effects": []
+            },
+            {
+              "id": 3,
+              "hero": "marksman",
+              "team": "red",
+              "count": 1,
+              "healing": 1,
+              "limit": 2,
+              "energy": {
+                "gem": 1,
+                "crystal": 1
+              },
+              "effects": []
+            },
+            {
+              "id": 4,
+              "hero": "guardianAngel",
+              "team": "red",
+              "count": 2,
+              "healing": 0,
+              "limit": 2,
+              "energy": {
+                "gem": 1,
+                "crystal": 1
+              },
+              "effects": []
+            },
+            {
+              "id": 5,
+              "hero": "windSwordmaster",
+              "team": "blue",
+              "count": 5,
+              "healing": 1,
+              "limit": 2,
+              "energy": {
+                "gem": 0,
+                "crystal": 0
+              },
+              "effects": []
+            }
+          ]
+        }
+      },
+      "knownTransferredCard": [
+        {
+          "name": "earthStrike",
+          "elements": [
+            "earth"
+          ]
+        }
+      ],
+      "limitation": "仅验证净收益拆分和确定性结算；没有证明这张地牌是队友最需要的牌，也不以之后随机摸牌归因。"
+    },
+    {
+      "category": "神圣契约与行动预算",
+      "status": "明确的既有规划边界，未发现本例非法支付或请求路由错误",
+      "conclusion": "pair5 turn26同一次普通攻击启动前实际发动契约：转移1治疗给seat2，消耗1宝石能量。实际神官能量1→0、治疗1→0；行动投影仍保留能量1和治疗1。说明actionPlan不完整展开ACTIVATION契约，后续选择虽然合法但当前行动估值没有统一计入这段预算。",
+      "evidence": {
+        "locator": {
+          "pair": 5,
+          "phase": "candidate",
+          "turn": 26,
+          "id": 1
+        },
+        "hero": "priest",
+        "before": {
+          "current": 1,
+          "teams": {
+            "red": {
+              "morale": 12,
+              "achievements": [],
+              "cups": 0
+            },
+            "blue": {
+              "morale": 12,
+              "achievements": [
+                "gem",
+                "crystal",
+                "gem",
+                "gem",
+                "gem"
+              ],
+              "cups": 0
+            }
+          },
+          "players": [
+            {
+              "id": 0,
+              "hero": "berserker",
+              "team": "red",
+              "count": 4,
+              "healing": 1,
+              "limit": 2,
+              "energy": {
+                "gem": 1,
+                "crystal": 1
+              },
+              "effects": [
+                "holyShield"
+              ]
+            },
+            {
+              "id": 1,
+              "hero": "priest",
+              "team": "blue",
+              "count": 4,
+              "healing": 1,
+              "limit": 6,
+              "energy": {
+                "gem": 1,
+                "crystal": 0
+              },
+              "effects": []
+            },
+            {
+              "id": 2,
+              "hero": "sealer",
+              "team": "blue",
+              "count": 4,
+              "healing": 0,
+              "limit": 2,
+              "energy": {
+                "gem": 0,
+                "crystal": 0
+              },
+              "effects": []
+            },
+            {
+              "id": 3,
+              "hero": "marksman",
+              "team": "red",
+              "count": 4,
+              "healing": 1,
+              "limit": 2,
+              "energy": {
+                "gem": 1,
+                "crystal": 1
+              },
+              "effects": []
+            },
+            {
+              "id": 4,
+              "hero": "guardianAngel",
+              "team": "red",
+              "count": 6,
+              "healing": 0,
+              "limit": 2,
+              "energy": {
+                "gem": 1,
+                "crystal": 1
+              },
+              "effects": []
+            },
+            {
+              "id": 5,
+              "hero": "windSwordmaster",
+              "team": "blue",
+              "count": 3,
+              "healing": 1,
+              "limit": 2,
+              "energy": {
+                "gem": 0,
+                "crystal": 0
+              },
+              "effects": []
+            }
+          ]
+        },
+        "chosen": {
+          "type": "play",
+          "index": 2,
+          "targetId": 0
+        },
+        "candidateTop": {
+          "action": {
+            "type": "play",
+            "index": 2,
+            "targetId": 0
+          },
+          "score": 1.7000000000000028,
+          "explanation": {
+            "parts": {
+              "morale": 0,
+              "cups": 0,
+              "stones": 0,
+              "conversion": 0,
+              "ownHand": -3.3000000000000007,
+              "otherHands": 0,
+              "healing": 0,
+              "energy": 0,
+              "effects": 5,
+              "nextTurnRisk": 0,
+              "otherTurnRisk": 0,
+              "terminal": 0
+            },
+            "branches": [
+              {
+                "probability": 1,
+                "path": [
+                  "shield"
+                ]
+              }
+            ],
+            "precision": false,
+            "search": {
+              "limit": 128,
+              "used": 1
+            }
+          }
+        },
+        "baselineTop": {
+          "action": {
+            "type": "skill",
+            "skillId": "sacredDomain",
+            "mode": "damage",
+            "cardIds": [
+              "c90",
+              "c32"
+            ],
+            "targetIds": [
+              4
+            ]
+          },
+          "score": 47,
+          "explanation": null
+        },
+        "projection": [
+          {
+            "probability": 1,
+            "path": [
+              "shield"
+            ],
+            "teams": {
+              "red": {
+                "morale": 12,
+                "cups": 0,
+                "gem": 0,
+                "crystal": 0,
+                "total": 0
+              },
+              "blue": {
+                "morale": 12,
+                "cups": 0,
+                "gem": 4,
+                "crystal": 1,
+                "total": 5
+              }
+            },
+            "players": [
+              {
+                "id": 0,
+                "count": 4,
+                "healing": 1,
+                "energy": {
+                  "gem": 1,
+                  "crystal": 1
+                },
+                "effects": []
+              },
+              {
+                "id": 1,
+                "count": 3,
+                "healing": 1,
+                "energy": {
+                  "gem": 1,
+                  "crystal": 0
+                },
+                "effects": []
+              },
+              {
+                "id": 2,
+                "count": 4,
+                "healing": 0,
+                "energy": {
+                  "gem": 0,
+                  "crystal": 0
+                },
+                "effects": []
+              },
+              {
+                "id": 3,
+                "count": 4,
+                "healing": 1,
+                "energy": {
+                  "gem": 1,
+                  "crystal": 1
+                },
+                "effects": []
+              },
+              {
+                "id": 4,
+                "count": 6,
+                "healing": 0,
+                "energy": {
+                  "gem": 1,
+                  "crystal": 1
+                },
+                "effects": []
+              },
+              {
+                "id": 5,
+                "count": 3,
+                "healing": 1,
+                "energy": {
+                  "gem": 0,
+                  "crystal": 0
+                },
+                "effects": []
+              }
+            ]
+          }
+        ],
+        "actualAfter": {
+          "current": 1,
+          "teams": {
+            "red": {
+              "morale": 12,
+              "achievements": [],
+              "cups": 0
+            },
+            "blue": {
+              "morale": 12,
+              "achievements": [
+                "gem",
+                "crystal",
+                "gem",
+                "gem",
+                "gem"
+              ],
+              "cups": 0
+            }
+          },
+          "players": [
+            {
+              "id": 0,
+              "hero": "berserker",
+              "team": "red",
+              "count": 4,
+              "healing": 1,
+              "limit": 2,
+              "energy": {
+                "gem": 1,
+                "crystal": 1
+              },
+              "effects": []
+            },
+            {
+              "id": 1,
+              "hero": "priest",
+              "team": "blue",
+              "count": 3,
+              "healing": 0,
+              "limit": 6,
+              "energy": {
+                "gem": 0,
+                "crystal": 0
+              },
+              "effects": []
+            },
+            {
+              "id": 2,
+              "hero": "sealer",
+              "team": "blue",
+              "count": 4,
+              "healing": 1,
+              "limit": 2,
+              "energy": {
+                "gem": 0,
+                "crystal": 0
+              },
+              "effects": []
+            },
+            {
+              "id": 3,
+              "hero": "marksman",
+              "team": "red",
+              "count": 4,
+              "healing": 1,
+              "limit": 2,
+              "energy": {
+                "gem": 1,
+                "crystal": 1
+              },
+              "effects": []
+            },
+            {
+              "id": 4,
+              "hero": "guardianAngel",
+              "team": "red",
+              "count": 6,
+              "healing": 0,
+              "limit": 2,
+              "energy": {
+                "gem": 1,
+                "crystal": 1
+              },
+              "effects": []
+            },
+            {
+              "id": 5,
+              "hero": "windSwordmaster",
+              "team": "blue",
+              "count": 3,
+              "healing": 1,
+              "limit": 2,
+              "energy": {
+                "gem": 0,
+                "crystal": 0
+              },
+              "effects": []
+            }
+          ]
+        }
+      },
+      "requests": [
+        {
+          "type": "skillChoice",
+          "chosen": true,
+          "candidate": true,
+          "baseline": true,
+          "request": {
+            "type": "skillChoice",
+            "playerId": 1,
+            "skillId": "holyContract",
+            "defaultValue": false,
+            "reservedEnergy": 0,
+            "reservedHealing": 0,
+            "energy": {
+              "gem": 1,
+              "crystal": 0
+            },
+            "choices": [
+              {
+                "value": true,
+                "label": "发动"
+              },
+              {
+                "value": false,
+                "label": "不发动"
+              }
+            ],
+            "context": {
+              "cardId": null
+            }
+          },
+          "state": {
+            "current": 1,
+            "teams": {
+              "red": {
+                "morale": 12,
+                "achievements": [],
+                "cups": 0
+              },
+              "blue": {
+                "morale": 12,
+                "achievements": [
+                  "gem",
+                  "crystal",
+                  "gem",
+                  "gem",
+                  "gem"
+                ],
+                "cups": 0
+              }
+            },
+            "players": [
+              {
+                "id": 0,
+                "hero": "berserker",
+                "team": "red",
+                "count": 4,
+                "healing": 1,
+                "limit": 2,
+                "energy": {
+                  "gem": 1,
+                  "crystal": 1
+                },
+                "effects": [
+                  "holyShield"
+                ]
+              },
+              {
+                "id": 1,
+                "hero": "priest",
+                "team": "blue",
+                "count": 4,
+                "healing": 1,
+                "limit": 6,
+                "energy": {
+                  "gem": 1,
+                  "crystal": 0
+                },
+                "effects": []
+              },
+              {
+                "id": 2,
+                "hero": "sealer",
+                "team": "blue",
+                "count": 4,
+                "healing": 0,
+                "limit": 2,
+                "energy": {
+                  "gem": 0,
+                  "crystal": 0
+                },
+                "effects": []
+              },
+              {
+                "id": 3,
+                "hero": "marksman",
+                "team": "red",
+                "count": 4,
+                "healing": 1,
+                "limit": 2,
+                "energy": {
+                  "gem": 1,
+                  "crystal": 1
+                },
+                "effects": []
+              },
+              {
+                "id": 4,
+                "hero": "guardianAngel",
+                "team": "red",
+                "count": 6,
+                "healing": 0,
+                "limit": 2,
+                "energy": {
+                  "gem": 1,
+                  "crystal": 1
+                },
+                "effects": []
+              },
+              {
+                "id": 5,
+                "hero": "windSwordmaster",
+                "team": "blue",
+                "count": 3,
+                "healing": 1,
+                "limit": 2,
+                "energy": {
+                  "gem": 0,
+                  "crystal": 0
+                },
+                "effects": []
+              }
+            ]
+          }
+        },
+        {
+          "type": "playerChoice",
+          "chosen": 2,
+          "candidate": 2,
+          "baseline": 2,
+          "request": {
+            "type": "playerChoice",
+            "playerId": 1,
+            "skillId": "holyContract",
+            "defaultValue": 2,
+            "choices": [
+              {
+                "value": 2,
+                "label": "蓝二 · 封印师"
+              },
+              {
+                "value": 5,
+                "label": "蓝三 · 风之剑圣"
+              }
+            ]
+          },
+          "state": {
+            "current": 1,
+            "teams": {
+              "red": {
+                "morale": 12,
+                "achievements": [],
+                "cups": 0
+              },
+              "blue": {
+                "morale": 12,
+                "achievements": [
+                  "gem",
+                  "crystal",
+                  "gem",
+                  "gem",
+                  "gem"
+                ],
+                "cups": 0
+              }
+            },
+            "players": [
+              {
+                "id": 0,
+                "hero": "berserker",
+                "team": "red",
+                "count": 4,
+                "healing": 1,
+                "limit": 2,
+                "energy": {
+                  "gem": 1,
+                  "crystal": 1
+                },
+                "effects": [
+                  "holyShield"
+                ]
+              },
+              {
+                "id": 1,
+                "hero": "priest",
+                "team": "blue",
+                "count": 4,
+                "healing": 1,
+                "limit": 6,
+                "energy": {
+                  "gem": 1,
+                  "crystal": 0
+                },
+                "effects": []
+              },
+              {
+                "id": 2,
+                "hero": "sealer",
+                "team": "blue",
+                "count": 4,
+                "healing": 0,
+                "limit": 2,
+                "energy": {
+                  "gem": 0,
+                  "crystal": 0
+                },
+                "effects": []
+              },
+              {
+                "id": 3,
+                "hero": "marksman",
+                "team": "red",
+                "count": 4,
+                "healing": 1,
+                "limit": 2,
+                "energy": {
+                  "gem": 1,
+                  "crystal": 1
+                },
+                "effects": []
+              },
+              {
+                "id": 4,
+                "hero": "guardianAngel",
+                "team": "red",
+                "count": 6,
+                "healing": 0,
+                "limit": 2,
+                "energy": {
+                  "gem": 1,
+                  "crystal": 1
+                },
+                "effects": []
+              },
+              {
+                "id": 5,
+                "hero": "windSwordmaster",
+                "team": "blue",
+                "count": 3,
+                "healing": 1,
+                "limit": 2,
+                "energy": {
+                  "gem": 0,
+                  "crystal": 0
+                },
+                "effects": []
+              }
+            ]
+          }
+        },
+        {
+          "type": "numberChoice",
+          "chosen": 1,
+          "candidate": 1,
+          "baseline": 1,
+          "request": {
+            "type": "numberChoice",
+            "playerId": 1,
+            "skillId": "holyContract",
+            "targetId": 2,
+            "defaultValue": 1,
+            "reservedHealing": 0,
+            "choices": [
+              {
+                "value": 1,
+                "label": "1点"
+              }
+            ]
+          },
+          "state": {
+            "current": 1,
+            "teams": {
+              "red": {
+                "morale": 12,
+                "achievements": [],
+                "cups": 0
+              },
+              "blue": {
+                "morale": 12,
+                "achievements": [
+                  "gem",
+                  "crystal",
+                  "gem",
+                  "gem",
+                  "gem"
+                ],
+                "cups": 0
+              }
+            },
+            "players": [
+              {
+                "id": 0,
+                "hero": "berserker",
+                "team": "red",
+                "count": 4,
+                "healing": 1,
+                "limit": 2,
+                "energy": {
+                  "gem": 1,
+                  "crystal": 1
+                },
+                "effects": [
+                  "holyShield"
+                ]
+              },
+              {
+                "id": 1,
+                "hero": "priest",
+                "team": "blue",
+                "count": 4,
+                "healing": 1,
+                "limit": 6,
+                "energy": {
+                  "gem": 1,
+                  "crystal": 0
+                },
+                "effects": []
+              },
+              {
+                "id": 2,
+                "hero": "sealer",
+                "team": "blue",
+                "count": 4,
+                "healing": 0,
+                "limit": 2,
+                "energy": {
+                  "gem": 0,
+                  "crystal": 0
+                },
+                "effects": []
+              },
+              {
+                "id": 3,
+                "hero": "marksman",
+                "team": "red",
+                "count": 4,
+                "healing": 1,
+                "limit": 2,
+                "energy": {
+                  "gem": 1,
+                  "crystal": 1
+                },
+                "effects": []
+              },
+              {
+                "id": 4,
+                "hero": "guardianAngel",
+                "team": "red",
+                "count": 6,
+                "healing": 0,
+                "limit": 2,
+                "energy": {
+                  "gem": 1,
+                  "crystal": 1
+                },
+                "effects": []
+              },
+              {
+                "id": 5,
+                "hero": "windSwordmaster",
+                "team": "blue",
+                "count": 3,
+                "healing": 1,
+                "limit": 2,
+                "energy": {
+                  "gem": 0,
+                  "crystal": 0
+                },
+                "effects": []
+              }
+            ]
+          }
+        }
+      ],
+      "limitation": "这是同次结算可核对的投影遗漏，不借后续胜负解释因果；不因此在冻结确认期间调整候选。"
+    },
+    {
+      "category": "封印与溢出",
+      "status": "本例封印自身损伤已计入，未发现新增规则错误",
+      "conclusion": "pair0 turn78蓝seat1狂战5牌0治疗，带earthSeal/thunderSeal。行动后thunderSeal消失、手牌6、蓝士气10→9；三个投影分支均预测蓝士气9、6牌、只留earthSeal，与真实公开自损吻合。选择的正总分主要来自约0.318命中分支的立即取胜价值，而不是漏算自身封印。",
+      "evidence": {
+        "locator": {
+          "pair": 0,
+          "phase": "candidate",
+          "turn": 78,
+          "id": 1
+        },
+        "hero": "berserker",
+        "before": {
+          "current": 1,
+          "teams": {
+            "red": {
+              "morale": 2,
+              "achievements": [
+                "gem",
+                "crystal",
+                "gem",
+                "crystal"
+              ],
+              "cups": 2
+            },
+            "blue": {
+              "morale": 10,
+              "achievements": [
+                "gem",
+                "gem"
+              ],
+              "cups": 3
+            }
+          },
+          "players": [
+            {
+              "id": 0,
+              "hero": "priest",
+              "team": "red",
+              "count": 4,
+              "healing": 0,
+              "limit": 6,
+              "energy": {
+                "gem": 2,
+                "crystal": 0
+              },
+              "effects": []
+            },
+            {
+              "id": 1,
+              "hero": "berserker",
+              "team": "blue",
+              "count": 5,
+              "healing": 0,
+              "limit": 2,
+              "energy": {
+                "gem": 0,
+                "crystal": 0
+              },
+              "effects": [
+                "earthSeal",
+                "thunderSeal"
+              ]
+            },
+            {
+              "id": 2,
+              "hero": "marksman",
+              "team": "blue",
+              "count": 3,
+              "healing": 0,
+              "limit": 2,
+              "energy": {
+                "gem": 0,
+                "crystal": 0
+              },
+              "effects": [
+                "thunderSeal"
+              ]
+            },
+            {
+              "id": 3,
+              "hero": "sealer",
+              "team": "red",
+              "count": 3,
+              "healing": 2,
+              "limit": 2,
+              "energy": {
+                "gem": 1,
+                "crystal": 0
+              },
+              "effects": []
+            },
+            {
+              "id": 4,
+              "hero": "windSwordmaster",
+              "team": "red",
+              "count": 6,
+              "healing": 1,
+              "limit": 2,
+              "energy": {
+                "gem": 3,
+                "crystal": 0
+              },
+              "effects": [
+                "holyShield"
+              ]
+            },
+            {
+              "id": 5,
+              "hero": "guardianAngel",
+              "team": "blue",
+              "count": 6,
+              "healing": 0,
+              "limit": 2,
+              "energy": {
+                "gem": 0,
+                "crystal": 0
+              },
+              "effects": [
+                "holyShield"
+              ]
+            }
+          ]
+        },
+        "chosen": {
+          "type": "play",
+          "index": 3,
+          "targetId": 0
+        },
+        "candidateTop": {
+          "action": {
+            "type": "play",
+            "index": 3,
+            "targetId": 0
+          },
+          "score": 31882.28141959169,
+          "explanation": {
+            "parts": {
+              "morale": 4.354759630348067,
+              "cups": 0,
+              "stones": 1.5904981310346327,
+              "conversion": 2.5447970096554124,
+              "ownHand": -3.3000000000000025,
+              "otherHands": 2.5405885422070127,
+              "healing": 0,
+              "energy": 0,
+              "effects": -0.8758512973732335,
+              "nextTurnRisk": -29.933276362786337,
+              "otherTurnRisk": 95.3972832459461,
+              "terminal": 31809.962620692655
+            },
+            "branches": [
+              {
+                "probability": 0.31809962620692656,
+                "path": [
+                  "hit"
+                ]
+              },
+              {
+                "probability": 0.19939837778864025,
+                "path": [
+                  "light"
+                ]
+              },
+              {
+                "probability": 0.4825019960044332,
+                "path": [
+                  "counter",
+                  "counter-shield"
+                ]
+              }
+            ],
+            "precision": false,
+            "search": {
+              "limit": 128,
+              "used": 1
+            }
+          }
+        },
+        "baselineTop": {
+          "action": {
+            "type": "refine",
+            "stones": {
+              "gem": 2,
+              "crystal": 0
+            }
+          },
+          "score": 52,
+          "explanation": null
+        },
+        "projection": [
+          {
+            "probability": 0.31809962620692656,
+            "path": [
+              "hit"
+            ],
+            "teams": {
+              "red": {
+                "morale": 0,
+                "cups": 2,
+                "gem": 2,
+                "crystal": 2,
+                "total": 4
+              },
+              "blue": {
+                "morale": 9,
+                "cups": 3,
+                "gem": 3,
+                "crystal": 0,
+                "total": 2
+              }
+            },
+            "players": [
+              {
+                "id": 0,
+                "count": 6,
+                "healing": 0,
+                "energy": {
+                  "gem": 2,
+                  "crystal": 0
+                },
+                "effects": []
+              },
+              {
+                "id": 1,
+                "count": 6,
+                "healing": 0,
+                "energy": {
+                  "gem": 0,
+                  "crystal": 0
+                },
+                "effects": [
+                  "earthSeal"
+                ]
+              },
+              {
+                "id": 2,
+                "count": 3,
+                "healing": 0,
+                "energy": {
+                  "gem": 0,
+                  "crystal": 0
+                },
+                "effects": [
+                  "thunderSeal"
+                ]
+              },
+              {
+                "id": 3,
+                "count": 3,
+                "healing": 2,
+                "energy": {
+                  "gem": 1,
+                  "crystal": 0
+                },
+                "effects": []
+              },
+              {
+                "id": 4,
+                "count": 6,
+                "healing": 1,
+                "energy": {
+                  "gem": 3,
+                  "crystal": 0
+                },
+                "effects": [
+                  "holyShield"
+                ]
+              },
+              {
+                "id": 5,
+                "count": 6,
+                "healing": 0,
+                "energy": {
+                  "gem": 0,
+                  "crystal": 0
+                },
+                "effects": [
+                  "holyShield"
+                ]
+              }
+            ]
+          },
+          {
+            "probability": 0.19939837778864025,
+            "path": [
+              "light"
+            ],
+            "teams": {
+              "red": {
+                "morale": 2,
+                "cups": 2,
+                "gem": 2,
+                "crystal": 2,
+                "total": 4
+              },
+              "blue": {
+                "morale": 9,
+                "cups": 3,
+                "gem": 2,
+                "crystal": 0,
+                "total": 2
+              }
+            },
+            "players": [
+              {
+                "id": 0,
+                "count": 3,
+                "healing": 0,
+                "energy": {
+                  "gem": 2,
+                  "crystal": 0
+                },
+                "effects": []
+              },
+              {
+                "id": 1,
+                "count": 6,
+                "healing": 0,
+                "energy": {
+                  "gem": 0,
+                  "crystal": 0
+                },
+                "effects": [
+                  "earthSeal"
+                ]
+              },
+              {
+                "id": 2,
+                "count": 3,
+                "healing": 0,
+                "energy": {
+                  "gem": 0,
+                  "crystal": 0
+                },
+                "effects": [
+                  "thunderSeal"
+                ]
+              },
+              {
+                "id": 3,
+                "count": 3,
+                "healing": 2,
+                "energy": {
+                  "gem": 1,
+                  "crystal": 0
+                },
+                "effects": []
+              },
+              {
+                "id": 4,
+                "count": 6,
+                "healing": 1,
+                "energy": {
+                  "gem": 3,
+                  "crystal": 0
+                },
+                "effects": [
+                  "holyShield"
+                ]
+              },
+              {
+                "id": 5,
+                "count": 6,
+                "healing": 0,
+                "energy": {
+                  "gem": 0,
+                  "crystal": 0
+                },
+                "effects": [
+                  "holyShield"
+                ]
+              }
+            ]
+          },
+          {
+            "probability": 0.4825019960044332,
+            "path": [
+              "counter",
+              "counter-shield"
+            ],
+            "teams": {
+              "red": {
+                "morale": 2,
+                "cups": 2,
+                "gem": 2,
+                "crystal": 2,
+                "total": 4
+              },
+              "blue": {
+                "morale": 9,
+                "cups": 3,
+                "gem": 2,
+                "crystal": 0,
+                "total": 2
+              }
+            },
+            "players": [
+              {
+                "id": 0,
+                "count": 3,
+                "healing": 0,
+                "energy": {
+                  "gem": 2,
+                  "crystal": 0
+                },
+                "effects": []
+              },
+              {
+                "id": 1,
+                "count": 6,
+                "healing": 0,
+                "energy": {
+                  "gem": 0,
+                  "crystal": 0
+                },
+                "effects": [
+                  "earthSeal"
+                ]
+              },
+              {
+                "id": 2,
+                "count": 3,
+                "healing": 0,
+                "energy": {
+                  "gem": 0,
+                  "crystal": 0
+                },
+                "effects": [
+                  "thunderSeal"
+                ]
+              },
+              {
+                "id": 3,
+                "count": 3,
+                "healing": 2,
+                "energy": {
+                  "gem": 1,
+                  "crystal": 0
+                },
+                "effects": []
+              },
+              {
+                "id": 4,
+                "count": 6,
+                "healing": 1,
+                "energy": {
+                  "gem": 3,
+                  "crystal": 0
+                },
+                "effects": [
+                  "holyShield"
+                ]
+              },
+              {
+                "id": 5,
+                "count": 6,
+                "healing": 0,
+                "energy": {
+                  "gem": 0,
+                  "crystal": 0
+                },
+                "effects": []
+              }
+            ]
+          }
+        ],
+        "actualAfter": {
+          "current": 1,
+          "teams": {
+            "red": {
+              "morale": 2,
+              "achievements": [
+                "gem",
+                "crystal",
+                "gem",
+                "crystal"
+              ],
+              "cups": 2
+            },
+            "blue": {
+              "morale": 9,
+              "achievements": [
+                "gem",
+                "gem"
+              ],
+              "cups": 3
+            }
+          },
+          "players": [
+            {
+              "id": 0,
+              "hero": "priest",
+              "team": "red",
+              "count": 3,
+              "healing": 0,
+              "limit": 6,
+              "energy": {
+                "gem": 2,
+                "crystal": 0
+              },
+              "effects": []
+            },
+            {
+              "id": 1,
+              "hero": "berserker",
+              "team": "blue",
+              "count": 6,
+              "healing": 0,
+              "limit": 2,
+              "energy": {
+                "gem": 0,
+                "crystal": 0
+              },
+              "effects": [
+                "earthSeal"
+              ]
+            },
+            {
+              "id": 2,
+              "hero": "marksman",
+              "team": "blue",
+              "count": 3,
+              "healing": 0,
+              "limit": 2,
+              "energy": {
+                "gem": 0,
+                "crystal": 0
+              },
+              "effects": [
+                "thunderSeal"
+              ]
+            },
+            {
+              "id": 3,
+              "hero": "sealer",
+              "team": "red",
+              "count": 3,
+              "healing": 2,
+              "limit": 2,
+              "energy": {
+                "gem": 1,
+                "crystal": 0
+              },
+              "effects": []
+            },
+            {
+              "id": 4,
+              "hero": "windSwordmaster",
+              "team": "red",
+              "count": 6,
+              "healing": 1,
+              "limit": 2,
+              "energy": {
+                "gem": 3,
+                "crystal": 0
+              },
+              "effects": []
+            },
+            {
+              "id": 5,
+              "hero": "guardianAngel",
+              "team": "blue",
+              "count": 5,
+              "healing": 0,
+              "limit": 2,
+              "energy": {
+                "gem": 0,
+                "crystal": 0
+              },
+              "effects": [
+                "holyShield"
+              ]
+            }
+          ]
+        }
+      },
+      "limitation": "命中率与末端价值未被这个例子校准；一次未赢不能证明当时承担封印损失不合理，亦不保证所有封印路径都准确。"
+    },
+    {
+      "category": "座次风险",
+      "status": "可解释的公开估值项，未发现确定性规则错误；不能视为已验证预测器",
+      "conclusion": "pair5 turn20从seat1到下次seat1之前公开行动次序为2、3、4、5、0；其中3、4、0敌方，2、5友方。赠牌后自己6→4并获得1治疗，评分nextTurnRisk改善8.675。该项利用公开次序和数量，未使用未来牌库；这里没有假定各敌人一定攻击神官。",
+      "evidence": {
+        "locator": {
+          "pair": 5,
+          "phase": "candidate",
+          "turn": 20,
+          "id": 1
+        },
+        "publicSequence": [
+          {
+            "id": 2,
+            "hero": "sealer",
+            "team": "blue",
+            "count": 5,
+            "healing": 0,
+            "limit": 2,
+            "energy": {
+              "gem": 0,
+              "crystal": 0
+            },
+            "effects": []
+          },
+          {
+            "id": 3,
+            "hero": "marksman",
+            "team": "red",
+            "count": 1,
+            "healing": 1,
+            "limit": 2,
+            "energy": {
+              "gem": 1,
+              "crystal": 1
+            },
+            "effects": []
+          },
+          {
+            "id": 4,
+            "hero": "guardianAngel",
+            "team": "red",
+            "count": 2,
+            "healing": 0,
+            "limit": 2,
+            "energy": {
+              "gem": 1,
+              "crystal": 1
+            },
+            "effects": []
+          },
+          {
+            "id": 5,
+            "hero": "windSwordmaster",
+            "team": "blue",
+            "count": 4,
+            "healing": 0,
+            "limit": 2,
+            "energy": {
+              "gem": 0,
+              "crystal": 0
+            },
+            "effects": []
+          },
+          {
+            "id": 0,
+            "hero": "berserker",
+            "team": "red",
+            "count": 4,
+            "healing": 0,
+            "limit": 2,
+            "energy": {
+              "gem": 0,
+              "crystal": 0
+            },
+            "effects": []
+          }
+        ],
+        "candidateParts": {
+          "morale": 0,
+          "cups": 0,
+          "stones": 0,
+          "conversion": 0,
+          "ownHand": -0.19999999999999218,
+          "otherHands": -1.2999999999999998,
+          "healing": 5,
+          "energy": 9,
+          "effects": 0,
+          "nextTurnRisk": 8.674999999999997,
+          "otherTurnRisk": 0,
+          "terminal": 0
+        },
+        "ownBefore": {
+          "id": 1,
+          "hero": "priest",
+          "team": "blue",
+          "count": 6,
+          "healing": 0,
+          "limit": 6,
+          "energy": {
+            "gem": 1,
+            "crystal": 0
+          },
+          "effects": []
+        },
+        "ownAfter": {
+          "id": 1,
+          "hero": "priest",
+          "team": "blue",
+          "count": 4,
+          "healing": 1,
+          "limit": 6,
+          "energy": {
+            "gem": 1,
+            "crystal": 0
+          },
+          "effects": []
+        }
+      },
+      "limitation": "真实后续攻击和摸牌并非同状态反事实；本批只证明风险项存在且输入公开，不证明其系数、目标概率或跨回合校准正确。"
+    }
+  ]
+}

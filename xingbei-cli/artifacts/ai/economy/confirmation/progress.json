@@ -1,0 +1,12 @@
+{
+  "completed": true,
+  "commit": "f11768dc96f6015dd4a2dfc71a76d84e3f31b381",
+  "completedChunks": 120,
+  "totalChunks": 120,
+  "completedGames": 28800,
+  "totalGames": 28800,
+  "activeWorkers": 0,
+  "runtimeErrors": 0,
+  "noInterimScoresRead": true,
+  "runtimeMinutes": 33.24293568134308
+}

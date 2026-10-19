@@ -1,0 +1,14 @@
+{
+  "httpStatus": 200,
+  "pageErrors": [],
+  "default": "v1.2",
+  "candidate": "experimental/economy-4",
+  "action": {
+    "type": "play",
+    "index": 3,
+    "targetId": 5
+  },
+  "traceReplay": true,
+  "cardConservation": true,
+  "scope": "limited browser smoke, not visual acceptance"
+}
