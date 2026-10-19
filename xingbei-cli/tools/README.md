@@ -7,11 +7,12 @@
 | verify-frontend-restoration.mjs | 开局、行动、状态、结束和重置的整体回归 | 输出目录 |
 | verify-responses.mjs | 应战/魔弹、圣光待确认、无牌响应、伤害类别和暗弃 | 输出目录 |
 | verify-heroes.mjs | 六英雄技能专项与直接点击角色选目标 | 英雄ID、输出目录 |
-| verify-hero-selection.mjs | 正式页面开局选角与重新开始 | 输出目录 |
+| verify-hero-selection.mjs | 开局模式/选角、测试按钮、重复回合与观战暂停 | 输出目录 |
 | verify-animations.mjs | 实际动画、轨迹与取消，四视口专项 | 输出目录 |
 | verify-resource-cache.mjs | HTTP缓存、ETag/304和浏览器磁盘缓存 | 可选结果JSON文件 |
 | capture-original-six-player.mjs | 原版六人布局；CAPTURE_STATES=1另采集手牌/弹窗/状态 | 输出目录 |
 | capture-original-animation.mjs | 原版动画录像、关键帧与隔离呈现调用 | 输出目录 |
+| benchmark-ai.mjs | 相同种子换边对抗历史AI，记录胜负和实例守恒 | 种子数、结果JSON、历史提交哈希 |
 
 在工作区根目录运行，先启动当前Web服务：
 
@@ -33,3 +34,13 @@ node xingbei-cli/tools/verify-frontend-restoration.mjs xingbei-cli/artifacts/too
 - 历史报告内的旧命令仅记录当时运行，不再作为当前可执行入口。现在的整体静态对照可通过verify-frontend-restoration.mjs的ORIGINAL_EVIDENCE读取原版几何结果；并排图片仍可查看已经生成的历史对照页面。
 
 扩展静态状态采集：`CAPTURE_STATES=1 node xingbei-cli/tools/capture-original-six-player.mjs xingbei-cli/artifacts/frontend/reference-new`。本次原版4180服务未运行，扩展模式仅完成迁移与语法检查，尚未重新实跑；保留旧结果作为历史依据。
+
+## AI 对战基准
+
+`benchmark-ai.mjs` 比较当前 AI 与指定历史提交的 AI，使用相同种子交换阵营，检查全局牌实例守恒并记录逐局胜负。它不是重复的浏览器测试；默认100种子/200局，可调整种子数量、输出JSON路径和旧AI提交哈希。需要本地 Git 历史，无额外依赖。
+
+```bash
+node xingbei-cli/tools/benchmark-ai.mjs 100 xingbei-cli/artifacts/ai/benchmark.json a0588bd
+```
+
+方法和限制见 [AI 说明](../docs/ai-policy.md)。

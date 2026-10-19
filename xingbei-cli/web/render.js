@@ -20,7 +20,7 @@ export function renderTeams(game, nodes, humanId) {
   }
 }
 
-export function renderPlayers(game, container, humanId, targets = null) {
+export function renderPlayers(game, container, humanId, targets = null, revealHands = false) {
   container.dataset.number = game.players.length;
   container.closest("#arena").dataset.number = game.players.length;
   for (const player of game.players) {
@@ -51,7 +51,8 @@ export function renderPlayers(game, container, humanId, targets = null) {
     const energy = [
       ["crystal", "crystal", "水晶"], ["gem", "gem", "宝石"],
     ].filter(([kind]) => player.energy[kind] > 0).map(([kind, image, label]) => `<span><img src="/assets/stones/${image}.png" alt="${label}"><b>${player.energy[kind]}</b></span>`).join("");
-    const markup = `<img class="avatar" src="/assets/character/${player.hero.portrait}.jpg" alt=""><span class="player-name" title="${player.name}；${player.hero.implemented || player.hero.skills?.length ? "已实现角色技能" : "角色技能尚未实现"}">${player.hero.name}</span><span class="identity"><span>${player.team === "red" ? "红" : "蓝"}</span></span><span class="count">${player.hand.length}/${player.handLimit}</span><span class="hp" title="治疗 ${player.healing}" aria-label="治疗 ${player.healing}">${Array.from({ length: Math.max(player.healing, game.getHealingLimit?.(player.id) ?? (player.hero.id === "priest" && (player.hero.implemented || player.hero.skills?.length) ? 6 : 2)) }, (_, index) => index).reverse().map(index => `<span class="${index < player.healing ? "" : "lost"}"></span>`).join("")}</span><span class="energy" title="个人能量" style="top:${6 + marks.length * 28}px">${energy}</span><div class="marks">${marks.reverse().join("")}</div>`;
+    const revealed = revealHands ? `<div class="revealed-hand" aria-label="${player.name}的手牌">${player.hand.map(card => `<span class="revealed-card"><img data-hand-card-id="${card.id}" src="/assets/card/${card.name}.png" alt="${cardLabel(card, { game, playerId: player.id })}" title="${cardLabel(card, { game, playerId: player.id })}"><small class="revealed-fate" aria-hidden="true">${card.getTraits({ game, playerId: player.id }).fates.map(fate => FATE_NAMES[fate] ?? fate).join("/")}</small></span>`).join("")}</div>` : "";
+    const markup = `<img class="avatar" src="/assets/character/${player.hero.portrait}.jpg" alt=""><span class="player-name" title="${player.name}；${player.hero.implemented || player.hero.skills?.length ? "已实现角色技能" : "角色技能尚未实现"}">${player.hero.name}</span><span class="identity"><span>${player.team === "red" ? "红" : "蓝"}</span></span><span class="count">${player.hand.length}/${player.handLimit}</span><span class="hp" title="治疗 ${player.healing}" aria-label="治疗 ${player.healing}">${Array.from({ length: Math.max(player.healing, game.getHealingLimit?.(player.id) ?? (player.hero.id === "priest" && (player.hero.implemented || player.hero.skills?.length) ? 6 : 2)) }, (_, index) => index).reverse().map(index => `<span class="${index < player.healing ? "" : "lost"}"></span>`).join("")}</span><span class="energy" title="个人能量" style="top:${6 + marks.length * 28}px">${energy}</span><div class="marks">${marks.reverse().join("")}</div>${revealed}`;
     if (node._markup !== markup) { node.innerHTML = markup; node._markup = markup; }
     if (player.energy.gem + player.energy.crystal === 0) node.querySelector(".energy").hidden = true;
 

@@ -71,3 +71,14 @@ button:disabled { cursor: default; }
 
 .hp { position: absolute; bottom: 15px; left: 121px; width: 18px; line-height: 16px; text-align: center; z-index: 3; }
 .hp > span { position: relative; display: inline-block; width: 10px; height: 10px; top: 5px; transform: scale(2.5); }
+
+/* Explicit test/spectator modes; normal game geometry is unchanged. */
+.player .revealed-hand { position: absolute; top: calc(100% + 4px); left: 0; display: grid; grid-template-columns: repeat(6, 26px); gap: 2px; margin: 0; }
+.revealed-hand img { display: block; width: 26px; height: 26px; object-fit: cover; border-radius: 4px; box-shadow: 0 0 0 1px #0006; }
+.play-mode-controls { position: absolute; left: 190px; right: 240px; bottom: 210px; z-index: 12; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 4px;  }
+.play-mode-controls button { font-size: 16px; padding: 4px 8px; }
+.play-mode-controls[hidden], .play-mode-controls button[hidden] { display: none; }
+#window[data-play-mode="test"] .player[data-position="0"],
+#window[data-play-mode="spectate"] .player[data-position="0"] { top: calc(100% - 280px); }
+.revealed-card { position: relative; display: block; width: 26px; height: 26px; }
+.revealed-fate { position: absolute; top: 0; right: 0; padding: 0 1px; min-width: 10px; font: bold 11px/12px sans-serif; color: #fff; background: #161616d9; border-radius: 0 3px 0 3px; pointer-events: none; }

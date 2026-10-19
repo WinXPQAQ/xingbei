@@ -12,11 +12,11 @@ const heroes = getAvailableHeroes();
 heroes.forEach((hero, index) => tui.console(`${index}: ${hero.name}`));
 const heroIndex = await askIndex(tui, "开局选择角色> ", heroes.map((_, index) => index), { allowBlank: false });
 const game = new Game({ seed: Date.now(), playerHeroId: heroes[heroIndex].id, playerSeat: humanId }).setup();
-const overflowPolicy = player => player.id === humanId ? "defer" : "random";
+const overflowPolicy = player => player.id === humanId ? "defer" : "ai";
 
 game.onDecision = async request => {
   if (request.type === "cardChoice") {
-    if (request.playerId !== humanId) return chooseAiRuleDecision(request);
+    if (request.playerId !== humanId) return chooseAiRuleDecision(request, game);
     const selected = [];
     while (selected.length < request.count) {
       showState(); const index = await askIndex(tui, `${request.title}> `, request.valid.filter(index => !selected.includes(index)));
@@ -26,7 +26,7 @@ game.onDecision = async request => {
     return selected;
   }
   if (!request.choices) return null;
-  if (request.playerId !== humanId) return chooseAiRuleDecision(request);
+  if (request.playerId !== humanId) return chooseAiRuleDecision(request, game);
   tui.console(request.title);
   request.choices.forEach((choice, index) => tui.console(`${index}: ${choice.label}`));
   const index = await askIndex(tui, "选择（回车不发动）> ", request.choices.map((_, index) => index));
@@ -197,11 +197,14 @@ async function playCard(actorId, index, targetId) {
 async function aiTurn(actorId) {
   const action = chooseAiAction(game, actorId);
   if (action.type === "refresh") return game.executeAction(actorId, action);
-  if (action.type === "purchase") return game.executeAction(actorId, action, { overflow: "random" });
-  if (action.type === "synthesize") return game.executeAction(actorId, action, { overflow: "random" });
+  if (action.type === "purchase") return game.executeAction(actorId, action, { overflow: "ai" });
+  if (action.type === "synthesize") return game.executeAction(actorId, action, { overflow: "ai" });
   if (action.type === "refine") return game.executeAction(actorId, action);
   if (action.type === "skill") return game.executeAction(actorId, action, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
-  if (action.type === "pass") return game.log.push(`${game.player(actorId).name}跳过行动`);
+  if (action.type === "pass") {
+    if (game.turn.hasExtraActions()) return game.skipExtraActions(actorId);
+    return game.log.push(`${game.player(actorId).name}跳过行动`);
+  }
   return playCard(actorId, action.index, action.targetId);
 }
 
@@ -214,7 +217,7 @@ while (running && !game.winner) {
   const turn = await game.beginTurn(player.id, {
     chooseWeakness: async () => player.id === humanId
       ? ((await tui.question("虚弱：draw摸3张，否则跳过> ")).trim() === "draw" ? "draw" : "skip")
-      : (game.random() < .5 ? "draw" : "skip"),
+      : chooseAiRuleDecision({ type: "weakness", playerId: player.id }, game),
     resolveOverflow: resolveHumanOverflow,
   }, { overflow: overflowPolicy });
   await resolveHumanOverflow();

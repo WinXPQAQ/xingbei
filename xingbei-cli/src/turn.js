@@ -2,7 +2,12 @@ import { RuleError } from "./errors.js";
 import { Timing } from "./timing.js";
 
 export class TurnFlow {
-  constructor(game) { this.game = game; this.state = null; }
+  constructor(game) { this.game = game; this.state = null; this.lastEndedPlayerId = null; }
+  repeatLast(playerId) {
+    if (this.state || this.game.winner || this.lastEndedPlayerId !== playerId) throw new RuleError("只能重复刚结束的回合");
+    this.game.current = playerId;
+    this.lastEndedPlayerId = null;
+  }
   *start(playerId, options = {}) {
     if (this.state) throw new RuleError("上一回合尚未结束");
     const context = { playerId, skipped: false, route: null, actionType: null, completed: false, activationDone: false, attackCount: 0, pendingActions: [], usedSkills: {}, phase: Timing.TURN_START };
@@ -27,6 +32,7 @@ export class TurnFlow {
   addAttackAction({ element = null, sourceSkillId = null } = {}) {
     if (!this.state) return;
     this.state.pendingActions.push({ type: "attack", element, sourceSkillId });
+    this.game.logSkill(this.state.playerId, sourceSkillId ?? "额外行动", `获得1次${element ? "风系限定" : ""}额外攻击行动，可选择放弃`);
     this.game.recordPresentation("extraAction", { playerId: this.state.playerId, label: element ? "额外风系攻击行动" : "额外攻击行动" });
   }
   canUse(type, card = null) {
@@ -48,8 +54,10 @@ export class TurnFlow {
       state.activationDone = true;
       state.phase = Timing.ACTIVATION;
       state.reservedEnergy = options.actionEnergyCost ?? 0;
+      state.reservedHealing = options.actionHealingCost ?? 0;
       yield* this.game.trigger(Timing.ACTIVATION, state, options);
       delete state.reservedEnergy;
+      delete state.reservedHealing;
     }
     try { options.validateAction?.(); }
     catch (error) { state.phase = Timing.ACTION_PHASE_START; throw error; }
@@ -84,6 +92,7 @@ export class TurnFlow {
     }
     state.phase = Timing.TURN_END;
     yield* this.game.trigger(state.phase, state, options);
+    this.lastEndedPlayerId = state.playerId;
     this.game.current = (state.playerId + 1) % this.game.players.length;
     this.state = null;
   }

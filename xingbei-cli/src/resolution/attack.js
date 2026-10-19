@@ -22,7 +22,7 @@ export function* attackSteps(game, actorId, handIndex, targetId, options = {}) {
     const valid = target.hand.map((card, index) => ({ card, index })).filter(item =>
       game.canRespond(attack, item.card, { actorId: actor.id, targetId: target.id, attackTraits }) &&
       (item.card.name === "holyLight" ? context.canHolyLight : context.canCounter && counterTargets.length));
-    const decision = context.forcedHit ? null : yield { type: "response", actor, target, attack, attackTraits, valid, counterTargets, isCounter };
+    const decision = context.forcedHit ? null : yield { type: "response", actor, target, attack, attackTraits, valid, counterTargets, isCounter, shieldable: context.shieldable };
     context.sourceHandCount = actor.hand.length; context.targetHandCount = target.hand.length;
     if (!decision) {
       yield* game.trigger(Timing.ATTACK_HIT_CHECK, context, options);

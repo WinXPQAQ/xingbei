@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { createDeck, createBasicCard, compareHandCards, ATTACKS } from "../src/cards.js";
 import { Game, RuleError } from "../src/engine.js";
-import { chooseAiAction } from "../src/ai.js";
+import { chooseAiAction, rankAiActions } from "../src/ai.js";
 
 const card = (name, element = "water", fate = "J", id = Math.random().toString()) => createBasicCard({ id, name, element, fate });
 
@@ -319,7 +319,7 @@ test("玩家爆牌可延迟选择，必须选择不同合法编号并按弃牌�
   assert.match(game.log.join(" "), /爆牌，暗弃2张手牌；己方士气-2/);
 });
 
-test("AI爆牌随机弃置并立即降低士气", () => {
+test("显式random爆牌策略兼容随机弃置并立即降低士气", () => {
   const game = new Game({ heroRules: false, shuffleDeck: false, seed: 8 });
   setHand(game, 1, Array.from({ length: 6 }, (_, index) => card("holyLight", "light", "J", `a${index}`)));
   game.draw(1, 2, { overflow: "random" });
@@ -367,5 +367,5 @@ test("AI优先给己方圣盾，并向手牌最多的敌人使用中毒或虚弱
   setHand(game, 0, [card("poison")]);
   setHand(game, 1, [card("darkStrike")]);
   setHand(game, 2, [card("darkStrike"), card("darkStrike")]);
-  assert.equal(chooseAiAction(game, 0).targetId, 2);
+  assert.equal(rankAiActions(game, 0).find(entry => entry.action.type === "play").action.targetId, 2);
 });

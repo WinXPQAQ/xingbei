@@ -8,6 +8,7 @@ export const sealerEffects = Object.fromEntries(SEAL_ELEMENTS.map(element => [`$
   filter: ({ player, context }) => context.playerId === player.id && !context.covered && context.origin === "hand" && context.visibility === "public" && context.traits.some(traits => traits.elements.includes(element)),
   *resolve({ game, player, card, options }) {
     const sourceId = card.attachment.sourcePlayerId;
+    game.log.push(`${game.actorLabel(player.id)}使用或展示了${labels[element]}系牌，触发【${labels[element]}之封印】，受到3点法术伤害`);
     game.removeEffect(card.id);
     yield* game.damageSteps(player.id, 3, { ...options, sourceId, damageType: "spell" });
     if (player.pendingOverflow) yield { type: "overflow", player };
@@ -20,6 +21,7 @@ sealerEffects.fivefoldBinding = {
     const weakness = player.getStatus("weakness")[0];
     const count = 2 + Math.min(2, seals) + (weakness ? 3 : 0);
     const choice = yield { type: "bindingChoice", playerId: player.id, title: "五系束缚", choices: [{ value: "draw", label: `摸${count}张牌并继续` }, { value: "skip", label: "跳过行动阶段" }], defaultValue: "skip" };
+    game.log.push(`${game.actorLabel(player.id)}触发【五系束缚】：场上${seals}个封印${weakness ? "，同时有虚弱" : ""}；选择${choice === "draw" ? `非伤害摸${count}张并继续行动` : "跳过行动阶段"}`);
     if (!["draw", "skip"].includes(choice)) throw new Error("无效的五系束缚选择");
     game.removeEffect(card.id, { zone: "outside" });
     if (weakness) game.removeEffect(weakness.id);

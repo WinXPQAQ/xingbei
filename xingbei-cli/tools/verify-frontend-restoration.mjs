@@ -225,6 +225,7 @@ try {
     await capture(page, `end-${tag}`, viewport);
     await page.getByRole("button", { name: "再来一局", exact: true }).click();
     await page.waitForFunction(() => window.xingbeiDev.exportState().game.winner === null);
+    await page.getByRole("button", { name: "正常游玩", exact: true }).click();
     await page.getByRole("heading", { name: "选择角色" }).waitFor();
     await page.getByRole("button", { name: "狂战士", exact: true }).click();
     await page.waitForFunction(() => window.xingbeiDev.exportState().game.players[0].hand.length === 4);
@@ -253,6 +254,7 @@ try {
   }
   const page = await browser.newPage({ viewport: viewports[0] });
   await page.goto(base);
+  await page.getByRole("button", { name: "正常游玩", exact: true }).click();
   await page.getByRole("button", { name: "狂战士", exact: true }).click();
   await page.waitForFunction(() => document.querySelectorAll("#hand .card").length === 4);
   const font = await page.request.get(`${base}/font/xingkai.woff2`);

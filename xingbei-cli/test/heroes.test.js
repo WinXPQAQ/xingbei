@@ -322,9 +322,9 @@ test("六英雄默认阵容完整AI对局：逐回合、额外行动、实例守
   for (const seed of [1, 13, 71]) {
     const game = new Game({ seed }).setup();
     assert.deepEqual(game.players.map(player => player.hero.id), ["berserker", "windSwordmaster", "marksman", "sealer", "guardianAngel", "priest"]);
-    game.onDecision = request => chooseAiRuleDecision(request);
+    game.onDecision = request => chooseAiRuleDecision(request, game);
     let turns = 0;
-    const options = { overflow: "random", choose: game.onDecision, chooseResponse: request => chooseAiResponse(game, request) };
+    const options = { overflow: "ai", choose: game.onDecision, chooseResponse: request => chooseAiResponse(game, request) };
     while (!game.winner && turns++ < 500) {
       const id = game.current;
       const turn = await game.beginTurn(id, { choose: game.onDecision, chooseWeakness: () => "skip" }, options);

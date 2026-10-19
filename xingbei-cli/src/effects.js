@@ -6,6 +6,7 @@ export const BASIC_EFFECTS = {
     id: "poison",
     category: "basic", stackable: true, priority: 3, timings: [Timing.ACTION_PHASE_BEFORE],
     *resolve({ game, player, card, options }) {
+      game.log.push(`${game.actorLabel(player.id)}触发【中毒】${card.attachment.sourcePlayerId == null ? "" : `（来自${game.actorLabel(card.attachment.sourcePlayerId)}）`}，结算1点法术伤害`);
       yield* game.damageSteps(player.id, 1, { sourceId: card.attachment.sourcePlayerId, damageType: "spell", overflow: options.overflow, useHealing: options.poisonHealing });
       game.removeEffect(card.id);
       yield* game.present();

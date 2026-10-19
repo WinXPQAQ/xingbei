@@ -37,7 +37,7 @@ try {
       await page.waitForFunction(() => window.xingbeiDev.exportState().current === 1);
       const after = await state();
       check(`${tag} 圣盾保留`, after.game.players[1].statuses.some(card => card.attachment.effectId === "holyShield"));
-      check(`${tag} 时点4治疗正常使用`, after.game.players[1].healing === 0 && after.log.some(entry => entry.line.includes("承受1点攻击伤害")));
+      check(`${tag} 时点4保留不必消耗的治疗`, after.game.players[1].healing === 2 && after.log.some(entry => entry.line.includes("承受3点攻击伤害")) && after.game.timeline.some(entry => entry.timing === "healingBefore" && entry.point === 4));
       check(`${tag} 拒绝撕裂不扣费`, after.game.players[0].energy.gem === 1);
       check(`${tag} 六时点存在`, [1,2,3,4,5,6].every(point => after.game.timeline.some(entry => entry.point === point)));
     }
@@ -136,6 +136,7 @@ try {
     if (hero === "priest") {
       await page.addInitScript(() => { Date.now = () => 13; });
       await page.goto("http://127.0.0.1:4173/?motion=off");
+      await page.getByRole("button", { name: "正常游玩", exact: true }).click();
       await page.getByRole("button", { name: "狂战士", exact: true }).click();
       await page.waitForFunction(() => document.querySelector("#hint").textContent.includes("[攻击行动]"));
       check(`${tag} 正式页面六英雄阵容`, (await page.locator(".player-name").allTextContents()).join() === "狂战士,风之剑圣,神箭手,封印师,守护天使,神官");
