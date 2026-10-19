@@ -1,0 +1,1080 @@
+[
+  {
+    "sourceSHA": "7cd8138d1cc90719947d0036023a2ba17714156c",
+    "hero": "windSwordmaster",
+    "originalAction": {
+      "type": "play",
+      "index": 2,
+      "targetId": 3
+    },
+    "originalTop": -6.566242190999379,
+    "candidateTop": [
+      {
+        "action": {
+          "type": "play",
+          "index": 2,
+          "targetId": 3
+        },
+        "score": -6.128001004593834,
+        "reason": "expected-state-difference",
+        "explanation": {
+          "parts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": 0,
+            "conversion": 0.43824118640555093,
+            "ownHand": -3.7000000000000015,
+            "otherHands": -2.7747568515397525,
+            "healing": 0,
+            "energy": 0,
+            "effects": 0,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": -0.09148533945962982,
+            "routeRisk": 0,
+            "capacity": 0,
+            "giftOptions": 0,
+            "terminal": 0
+          },
+          "branches": [
+            {
+              "probability": 0.7861777777777779,
+              "path": [
+                "magic-hit-check"
+              ]
+            },
+            {
+              "probability": 0.13835555555555548,
+              "path": [
+                "magic-light"
+              ]
+            },
+            {
+              "probability": 0.052606125116049375,
+              "path": [
+                "magic-relay",
+                "magic-hit-check"
+              ]
+            },
+            {
+              "probability": 0.014792115120987645,
+              "path": [
+                "magic-relay",
+                "magic-light"
+              ]
+            },
+            {
+              "probability": 0.008068426429629629,
+              "path": [
+                "magic-relay",
+                "magic-relay-horizon"
+              ]
+            }
+          ],
+          "precision": null,
+          "search": {
+            "limit": 128,
+            "used": 0
+          }
+        }
+      },
+      {
+        "action": {
+          "type": "refine",
+          "stones": {
+            "gem": 0,
+            "crystal": 1
+          }
+        },
+        "score": -6.151613040000004,
+        "reason": "expected-state-difference",
+        "explanation": {
+          "parts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": -5,
+            "conversion": -1.6516130400000009,
+            "ownHand": 0,
+            "otherHands": 0,
+            "healing": 0,
+            "energy": 0.5,
+            "effects": 0,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0,
+            "routeRisk": 0,
+            "capacity": 0,
+            "giftOptions": 0,
+            "terminal": 0
+          },
+          "branches": [
+            {
+              "probability": 1,
+              "path": [
+                "refine"
+              ]
+            }
+          ],
+          "precision": null,
+          "search": {
+            "limit": 128,
+            "used": 0
+          }
+        }
+      },
+      {
+        "action": {
+          "type": "refine",
+          "stones": {
+            "gem": 1,
+            "crystal": 0
+          }
+        },
+        "score": -6.151613040000004,
+        "reason": "expected-state-difference",
+        "explanation": {
+          "parts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": -5,
+            "conversion": -1.6516130400000009,
+            "ownHand": 0,
+            "otherHands": 0,
+            "healing": 0,
+            "energy": 0.5,
+            "effects": 0,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0,
+            "routeRisk": 0,
+            "capacity": 0,
+            "giftOptions": 0,
+            "terminal": 0
+          },
+          "branches": [
+            {
+              "probability": 1,
+              "path": [
+                "refine"
+              ]
+            }
+          ],
+          "precision": null,
+          "search": {
+            "limit": 128,
+            "used": 0
+          }
+        }
+      }
+    ],
+    "waterPower": []
+  },
+  {
+    "sourceSHA": "7cd8138d1cc90719947d0036023a2ba17714156c",
+    "hero": "marksman",
+    "originalAction": {
+      "type": "play",
+      "index": 1,
+      "targetId": 4
+    },
+    "originalTop": -2.143159177252599,
+    "candidateTop": [
+      {
+        "action": {
+          "type": "play",
+          "index": 1,
+          "targetId": 4
+        },
+        "score": -2.1276099445046555,
+        "reason": "expected-state-difference",
+        "explanation": {
+          "parts": {
+            "morale": -5.769447988163068,
+            "cups": 0,
+            "stones": 1.3226657700818139,
+            "conversion": 0.08650327067464836,
+            "ownHand": -4.599999999999998,
+            "otherHands": 4.08757531388802,
+            "healing": 0,
+            "energy": 0,
+            "effects": 0,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 2.264584725221923,
+            "routeRisk": 0.3903613389769419,
+            "capacity": 0.09014762481504794,
+            "giftOptions": 0,
+            "terminal": 0
+          },
+          "branches": [
+            {
+              "probability": 0.34466437607418315,
+              "path": [
+                "hit"
+              ]
+            },
+            {
+              "probability": 0.20510587694525118,
+              "path": [
+                "light"
+              ]
+            },
+            {
+              "probability": 0.08013122205782039,
+              "path": [
+                "counter",
+                "counter-hit"
+              ]
+            },
+            {
+              "probability": 0.3700985249227452,
+              "path": [
+                "counter",
+                "counter-answered"
+              ]
+            }
+          ],
+          "precision": false,
+          "search": {
+            "limit": 128,
+            "used": 1
+          }
+        }
+      },
+      {
+        "action": {
+          "type": "play",
+          "index": 0,
+          "targetId": 4
+        },
+        "score": -2.973730459544484,
+        "reason": "expected-state-difference",
+        "explanation": {
+          "parts": {
+            "morale": -6.276554132662295,
+            "cups": 0,
+            "stones": 1.1195811547101076,
+            "conversion": 0.07807698072719237,
+            "ownHand": -4.599999999999998,
+            "otherHands": 4.083503950285234,
+            "healing": 0,
+            "energy": 0,
+            "effects": 0,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 2.09891824545726,
+            "routeRisk": 0.42467218361516157,
+            "capacity": 0.09807115832284836,
+            "giftOptions": 0,
+            "terminal": 0
+          },
+          "branches": [
+            {
+              "probability": 0.3110905938956645,
+              "path": [
+                "hit"
+              ]
+            },
+            {
+              "probability": 0.19910667543475838,
+              "path": [
+                "light"
+              ]
+            },
+            {
+              "probability": 0.08717436295364299,
+              "path": [
+                "counter",
+                "counter-hit"
+              ]
+            },
+            {
+              "probability": 0.4026283677159341,
+              "path": [
+                "counter",
+                "counter-answered"
+              ]
+            }
+          ],
+          "precision": false,
+          "search": {
+            "limit": 128,
+            "used": 1
+          }
+        }
+      },
+      {
+        "action": {
+          "type": "play",
+          "index": 1,
+          "targetId": 3
+        },
+        "score": -5.457812689132922,
+        "reason": "expected-state-difference",
+        "explanation": {
+          "parts": {
+            "morale": -2.2371204457426654,
+            "cups": 0,
+            "stones": 3.623088046615394,
+            "conversion": 0.18966145329437312,
+            "ownHand": -4.599999999999998,
+            "otherHands": -2.734695575731014,
+            "healing": 0,
+            "energy": 0,
+            "effects": 0,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0.11493506684594085,
+            "routeRisk": 0.15136375862031903,
+            "capacity": 0.03495500696472915,
+            "giftOptions": 0,
+            "terminal": 0
+          },
+          "branches": [
+            {
+              "probability": 0.7556887266250603,
+              "path": [
+                "hit"
+              ]
+            },
+            {
+              "probability": 0.06973336326668725,
+              "path": [
+                "light"
+              ]
+            },
+            {
+              "probability": 0.031071117301981463,
+              "path": [
+                "counter",
+                "counter-hit"
+              ]
+            },
+            {
+              "probability": 0.14350679280627104,
+              "path": [
+                "counter",
+                "counter-answered"
+              ]
+            }
+          ],
+          "precision": false,
+          "search": {
+            "limit": 128,
+            "used": 1
+          }
+        }
+      }
+    ],
+    "waterPower": []
+  },
+  {
+    "sourceSHA": "7cd8138d1cc90719947d0036023a2ba17714156c",
+    "hero": "sealer",
+    "originalAction": {
+      "type": "play",
+      "index": 2,
+      "targetId": 3
+    },
+    "originalTop": -3.389295366428577,
+    "candidateTop": [
+      {
+        "action": {
+          "type": "play",
+          "index": 2,
+          "targetId": 3
+        },
+        "score": -2.1103422113732293,
+        "reason": "expected-state-difference",
+        "explanation": {
+          "parts": {
+            "morale": 1.5403757652473646,
+            "cups": 0,
+            "stones": 0.5757856247153523,
+            "conversion": 0.17114732146738199,
+            "ownHand": -5.606557096296298,
+            "otherHands": 1.5865885350452358,
+            "healing": 0,
+            "energy": 0,
+            "effects": -0.5263886628002578,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0.14870630124799544,
+            "routeRisk": 0,
+            "capacity": 0,
+            "giftOptions": 0,
+            "terminal": 0
+          },
+          "branches": [
+            {
+              "probability": 0.17896839104456214,
+              "path": [
+                "magic-hit-check",
+                "hit"
+              ]
+            },
+            {
+              "probability": 0.1595757050436275,
+              "path": [
+                "magic-hit-check",
+                "light"
+              ]
+            },
+            {
+              "probability": 0.06381126610149165,
+              "path": [
+                "magic-hit-check",
+                "counter",
+                "counter-hit"
+              ]
+            },
+            {
+              "probability": 0.29472226743994845,
+              "path": [
+                "magic-hit-check",
+                "counter",
+                "counter-answered"
+              ]
+            },
+            {
+              "probability": 0.1960085925925925,
+              "path": [
+                "magic-light"
+              ]
+            },
+            {
+              "probability": 0.07452720278808231,
+              "path": [
+                "magic-relay",
+                "magic-hit-check"
+              ]
+            },
+            {
+              "probability": 0.020956019110979416,
+              "path": [
+                "magic-relay",
+                "magic-light"
+              ]
+            },
+            {
+              "probability": 0.01143055587871605,
+              "path": [
+                "magic-relay",
+                "magic-relay-horizon"
+              ]
+            }
+          ],
+          "precision": null,
+          "search": {
+            "limit": 128,
+            "used": 30
+          }
+        }
+      },
+      {
+        "action": {
+          "type": "play",
+          "index": 1,
+          "targetId": 3
+        },
+        "score": -3.1535395115849525,
+        "reason": "expected-state-difference",
+        "explanation": {
+          "parts": {
+            "morale": -4.121389340859351,
+            "cups": 0,
+            "stones": 1.8679499303616232,
+            "conversion": 0.12626111353921107,
+            "ownHand": -3.3000000000000007,
+            "otherHands": 2.6873655902805784,
+            "healing": 0,
+            "energy": 0,
+            "effects": -0.41372680490701486,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0,
+            "routeRisk": 0,
+            "capacity": 0,
+            "giftOptions": 0,
+            "terminal": 0
+          },
+          "branches": [
+            {
+              "probability": 0.4422798084199805,
+              "path": [
+                "hit"
+              ]
+            },
+            {
+              "probability": 0.1717757302137666,
+              "path": [
+                "light"
+              ]
+            },
+            {
+              "probability": 0.06868982234765585,
+              "path": [
+                "counter",
+                "counter-hit"
+              ]
+            },
+            {
+              "probability": 0.317254639018597,
+              "path": [
+                "counter",
+                "counter-answered"
+              ]
+            }
+          ],
+          "precision": false,
+          "search": {
+            "limit": 128,
+            "used": 1
+          }
+        }
+      },
+      {
+        "action": {
+          "type": "play",
+          "index": 0,
+          "targetId": 3
+        },
+        "score": -3.3500013972560794,
+        "reason": "expected-state-difference",
+        "explanation": {
+          "parts": {
+            "morale": -4.429016718750001,
+            "cups": 0,
+            "stones": 1.712290088252315,
+            "conversion": 0.11471815022656526,
+            "ownHand": -3.3000000000000016,
+            "otherHands": 2.847331809577546,
+            "healing": 0,
+            "energy": 0,
+            "effects": -0.2953247265625003,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0,
+            "routeRisk": 0,
+            "capacity": 0,
+            "giftOptions": 0,
+            "terminal": 0
+          },
+          "branches": [
+            {
+              "probability": 0.416274962962963,
+              "path": [
+                "hit"
+              ]
+            },
+            {
+              "probability": 0.16897303703703706,
+              "path": [
+                "light"
+              ]
+            },
+            {
+              "probability": 0.0738169453125,
+              "path": [
+                "counter",
+                "counter-hit"
+              ]
+            },
+            {
+              "probability": 0.3409350546875,
+              "path": [
+                "counter",
+                "counter-answered"
+              ]
+            }
+          ],
+          "precision": false,
+          "search": {
+            "limit": 128,
+            "used": 1
+          }
+        }
+      }
+    ],
+    "waterPower": []
+  },
+  {
+    "sourceSHA": "7cd8138d1cc90719947d0036023a2ba17714156c",
+    "hero": "priest",
+    "originalAction": {
+      "type": "play",
+      "index": 4,
+      "targetId": 0
+    },
+    "originalTop": -0.6878179019158921,
+    "candidateTop": [
+      {
+        "action": {
+          "type": "play",
+          "index": 4,
+          "targetId": 0
+        },
+        "score": -0.7751108837684626,
+        "reason": "expected-state-difference",
+        "explanation": {
+          "parts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": 1.2689091713209013,
+            "conversion": -0.22908409072938915,
+            "ownHand": -0.6999999999999957,
+            "otherHands": 0.8850640356400095,
+            "healing": 0,
+            "energy": 0,
+            "effects": -2,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0,
+            "routeRisk": 0,
+            "capacity": 0,
+            "giftOptions": 0,
+            "terminal": 0
+          },
+          "branches": [
+            {
+              "probability": 0.4249824729202758,
+              "path": [
+                "hit"
+              ]
+            },
+            {
+              "probability": 0.16920860582083105,
+              "path": [
+                "light"
+              ]
+            },
+            {
+              "probability": 0.17120063865609553,
+              "path": [
+                "counter",
+                "counter-hit"
+              ]
+            },
+            {
+              "probability": 0.2346082826027976,
+              "path": [
+                "counter",
+                "counter-answered"
+              ]
+            }
+          ],
+          "precision": false,
+          "search": {
+            "limit": 128,
+            "used": 1
+          }
+        }
+      },
+      {
+        "action": {
+          "type": "play",
+          "index": 1,
+          "targetId": 0
+        },
+        "score": -0.8139756847111812,
+        "reason": "expected-state-difference",
+        "explanation": {
+          "parts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": 1.2321258331376195,
+            "conversion": -0.23584962086022326,
+            "ownHand": -0.6999999999999957,
+            "otherHands": 0.8897481030114152,
+            "healing": 0,
+            "energy": 0,
+            "effects": -2,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0,
+            "routeRisk": 0,
+            "capacity": 0,
+            "giftOptions": 0,
+            "terminal": 0
+          },
+          "branches": [
+            {
+              "probability": 0.41996936447271394,
+              "path": [
+                "hit"
+              ]
+            },
+            {
+              "probability": 0.16866661100535418,
+              "path": [
+                "light"
+              ]
+            },
+            {
+              "probability": 0.17354419784519,
+              "path": [
+                "counter",
+                "counter-hit"
+              ]
+            },
+            {
+              "probability": 0.23781982667674187,
+              "path": [
+                "counter",
+                "counter-answered"
+              ]
+            }
+          ],
+          "precision": false,
+          "search": {
+            "limit": 128,
+            "used": 1
+          }
+        }
+      },
+      {
+        "action": {
+          "type": "play",
+          "index": 0,
+          "targetId": 0
+        },
+        "score": -0.8213743018853563,
+        "reason": "expected-state-difference",
+        "explanation": {
+          "parts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": 1.2251242028694542,
+            "conversion": -0.2371376052168831,
+            "ownHand": -0.6999999999999957,
+            "otherHands": 0.8906391004620666,
+            "healing": 0,
+            "energy": 0,
+            "effects": -1.9999999999999998,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0,
+            "routeRisk": 0,
+            "capacity": 0,
+            "giftOptions": 0,
+            "terminal": 0
+          },
+          "branches": [
+            {
+              "probability": 0.41901522806930597,
+              "path": [
+                "hit"
+              ]
+            },
+            {
+              "probability": 0.16856311268230273,
+              "path": [
+                "light"
+              ]
+            },
+            {
+              "probability": 0.1739903874954151,
+              "path": [
+                "counter",
+                "counter-hit"
+              ]
+            },
+            {
+              "probability": 0.2384312717529762,
+              "path": [
+                "counter",
+                "counter-answered"
+              ]
+            }
+          ],
+          "precision": false,
+          "search": {
+            "limit": 128,
+            "used": 1
+          }
+        }
+      }
+    ],
+    "waterPower": [
+      {
+        "action": {
+          "type": "skill",
+          "skillId": "waterPower",
+          "cardIds": [
+            "c13"
+          ],
+          "targetIds": [
+            2
+          ]
+        },
+        "score": -5.565164935064928,
+        "reason": "expected-state-difference",
+        "explanation": {
+          "parts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": 0,
+            "conversion": 0,
+            "ownHand": -7.9999999999999964,
+            "otherHands": 1.299999999999998,
+            "healing": 5,
+            "energy": 0,
+            "effects": -4,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0,
+            "routeRisk": 0,
+            "capacity": 0,
+            "giftOptions": 0.13483506493506492,
+            "terminal": 0
+          },
+          "branches": [
+            {
+              "probability": 1,
+              "path": [
+                "waterPower"
+              ]
+            }
+          ],
+          "precision": null,
+          "search": {
+            "limit": 128,
+            "used": 0
+          }
+        },
+        "giftCards": [
+          {
+            "id": "c58",
+            "elements": [
+              "wind"
+            ]
+          }
+        ]
+      },
+      {
+        "action": {
+          "type": "skill",
+          "skillId": "waterPower",
+          "cardIds": [
+            "c13"
+          ],
+          "targetIds": [
+            1
+          ]
+        },
+        "score": -10.899999999999977,
+        "reason": "expected-state-difference",
+        "explanation": {
+          "parts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": 0,
+            "conversion": 0,
+            "ownHand": -7.9999999999999964,
+            "otherHands": -3.9000000000000004,
+            "healing": 5,
+            "energy": 0,
+            "effects": -4,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0,
+            "routeRisk": 0,
+            "capacity": 0,
+            "giftOptions": 0,
+            "terminal": 0
+          },
+          "branches": [
+            {
+              "probability": 1,
+              "path": [
+                "waterPower"
+              ]
+            }
+          ],
+          "precision": null,
+          "search": {
+            "limit": 128,
+            "used": 0
+          }
+        },
+        "giftCards": [
+          {
+            "id": "c58",
+            "elements": [
+              "wind"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "sourceSHA": "7cd8138d1cc90719947d0036023a2ba17714156c",
+    "hero": "guardianAngel",
+    "originalAction": {
+      "type": "play",
+      "index": 2,
+      "targetId": 4
+    },
+    "originalTop": -0.4737945028831225,
+    "candidateTop": [
+      {
+        "action": {
+          "type": "play",
+          "index": 2,
+          "targetId": 0
+        },
+        "score": 0.17517101970451687,
+        "reason": "expected-state-difference",
+        "explanation": {
+          "parts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": 5,
+            "conversion": 3.00850435303785,
+            "ownHand": -3.299999999999999,
+            "otherHands": -5.2,
+            "healing": 0,
+            "energy": 0,
+            "effects": 0.666666666666667,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0,
+            "routeRisk": 0,
+            "capacity": 0,
+            "giftOptions": 0,
+            "terminal": 0
+          },
+          "branches": [
+            {
+              "probability": 1,
+              "path": [
+                "hit"
+              ]
+            }
+          ],
+          "precision": false,
+          "search": {
+            "limit": 128,
+            "used": 1
+          }
+        }
+      },
+      {
+        "action": {
+          "type": "play",
+          "index": 2,
+          "targetId": 4
+        },
+        "score": -0.20954873078223724,
+        "reason": "expected-state-difference",
+        "explanation": {
+          "parts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": 1.494705803276242,
+            "conversion": 0.7425516291492807,
+            "ownHand": -3.2999999999999994,
+            "otherHands": 0.45383513148577437,
+            "healing": 0,
+            "energy": 0,
+            "effects": 0.6749505870951729,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": -0.27559188178870875,
+            "routeRisk": 0,
+            "capacity": 0,
+            "giftOptions": 0,
+            "terminal": 0
+          },
+          "branches": [
+            {
+              "probability": 0.4279791519454346,
+              "path": [
+                "hit"
+              ]
+            },
+            {
+              "probability": 0.16419707311274218,
+              "path": [
+                "light"
+              ]
+            },
+            {
+              "probability": 0.12903799129018628,
+              "path": [
+                "counter",
+                "counter-hit"
+              ]
+            },
+            {
+              "probability": 0.27878578365163703,
+              "path": [
+                "counter",
+                "counter-answered"
+              ]
+            }
+          ],
+          "precision": false,
+          "search": {
+            "limit": 128,
+            "used": 1
+          }
+        }
+      },
+      {
+        "action": {
+          "type": "play",
+          "index": 0,
+          "targetId": 3
+        },
+        "score": -5.64774037263203,
+        "reason": "expected-state-difference",
+        "explanation": {
+          "parts": {
+            "morale": -3.364326734103977,
+            "cups": 0,
+            "stones": 0,
+            "conversion": 0,
+            "ownHand": -2.4000000000000004,
+            "otherHands": -2.6781585854218877,
+            "healing": 2.4295861086503163,
+            "energy": 0,
+            "effects": 0.6046699895288519,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": -0.23951115128533224,
+            "routeRisk": 0,
+            "capacity": 0,
+            "giftOptions": 0,
+            "terminal": 0
+          },
+          "branches": [
+            {
+              "probability": 0.48591722173006324,
+              "path": [
+                "magic-hit-check"
+              ]
+            },
+            {
+              "probability": 0.3326417977040767,
+              "path": [
+                "magic-light"
+              ]
+            },
+            {
+              "probability": 0.11214422447013256,
+              "path": [
+                "magic-relay",
+                "magic-hit-check"
+              ]
+            },
+            {
+              "probability": 0.044839077473706024,
+              "path": [
+                "magic-relay",
+                "magic-light"
+              ]
+            },
+            {
+              "probability": 0.02445767862202148,
+              "path": [
+                "magic-relay",
+                "magic-relay-horizon"
+              ]
+            }
+          ],
+          "precision": null,
+          "search": {
+            "limit": 128,
+            "used": 0
+          }
+        }
+      }
+    ],
+    "waterPower": []
+  }
+]

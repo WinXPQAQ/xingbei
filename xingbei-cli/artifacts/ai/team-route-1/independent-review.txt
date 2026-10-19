@@ -1,0 +1,4 @@
+Independent review record (reported by rules_audit, scripts not retained):
+Final freeze 746662a66117268ee3cbbff3e5c1ea01b499e7ba.
+12 targeted tests passed independently. Full root run 163 passed.
+24 counterfactual cases: observer seats 0..5 with seeds883010+observer, six default heroes. For team-route-1 and three ablations, capture observation/rank/trace/choice; return every other hand to deck, reverse, redeal same counts, reverse future order, restore original public history events and sequence. Observations/ranks/traces/choices remained equal and replayTrace matched trace.candidates. No source edits by reviewer. This is bounded testing, not formal proof.
