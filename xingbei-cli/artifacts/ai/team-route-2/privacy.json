@@ -1,0 +1,150 @@
+{
+  "sha": "b84f377098977e246fbcacd153a899f1f84c99d4",
+  "checks": [
+    {
+      "observer": 0,
+      "hero": "berserker",
+      "version": "experimental/team-route-2",
+      "passed": true
+    },
+    {
+      "observer": 0,
+      "hero": "berserker",
+      "version": "experimental/team-route-2-no-routes",
+      "passed": true
+    },
+    {
+      "observer": 0,
+      "hero": "berserker",
+      "version": "experimental/team-route-2-no-gifts",
+      "passed": true
+    },
+    {
+      "observer": 0,
+      "hero": "berserker",
+      "version": "experimental/team-route-2-no-risk",
+      "passed": true
+    },
+    {
+      "observer": 1,
+      "hero": "windSwordmaster",
+      "version": "experimental/team-route-2",
+      "passed": true
+    },
+    {
+      "observer": 1,
+      "hero": "windSwordmaster",
+      "version": "experimental/team-route-2-no-routes",
+      "passed": true
+    },
+    {
+      "observer": 1,
+      "hero": "windSwordmaster",
+      "version": "experimental/team-route-2-no-gifts",
+      "passed": true
+    },
+    {
+      "observer": 1,
+      "hero": "windSwordmaster",
+      "version": "experimental/team-route-2-no-risk",
+      "passed": true
+    },
+    {
+      "observer": 2,
+      "hero": "marksman",
+      "version": "experimental/team-route-2",
+      "passed": true
+    },
+    {
+      "observer": 2,
+      "hero": "marksman",
+      "version": "experimental/team-route-2-no-routes",
+      "passed": true
+    },
+    {
+      "observer": 2,
+      "hero": "marksman",
+      "version": "experimental/team-route-2-no-gifts",
+      "passed": true
+    },
+    {
+      "observer": 2,
+      "hero": "marksman",
+      "version": "experimental/team-route-2-no-risk",
+      "passed": true
+    },
+    {
+      "observer": 3,
+      "hero": "sealer",
+      "version": "experimental/team-route-2",
+      "passed": true
+    },
+    {
+      "observer": 3,
+      "hero": "sealer",
+      "version": "experimental/team-route-2-no-routes",
+      "passed": true
+    },
+    {
+      "observer": 3,
+      "hero": "sealer",
+      "version": "experimental/team-route-2-no-gifts",
+      "passed": true
+    },
+    {
+      "observer": 3,
+      "hero": "sealer",
+      "version": "experimental/team-route-2-no-risk",
+      "passed": true
+    },
+    {
+      "observer": 4,
+      "hero": "guardianAngel",
+      "version": "experimental/team-route-2",
+      "passed": true
+    },
+    {
+      "observer": 4,
+      "hero": "guardianAngel",
+      "version": "experimental/team-route-2-no-routes",
+      "passed": true
+    },
+    {
+      "observer": 4,
+      "hero": "guardianAngel",
+      "version": "experimental/team-route-2-no-gifts",
+      "passed": true
+    },
+    {
+      "observer": 4,
+      "hero": "guardianAngel",
+      "version": "experimental/team-route-2-no-risk",
+      "passed": true
+    },
+    {
+      "observer": 5,
+      "hero": "priest",
+      "version": "experimental/team-route-2",
+      "passed": true
+    },
+    {
+      "observer": 5,
+      "hero": "priest",
+      "version": "experimental/team-route-2-no-routes",
+      "passed": true
+    },
+    {
+      "observer": 5,
+      "hero": "priest",
+      "version": "experimental/team-route-2-no-gifts",
+      "passed": true
+    },
+    {
+      "observer": 5,
+      "hero": "priest",
+      "version": "experimental/team-route-2-no-risk",
+      "passed": true
+    }
+  ],
+  "scope": "24 same-public-state counterfactuals; not a formal proof or exhaustive nested-request audit"
+}
