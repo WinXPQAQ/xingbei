@@ -1,0 +1,21 @@
+{
+  "sourceCommit": "abbfcb317d47395c86934a479e3c55cab6d257a9",
+  "files": [
+    {
+      "file": "index.js",
+      "sha256": "d4f6c92249f235dc4c25b790c3b1a20a52b6150ac223ac6165e7d6c8f4b0a8bf"
+    },
+    {
+      "file": "model.js",
+      "sha256": "2de21507b52c0d1cdb1e5abc12f6ded176a064f2ca200d777b6525f7a6b5b484"
+    },
+    {
+      "file": "planner.js",
+      "sha256": "f6f17e2f0e9851d1ba02497aeeaf5fc00ec17d511b9b82b979b77973db55adb8"
+    },
+    {
+      "file": "trace.js",
+      "sha256": "9d09a5b26a29d47f0c75337c26d7c2bdb1b49be8857410bc7e1233aba3c6476b"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "candidateCommit": "573890e24e892fe7e3f15790e4b66828f386df32",
+  "modelReviewer": "review_economy_model",
+  "privacyReviewer": "review_economy_privacy",
+  "model": [
+    "Seven new tests: guaranteed morale/cup wins, shield/shelter false terminal, reachable six-hero requests, explicit angelBond and contract/unknown fallback",
+    "Protocol1440x4+288x4=6912; same-config/heroIds pair differences, whole seed bootstrap and -5pp margin checked",
+    "Root-cwd and untracked-runtime-file freeze guard issue fixed and confirmed closed before run"
+  ],
+  "privacy": [
+    "Existing observation isolation/old-version freeze review43 tests before clone passed",
+    "Two explicit clone tests: every shared object frozen, mutable fields independent, six-seat scores identical to frozen economy2",
+    "143 reachable+1 stress state hashes equal before/after clone optimization; all decision snapshots unchanged"
+  ],
+  "fullTests": 121,
+  "blockingIssues": [],
+  "scope": "No claim all hero paths use joint evaluation; final statistical review follows completed holdout",
+  "finalStatisticalReview": {
+    "reviewer": "review_economy_model",
+    "games": 6912,
+    "chunks": 32,
+    "completeUniqueCartesianKeys": true,
+    "pairedHeroIdsMatch": true,
+    "sourceUnchanged": true,
+    "conclusion": "Do not release: noninferiority unproven in both asymmetric lineups; not proof of regression",
+    "marginal95LowerPp": [
+      -7.5,
+      -5.277777777777779
+    ],
+    "passed": false
+  }
+}

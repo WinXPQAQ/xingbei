@@ -1,0 +1,57 @@
+[
+  {
+    "file": "src/ai.js",
+    "sha256": "c5285a58ff5c562b4077d5b2f3e145de12db9a1a65e03fe7014d399dba190d4a",
+    "unchangedFrom": "5159804a35c8224ab6fc9bb3c77123b85decb47e"
+  },
+  {
+    "file": "src/ai/v1.0/index.js",
+    "sha256": "f8efd742a16596b43897794393cbb4e57e634e8a7ed4bef608699fbf494ba481",
+    "unchangedFrom": "5159804a35c8224ab6fc9bb3c77123b85decb47e"
+  },
+  {
+    "file": "src/ai/v1.0/actions.js",
+    "sha256": "a076a2b54159e27b0ae66cda8351c66802a227068b7e73563b9732df1da22bb4",
+    "unchangedFrom": "5159804a35c8224ab6fc9bb3c77123b85decb47e"
+  },
+  {
+    "file": "src/ai/v1.0/wind-plan.js",
+    "sha256": "18cc8af28e5acba0b238acd3ae0b44667de296445a282034a97c65b519412a1f",
+    "unchangedFrom": "5159804a35c8224ab6fc9bb3c77123b85decb47e"
+  },
+  {
+    "file": "src/ai/v1.0/evaluation.js",
+    "sha256": "3ddffe24ea04591061932c1e0a72629b7de4eb07bdcdc5cdd823d792967ab56f",
+    "unchangedFrom": "5159804a35c8224ab6fc9bb3c77123b85decb47e"
+  },
+  {
+    "file": "src/ai/v1.0/decisions.js",
+    "sha256": "1b422689523ae7c2fdeb4df16ee275a32ac0d5359e1103a5b2e9cef3045e4e11",
+    "unchangedFrom": "5159804a35c8224ab6fc9bb3c77123b85decb47e"
+  },
+  {
+    "file": "src/ai/v1.1/fusion.js",
+    "sha256": "f082f869b1cb1db9e3d5232f318196fef0780323a85f6c5a6e61c73ce59c844b",
+    "unchangedFrom": "5159804a35c8224ab6fc9bb3c77123b85decb47e"
+  },
+  {
+    "file": "src/ai/v1.1/defense.js",
+    "sha256": "764dabcff34b822a86bb2a60ec70c8d24bd3fcc2b03d9ed8909285952927b2fc",
+    "unchangedFrom": "5159804a35c8224ab6fc9bb3c77123b85decb47e"
+  },
+  {
+    "file": "src/ai/v1.1/index.js",
+    "sha256": "27e2009d44115aece3752aa29c66d28f308849c908023550cf5c370da2d64d76",
+    "unchangedFrom": "5159804a35c8224ab6fc9bb3c77123b85decb47e"
+  },
+  {
+    "file": "src/ai/v1.1/threats.js",
+    "sha256": "e8b5000f6a289fcd205835d019540415dcb785aedba5c8914823de8404dc7c3d",
+    "unchangedFrom": "5159804a35c8224ab6fc9bb3c77123b85decb47e"
+  },
+  {
+    "file": "src/ai/v1.1/reading.js",
+    "sha256": "5dd5a93c8e69275ff473f216b2c594d744886e6f8e90c5b92f197b4c12991841",
+    "unchangedFrom": "5159804a35c8224ab6fc9bb3c77123b85decb47e"
+  }
+]

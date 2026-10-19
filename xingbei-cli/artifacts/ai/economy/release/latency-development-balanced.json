@@ -1,0 +1,3749 @@
+{
+  "commit": "abbfcb317d47395c86934a479e3c55cab6d257a9",
+  "node": "v24.19.0",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "settings": {
+    "seeds": [
+      61011,
+      61012,
+      61013,
+      61014
+    ],
+    "turnLimit": 72,
+    "perSeedHeroKindLimit": 2,
+    "warmups": 1,
+    "repeats": 3,
+    "driver": "v1.2",
+    "policies": [
+      "v1.2",
+      "experimental/economy-3"
+    ]
+  },
+  "games": [
+    {
+      "seed": 61011,
+      "turns": 72,
+      "winner": null
+    },
+    {
+      "seed": 61012,
+      "turns": 54,
+      "winner": "red"
+    },
+    {
+      "seed": 61013,
+      "turns": 72,
+      "winner": "red"
+    },
+    {
+      "seed": 61014,
+      "turns": 71,
+      "winner": "blue"
+    }
+  ],
+  "limitations": [
+    "Node wall-clock timings on this machine, not browser frame-time or human-strength evidence.",
+    "Only fixed v1.2 trajectories; per-hero/type sample cap can omit rare requests.",
+    "Overflow times pure discard selection; execution is excluded.",
+    "Warmups, snapshot validation and engine execution excluded from timings.",
+    "Three timings per state are correlated repeats, not independent positions."
+  ],
+  "reachable": {
+    "v1.2": {
+      "states": 143,
+      "timedCalls": 429,
+      "p50": 0.5271099999999933,
+      "p95": 1.1553109999999833,
+      "max": 4.365282999999636
+    },
+    "experimental/economy-3": {
+      "states": 143,
+      "timedCalls": 429,
+      "p50": 1.9233930000000328,
+      "p95": 16.348897000000306,
+      "max": 109.39932500000009
+    }
+  },
+  "byKind": {
+    "action": {
+      "v1.2": {
+        "states": 48,
+        "timedCalls": 144,
+        "p50": 0.6692630000002282,
+        "p95": 1.317405000000008,
+        "max": 1.7547610000001441
+      },
+      "experimental/economy-3": {
+        "states": 48,
+        "timedCalls": 144,
+        "p50": 6.4505089999997836,
+        "p95": 88.1001960000001,
+        "max": 109.39932500000009
+      }
+    },
+    "response": {
+      "v1.2": {
+        "states": 47,
+        "timedCalls": 141,
+        "p50": 0.5064390000006824,
+        "p95": 0.9429540000000998,
+        "max": 2.993236999999908
+      },
+      "experimental/economy-3": {
+        "states": 47,
+        "timedCalls": 141,
+        "p50": 1.0468200000000252,
+        "p95": 2.8299120000001494,
+        "max": 5.087173999999777
+      }
+    },
+    "rule": {
+      "v1.2": {
+        "states": 48,
+        "timedCalls": 144,
+        "p50": 0.47175800000013624,
+        "p95": 0.9057379999999284,
+        "max": 4.365282999999636
+      },
+      "experimental/economy-3": {
+        "states": 48,
+        "timedCalls": 144,
+        "p50": 1.125676999999996,
+        "p95": 11.926228000000265,
+        "max": 16.348897000000306
+      }
+    }
+  },
+  "byHero": {
+    "berserker": {
+      "action": {
+        "v1.2": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 0.7424929999999961,
+          "p95": 1.3364739999997255,
+          "max": 1.5537389999999505
+        },
+        "experimental/economy-3": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 6.5662429999997585,
+          "p95": 11.394639999999981,
+          "max": 11.416842999999972
+        }
+      },
+      "response": {
+        "v1.2": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 0.5137809999998808,
+          "p95": 0.9188380000000507,
+          "max": 2.993236999999908
+        },
+        "experimental/economy-3": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 1.1235649999998714,
+          "p95": 1.9541290000006484,
+          "max": 2.616942999999992
+        }
+      },
+      "rule": {
+        "v1.2": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 0.5246360000001005,
+          "p95": 0.9057379999999284,
+          "max": 0.9431340000001001
+        },
+        "experimental/economy-3": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 0.7077710000003208,
+          "p95": 11.127830000000358,
+          "max": 11.926228000000265
+        }
+      }
+    },
+    "windSwordmaster": {
+      "action": {
+        "v1.2": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 0.6692630000002282,
+          "p95": 1.5659080000000358,
+          "max": 1.6272989999999936
+        },
+        "experimental/economy-3": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 8.293099999999868,
+          "p95": 97.64013699999998,
+          "max": 104.23744900000003
+        }
+      },
+      "response": {
+        "v1.2": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 0.5476509999998598,
+          "p95": 1.0613009999999576,
+          "max": 1.1661779999999453
+        },
+        "experimental/economy-3": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 1.1548510000002352,
+          "p95": 2.980948000000353,
+          "max": 5.087173999999777
+        }
+      },
+      "rule": {
+        "v1.2": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 0.49865800000043237,
+          "p95": 1.0327479999996285,
+          "max": 1.4860069999995176
+        },
+        "experimental/economy-3": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 2.5915449999999964,
+          "p95": 9.784175999999889,
+          "max": 9.831348000000162
+        }
+      }
+    },
+    "marksman": {
+      "action": {
+        "v1.2": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 0.551155999999537,
+          "p95": 0.8412100000000464,
+          "max": 0.9471589999998287
+        },
+        "experimental/economy-3": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 4.821557000000212,
+          "p95": 18.543627000000015,
+          "max": 20.192047000000002
+        }
+      },
+      "response": {
+        "v1.2": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 0.4164139999998042,
+          "p95": 0.6143110000002707,
+          "max": 0.9160130000000208
+        },
+        "experimental/economy-3": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 0.9300649999995585,
+          "p95": 2.1190960000003543,
+          "max": 2.1999379999997473
+        }
+      },
+      "rule": {
+        "v1.2": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 0.5222529999996368,
+          "p95": 1.0729989999999816,
+          "max": 4.365282999999636
+        },
+        "experimental/economy-3": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 0.892088000000058,
+          "p95": 16.06323799999973,
+          "max": 16.348897000000306
+        }
+      }
+    },
+    "sealer": {
+      "action": {
+        "v1.2": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 0.5201390000001993,
+          "p95": 0.9637740000000576,
+          "max": 1.317405000000008
+        },
+        "experimental/economy-3": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 11.404616999999917,
+          "p95": 103.03387299999997,
+          "max": 109.39932500000009
+        }
+      },
+      "response": {
+        "v1.2": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 0.45446199999969394,
+          "p95": 0.5853779999999915,
+          "max": 0.842993999999635
+        },
+        "experimental/economy-3": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 0.7070400000002337,
+          "p95": 1.71894599999996,
+          "max": 1.7393580000007205
+        }
+      },
+      "rule": {
+        "v1.2": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 0.35810700000001816,
+          "p95": 0.4848269999999957,
+          "max": 0.5052279999999882
+        },
+        "experimental/economy-3": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 2.656492000000071,
+          "p95": 8.37500399999999,
+          "max": 13.686466999999993
+        }
+      }
+    },
+    "guardianAngel": {
+      "action": {
+        "v1.2": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 0.7045759999996335,
+          "p95": 1.0672099999997045,
+          "max": 1.7547610000001441
+        },
+        "experimental/economy-3": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 5.323659999999563,
+          "p95": 14.300236999999925,
+          "max": 15.793994999999995
+        }
+      },
+      "response": {
+        "v1.2": {
+          "states": 7,
+          "timedCalls": 21,
+          "p50": 0.6938399999999092,
+          "p95": 1.653639000000112,
+          "max": 2.3416799999999967
+        },
+        "experimental/economy-3": {
+          "states": 7,
+          "timedCalls": 21,
+          "p50": 1.652868000000126,
+          "p95": 3.012986999999839,
+          "max": 4.012784999999894
+        }
+      },
+      "rule": {
+        "v1.2": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 0.43453100000033373,
+          "p95": 0.602141999999958,
+          "max": 1.0388479999999163
+        },
+        "experimental/economy-3": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 1.4608499999999367,
+          "p95": 10.288392000000385,
+          "max": 10.308713000000353
+        }
+      }
+    },
+    "priest": {
+      "action": {
+        "v1.2": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 0.8208610000001499,
+          "p95": 1.236462999999958,
+          "max": 1.541580999999951
+        },
+        "experimental/economy-3": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 6.4505089999997836,
+          "p95": 13.834167999999863,
+          "max": 16.084771000000273
+        }
+      },
+      "response": {
+        "v1.2": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 0.5019520000000739,
+          "p95": 0.6434639999999945,
+          "max": 1.0860279999997147
+        },
+        "experimental/economy-3": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 0.8350820000000567,
+          "p95": 1.6227429999999003,
+          "max": 1.8274000000001251
+        }
+      },
+      "rule": {
+        "v1.2": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 0.49865799999952287,
+          "p95": 0.6558629999999539,
+          "max": 0.6827240000000074
+        },
+        "experimental/economy-3": {
+          "states": 8,
+          "timedCalls": 24,
+          "p50": 0.6203590000000077,
+          "p95": 0.9644560000001547,
+          "max": 1.2518159999999625
+        }
+      }
+    }
+  },
+  "stress": {
+    "v1.2": {
+      "states": 1,
+      "timedCalls": 3,
+      "p50": 8.723586000000068,
+      "p95": 9.044417999999496,
+      "max": 9.044417999999496
+    },
+    "experimental/economy-3": {
+      "states": 1,
+      "timedCalls": 3,
+      "p50": 463.3622409999998,
+      "p95": 479.1021329999994,
+      "max": 479.1021329999994
+    }
+  },
+  "samples": [
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 0,
+      "hero": "berserker",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "043001123db0401fe2aeb5af97e74a1ffd53463e49ea5f235abe3f30d2d67ae9",
+      "milliseconds": {
+        "v1.2": [
+          1.201901999999997,
+          0.9666390000000007,
+          0.7424929999999961
+        ],
+        "experimental/economy-3": [
+          6.967966000000004,
+          6.600785000000002,
+          5.868938
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 1,
+      "hero": "windSwordmaster",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "d0d11b88ab4edb5618bea7dd2afa5e7a4a424d91a946ca0e4dd43a71bf47797e",
+      "milliseconds": {
+        "experimental/economy-3": [
+          104.23744900000003,
+          96.736064,
+          97.64013699999998
+        ],
+        "v1.2": [
+          1.6272989999999936,
+          1.288270999999952,
+          1.0924570000000244
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 3,
+      "hero": "sealer",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "f84b7470aee75dcc80ab7222a54925c02ae99b518ee19dd99a685605c2f5aeaa",
+      "milliseconds": {
+        "v1.2": [
+          0.5350120000000516,
+          0.4369050000000243,
+          0.4692730000000438
+        ],
+        "experimental/economy-3": [
+          1.1435840000000326,
+          0.6871899999999869,
+          0.673039000000017
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 2,
+      "hero": "marksman",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "fec7b38fc9a6a96d5ee3f8b1a0b51c20eddaf0f002ca359f6d33cfbe3da4d412",
+      "milliseconds": {
+        "experimental/economy-3": [
+          7.045762000000082,
+          7.217579999999998,
+          6.818280999999956
+        ],
+        "v1.2": [
+          0.6090330000000677,
+          0.8307849999999917,
+          0.5943909999999732
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 2,
+      "hero": "marksman",
+      "kind": "rule",
+      "requestType": "skillChoice",
+      "skillId": "precisionShot",
+      "stateHash": "7c165e55f379705b79286fe8f9ab60784d7696c18e53222f1e7a0f5c0d330b87",
+      "milliseconds": {
+        "v1.2": [
+          0.5651269999999613,
+          0.5573450000000548,
+          0.3262290000000121
+        ],
+        "experimental/economy-3": [
+          0.7328579999999647,
+          0.6755520000000388,
+          0.7245360000000574
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 3,
+      "hero": "sealer",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "00538528ab60e344a431c77d713ee22d8d47a498bd1fe8957f44396755c1d29d",
+      "milliseconds": {
+        "experimental/economy-3": [
+          103.03387299999997,
+          109.39932500000009,
+          100.45319400000005
+        ],
+        "v1.2": [
+          0.9637740000000576,
+          0.919247999999925,
+          1.317405000000008
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 3,
+      "hero": "sealer",
+      "kind": "rule",
+      "requestType": "skillChoice",
+      "skillId": "spellExcitation",
+      "stateHash": "df7af3daf5bdac5efd23b8bce9a7edc1087b92428559f749f41db9826706c2f5",
+      "milliseconds": {
+        "v1.2": [
+          0.43608400000016445,
+          0.5052279999999882,
+          0.4524079999998776
+        ],
+        "experimental/economy-3": [
+          8.37500399999999,
+          13.686466999999993,
+          7.626533000000109
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 3,
+      "hero": "sealer",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "bdbecc8e968798e227c103ce375f1dd0a515d1b60d72175c2b9cf130f7634645",
+      "milliseconds": {
+        "experimental/economy-3": [
+          11.404616999999917,
+          9.14064099999996,
+          6.155847999999878
+        ],
+        "v1.2": [
+          0.7406000000000859,
+          0.6567740000000413,
+          0.7084319999999025
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 2,
+      "hero": "marksman",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "d82bec2c9cf1beb477bd9ffb2bce9bd8d5b0d1c17350bdc07d79d4f9cfe2a6f5",
+      "milliseconds": {
+        "v1.2": [
+          0.44078099999978804,
+          0.9160130000000208,
+          0.3900650000000496
+        ],
+        "experimental/economy-3": [
+          0.7384369999999763,
+          0.7153220000000147,
+          0.6471799999999348
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 4,
+      "hero": "guardianAngel",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "2fbbdc427c94d966ede4b10224e8701ede943cc54e3c73711dfe5f7144fcb02e",
+      "milliseconds": {
+        "experimental/economy-3": [
+          6.363459000000148,
+          7.620593000000099,
+          6.201086000000032
+        ],
+        "v1.2": [
+          0.777514999999994,
+          0.764466000000084,
+          0.8167550000000574
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 2,
+      "hero": "marksman",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "d25c2f2b0144c2302a4c373f17a02d7a83e1f829996ec424d42c1acb88f7c1a8",
+      "milliseconds": {
+        "v1.2": [
+          0.41644399999995585,
+          0.4117380000000139,
+          0.3554030000000239
+        ],
+        "experimental/economy-3": [
+          1.3908849999997983,
+          1.339277999999922,
+          1.166537999999946
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 3,
+      "hero": "sealer",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "f0c5d370dd00b013f61b4456bd0420af0735eb133e75ab1dcbf9d223f2584cfb",
+      "milliseconds": {
+        "experimental/economy-3": [
+          0.6552130000000034,
+          0.9837049999998726,
+          0.7467800000001716
+        ],
+        "v1.2": [
+          0.5853779999999915,
+          0.5032750000000306,
+          0.5448160000000826
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 5,
+      "hero": "priest",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "c4cf938fca3a520cf976305662c8bb61e8b808e065d5680cf2665fd9ad01fad7",
+      "milliseconds": {
+        "v1.2": [
+          0.9676010000000588,
+          0.8692130000001725,
+          0.965787999999975
+        ],
+        "experimental/economy-3": [
+          9.49362199999996,
+          8.945159000000103,
+          7.116727999999966
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 5,
+      "hero": "priest",
+      "kind": "rule",
+      "requestType": "skillChoice",
+      "skillId": "revelation",
+      "stateHash": "e2652694edae8b2b67e2900ee7e8462294254b595ce244643e71edc84426da31",
+      "milliseconds": {
+        "experimental/economy-3": [
+          0.4988779999998769,
+          0.52613899999983,
+          0.7249170000000049
+        ],
+        "v1.2": [
+          0.39295900000001893,
+          0.42036000000007334,
+          0.6827240000000074
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 0,
+      "hero": "berserker",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "f0737c0afe7d01ee0b6cc17ff4aab821a9c02d21d1ac4bdad1c6507a4538535b",
+      "milliseconds": {
+        "v1.2": [
+          0.8388379999998961,
+          1.5537389999999505,
+          0.9051369999999679
+        ],
+        "experimental/economy-3": [
+          7.3270840000000135,
+          6.455347000000074,
+          6.5700990000000274
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 1,
+      "hero": "windSwordmaster",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "12d8bc5f18d2a574c1677daaefd33b03cfea9dbbaba7a756b112fbe76b5a386f",
+      "milliseconds": {
+        "experimental/economy-3": [
+          91.25342299999988,
+          88.1001960000001,
+          83.8666310000001
+        ],
+        "v1.2": [
+          0.9904739999999492,
+          1.5659080000000358,
+          1.040860000000066
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 0,
+      "hero": "berserker",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "8f7da17386be334e17e43bc011dfd094ab2ced6c56cd1c9e4b35f54adb562c31",
+      "milliseconds": {
+        "v1.2": [
+          0.8669400000001133,
+          2.993236999999908,
+          0.5137809999998808
+        ],
+        "experimental/economy-3": [
+          1.593458999999939,
+          1.2064190000000963,
+          1.3617109999997865
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 1,
+      "hero": "windSwordmaster",
+      "kind": "rule",
+      "requestType": "skillChoice",
+      "skillId": "windFury",
+      "stateHash": "58460984c068401978ba56bd550a18c664bf7942e6b48415ddf461d645f0acd3",
+      "milliseconds": {
+        "experimental/economy-3": [
+          2.506686999999829,
+          2.5915449999999964,
+          2.469671999999946
+        ],
+        "v1.2": [
+          0.40862300000003415,
+          0.4217519999999695,
+          1.0109449999999924
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 0,
+      "hero": "berserker",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "52b015e7eb38783e6533e089efec29a60ccc8469d34e7e27bc86f7a58972493e",
+      "milliseconds": {
+        "v1.2": [
+          0.2988580000001093,
+          0.31072599999993145,
+          0.3889830000000529
+        ],
+        "experimental/economy-3": [
+          0.45835699999997814,
+          0.45376999999984946,
+          0.4468699999999899
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 2,
+      "hero": "marksman",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "f45f3faa31d51188772b847d1f138ed84c7211615ae398caed95522f2718de1d",
+      "milliseconds": {
+        "experimental/economy-3": [
+          3.7752190000001065,
+          4.575538999999935,
+          3.6678589999999076
+        ],
+        "v1.2": [
+          0.6213520000001154,
+          0.6110460000002149,
+          0.6001599999999598
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 3,
+      "hero": "sealer",
+      "kind": "rule",
+      "requestType": "skillChoice",
+      "skillId": "spellExcitation",
+      "stateHash": "4dfab728359b76d5535e364058a8a7b029f046507ac05a7a00d6059fa16fba3e",
+      "milliseconds": {
+        "v1.2": [
+          0.4848269999999957,
+          0.47403000000008433,
+          0.46249299999999494
+        ],
+        "experimental/economy-3": [
+          6.781224999999949,
+          5.851901999999882,
+          6.3002640000001975
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 1,
+      "hero": "windSwordmaster",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "25af6d5ea97c36f756fbe2fc8e44d5cfee20223fd2848d205448e123f4688e30",
+      "milliseconds": {
+        "experimental/economy-3": [
+          0.7580069999999068,
+          0.6742309999999634,
+          0.6648169999998572
+        ],
+        "v1.2": [
+          0.5412720000001627,
+          0.4639550000001691,
+          1.0613009999999576
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 4,
+      "hero": "guardianAngel",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "7d405554ddb98b55db5f42401dfa710adfe10de7bcc7f913b32e697e474842d7",
+      "milliseconds": {
+        "v1.2": [
+          0.9140299999999115,
+          0.752507999999807,
+          0.9761430000000928
+        ],
+        "experimental/economy-3": [
+          4.946373999999878,
+          5.50521300000014,
+          4.860276000000113
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 5,
+      "hero": "priest",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "6ce4287004247094c1a2d6b725c73910048c2010d4b76534e032bc1ba196dd2f",
+      "milliseconds": {
+        "experimental/economy-3": [
+          12.403724000000011,
+          13.192926999999827,
+          13.578845000000001
+        ],
+        "v1.2": [
+          1.541580999999951,
+          1.236462999999958,
+          1.2105839999999262
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 5,
+      "hero": "priest",
+      "kind": "rule",
+      "requestType": "skillChoice",
+      "skillId": "holyContract",
+      "stateHash": "b70d22634e5236fb6f527a820419241516060a8c66cc129b0f4b6f6ce3db972a",
+      "milliseconds": {
+        "v1.2": [
+          0.6558629999999539,
+          0.5900139999998828,
+          0.44616900000005444
+        ],
+        "experimental/economy-3": [
+          0.8290830000000824,
+          0.5821530000000621,
+          1.2518159999999625
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 4,
+      "hero": "guardianAngel",
+      "kind": "rule",
+      "requestType": "skillChoice",
+      "skillId": "angelSong",
+      "stateHash": "1e9a47ea6f32e2b1da218ac3d53025d627cf46fa7f992105576792a844564f03",
+      "milliseconds": {
+        "experimental/economy-3": [
+          6.044250000000147,
+          6.559644000000162,
+          6.5793019999998705
+        ],
+        "v1.2": [
+          0.602141999999958,
+          0.5863389999999526,
+          1.0388479999999163
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 4,
+      "hero": "guardianAngel",
+      "kind": "rule",
+      "requestType": "effectChoice",
+      "skillId": null,
+      "stateHash": "8b2884eccd351f165d7ae214a8b2c7b724540f57c90d58a7482f4cb9a6289ae8",
+      "milliseconds": {
+        "v1.2": [
+          0.5612409999998818,
+          0.5786570000000211,
+          0.5202899999999318
+        ],
+        "experimental/economy-3": [
+          2.7484699999999975,
+          2.844263999999839,
+          2.9382949999999255
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 1,
+      "hero": "windSwordmaster",
+      "kind": "rule",
+      "requestType": "weakness",
+      "skillId": null,
+      "stateHash": "3502fbbdd1b1c82694f54bf4ba3c9cd57ea938141a958d469e901aa5481fb5d9",
+      "milliseconds": {
+        "experimental/economy-3": [
+          9.784175999999889,
+          9.831348000000162,
+          9.106150999999954
+        ],
+        "v1.2": [
+          0.5214010000001963,
+          0.5140100000000984,
+          0.5099849999999151
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 5,
+      "hero": "priest",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "c3d92e2ef1228b72f9ec668c3df721b679a1d04cbcc62073c27a7d89ae010ccf",
+      "milliseconds": {
+        "v1.2": [
+          0.6434639999999945,
+          0.4710560000000896,
+          0.4541500000000269
+        ],
+        "experimental/economy-3": [
+          0.7912360000000263,
+          0.768692000000101,
+          0.7607399999999416
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 4,
+      "hero": "guardianAngel",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "822b973c5d7688592e62b1f8f4f42d26c6089bbb70bb3ef45446e60d0926c1aa",
+      "milliseconds": {
+        "experimental/economy-3": [
+          4.012784999999894,
+          3.012986999999839,
+          3.0083489999997255
+        ],
+        "v1.2": [
+          0.7207909999997355,
+          0.707079999999678,
+          2.3416799999999967
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 4,
+      "hero": "guardianAngel",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "36a8beb4ebe7a58a040b9e106b21a8904d5437872b28af6f260497ebcd34ed55",
+      "milliseconds": {
+        "v1.2": [
+          0.6765039999995679,
+          0.6654180000000451,
+          0.7195080000001326
+        ],
+        "experimental/economy-3": [
+          1.5925170000000435,
+          1.4897530000002916,
+          2.1150900000002366
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 2,
+      "hero": "marksman",
+      "kind": "rule",
+      "requestType": "healing",
+      "skillId": null,
+      "stateHash": "6ad7c9ea4ff58a7eaa242879bd78932a08037fa3b0ac34a00a4754d4f2d20934",
+      "milliseconds": {
+        "experimental/economy-3": [
+          0.892088000000058,
+          0.9150220000001354,
+          0.8834750000000895
+        ],
+        "v1.2": [
+          0.8562029999998231,
+          1.0729989999999816,
+          0.6552720000004228
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 5,
+      "hero": "priest",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "78c82f5133c9b346d9d749d9feec03f7171463eec4cf27a41c506d61b13dd1e6",
+      "milliseconds": {
+        "v1.2": [
+          0.5019520000000739,
+          0.5778260000001865,
+          0.5339210000001913
+        ],
+        "experimental/economy-3": [
+          0.873739999999998,
+          0.9082620000003772,
+          0.8692230000001473
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 0,
+      "hero": "berserker",
+      "kind": "rule",
+      "requestType": "weakness",
+      "skillId": null,
+      "stateHash": "7994fa553f3c3cf467aacfbf032c16d3e1b52c6383a1c02745e07482f3ae2778",
+      "milliseconds": {
+        "experimental/economy-3": [
+          10.476325000000088,
+          10.836254000000281,
+          10.705437000000074
+        ],
+        "v1.2": [
+          0.7259390000003805,
+          0.7392279999999118,
+          0.7628839999997581
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 0,
+      "hero": "berserker",
+      "kind": "rule",
+      "requestType": "skillChoice",
+      "skillId": "bloodyRoar",
+      "stateHash": "b48f1486a4a992e54fca5fbcc992412bd48f4503249aaf1c32d9889f8b9dcdc8",
+      "milliseconds": {
+        "v1.2": [
+          0.9057379999999284,
+          0.9431340000001001,
+          0.7541310000001431
+        ],
+        "experimental/economy-3": [
+          1.125676999999996,
+          1.0578160000000025,
+          1.0106850000001941
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61011
+      },
+      "id": 1,
+      "hero": "windSwordmaster",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "3d8628aaf2b15f98fb1759f3bbe505cc0db8ceb94a6d0a724be317929764d5a0",
+      "milliseconds": {
+        "experimental/economy-3": [
+          5.087173999999777,
+          2.8005480000001626,
+          2.4256359999999404
+        ],
+        "v1.2": [
+          0.823504999999841,
+          0.8956430000002911,
+          0.8740210000000843
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 1,
+      "hero": "windSwordmaster",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "8f1eccba6a7e61586c70c72475a0f15f4b27e2295cf12e8523de52f252072c17",
+      "milliseconds": {
+        "v1.2": [
+          0.3277210000001105,
+          0.3266489999996338,
+          0.2960739999998623
+        ],
+        "experimental/economy-3": [
+          1.5130079999998998,
+          1.6747300000001815,
+          1.3443750000001273
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 2,
+      "hero": "marksman",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "82d84e4335f14bc619b522d3e91884e6bace9b454205df931bbce71a2b0d6e0e",
+      "milliseconds": {
+        "experimental/economy-3": [
+          5.6460839999999735,
+          5.27251299999989,
+          4.76604400000042
+        ],
+        "v1.2": [
+          0.5479110000001128,
+          0.5142009999999573,
+          0.48362500000030195
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 0,
+      "hero": "berserker",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "a2341344c65c4f99180f1f6ea48a84ad4ee5f58a1a90e5749a2e3cf4a60e544c",
+      "milliseconds": {
+        "v1.2": [
+          0.9188380000000507,
+          0.3504050000001371,
+          0.3398090000000593
+        ],
+        "experimental/economy-3": [
+          0.5356830000000627,
+          0.5352430000002641,
+          0.5982859999999164
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 3,
+      "hero": "sealer",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "96673755234d073c8fdc1aa0e6fef4f3a20be412cd2889447fd70e947b527de1",
+      "milliseconds": {
+        "experimental/economy-3": [
+          31.339857999999822,
+          28.456275000000005,
+          28.442755000000034
+        ],
+        "v1.2": [
+          0.7222819999997228,
+          0.5945910000000367,
+          0.5329790000000685
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 3,
+      "hero": "sealer",
+      "kind": "rule",
+      "requestType": "skillChoice",
+      "skillId": "spellExcitation",
+      "stateHash": "404125c428b2a035268d28d64ff1cd58d735d6138ee2e86ff1709c4eeb5958f8",
+      "milliseconds": {
+        "v1.2": [
+          0.3820629999995617,
+          0.3253780000000006,
+          0.3589080000001559
+        ],
+        "experimental/economy-3": [
+          2.162430999999742,
+          2.191373999999996,
+          2.0858470000002853
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 3,
+      "hero": "sealer",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "5e05f2cbe3ef7d17d9f9cdc8a06f8b1513ea617f9df1770480d74375d9dfa800",
+      "milliseconds": {
+        "experimental/economy-3": [
+          1.6925670000000537,
+          1.6627520000001823,
+          1.6797379999998157
+        ],
+        "v1.2": [
+          0.4064189999999144,
+          0.9353719999999157,
+          0.5201390000001993
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 2,
+      "hero": "marksman",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "2e5ba40d8642971ce190d5810600721c12634d9fcb8abe807af469cb7e903311",
+      "milliseconds": {
+        "v1.2": [
+          0.35078500000008717,
+          0.3948120000000017,
+          0.36575800000036907
+        ],
+        "experimental/economy-3": [
+          0.5713059999998222,
+          0.6285619999998744,
+          0.5511660000001939
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 4,
+      "hero": "guardianAngel",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "4f14fbc68f6dda97ecdc767d9ea22e2669adee0eac07f3a649e88bebc99320b5",
+      "milliseconds": {
+        "experimental/economy-3": [
+          7.064429999999902,
+          5.323659999999563,
+          4.991371999999956
+        ],
+        "v1.2": [
+          0.6066999999998188,
+          0.5821230000001378,
+          0.5826030000002902
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 4,
+      "hero": "guardianAngel",
+      "kind": "rule",
+      "requestType": "effectChoice",
+      "skillId": null,
+      "stateHash": "82e64e5243d4b400d11c0894989becb62cdacab91cff71ad727764dab66ea841",
+      "milliseconds": {
+        "v1.2": [
+          0.35173699999995733,
+          0.3468900000002577,
+          0.438546999999744
+        ],
+        "experimental/economy-3": [
+          1.1852570000000924,
+          1.2670689999999922,
+          1.2035540000001674
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 4,
+      "hero": "guardianAngel",
+      "kind": "rule",
+      "requestType": "playerChoice",
+      "skillId": "angelBond",
+      "stateHash": "bd32410e33c4277b42fbf38eba313db9543c30e6efa0f1ca59f768c6d7828a21",
+      "milliseconds": {
+        "experimental/economy-3": [
+          1.4608499999999367,
+          1.6660969999998088,
+          1.4131680000000415
+        ],
+        "v1.2": [
+          0.4443959999998697,
+          0.43453100000033373,
+          0.40195300000004863
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 5,
+      "hero": "priest",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "5a2f433a525d246d3a6aec84259da2f0c5887eb0bff26a9d43c0ea271b9c7e16",
+      "milliseconds": {
+        "v1.2": [
+          0.8274700000001758,
+          0.854671000000053,
+          0.7769149999999172
+        ],
+        "experimental/economy-3": [
+          5.995186999999987,
+          5.658613000000059,
+          6.134314999999788
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 0,
+      "hero": "berserker",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "1dbab24815d890a9c53bf498a8f3d9c00aec838819bbb50c1e7a61ea7f30ac4b",
+      "milliseconds": {
+        "experimental/economy-3": [
+          1.0410510000001523,
+          1.1235649999998714,
+          1.017736000000241
+        ],
+        "v1.2": [
+          0.8774859999998625,
+          0.65992899999992,
+          0.6953220000000329
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 0,
+      "hero": "berserker",
+      "kind": "rule",
+      "requestType": "healing",
+      "skillId": null,
+      "stateHash": "7557c38b5f812f2cc11a24c5c42ed5410a282b1adfe344ac1cfbfd52d5b04d1e",
+      "milliseconds": {
+        "v1.2": [
+          0.6828040000000328,
+          0.6550220000003719,
+          0.6811710000001767
+        ],
+        "experimental/economy-3": [
+          0.8875899999998182,
+          0.9568640000002233,
+          1.1622119999997267
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 0,
+      "hero": "berserker",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "ace8e21bccd0a9e38690e3d0cb100db7e14b89867ff105a70667e4fb6ef7246b",
+      "milliseconds": {
+        "experimental/economy-3": [
+          11.394639999999981,
+          10.636013000000275,
+          11.416842999999972
+        ],
+        "v1.2": [
+          0.9191869999999653,
+          0.8552119999999377,
+          0.8325580000000627
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 2,
+      "hero": "marksman",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "cca6340dfa1a485853a0bf34d24976e99d261c9355be3c9bac7567a5893db80e",
+      "milliseconds": {
+        "v1.2": [
+          0.4164139999998042,
+          0.43114699999978257,
+          0.39538299999958326
+        ],
+        "experimental/economy-3": [
+          0.5987179999997352,
+          0.6278210000000399,
+          0.9110960000002706
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 1,
+      "hero": "windSwordmaster",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "23c7db9fe559f1bb95c8077b59a3819db03e915a968c471a93a387bb906d53f4",
+      "milliseconds": {
+        "experimental/economy-3": [
+          0.9967539999997825,
+          2.1670490000001337,
+          1.278165999999601
+        ],
+        "v1.2": [
+          0.33766600000035396,
+          0.3727890000000116,
+          0.37887799999998606
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 2,
+      "hero": "marksman",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "6bb608eaeb23322e7637b6e4aa8d4ca5bf34efc44d99b237a6daf104de33f5b5",
+      "milliseconds": {
+        "v1.2": [
+          0.8412100000000464,
+          0.9471589999998287,
+          0.8217720000002373
+        ],
+        "experimental/economy-3": [
+          16.956317000000126,
+          18.543627000000015,
+          20.192047000000002
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 3,
+      "hero": "sealer",
+      "kind": "rule",
+      "requestType": "skillChoice",
+      "skillId": "spellExcitation",
+      "stateHash": "4c44bb99a3ea0a3be726017bd650a4d8660cec0720ccdd6ce224c5fd3ea95eba",
+      "milliseconds": {
+        "experimental/economy-3": [
+          0.5263490000002093,
+          0.5132589999998345,
+          0.5147609999999077
+        ],
+        "v1.2": [
+          0.34183200000006764,
+          0.34675900000002,
+          0.35810700000001816
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 4,
+      "hero": "guardianAngel",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "f8bf57cfe3a399252928b919a500d34582678bdad3cad75747af611e3690a480",
+      "milliseconds": {
+        "v1.2": [
+          0.674811000000318,
+          0.5802100000000792,
+          0.5952620000002753
+        ],
+        "experimental/economy-3": [
+          2.8558500000003733,
+          2.8610390000003463,
+          2.895089999999982
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 5,
+      "hero": "priest",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "2e237376ca756398e62a04b06d1373b484e0e0814f7642fd8ec97644f20396eb",
+      "milliseconds": {
+        "experimental/economy-3": [
+          6.4505089999997836,
+          5.901987999999619,
+          5.962136999999984
+        ],
+        "v1.2": [
+          0.7225240000002486,
+          0.6848369999997885,
+          0.6921170000000529
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 5,
+      "hero": "priest",
+      "kind": "rule",
+      "requestType": "skillChoice",
+      "skillId": "revelation",
+      "stateHash": "905212079cdb6ac016709611367400291aa59532d360393da25beb5f9f002a94",
+      "milliseconds": {
+        "v1.2": [
+          0.5383770000003096,
+          0.5358839999998963,
+          0.5612110000001849
+        ],
+        "experimental/economy-3": [
+          0.6497540000000299,
+          0.6272899999999026,
+          0.6203590000000077
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 0,
+      "hero": "berserker",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "ea82d456cc61ac81d2ccd59e8cf55a788ae49d7433541698b0d6bc4b4535a056",
+      "milliseconds": {
+        "experimental/economy-3": [
+          6.5662429999997585,
+          7.781093999999939,
+          10.535522000000128
+        ],
+        "v1.2": [
+          1.3364739999997255,
+          1.2992269999999735,
+          1.328871999999592
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 1,
+      "hero": "windSwordmaster",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "d3f1742cc1147cd37ad6c50d13299f2ea27b7ef57c6b4e611f8f41f33eb470db",
+      "milliseconds": {
+        "v1.2": [
+          0.7397190000001501,
+          0.7568140000003041,
+          0.7785969999999907
+        ],
+        "experimental/economy-3": [
+          1.3567140000000109,
+          1.336924000000181,
+          1.3493730000000141
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 2,
+      "hero": "marksman",
+      "kind": "rule",
+      "requestType": "weakness",
+      "skillId": null,
+      "stateHash": "887cc4bc237a7e2b9d02c1b1d8e27091f05a11444d8f2c44031dec76af409bff",
+      "milliseconds": {
+        "experimental/economy-3": [
+          11.728190000000268,
+          11.904074000000037,
+          11.855051000000003
+        ],
+        "v1.2": [
+          0.5222529999996368,
+          0.5256779999999708,
+          0.7689730000001873
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 5,
+      "hero": "priest",
+      "kind": "rule",
+      "requestType": "healing",
+      "skillId": null,
+      "stateHash": "4a098074810b06608ffcc69ac241dfdac5d7edfc462c264118c6d5b1496e65ad",
+      "milliseconds": {
+        "v1.2": [
+          0.43228799999997136,
+          0.5694439999997485,
+          0.5201200000001336
+        ],
+        "experimental/economy-3": [
+          0.6470299999996314,
+          0.6753429999998843,
+          0.633719999999812
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 3,
+      "hero": "sealer",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "3194626c48170c7f66a6b685c7800bcd99a9cab9cb501a5f106e7b5ce1ce0c29",
+      "milliseconds": {
+        "experimental/economy-3": [
+          1.297364000000016,
+          1.2868779999998878,
+          1.3236440000000584
+        ],
+        "v1.2": [
+          0.47758499999963533,
+          0.52016999999978,
+          0.5510760000001937
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 1,
+      "hero": "windSwordmaster",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "83c1c40831b7e0fb44ca46497198770d66c43f822ff1519d5a8fcc1c417444c3",
+      "milliseconds": {
+        "v1.2": [
+          0.5515559999998914,
+          0.5476509999998598,
+          0.5465000000003783
+        ],
+        "experimental/economy-3": [
+          2.2323959999998806,
+          2.980948000000353,
+          2.1437729999997828
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 1,
+      "hero": "windSwordmaster",
+      "kind": "rule",
+      "requestType": "skillChoice",
+      "skillId": "galeArt",
+      "stateHash": "a5ab2d4ceadd2adf993ba511a3189f22971e5f771fa7df05cd8600215bbbcfc6",
+      "milliseconds": {
+        "experimental/economy-3": [
+          7.4808029999999235,
+          6.000833999999941,
+          5.541797999999744
+        ],
+        "v1.2": [
+          0.46427600000015445,
+          0.5115270000001146,
+          0.5780669999999191
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 3,
+      "hero": "sealer",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "7b5489333f1edd2484c9708ca01f2c377d997e0f9385f402d92f8223d962a551",
+      "milliseconds": {
+        "v1.2": [
+          0.44157199999972363,
+          0.4080120000003262,
+          0.4076709999999366
+        ],
+        "experimental/economy-3": [
+          0.7130090000000564,
+          0.6619719999998779,
+          0.6377460000003339
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 1,
+      "hero": "windSwordmaster",
+      "kind": "rule",
+      "requestType": "skillChoice",
+      "skillId": "windFury",
+      "stateHash": "68538ffe36215f650d39b44d62f48d1d4546d708319e74578e014113884448b6",
+      "milliseconds": {
+        "experimental/economy-3": [
+          2.31899599999997,
+          3.3268370000000687,
+          2.806185999999798
+        ],
+        "v1.2": [
+          0.4326980000000731,
+          0.4197189999999864,
+          0.5261590000000069
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 5,
+      "hero": "priest",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "f2fe66b00c3ed22889b0437e6696d6124a8dc43349241e32ed7fd23be7c7656c",
+      "milliseconds": {
+        "v1.2": [
+          0.6022720000000845,
+          0.5989669999999023,
+          0.5139200000003257
+        ],
+        "experimental/economy-3": [
+          1.0468200000000252,
+          1.0063289999998233,
+          1.0982869999998002
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 0,
+      "hero": "berserker",
+      "kind": "rule",
+      "requestType": "healing",
+      "skillId": null,
+      "stateHash": "786b5a35ca576340d5d63205e855f76b7b814be84526747c1742904e4097364e",
+      "milliseconds": {
+        "experimental/economy-3": [
+          0.6203900000000431,
+          0.6231139999999868,
+          0.6759229999997842
+        ],
+        "v1.2": [
+          0.4614019999999073,
+          0.42689999999993233,
+          0.47175800000013624
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 2,
+      "hero": "marksman",
+      "kind": "rule",
+      "requestType": "cardChoice",
+      "skillId": "piercingShot",
+      "stateHash": "7aa0d8b958c6b519f99e0199381dd76374920f2951585c3c7c7c14f8127fc619",
+      "milliseconds": {
+        "v1.2": [
+          0.45737499999995634,
+          0.40772199999992154,
+          0.5104449999998906
+        ],
+        "experimental/economy-3": [
+          0.7763139999997293,
+          0.6373849999999948,
+          0.7779860000000554
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 5,
+      "hero": "priest",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "74e923a29d028e14690f56507515449ae26ab2a38df0222ae1357fdbc99f3f10",
+      "milliseconds": {
+        "experimental/economy-3": [
+          0.8092940000001363,
+          0.7886920000000828,
+          0.8350820000000567
+        ],
+        "v1.2": [
+          0.4713459999998122,
+          0.466609999999946,
+          0.5249270000003889
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61012
+      },
+      "id": 4,
+      "hero": "guardianAngel",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "db0811c559025baeaa178478661b77ac8ab120965d923b8785b24e8a3a76315e",
+      "milliseconds": {
+        "v1.2": [
+          0.6938399999999092,
+          0.6774250000003121,
+          0.6896529999999075
+        ],
+        "experimental/economy-3": [
+          1.8966230000000905,
+          1.279707999999573,
+          1.289173000000119
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 2,
+      "hero": "marksman",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "47e5fd5a492c9ce142de008d4faf2c55f9b59043a0b066f3cf9fcda12428a293",
+      "milliseconds": {
+        "experimental/economy-3": [
+          7.934784000000036,
+          8.146543000000293,
+          7.804968999999801
+        ],
+        "v1.2": [
+          0.5074910000003001,
+          0.577886000000035,
+          0.499529000000166
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 3,
+      "hero": "sealer",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "a0144d1d1bc17c945bdc558789f1bff50db08f10d5586a1ceccc21f3dd01fa55",
+      "milliseconds": {
+        "v1.2": [
+          0.4900940000002265,
+          0.4734099999996033,
+          0.48859300000003714
+        ],
+        "experimental/economy-3": [
+          21.150453000000198,
+          19.09972999999991,
+          19.982633000000078
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 3,
+      "hero": "sealer",
+      "kind": "rule",
+      "requestType": "skillChoice",
+      "skillId": "spellExcitation",
+      "stateHash": "9ca7760d474f48ba48e59ba07a08655f2972859bde307a2b23bd48266a9e6d04",
+      "milliseconds": {
+        "experimental/economy-3": [
+          2.3572440000002644,
+          2.656492000000071,
+          2.0834030000000894
+        ],
+        "v1.2": [
+          0.33908800000017436,
+          0.34877299999971,
+          0.3080119999999624
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 3,
+      "hero": "sealer",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "6a590ffe673f7795c4389f5e1b97efae9d03f4fc71de5ac0e2721324002ba305",
+      "milliseconds": {
+        "v1.2": [
+          0.45900799999981245,
+          0.42503700000042954,
+          0.3668000000002394
+        ],
+        "experimental/economy-3": [
+          1.658987000000252,
+          1.6238039999998364,
+          1.7135589999998047
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 2,
+      "hero": "marksman",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "b46c5ead86fb221daf662fb8dfce3f747781de45a133429100c2a5d1a5681e0e",
+      "milliseconds": {
+        "experimental/economy-3": [
+          1.3355719999999565,
+          1.3193879999998899,
+          1.3609000000001288
+        ],
+        "v1.2": [
+          0.35225800000034724,
+          0.3520770000000084,
+          0.3558729999999741
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 0,
+      "hero": "berserker",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "7e8c9e2119e9715fc372bda398707b5838f9e17af898bffae6183dc7b6dd3cd3",
+      "milliseconds": {
+        "v1.2": [
+          0.4898840000000746,
+          0.507050000000163,
+          0.4799199999997654
+        ],
+        "experimental/economy-3": [
+          1.2925869999999122,
+          1.2891319999998814,
+          1.2744900000002417
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 5,
+      "hero": "priest",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "674b02806bcdffb474eebae8c5c8a9b05b16bd3cae836f7a307073e92c3b5195",
+      "milliseconds": {
+        "experimental/economy-3": [
+          1.6227429999999003,
+          0.6820130000000972,
+          0.6829229999998461
+        ],
+        "v1.2": [
+          0.475481999999829,
+          0.47918799999979456,
+          0.4558529999999337
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 4,
+      "hero": "guardianAngel",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "6ec7570f2107106a4ce4989ace6c72b95cb5dde33a649607c41c9686ed082c7d",
+      "milliseconds": {
+        "v1.2": [
+          0.7815820000000713,
+          0.7045759999996335,
+          0.7398790000002009
+        ],
+        "experimental/economy-3": [
+          6.843879000000015,
+          6.565732000000025,
+          7.965961000000334
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 4,
+      "hero": "guardianAngel",
+      "kind": "rule",
+      "requestType": "effectChoice",
+      "skillId": null,
+      "stateHash": "908922918334b06967cc9116c6750f2bc6e0064ff1ae05868b4c9529901c8d52",
+      "milliseconds": {
+        "experimental/economy-3": [
+          1.4335690000002614,
+          1.4630929999998443,
+          1.599819000000025
+        ],
+        "v1.2": [
+          0.4354929999999513,
+          0.35968899999988935,
+          0.3517269999997552
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 4,
+      "hero": "guardianAngel",
+      "kind": "rule",
+      "requestType": "playerChoice",
+      "skillId": "angelBond",
+      "stateHash": "e24d9e75f4b08d9c7fbd25f224b2706eb40468ae119497e58a61b7ae7a294178",
+      "milliseconds": {
+        "v1.2": [
+          0.29262900000003356,
+          0.29621399999996356,
+          0.2876209999999446
+        ],
+        "experimental/economy-3": [
+          1.122863999999936,
+          1.167018999999982,
+          1.120980000000145
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 5,
+      "hero": "priest",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "2183311958ae84aaaf04c3a8bffb7b20ad99e9e25427be5e592332ec6a80ddc3",
+      "milliseconds": {
+        "experimental/economy-3": [
+          10.44459599999982,
+          10.20774100000017,
+          9.563716000000113
+        ],
+        "v1.2": [
+          1.0576850000002196,
+          0.8208610000001499,
+          0.772338000000218
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 0,
+      "hero": "berserker",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "f7b2326913039bb048be1fac6e212fb4ab3ee5700629aea4080180b877bafd3b",
+      "milliseconds": {
+        "v1.2": [
+          0.4212820000002466,
+          0.4127290000001267,
+          0.4371849999997721
+        ],
+        "experimental/economy-3": [
+          3.6414490000001933,
+          2.7728470000001835,
+          2.6332569999999578
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 1,
+      "hero": "windSwordmaster",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "04bea5ab85c993b336bcd6c2862fa007db1089da79e50d31b01e7097ae54fa50",
+      "milliseconds": {
+        "experimental/economy-3": [
+          8.639470000000074,
+          8.77529400000003,
+          8.471348999999918
+        ],
+        "v1.2": [
+          1.2115759999996953,
+          0.7407199999997829,
+          0.6692630000002282
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 2,
+      "hero": "marksman",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "d86c8cef36de39be6de9a39397e031716657f8f17165ee44b20746e4fcbc04e9",
+      "milliseconds": {
+        "v1.2": [
+          0.5253370000000359,
+          0.5222730000000411,
+          0.5582460000000538
+        ],
+        "experimental/economy-3": [
+          4.800246000000243,
+          4.951072000000295,
+          4.821557000000212
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 3,
+      "hero": "sealer",
+      "kind": "rule",
+      "requestType": "skillChoice",
+      "skillId": "spellExcitation",
+      "stateHash": "8e582cf71fd10b1deeb4f8a9b42866e3567020f7b28e001744aabbde9639dd3f",
+      "milliseconds": {
+        "experimental/economy-3": [
+          0.5257480000000214,
+          0.5699239999999008,
+          0.5735490000001846
+        ],
+        "v1.2": [
+          0.37693499999977575,
+          0.46553799999992407,
+          0.46845200000007026
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 4,
+      "hero": "guardianAngel",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "eb8b02dc01c5ac05f75a7e70ddd74aed7d4d8ea8989588538a6ff839449fd1a4",
+      "milliseconds": {
+        "v1.2": [
+          1.7547610000001441,
+          1.0672099999997045,
+          1.056945000000269
+        ],
+        "experimental/economy-3": [
+          14.300236999999925,
+          15.793994999999995,
+          13.957843000000139
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 5,
+      "hero": "priest",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "4f72566be6c99cf1c3b1232b19e727e3935dcf1caccf4fbf3cf36637312aea95",
+      "milliseconds": {
+        "experimental/economy-3": [
+          16.084771000000273,
+          13.690110999999888,
+          13.834167999999863
+        ],
+        "v1.2": [
+          1.1553109999999833,
+          1.1557029999999031,
+          1.1122270000000753
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 5,
+      "hero": "priest",
+      "kind": "rule",
+      "requestType": "cardChoice",
+      "skillId": "waterPower",
+      "stateHash": "42dcb7d0eabf697b2a48a580e5ce707a5f803a7d96dfbf1903c3de46d3ef30c9",
+      "milliseconds": {
+        "v1.2": [
+          0.5252470000000358,
+          0.5258589999998549,
+          0.6187279999999191
+        ],
+        "experimental/economy-3": [
+          0.9426429999998618,
+          0.9644560000001547,
+          0.8838949999999386
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 0,
+      "hero": "berserker",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "3c95b260dd37bc20175882c829c91acc7ef9d760611b88057aec82ea8261370b",
+      "milliseconds": {
+        "experimental/economy-3": [
+          2.501119000000017,
+          2.4440539999995963,
+          2.4157920000002377
+        ],
+        "v1.2": [
+          0.41402000000016415,
+          0.4448370000000068,
+          0.43502200000011726
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 1,
+      "hero": "windSwordmaster",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "b7f8a4800344393a36e12eb8081397b130d86435a6c714ecd0061ab364d803bb",
+      "milliseconds": {
+        "v1.2": [
+          0.6447469999998248,
+          0.7125080000000708,
+          0.6568249999995714
+        ],
+        "experimental/economy-3": [
+          8.293099999999868,
+          7.748726000000261,
+          7.044538999999986
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 2,
+      "hero": "marksman",
+      "kind": "rule",
+      "requestType": "weakness",
+      "skillId": null,
+      "stateHash": "6c405e1a5deed7db25782a3d9d9358c2020d0bd6c43c0f3fefdbb33541b570b5",
+      "milliseconds": {
+        "experimental/economy-3": [
+          15.692842999999812,
+          16.348897000000306,
+          13.581188999999995
+        ],
+        "v1.2": [
+          0.5075409999999465,
+          0.5111160000001291,
+          4.365282999999636
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 0,
+      "hero": "berserker",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "e8173497ce7e96e88f792a40761e6fc0837ae0fd41bb4fad83cef83eea0ca794",
+      "milliseconds": {
+        "v1.2": [
+          0.33058500000015556,
+          0.37072600000010425,
+          0.3642660000000433
+        ],
+        "experimental/economy-3": [
+          0.606318999999985,
+          0.5658079999998336,
+          0.6108460000000377
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 0,
+      "hero": "berserker",
+      "kind": "rule",
+      "requestType": "healing",
+      "skillId": null,
+      "stateHash": "9576ee6a35aadcd5990f4cbcdc1be66b33162485987e1d4bc159376821254a0d",
+      "milliseconds": {
+        "experimental/economy-3": [
+          0.5134100000000217,
+          0.5115470000000641,
+          0.5691830000000664
+        ],
+        "v1.2": [
+          0.34979500000008557,
+          0.31677499999977954,
+          0.3235250000002452
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 1,
+      "hero": "windSwordmaster",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "e5fa66f7d66b43eddaf2daebd9f61433dd5f2078d8765c3feb85894ee733f6a0",
+      "milliseconds": {
+        "v1.2": [
+          1.1661779999999453,
+          0.4072100000003047,
+          0.4105149999995774
+        ],
+        "experimental/economy-3": [
+          0.689473999999791,
+          0.6516670000000886,
+          0.6386469999997644
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 1,
+      "hero": "windSwordmaster",
+      "kind": "rule",
+      "requestType": "skillChoice",
+      "skillId": "galeArt",
+      "stateHash": "0b335911d9e72649a3706c80928ff62711f2d6382451f72ada5fe622c41e1b86",
+      "milliseconds": {
+        "experimental/economy-3": [
+          7.391008000000511,
+          7.461865999999645,
+          7.240593999999874
+        ],
+        "v1.2": [
+          0.5129589999996824,
+          0.5106260000002294,
+          0.4936299999999392
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 3,
+      "hero": "sealer",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "0a1d32034f4ad2093f9af953f40e8a8489f3973f6b5cc044a667fb743d2b284c",
+      "milliseconds": {
+        "v1.2": [
+          0.4701650000006339,
+          0.4558729999998832,
+          0.5275810000002821
+        ],
+        "experimental/economy-3": [
+          1.6737089999996897,
+          1.7393580000007205,
+          1.71894599999996
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 2,
+      "hero": "marksman",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "5c04cb92965e4f2ba240bcdd1c4d494c499ccb5baf3d04447ae548df7e4175e8",
+      "milliseconds": {
+        "experimental/economy-3": [
+          2.118315000000621,
+          2.1999379999997473,
+          2.1190960000003543
+        ],
+        "v1.2": [
+          0.5664190000006784,
+          0.5551420000001599,
+          0.6101939999998649
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 0,
+      "hero": "berserker",
+      "kind": "rule",
+      "requestType": "healing",
+      "skillId": null,
+      "stateHash": "4d1c7553c477f06530c6730dec1c746e3e30c1a170c87cbe1183d23ac04e5e41",
+      "milliseconds": {
+        "v1.2": [
+          0.46366500000021915,
+          0.5246360000001005,
+          0.48916300000018964
+        ],
+        "experimental/economy-3": [
+          0.7077710000003208,
+          0.6558930000001055,
+          0.642453000000387
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 1,
+      "hero": "windSwordmaster",
+      "kind": "rule",
+      "requestType": "skillChoice",
+      "skillId": "swordShadow",
+      "stateHash": "bd67c4dff80036ed3d00e50cd46f502e4543865d5a04128232198d2b9392ae48",
+      "milliseconds": {
+        "experimental/economy-3": [
+          0.5530490000001009,
+          0.5276510000003327,
+          0.5704550000000381
+        ],
+        "v1.2": [
+          0.5039150000002337,
+          0.49865800000043237,
+          1.4860069999995176
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 3,
+      "hero": "sealer",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "7dff8683f9fc68b36420e36420f9a84381d650da984ae386030a22c063b0940c",
+      "milliseconds": {
+        "v1.2": [
+          0.842993999999635,
+          0.45446199999969394,
+          0.4394589999992604
+        ],
+        "experimental/economy-3": [
+          0.7070400000002337,
+          0.800560000000587,
+          0.7334089999994831
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 1,
+      "hero": "windSwordmaster",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "8356fd387197b8ac08805834f3022dd7323be8a65592834bc5c1f77c1623358c",
+      "milliseconds": {
+        "experimental/economy-3": [
+          0.6930190000002767,
+          0.6821529999997438,
+          0.7192189999996117
+        ],
+        "v1.2": [
+          0.4610309999998208,
+          0.45064600000023347,
+          0.4857979999997042
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 5,
+      "hero": "priest",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "2a84ec53e4985c64d208cc4cab99cf575be7466ed8db2ab71721ac6ab8033294",
+      "milliseconds": {
+        "v1.2": [
+          0.5260179999995671,
+          0.5010309999997844,
+          0.49937799999952404
+        ],
+        "experimental/economy-3": [
+          1.0896139999995285,
+          1.148971999999958,
+          1.8274000000001251
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 5,
+      "hero": "priest",
+      "kind": "rule",
+      "requestType": "skillChoice",
+      "skillId": "revelation",
+      "stateHash": "e22a209d267060d5a20e93cbab238484f49bc7f3cfa426b2b68de7e5b8ec18f0",
+      "milliseconds": {
+        "experimental/economy-3": [
+          0.6103849999999511,
+          0.6377860000002329,
+          0.6018519999997807
+        ],
+        "v1.2": [
+          0.4954219999999623,
+          0.5429140000005646,
+          0.49865799999952287
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 2,
+      "hero": "marksman",
+      "kind": "rule",
+      "requestType": "weakness",
+      "skillId": null,
+      "stateHash": "31e48508ca468b98a905afe11052725c10c94f9b99e4017019a973b9b365784e",
+      "milliseconds": {
+        "v1.2": [
+          0.5275999999994383,
+          0.5152829999997266,
+          0.5126890000001367
+        ],
+        "experimental/economy-3": [
+          15.61883299999954,
+          15.168145999999979,
+          16.06323799999973
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 4,
+      "hero": "guardianAngel",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "976bdcf2a1fad5dd3818c9d1f951561c5a03b1858bf9fc5caa8052f3ec0ea33b",
+      "milliseconds": {
+        "experimental/economy-3": [
+          2.0315849999997226,
+          1.9948800000001938,
+          1.652868000000126
+        ],
+        "v1.2": [
+          0.8682520000002114,
+          0.7699940000002243,
+          0.7882810000000973
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61013
+      },
+      "id": 4,
+      "hero": "guardianAngel",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "3f49f755dc8897ff51c9a1c43eaef65e5de37d6566fa3ead8075bffce27287d6",
+      "milliseconds": {
+        "v1.2": [
+          1.653639000000112,
+          0.9508960000002844,
+          0.9429540000000998
+        ],
+        "experimental/economy-3": [
+          2.879366000000118,
+          2.8757800000003044,
+          2.8299120000001494
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 3,
+      "hero": "sealer",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "e9ef3dd5d5d8fd51b32a3cc3a0ae583eab572abcd1b07bf8c60a384479b7e7ca",
+      "milliseconds": {
+        "experimental/economy-3": [
+          15.198451999999634,
+          14.893765999999232,
+          15.800984999999855
+        ],
+        "v1.2": [
+          0.5155629999999292,
+          0.5754429999997228,
+          0.42166199999974197
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 3,
+      "hero": "sealer",
+      "kind": "rule",
+      "requestType": "skillChoice",
+      "skillId": "spellExcitation",
+      "stateHash": "7a4229ff11452d899ee716d4279fd49bda9bc18fc96002bf80b24447880d8804",
+      "milliseconds": {
+        "v1.2": [
+          0.2848870000007082,
+          0.2859490000000733,
+          0.25476200000048266
+        ],
+        "experimental/economy-3": [
+          3.1020800000005693,
+          3.1022899999998117,
+          3.0835120000001552
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 3,
+      "hero": "sealer",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "1081b2129467193c2aa2aa8ad121c3ca3d3b6fade8f1f09059ee7a043ca85960",
+      "milliseconds": {
+        "experimental/economy-3": [
+          2.739266999999927,
+          2.724344000000201,
+          2.700517999999647
+        ],
+        "v1.2": [
+          0.38811099999929866,
+          0.5428640000000087,
+          0.440270000000055
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 1,
+      "hero": "windSwordmaster",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "90ce001d7b6916a6a9ae91ccb506639c841409883512cb7b123b49eadb5522fb",
+      "milliseconds": {
+        "v1.2": [
+          0.4076810000005935,
+          0.3608510000003662,
+          0.37067599999954837
+        ],
+        "experimental/economy-3": [
+          1.1548510000002352,
+          1.1230329999998503,
+          1.1150920000000042
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 4,
+      "hero": "guardianAngel",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "e7673b17f49ed19747c2f64d1a44769002b8f480a9ce52918ff8c0a77205b783",
+      "milliseconds": {
+        "experimental/economy-3": [
+          1.3759630000004108,
+          1.3860780000004524,
+          1.3410810000004858
+        ],
+        "v1.2": [
+          0.46243300000060117,
+          0.42877299999963725,
+          0.49996900000041933
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 2,
+      "hero": "marksman",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "f3a3f9925726480795d89a125db0b0ee15bc1a25f5361316c09cc4ab18bbd8be",
+      "milliseconds": {
+        "v1.2": [
+          0.4841150000002017,
+          0.4404899999999543,
+          0.4104349999997794
+        ],
+        "experimental/economy-3": [
+          0.6656480000001466,
+          0.6857979999995223,
+          0.9300649999995585
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 4,
+      "hero": "guardianAngel",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "3fd9dfa88361084dc0189a16540d31173717adfc7dc492d0fd7b4908b1d4f902",
+      "milliseconds": {
+        "experimental/economy-3": [
+          4.249229000000014,
+          5.513664999999492,
+          4.235118999999941
+        ],
+        "v1.2": [
+          0.5271099999999933,
+          0.5327379999998811,
+          0.5375260000000708
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 4,
+      "hero": "guardianAngel",
+      "kind": "rule",
+      "requestType": "playerChoice",
+      "skillId": "angelBond",
+      "stateHash": "0ddd8e15af1b482ebb1b909ea18700fd91dc462ff0312fa684fe15d6f2cea5f4",
+      "milliseconds": {
+        "v1.2": [
+          0.3092639999995299,
+          0.275883000000249,
+          0.281130999999732
+        ],
+        "experimental/economy-3": [
+          1.09342899999956,
+          1.0954219999994166,
+          1.1227120000003197
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 5,
+      "hero": "priest",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "fc3f231368c3a4c6a39fbbe58fcaa246e17ae70fd520141a82728637ed940abe",
+      "milliseconds": {
+        "experimental/economy-3": [
+          3.697621999999683,
+          3.936681000000135,
+          3.713977000000341
+        ],
+        "v1.2": [
+          0.6668899999995119,
+          0.7141199999996388,
+          0.6558930000001055
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 5,
+      "hero": "priest",
+      "kind": "rule",
+      "requestType": "cardChoice",
+      "skillId": "waterPower",
+      "stateHash": "08d02fccadafd7d6f19503e880d2edf4e704fe403e8980f37dee22c36ee09066",
+      "milliseconds": {
+        "v1.2": [
+          0.35440100000050734,
+          0.34952400000020134,
+          0.37198799999987386
+        ],
+        "experimental/economy-3": [
+          0.5617019999999684,
+          0.5528279999998631,
+          0.5886129999998957
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 0,
+      "hero": "berserker",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "b3dd2f40e51ec461cda037581b67af04b83acc91abe1acff106574a650ab1772",
+      "milliseconds": {
+        "experimental/economy-3": [
+          5.429738999999245,
+          5.3762589999996635,
+          5.4190520000001925
+        ],
+        "v1.2": [
+          0.578907000000072,
+          0.5702350000001388,
+          0.5789379999996527
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 1,
+      "hero": "windSwordmaster",
+      "kind": "rule",
+      "requestType": "healing",
+      "skillId": null,
+      "stateHash": "7db2da95a9074204d59e808577d232169b1f8556235e79948f6ce71dfcb720d8",
+      "milliseconds": {
+        "v1.2": [
+          1.0327479999996285,
+          0.40400599999975384,
+          0.39065599999958067
+        ],
+        "experimental/economy-3": [
+          0.6115769999996701,
+          0.5766539999995075,
+          0.7504849999995713
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 1,
+      "hero": "windSwordmaster",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "3e064a6ade5d2da17bad1c5b07570aeb373b198ccd125a4cb04d2e3706afcf07",
+      "milliseconds": {
+        "experimental/economy-3": [
+          33.99701199999981,
+          33.0917929999996,
+          33.66769799999929
+        ],
+        "v1.2": [
+          0.6887929999993503,
+          0.7023419999995895,
+          0.7839649999996254
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 3,
+      "hero": "sealer",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "bfb2ddbc916faad3516d96ad886166e2cfa9f57010e3d0d9d1756b428101e7c4",
+      "milliseconds": {
+        "v1.2": [
+          0.3286230000003343,
+          0.34626900000057503,
+          0.3492130000004181
+        ],
+        "experimental/economy-3": [
+          0.5356730000003154,
+          0.5345310000002428,
+          0.5547720000004119
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 1,
+      "hero": "windSwordmaster",
+      "kind": "rule",
+      "requestType": "skillChoice",
+      "skillId": "windFury",
+      "stateHash": "f6d15cc7d950cdd80ce313d89ba04842bb4c147c9fccc5f8a1bdb7313ac831de",
+      "milliseconds": {
+        "experimental/economy-3": [
+          2.3787160000001677,
+          3.0131270000001678,
+          2.406347000000096
+        ],
+        "v1.2": [
+          0.3892839999998614,
+          0.39954799999941315,
+          0.4341199999998935
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 1,
+      "hero": "windSwordmaster",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "6915de014b70cd1af01754470ef4cd594a5242dbd26a392126e5dc74cfe6f9c2",
+      "milliseconds": {
+        "v1.2": [
+          0.5136599999996179,
+          0.5334000000002561,
+          0.4986370000005991
+        ],
+        "experimental/economy-3": [
+          2.3139680000003864,
+          2.348942000000534,
+          2.3153910000000906
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 3,
+      "hero": "sealer",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "5b2d7ce7fd9b82b92a5c7910b2a796883d452a86f244613b1f09ff0f66779717",
+      "milliseconds": {
+        "experimental/economy-3": [
+          0.4494439999998576,
+          0.47086599999965983,
+          0.4416820000005828
+        ],
+        "v1.2": [
+          0.2733200000002398,
+          0.27962899999965884,
+          0.2833150000005844
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 2,
+      "hero": "marksman",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "305d478a348f2f4d14fee30880ec591d5254c5edb0e1fb099dce03c55abff60b",
+      "milliseconds": {
+        "v1.2": [
+          0.5324879999998302,
+          0.5082320000001346,
+          0.5159929999999804
+        ],
+        "experimental/economy-3": [
+          3.9628309999998237,
+          4.774718000000576,
+          4.022549999999683
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 2,
+      "hero": "marksman",
+      "kind": "rule",
+      "requestType": "skillChoice",
+      "skillId": "precisionShot",
+      "stateHash": "5f2aa6265158473553229dddb0b5ca49267ac993f8f6495ac9fd1c923a61c079",
+      "milliseconds": {
+        "experimental/economy-3": [
+          0.7219420000001264,
+          0.7285219999994297,
+          0.7219629999999597
+        ],
+        "v1.2": [
+          0.35964899999999034,
+          0.32171199999993405,
+          0.385627999999997
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 0,
+      "hero": "berserker",
+      "kind": "rule",
+      "requestType": "healing",
+      "skillId": null,
+      "stateHash": "94cb06e7c61907c33c1a3d0785b9713a210a19197f45647b08e530a1eaf8c0f8",
+      "milliseconds": {
+        "v1.2": [
+          0.4353430000001026,
+          0.4258980000004158,
+          0.3965650000000096
+        ],
+        "experimental/economy-3": [
+          0.5604499999999462,
+          0.5575660000004063,
+          0.6015520000000834
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 3,
+      "hero": "sealer",
+      "kind": "rule",
+      "requestType": "skillChoice",
+      "skillId": "spellExcitation",
+      "stateHash": "2ae28feec31a4a24cd26b711432809a2e6781ceaa2d9dcc6902cb7df844001ce",
+      "milliseconds": {
+        "experimental/economy-3": [
+          3.3110429999996995,
+          3.59747200000038,
+          3.3432919999995647
+        ],
+        "v1.2": [
+          0.3376559999996971,
+          0.37090600000010454,
+          0.33852699999988545
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 5,
+      "hero": "priest",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "2bb9026dc6db193b9f8469233ff7f52231bd41e714ef076de554ae7b625baad1",
+      "milliseconds": {
+        "v1.2": [
+          1.0860279999997147,
+          0.40272399999958,
+          0.3627340000002732
+        ],
+        "experimental/economy-3": [
+          0.6811009999992166,
+          0.6403090000003431,
+          0.6274600000006103
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 5,
+      "hero": "priest",
+      "kind": "rule",
+      "requestType": "healing",
+      "skillId": null,
+      "stateHash": "be886f3fe4484b305141454f9a4af4b9dc78430236998ab9db2eed4d47f0689a",
+      "milliseconds": {
+        "experimental/economy-3": [
+          0.6036850000000413,
+          0.573790000000372,
+          0.5672000000004118
+        ],
+        "v1.2": [
+          0.38898299999982555,
+          0.3938209999996616,
+          0.3781970000000001
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 4,
+      "hero": "guardianAngel",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "dcfc369cb5b446c62c8fc1c5e7c0fa95c11ace6607153d0920ef86845d9d43ba",
+      "milliseconds": {
+        "v1.2": [
+          0.5079410000007556,
+          0.5394790000000285,
+          0.8747910000001866
+        ],
+        "experimental/economy-3": [
+          3.445483999999851,
+          3.388958999999886,
+          3.4493210000000545
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 5,
+      "hero": "priest",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "a330605c746ef992d26ea00f3cfcc2e92b612164b1f763aaa0453bc2788c81c4",
+      "milliseconds": {
+        "experimental/economy-3": [
+          4.522859000000608,
+          3.75539899999967,
+          3.719665999999961
+        ],
+        "v1.2": [
+          0.6706649999996444,
+          0.6440950000005614,
+          0.6479920000001584
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 0,
+      "hero": "berserker",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "71aada489813ab755373b0beb4a149f5fcc576abfe216db6975755e5ee21939e",
+      "milliseconds": {
+        "v1.2": [
+          0.7156320000003689,
+          0.7632940000003146,
+          0.7176159999999072
+        ],
+        "experimental/economy-3": [
+          6.9098680000006425,
+          7.641023000000132,
+          6.839632000000165
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 2,
+      "hero": "marksman",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "3aa8be025f31dd17807b44c9b8fb3864ceaac23faf4f8e1cf533934f44ef8880",
+      "milliseconds": {
+        "experimental/economy-3": [
+          2.997193000000152,
+          2.973316999999952,
+          2.957723999999871
+        ],
+        "v1.2": [
+          0.5711759999994683,
+          0.551155999999537,
+          0.5467600000001767
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 4,
+      "hero": "guardianAngel",
+      "kind": "rule",
+      "requestType": "weakness",
+      "skillId": null,
+      "stateHash": "e3520e822dd5bb9169f1b022127fe3caeaec8e6f67f797fb39e8e95d78c67fb5",
+      "milliseconds": {
+        "v1.2": [
+          0.5393490000005841,
+          0.5217819999998028,
+          0.5227139999997235
+        ],
+        "experimental/economy-3": [
+          10.288392000000385,
+          10.249312999999347,
+          10.308713000000353
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 4,
+      "hero": "guardianAngel",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "0df8ef29a39bc3d00d61e1030cd9e129a7e98261d5e7ad45c5d386be1c34644f",
+      "milliseconds": {
+        "experimental/economy-3": [
+          0.7601089999998294,
+          0.75329899999997,
+          0.7352720000008048
+        ],
+        "v1.2": [
+          0.5345710000001418,
+          0.5025439999999435,
+          0.5010409999995318
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 0,
+      "hero": "berserker",
+      "kind": "rule",
+      "requestType": "weakness",
+      "skillId": null,
+      "stateHash": "5acf204012f6c1fbbff901350a306d510680a1741df9d3fdadb3022dbbed5482",
+      "milliseconds": {
+        "v1.2": [
+          0.5690630000008241,
+          0.5755629999994198,
+          0.6158629999999903
+        ],
+        "experimental/economy-3": [
+          11.926228000000265,
+          11.127830000000358,
+          11.037394999999378
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 5,
+      "hero": "priest",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "2d1d8a685e2f9c977fb9c0d351258c93b99a58720d7d4b7afd3e5175add15944",
+      "milliseconds": {
+        "experimental/economy-3": [
+          0.911696999999549,
+          0.8254369999995106,
+          0.8388770000001387
+        ],
+        "v1.2": [
+          0.5552320000006148,
+          0.5475109999997585,
+          0.5064390000006824
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 1,
+      "hero": "windSwordmaster",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "2e854bff8693961a48258cfcc36e3a57271c4299be1672f0c02f8b685452253e",
+      "milliseconds": {
+        "v1.2": [
+          0.6435439999995651,
+          0.6309559999999692,
+          0.6839149999996152
+        ],
+        "experimental/economy-3": [
+          1.1775649999999587,
+          1.1864880000002813,
+          1.1729880000002595
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 0,
+      "hero": "berserker",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "854365a7f64bfa87dc9bd16d9369ac57c1321add4155e4a94faa59ddab84d7f4",
+      "milliseconds": {
+        "experimental/economy-3": [
+          2.616942999999992,
+          1.9541290000006484,
+          1.9499529999993683
+        ],
+        "v1.2": [
+          0.7024119999996401,
+          0.672247000000425,
+          0.6628240000000005
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 0,
+      "hero": "berserker",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "903b9cf40934a3d69f6792fa2a651594ee05331d3fe9cace05ba8ea80a165ca3",
+      "milliseconds": {
+        "v1.2": [
+          0.6411710000002131,
+          0.6364340000000084,
+          0.6310160000002725
+        ],
+        "experimental/economy-3": [
+          1.876973999999791,
+          1.8831330000002708,
+          1.9233930000000328
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 2,
+      "hero": "marksman",
+      "kind": "response",
+      "requestType": "response",
+      "skillId": null,
+      "stateHash": "a55ffb0c26e42c646063656f99cd93859c695c4291f6339a7fc6c9fa95793dab",
+      "milliseconds": {
+        "experimental/economy-3": [
+          1.3077299999995375,
+          1.3213999999998123,
+          1.3218019999994794
+        ],
+        "v1.2": [
+          0.6143110000002707,
+          0.606698999999935,
+          0.6059580000001006
+        ]
+      }
+    },
+    {
+      "source": {
+        "seed": 61014
+      },
+      "id": 2,
+      "hero": "marksman",
+      "kind": "rule",
+      "requestType": "healing",
+      "skillId": null,
+      "stateHash": "8a16780f3669888cb7c3224b58cd45f8a302da7c3d5b85efdb8fade38c99a0c5",
+      "milliseconds": {
+        "v1.2": [
+          0.5730290000001332,
+          0.6341700000002675,
+          0.5901539999995293
+        ],
+        "experimental/economy-3": [
+          0.9381059999996069,
+          0.8758630000002086,
+          0.9802800000006755
+        ]
+      }
+    },
+    {
+      "source": {
+        "stress": "six-wind-two-energy-256-turn-events"
+      },
+      "id": 0,
+      "hero": "windSwordmaster",
+      "kind": "action",
+      "requestType": null,
+      "skillId": null,
+      "stateHash": "fd725b02fd460ae51f744d0d69ddef32a87e43d530307a20b2cfb7ab88dfbe91",
+      "milliseconds": {
+        "experimental/economy-3": [
+          455.92718500000046,
+          463.3622409999998,
+          479.1021329999994
+        ],
+        "v1.2": [
+          7.142797000000428,
+          8.723586000000068,
+          9.044417999999496
+        ]
+      }
+    }
+  ]
+}
