@@ -1,0 +1,12 @@
+{
+  "frozenCommit": "6d425b4439e298cf9c30cf21cf382ec1f627340a",
+  "matchingRuntimeSourceHashes": 48,
+  "remainingTaskProcesses": [],
+  "tests": {
+    "passed": 95,
+    "failed": 0
+  },
+  "freshEvaluationGames": 19200,
+  "legacyReplayGames": 144,
+  "counterfactualFixtures": 54
+}

@@ -3,13 +3,14 @@ import assert from 'node:assert/strict';
 import {Game} from '../src/engine.js';
 import {getPolicy} from '../src/ai/versions.js';
 import {captureObservation,observationView} from '../src/ai/observation.js';
+import {costBeliefs} from '../src/ai/v1.1/fusion.js';
 import {publicBeliefs} from '../src/ai/public-history.js';
 const heroes=['berserker','windSwordmaster','marksman','sealer','guardianAngel','priest'];
 function outputs(g) {
-  return Object.fromEntries(['read-1','read-prior','read-off','fusion-1'].map(name=>{
+  return Object.fromEntries(['v1.0','read-1','read-prior','read-off','fusion-1'].map(name=>{
     const p=getPolicy(name), own=g.player(0), r={target:own,actor:g.player(1),counterTargets:g.players.filter(p=>p.team!==own.team),valid:own.hand.map((card,index)=>({card,index})),shieldable:true};
     const decisions=['weakness','bindingChoice','healing','cardChoice','skillChoice','numberChoice'].map(type=>p.chooseAiRuleDecision({type,playerId:0,skillId:type==='numberChoice'?'holySword':'rend',count:1,valid:own.hand.map((_,i)=>i),choices:[0,1,2].map(value=>({value})),context:{targetId:1,amount:3}},g));
-    return [name,{rank:p.rankAiActions(g,0),action:p.chooseAiAction(g,0),discard:p.chooseAiDiscard(g,0,2),response:p.chooseAiResponse(g,r),decisions,beliefs:[...publicBeliefs(observationView(captureObservation(g,0)))]}];
+    return [name,{rank:p.rankAiActions(g,0),action:p.chooseAiAction(g,0),discard:p.chooseAiDiscard(g,0,2),response:p.chooseAiResponse(g,r),decisions,beliefs:[...publicBeliefs(observationView(captureObservation(g,0)))],costBeliefs:[...costBeliefs(observationView(captureObservation(g,0)))]}];
   }));
 }
 test('six heroes × three public states × three hidden permutations: identical observations and every queried decision',()=>{
@@ -20,13 +21,14 @@ test('six heroes × three public states × three hidden permutations: identical 
   const observation=captureObservation(g,0,{actions:true}), expected=outputs(g);
   for(let permutation=0;permutation<3;permutation++) {
    const history=g.publicHistory, counts=g.players.slice(1).map(p=>p.hand.length);
-   const before=g.players.slice(1).map(p=>p.hand.map(c=>c.id));
+   const before=g.players.slice(1).map(p=>p.hand.map(c=>c.id)), deckBefore=g.deck.map(c=>c.id);
    for(const p of g.players.slice(1)) for(const c of [...p.hand]) g.moveCard(c.id,{zone:'deck'});
    const order=[...g.deck].reverse();for(const c of order)g.moveCard(c.id,{zone:'deck'});
    for(let i=1;i<6;i++)for(let j=0;j<counts[i-1];j++)g.moveCard(g.deck[(j*7+permutation*11)%g.deck.length].id,{zone:'hand',playerId:i});
    // Restore exactly the visible history; rearrangement is counterfactual, not play.
    history.events=observation.publicHistory.events.map(e=>Object.freeze({...e}));history.sequence=observation.publicHistory.sequence;
-   assert.notDeepEqual(g.players.slice(1).map(p=>p.hand.map(c=>c.id)),before);
+   for(let i=1;i<6;i++)assert.notDeepEqual(g.player(i).hand.map(c=>c.id),before[i-1]);
+   assert.notDeepEqual(g.deck.map(c=>c.id),deckBefore);
    g.assertCardLocations();assert.deepEqual(captureObservation(g,0,{actions:true}),observation);assert.deepEqual(outputs(g),expected);
   }
  }
@@ -35,6 +37,8 @@ test('reflection and mutation of detached view cannot expose or mutate the engin
  const g=new Game({seed:44}).setup(), dto=captureObservation(g,0,{actions:true}), v=observationView(dto);
  assert.equal(Object.getOwnPropertyDescriptor(v.player(1),'hand').value.length,g.player(1).hand.length);
  assert.deepEqual(Object.keys(v.player(1).hand),['length']);assert.equal(Object.getOwnPropertyDescriptor(v,'deck'),undefined);
+ const values=new Set();const walk=x=>{if(typeof x==='string')values.add(x);else if(x&&typeof x==='object')Object.values(x).forEach(walk);else assert.notEqual(typeof x,'function');};walk(dto);
+ for(const card of [...g.deck,...g.players.slice(1).flatMap(p=>p.hand)])assert.ok(!values.has(card.id));
  const hidden=g.player(1).hand[0].id;assert.equal(v.cards.get(hidden),undefined);
  v.player(0).hand[0].name='corrupted';v.teams.red.morale=-100;assert.notEqual(g.player(0).hand[0].name,'corrupted');assert.notEqual(g.teams.red.morale,-100);
 });
@@ -58,10 +62,11 @@ test('fusion sequence requires actual own cards, third attack or available extra
  const take=name=>g.moveCard(g.deck.find(c=>c.name===name&&!c.hasUniqueSkill('galeArt')).id,{zone:'hand',playerId:0});
  for(let i=0;i<6;i++)g.moveCard(g.deck[0].id,{zone:'hand',playerId:1});
  const first=take('fireStrike');take('earthStrike');take('waterStrike');g.startTurn(0);
- assert.equal(attackUtility(observationView(captureObservation(g,0)),0,observationView(captureObservation(g,0)).cards.get(first.id),1).steps.length,1);
+ const utility=()=>{const v=observationView(captureObservation(g,0));const result=attackUtility(v,0,v.cards.get(first.id),1);assert.equal(new Set(result.steps).size,result.steps.length);return result;};
+ assert.equal(utility().steps.length,1);
  g.player(0).energy.crystal=1;
- assert.ok(attackUtility(observationView(captureObservation(g,0)),0,observationView(captureObservation(g,0)).cards.get(first.id),1).steps.length<=2);
- take('windStrike');assert.equal(attackUtility(observationView(captureObservation(g,0)),0,observationView(captureObservation(g,0)).cards.get(first.id),1).steps.length,3);
+ assert.ok(utility().steps.length<=2);
+ take('windStrike');assert.equal(utility().steps.length,3);
 });
 test('fusion complete games: all six lineups, rule legality and card conservation',async()=>{
  const {playMatch,lineups}=await import('../tools/ai/evaluate.mjs');
