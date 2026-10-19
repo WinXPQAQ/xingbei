@@ -1,0 +1,17 @@
+{
+  "utc": "2026-10-19T17:48:21.678297+00:00",
+  "total": 7200,
+  "counts": {
+    "0": 1440,
+    "1": 1440,
+    "2": 1440,
+    "3": 1440,
+    "4": 1440
+  },
+  "state": "complete; independent statistics and stress audit passed; candidate promotion gates failed",
+  "noninferiorityPass": false,
+  "performancePass": false,
+  "correctnessPrivacyCasesPass": true,
+  "truncated": 0,
+  "sourceUnchanged": true
+}

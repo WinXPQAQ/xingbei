@@ -1,0 +1,180 @@
+{
+  hero: 'berserker',
+  cell: 'hand3',
+  ratios: {
+    median: 1.901678716742232,
+    p95: 1.5366660902594884,
+    max: 2.751240642441832
+  },
+  passed: true
+}
+{
+  hero: 'berserker',
+  cell: 'hand6',
+  ratios: {
+    median: 2.236743385861054,
+    p95: 2.0994449972845746,
+    max: 5.667917373483587
+  },
+  passed: false
+}
+{
+  hero: 'berserker',
+  cell: 'history100',
+  ratios: {
+    median: 1.7950511620687468,
+    p95: 1.1320627073729497,
+    max: 1.6936132497774625
+  },
+  passed: true
+}
+{
+  hero: 'windSwordmaster',
+  cell: 'hand3',
+  ratios: {
+    median: 1.6983049430870676,
+    p95: 1.7218352577230216,
+    max: 1.9901125205386776
+  },
+  passed: true
+}
+{
+  hero: 'windSwordmaster',
+  cell: 'hand6',
+  ratios: {
+    median: 1.645139639225319,
+    p95: 1.6286677251010633,
+    max: 2.412028477405674
+  },
+  passed: true
+}
+{
+  hero: 'windSwordmaster',
+  cell: 'history100',
+  ratios: {
+    median: 1.7972864476325412,
+    p95: 1.7133700614390472,
+    max: 1.9834673601081072
+  },
+  passed: true
+}
+{
+  hero: 'marksman',
+  cell: 'hand3',
+  ratios: {
+    median: 2.0096385659456653,
+    p95: 1.940794349835152,
+    max: 1.8787872904716445
+  },
+  passed: false
+}
+{
+  hero: 'marksman',
+  cell: 'hand6',
+  ratios: {
+    median: 1.9715313152349367,
+    p95: 2.1191579659016484,
+    max: 2.198026748681353
+  },
+  passed: true
+}
+{
+  hero: 'marksman',
+  cell: 'history100',
+  ratios: {
+    median: 1.913860018708127,
+    p95: 1.8372952845252415,
+    max: 1.401183531707314
+  },
+  passed: true
+}
+{
+  hero: 'sealer',
+  cell: 'hand3',
+  ratios: {
+    median: 1.7423695724226038,
+    p95: 1.8699789894712373,
+    max: 1.5390680374113257
+  },
+  passed: true
+}
+{
+  hero: 'sealer',
+  cell: 'hand6',
+  ratios: {
+    median: 1.6925143269239675,
+    p95: 2.029847531259893,
+    max: 2.265121257010525
+  },
+  passed: true
+}
+{
+  hero: 'sealer',
+  cell: 'history100',
+  ratios: {
+    median: 2.0738409050405893,
+    p95: 1.647125866297038,
+    max: 1.8634901848509886
+  },
+  passed: false
+}
+{
+  hero: 'guardianAngel',
+  cell: 'hand3',
+  ratios: {
+    median: 1.9341814548378413,
+    p95: 2.5527775249246676,
+    max: 2.3105046288006297
+  },
+  passed: true
+}
+{
+  hero: 'guardianAngel',
+  cell: 'hand6',
+  ratios: {
+    median: 2.387122701076289,
+    p95: 2.7056220571131817,
+    max: 2.723042950961172
+  },
+  passed: false
+}
+{
+  hero: 'guardianAngel',
+  cell: 'history100',
+  ratios: {
+    median: 2.3433192777631775,
+    p95: 2.1271920872284102,
+    max: 1.7818590844581232
+  },
+  passed: false
+}
+{
+  hero: 'priest',
+  cell: 'hand3',
+  ratios: {
+    median: 2.0796987975865977,
+    p95: 2.2035931755305116,
+    max: 1.8231851528137852
+  },
+  passed: false
+}
+{
+  hero: 'priest',
+  cell: 'hand6',
+  ratios: {
+    median: 2.028872337895542,
+    p95: 2.040515451983468,
+    max: 2.5311857598187864
+  },
+  passed: false
+}
+{
+  hero: 'priest',
+  cell: 'history100',
+  ratios: {
+    median: 1.9912261269897436,
+    p95: 2.0125422951644167,
+    max: 1.7595862703161003
+  },
+  passed: true
+}

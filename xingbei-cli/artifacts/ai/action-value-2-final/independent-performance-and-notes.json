@@ -1,0 +1,26 @@
+{
+  "uniqueTimingRows": 1800,
+  "allRatiosRecomputed": true,
+  "protocolAndSnapshotHashesMatch": true,
+  "purchase": {
+    "score": -9.740552781384043,
+    "parts": {
+      "morale": 0,
+      "cups": 0,
+      "stones": 10,
+      "conversion": 4.482949680000001,
+      "ownHand": -4.258820240424939,
+      "otherHands": 0,
+      "healing": 0,
+      "energy": 0,
+      "effects": 0,
+      "nextTurnRisk": -19.964682220959098,
+      "otherTurnRisk": 0,
+      "routeRisk": 0,
+      "capacity": 0,
+      "giftOptions": 0,
+      "terminal": 0
+    }
+  },
+  "earth": -1.363069192637969
+}

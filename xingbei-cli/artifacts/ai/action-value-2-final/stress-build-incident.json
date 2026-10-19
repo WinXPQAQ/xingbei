@@ -1,0 +1,7 @@
+{
+  "event": "initial stress build stopped before sampling because evidence-only delivery HEAD differs from source SHA",
+  "sourceSHA": "73027d7c45fdac2211a9d73c473a7b0bb30114e4",
+  "deliverySHA": "87ff27772ce5ad92f5f81b4f3e8c90657c2ccd96",
+  "sampled": 0,
+  "resolution": "Verify delivery HEAD and zero src/tools/test/protocol diff relative to source SHA; no strategy change; rerun construction only, no timing yet"
+}

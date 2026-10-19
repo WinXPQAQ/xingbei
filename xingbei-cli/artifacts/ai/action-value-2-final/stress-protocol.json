@@ -1,0 +1,41 @@
+{
+  "frozenSHA": "73027d7c45fdac2211a9d73c473a7b0bb30114e4",
+  "seeds": [
+    995001,
+    995002,
+    995003,
+    995004,
+    995005,
+    995006,
+    995007,
+    995008,
+    995009,
+    995010
+  ],
+  "heroes": [
+    "berserker",
+    "windSwordmaster",
+    "marksman",
+    "sealer",
+    "guardianAngel",
+    "priest"
+  ],
+  "cells": [
+    "hand3",
+    "hand6",
+    "history100"
+  ],
+  "construction": "hand3/hand6: seeded Game.setup with each hero at its fixed seat; moveCard adjusts only observer hand using current seeded deck, then startTurn and assertCardLocations. Explicit legal fixtures, not claimed natural trajectories. history100: naturally play all six heroes in this order with candidate vs v1.3, starts 0..5 and candidate colors red/blue in that order; first ordinary non-refresh decision per hero with at least 100 stored public events. Stop seed scan once all six captured. Report missing cells without substituting seeds.",
+  "policies": [
+    "experimental/economy-capability-1",
+    "experimental/action-value-2"
+  ],
+  "measurement": "Same-process public replayTrace scoring only, not production end-to-end latency. Each 10-snapshot cell gets one unmeasured warmup per policy and snapshot, then 5 measured repetitions. Alternate policy order by repetition and snapshot. Quantiles sorted[floor(N*q)], max retained. Report each cell separately, raw times retained. Raw historical replay may include diagnostic pass; no game is driven through replayTrace.",
+  "gate": {
+    "everyCellMedianRatioAtMost": 2,
+    "everyCellP95RatioAtMost": 3
+  },
+  "scheduling": "Construct and verify snapshots now. Formal timing only after parent confirms 7200-game run completed. No automatic rerun of failed cells; any rerun retained separately with reason.",
+  "limitations": "Deterministic fixtures cover specified states, not exhaustive hero states. Natural long-history hand counts vary. Static public prior is not actual deck order. Concurrent host noise remains possible even after match jobs finish. No policy or weight tuning permitted.",
+  "deliverySHA": "87ff27772ce5ad92f5f81b4f3e8c90657c2ccd96"
+}
