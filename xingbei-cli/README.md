@@ -44,23 +44,13 @@ HOST=0.0.0.0 npm run web
 
 通过 Tailscale 访问本机时，使用 <http://100.110.150.77:4173/>（该 IP 是当前验证机器的 Tailscale 地址）。本服务仅提供 HTTP，不能直接使用 HTTPS。
 
-为避免交互终端结束后服务退出，当前验证机器已使用用户级 systemd 临时服务 `xingbei-web` 独立运行，并在异常退出时自动重启。可用以下命令查看或管理：
+当前验证服务器使用持久的用户级systemd服务，每分钟检查GitHub的`main`分支。新提交通过规则测试和隔离启动检查后切换，启动失败自动回退；运行目录为`~/.local/share/xingbei-deploy/current/xingbei-cli`，不覆盖开发工作区。安装、配置、暂停和失败重试见[服务器自动更新](docs/server-updates.md)。
 
 ```bash
 systemctl --user status xingbei-web.service
-journalctl --user -u xingbei-web.service -n 50 --no-pager
-systemctl --user restart xingbei-web.service
-systemctl --user stop xingbei-web.service
-```
-
-临时服务不保证机器重启或用户级服务管理器退出后继续运行。需要重新创建时，在当前验证机器执行（服务尚在运行时无需重复执行）：
-
-```bash
-systemd-run --user --unit=xingbei-web \
-  --property=WorkingDirectory=/home/xp/xingbei/xingbei-cli \
-  --property=Restart=on-failure --property=RestartSec=2 \
-  --setenv=HOST=0.0.0.0 --setenv=PORT=4173 --setenv=TEST_MODE=1 \
-  /usr/bin/node /home/xp/xingbei/xingbei-cli/server.js
+systemctl --user start xingbei-update.service
+systemctl --user list-timers xingbei-update.timer
+node ~/.local/share/xingbei-deploy/update-server.mjs --status
 ```
 
 测试时使用 `TEST_MODE=1 HOST=0.0.0.0 npm run web`，页面顶部中央显示 `package.json` 中的版本号（当前为 `测试 v0.6.3`），正常启动时不显示。当前外部验证后台服务已开启此开关；修改版本号或开关后需要重启服务。当前运行所需素材已纳入 `assets/`；完整原项目与浏览器截图产物仍保留在本地。

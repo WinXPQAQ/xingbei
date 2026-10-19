@@ -1,0 +1,6 @@
+{
+  "repository": "git@github.com:WinXPQAQ/xingbei.git",
+  "branch": "main",
+  "service": "xingbei-web.service",
+  "healthUrl": "http://127.0.0.1:4173"
+}

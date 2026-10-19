@@ -1,0 +1,10 @@
+[Unit]
+Description=Check Xingbei branch updates every minute
+
+[Timer]
+OnBootSec=30s
+OnUnitInactiveSec=60s
+Unit=xingbei-update.service
+
+[Install]
+WantedBy=timers.target

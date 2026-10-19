@@ -234,3 +234,10 @@ Web 默认端口是 `4173`，可通过 `PORT` 修改；`server.js` 未指定 `HO
 - 用户授权上传原版资源。当前运行所需33个图片／字体共20,167,871字节保存在 `xingbei-cli/assets/`，原目录不修改；清单含原相对路径、大小及SHA-256，保留原LICENSE／README及来源。
 - server.js只从新版assets目录提供运行资源，页面URL和缓存约定不变。完整旧源码、未使用的资源和截图证据不在本次提交中；原版采集工具仍需完整旧项目。
 - 独立无旧项目目录的33项资源HTTP／字节／SHA-256核对通过；两视口模式97项浏览器检查、HTTP304及重启后的28项磁盘缓存命中通过，证据 `xingbei-cli/artifacts/assets/`。
+
+## 服务器自动部署（2026-10-19）
+
+- 用户指定自动跟踪GitHub main。工具为 `xingbei-cli/tools/update-server.mjs`，unit模板位于 `xingbei-cli/deploy/`，说明见 `xingbei-cli/docs/server-updates.md`。
+- 部署使用独立裸仓库和SHA版本目录；不得通过pull/reset覆盖开发工作区。每分钟检查，有更新才跑npm test、隔离HTTP检查、切换current并重启；失败保留或回退旧版，同一失败提交需显式retry或等待后续新提交。
+- 当前服务使用 `~/.local/share/xingbei-deploy/current/xingbei-cli`，仍监听0.0.0.0:4173并显示TEST_MODE版本。开发工作区的未推送修改不会自动进入此服务；通过main合并上线。
+- 部署脚本的稳定运行副本在 `~/.local/share/xingbei-deploy/update-server.mjs`，修改部署脚本／unit需检查后重新安装，不在自动业务部署时替换控制程序。截图目录通过配置挂载，不能随release清理。

@@ -1,0 +1,9 @@
+[Unit]
+Description=Deploy the latest tested Xingbei branch commit
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/node %h/.local/share/xingbei-deploy/update-server.mjs
+TimeoutStartSec=10min
+KillMode=control-group

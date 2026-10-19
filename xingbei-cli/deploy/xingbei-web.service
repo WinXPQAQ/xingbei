@@ -1,0 +1,13 @@
+[Unit]
+Description=Xingbei web server (managed deployment)
+After=network-online.target
+
+[Service]
+WorkingDirectory=%h/.local/share/xingbei-deploy/current/xingbei-cli
+ExecStart=/usr/bin/node server.js
+Environment=HOST=0.0.0.0 PORT=4173 TEST_MODE=1
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=default.target

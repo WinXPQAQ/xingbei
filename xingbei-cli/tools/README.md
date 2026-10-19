@@ -1,6 +1,6 @@
 # 开发工具
 
-这些脚本仅供开发手动运行，不参与正式对局，不由npm test自动执行。浏览器工具需要环境已有Playwright；可通过PLAYWRIGHT_MODULE指定模块路径，通过PLAYWRIGHT_BROWSERS_PATH指定浏览器目录。未增加生产依赖。
+这些脚本不参与对局规则，也不由npm test自动执行；验证和采集脚本供开发手动运行，update-server.mjs用于服务器定时部署。浏览器工具需要环境已有Playwright；可通过PLAYWRIGHT_MODULE指定模块路径，通过PLAYWRIGHT_BROWSERS_PATH指定浏览器目录。未增加生产依赖。
 
 | 脚本 | 当前用途 | 参数 |
 | --- | --- | --- |
@@ -12,6 +12,7 @@
 | verify-resource-cache.mjs | HTTP缓存、ETag/304和浏览器磁盘缓存 | 可选结果JSON文件 |
 | capture-original-six-player.mjs | 原版六人布局；CAPTURE_STATES=1另采集手牌/弹窗/状态 | 输出目录 |
 | capture-original-animation.mjs | 原版动画录像、关键帧与隔离呈现调用 | 输出目录 |
+| update-server.mjs | 独立目录拉取分支、检查、切换和失败回退 | --prepare（首次安装）、--status、--retry；见[部署说明](../docs/server-updates.md) |
 | benchmark-ai.mjs | 相同种子换边对抗历史AI，记录胜负和实例守恒 | 种子数、结果JSON、历史提交哈希 |
 
 在工作区根目录运行，先启动当前Web服务：
