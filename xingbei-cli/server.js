@@ -1,10 +1,10 @@
 import { createServer } from "node:http";
 import { readFile, stat } from "node:fs/promises";
-import { extname, join, normalize, resolve, relative } from "node:path";
+import { extname, join, resolve, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const projectRoot = fileURLToPath(new URL(".", import.meta.url));
-const workspaceRoot = normalize(join(projectRoot, ".."));
+const assetRoot = join(projectRoot, "assets");
 const port = Number(process.env.PORT || 4173);
 const host = process.env.HOST || "0.0.0.0";
 const testMode = process.env.TEST_MODE === "1";
@@ -19,16 +19,16 @@ function within(root, suffix) {
 
 function resolveRequest(pathname) {
   if (pathname === "/") return join(projectRoot, "web/index.html");
-  if (pathname === "/theme/cardback.png") return join(workspaceRoot, "xingbei-1.6.7-source/theme/style/cardback/image/xingBei1.png");
-  if (pathname === "/theme/grid.png") return join(workspaceRoot, "xingbei-1.6.7-source/theme/music/grid.png");
-  if (pathname === "/theme/wood3.png") return join(workspaceRoot, "xingbei-1.6.7-source/theme/music/wood3.png");
-  if (pathname === "/theme/hp-xingBei1.png") return join(workspaceRoot, "xingbei-1.6.7-source/theme/style/hp/image/xingBei1.png");
-  if (pathname === "/theme/hp-xingBei4.png") return join(workspaceRoot, "xingbei-1.6.7-source/theme/style/hp/image/xingBei4.png");
+  if (pathname === "/theme/cardback.png") return join(assetRoot, "theme/style/cardback/image/xingBei1.png");
+  if (pathname === "/theme/grid.png") return join(assetRoot, "theme/music/grid.png");
+  if (pathname === "/theme/wood3.png") return join(assetRoot, "theme/music/wood3.png");
+  if (pathname === "/theme/hp-xingBei1.png") return join(assetRoot, "theme/style/hp/image/xingBei1.png");
+  if (pathname === "/theme/hp-xingBei4.png") return join(assetRoot, "theme/style/hp/image/xingBei4.png");
   if (pathname.startsWith("/src/")) return within(projectRoot, pathname);
   if (pathname.startsWith("/web/")) return within(projectRoot, pathname);
-  if (pathname.startsWith("/font/")) return within(join(workspaceRoot, "xingbei-1.6.7-source/font"), pathname.slice(5));
+  if (pathname.startsWith("/font/")) return within(join(assetRoot, "font"), pathname.slice(5));
   if (pathname.startsWith("/review/")) return within(join(projectRoot, "artifacts/frontend"), `/${legacyAssets[pathname.slice(8)] || pathname.slice(8)}`);
-  if (pathname.startsWith("/assets/")) return within(join(workspaceRoot, "xingbei-1.6.7-source/image"), `/${legacyAssets[pathname.slice(8)] || pathname.slice(8)}`);
+  if (pathname.startsWith("/assets/")) return within(join(assetRoot, "image"), `/${legacyAssets[pathname.slice(8)] || pathname.slice(8)}`);
   return null;
 }
 

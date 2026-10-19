@@ -1,0 +1,170 @@
+{
+  "source": "xingbei-1.6.7-source/ (星杯传说 v1.6.7)",
+  "files": [
+    {
+      "path": "font/huangcao.woff2",
+      "bytes": 1785380,
+      "sha256": "b5442827b24d5e0882ae4366fe2399e5c6d1b02da51c9c6a9b6f399b03c950e6"
+    },
+    {
+      "path": "font/suits.woff2",
+      "bytes": 5020,
+      "sha256": "c3399816e2a159505fbefef4aa0d145d4dba22cd923f8097b9d8de1c257f2bf0"
+    },
+    {
+      "path": "font/xingkai.woff2",
+      "bytes": 3001500,
+      "sha256": "fe5d21d3d31dec9753e4eef309fb36012ecf75d797eaf342e9742d4caba8753d"
+    },
+    {
+      "path": "font/xinwei.woff2",
+      "bytes": 7854084,
+      "sha256": "74286306094aad8db475b3f013f80e183ed2a9b2c22f85f83c6b6920658025a5"
+    },
+    {
+      "path": "image/card/anMie.png",
+      "bytes": 435487,
+      "sha256": "fe86a9c1858c6c291fb26240eef9fb05d6d87ce97703c7be2c4c85890b8cac45"
+    },
+    {
+      "path": "image/card/diLieZhan.png",
+      "bytes": 705359,
+      "sha256": "44fc70c82bcf8a423b1437c42928e3845c50a5c441f2fdf17813de9c6b37a78b"
+    },
+    {
+      "path": "image/card/fengShenZhan.png",
+      "bytes": 511242,
+      "sha256": "9dc4f2f13b71490bebc91f81e0a7eb9e518cb434769dfa359bae83bae30446dd"
+    },
+    {
+      "path": "image/card/huoYanZhan.png",
+      "bytes": 532634,
+      "sha256": "e62326f9ffa3de735673a0cdb32a6b382500246c31f1f80726fc29bc2dc0da10"
+    },
+    {
+      "path": "image/card/leiGuangZhan.png",
+      "bytes": 467485,
+      "sha256": "f3828c214b83d09ca3910e533b8696a0d9c193756bb9ba16bdda7fdc4bffdf56"
+    },
+    {
+      "path": "image/card/moDan.png",
+      "bytes": 209478,
+      "sha256": "84154a4ac710df2b8deb6cd8e104ac7c022f152c44647567c3b4bfaf09729e29"
+    },
+    {
+      "path": "image/card/shengDun.png",
+      "bytes": 198574,
+      "sha256": "5639c4a61641ff474d28826988d26c3371770bde40fd7cd4ef1cb74599fa40e1"
+    },
+    {
+      "path": "image/card/shengGuang.png",
+      "bytes": 144451,
+      "sha256": "07cf02f0209fd80847af33914d7569beedcce3b174d42555c8019049804d49f6"
+    },
+    {
+      "path": "image/card/shuiLianZhan.png",
+      "bytes": 555424,
+      "sha256": "30cfe4223d72510f093238f20b7afc861950ce24770106511d4fdeeae6bb8938"
+    },
+    {
+      "path": "image/card/xingShi/baoShi.png",
+      "bytes": 500182,
+      "sha256": "34df885714236319121e9c6a35eda860365e65ccad3109048fc3195f8eb45ca8"
+    },
+    {
+      "path": "image/card/xingShi/shuiJing.png",
+      "bytes": 469437,
+      "sha256": "af4f3910f22229b09ce1b9c5e66e2d01540e3018965c7e813627460b24291da4"
+    },
+    {
+      "path": "image/card/xuRuo.png",
+      "bytes": 181196,
+      "sha256": "03b1332fa2f2cc84d5d55530122f05bc38fba1d195a2be8cf6021eba36421bf4"
+    },
+    {
+      "path": "image/card/zhongDu.png",
+      "bytes": 189944,
+      "sha256": "3f2ac149ed095995ea7a778184bc753e56bee474d72b2190630117ccf140a164"
+    },
+    {
+      "path": "image/card/zhuanShu/wuXiShuFu.png",
+      "bytes": 287444,
+      "sha256": "d1c8d4dc2cf1d4d0900aeb544450eaaa751dd0f7ba5c1240dbf693ed7311fbe1"
+    },
+    {
+      "path": "image/character/anShaZhe.jpg",
+      "bytes": 120334,
+      "sha256": "e451d97d352ed464757d307b7eb406910af280fb4dfe52442191707d9a8b07b3"
+    },
+    {
+      "path": "image/character/fengYinShi.jpg",
+      "bytes": 119771,
+      "sha256": "4a7820f5d2226772fbbdeafeee6da728cf8ce03a88e9b795eb544d90593fbabe"
+    },
+    {
+      "path": "image/character/fengZhiJianSheng.jpg",
+      "bytes": 121787,
+      "sha256": "748668a4cc7151ff3eff58a6aa75ca37be83c554095763b5f29e7bc2fe827aa6"
+    },
+    {
+      "path": "image/character/jianDi.jpg",
+      "bytes": 129102,
+      "sha256": "870e58cf74536b45c9e91dc82f94945344a4b1dc13030b99bb8b065b1411aa3c"
+    },
+    {
+      "path": "image/character/kuangZhanShi.jpg",
+      "bytes": 100488,
+      "sha256": "1d4a94b641eadf418ffeb8e4c20b8203a1e629c46d1df50ecc351a6f883a70ff"
+    },
+    {
+      "path": "image/character/moFaShaoNv.jpg",
+      "bytes": 113398,
+      "sha256": "8bc35cb64a9cdf5995e539f5528f9fd2b6650cd9c46f00981375ba1737c56a9f"
+    },
+    {
+      "path": "image/character/shenGuan.jpg",
+      "bytes": 118731,
+      "sha256": "78f57afa07d7e21199296c3e6e77db11c5c015d84b824efdd6cdb098fe53f75a"
+    },
+    {
+      "path": "image/character/shenJianShou.jpg",
+      "bytes": 136887,
+      "sha256": "037715b5195c725c9ee3e170c495a906ff6c1f8f9cea5d7242fda80b157d072a"
+    },
+    {
+      "path": "image/character/tianShi.jpg",
+      "bytes": 138264,
+      "sha256": "11e8d4894bf3ccdd7e287377dc389e6f251d30b6ed32264040c5da6fbf610e8a"
+    },
+    {
+      "path": "image/character/yinYouShiRen.jpg",
+      "bytes": 125749,
+      "sha256": "e5e3bfc1e0acdb84ac0fa5efee49d61054b510c56d00f0d1ec165fd233b295cf"
+    },
+    {
+      "path": "theme/music/grid.png",
+      "bytes": 250,
+      "sha256": "5a1ceffa6f6eae1fbb9f8a30dacc721e65ddc86aac062c6233e6527b7fa2d4b3"
+    },
+    {
+      "path": "theme/music/wood3.png",
+      "bytes": 4002,
+      "sha256": "9cffdde2fb4691e943ca0b8b3ab28a28281b086f18d4daae8905c93562682425"
+    },
+    {
+      "path": "theme/style/cardback/image/xingBei1.png",
+      "bytes": 343543,
+      "sha256": "de144122fe1bfc4d2534304d058ffd828577f87cfca299ddde8534f7427fe108"
+    },
+    {
+      "path": "theme/style/hp/image/xingBei1.png",
+      "bytes": 217701,
+      "sha256": "eb51d2f2d9726f8b0382c473ee577d721e1406076ab7a4598e16af025c85629e"
+    },
+    {
+      "path": "theme/style/hp/image/xingBei4.png",
+      "bytes": 343543,
+      "sha256": "de144122fe1bfc4d2534304d058ffd828577f87cfca299ddde8534f7427fe108"
+    }
+  ]
+}
