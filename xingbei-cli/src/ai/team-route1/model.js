@@ -125,10 +125,11 @@ export function components(s) {
  }
  for(const p of s.players) {
   const sign=p.team===team?1:-1;
-  if(s.economy&&p.id!==s.observer)out.otherTurnRisk+=sign*nextTurnRisk(s,p.id)*.5;
+  const priorRisk=s.economy?(p.id===s.observer?out.nextTurnRisk:nextTurnRisk(s,p.id)*.5):0;
+  if(p.id!==s.observer)out.otherTurnRisk+=sign*priorRisk;
   out[p.id===s.observer?'ownHand':'otherHands']+=sign*handValue(s,p);
   out.healing+=sign*p.healing*weights.healing;
-  if(s.risk)out.routeRisk-=sign*Math.max(0,drawDanger(s,p)+nextTurnRisk(s,p.id)*(p.id===s.observer?1:.5));
+  if(s.risk)out.routeRisk-=sign*Math.max(0,drawDanger(s,p)+priorRisk);
   if(s.gifts)out.giftOptions+=sign*giftOptionValue(s,p);out.energy+=sign*energyPlan(s,p);
   out.effects+=sign*p.effects.reduce((sum,e)=>sum+effectValue(s,p,e),0);
   // A gifted card is known to its donor. Use public role/status/history only;
@@ -200,7 +201,7 @@ export function giftOptionValue(s,p) {
  const discount=.94**distance*(p.id===s.observer?1:1/(1+.18*Math.max(0,p.count-cards.length)));
  let best=0;
  if(owns('windCleansing')&&has('wind')) {
-  let removal=0;
+  let removal=-Infinity;
   for(const t of s.players)for(const e of t.effects){if(e.name==='fivefoldBinding')continue;const sign=t.team===p.team?1:-1;removal=Math.max(removal,-sign*effectValue(s,t,e));}
   const hasTarget=s.players.some(t=>t.effects.some(e=>e.name!=='fivefoldBinding'));
   const healing=hasTarget&&owns('angelBond')&&s.players.some(t=>t.team===p.team&&t.healing<t.healingLimit)?2.5:0;

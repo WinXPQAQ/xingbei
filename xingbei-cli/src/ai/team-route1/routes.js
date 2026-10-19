@@ -41,6 +41,7 @@ export function drawDanger(s,p) {
  const emergency=p.id===s.observer?p.hand.filter(c=>['holyLight','darkStrike'].includes(c.name)).length:.3;
  const protection=clamp(.09*coverage+.3*emergency+.08*p.healing,0,.8);
  const incoming=foes.reduce((n,t)=>n+(t.hero==='berserker'?3:2)*.3,0)*(1-protection);
+ if(!incoming)return 0;
  // Stress estimate is combined with the old risk by maximum (not addition);
  // terminal victory still dominates every nonterminal option by orders of magnitude.
  return Math.min(60,Math.max(0,p.count+incoming-p.limit+.5)*(6-morale)*4);

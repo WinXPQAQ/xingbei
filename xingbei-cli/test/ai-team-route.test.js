@@ -77,3 +77,19 @@ test('real snipe blocks imminent fifth cup, and real low-morale overflow can los
  const h=new Game({heroIds:Array(6).fill('none')});for(let i=0;i<3;i++)take(h,0,c=>c.name==='holyLight');h.teams.red.morale=1;h.startTurn(0);await h.executeAction(0,{type:'purchase'});h.endTurn();h.startTurn(1);
  const fire=take(h,1,c=>c.type==='attack');await h.executeAction(1,{type:'play',index:h.player(1).hand.indexOf(fire),targetId:0},{chooseResponse:()=>null,overflow:'ai'});assert.equal(h.winner,'blue');
 });
+test('risk requires an intervening threat; distant response opportunity is not a guaranteed synthesis',async()=>{
+ const s=model(make());s.teams.blue.morale=1;s.players[1].count=6;assert.equal(drawDanger(s,s.players[1]),0);
+ s.players[5].count=6;s.players[3].count=3;assert.ok(drawDanger(s,s.players[5])>0);
+ const g=new Game({heroIds:Array(6).fill('none')});const atk=take(g,0,c=>c.type==='attack');for(let i=0;i<4;i++)take(g,1,c=>c.name==='holyLight');g.addStones('blue','gem',3);g.teams.blue.cups=4;g.startTurn(0);
+ await g.executeAction(0,{type:'play',index:0,targetId:1},{chooseResponse:()=>({index:0})});g.endTurn();g.startTurn(1);assert.equal(g.player(1).hand.length,3);assert.equal(g.canDrawSpecial(1),true);await g.executeAction(1,{type:'synthesize',gemCount:3});assert.equal(g.winner,'blue');
+});
+test('real full resource pool wastes hit gain; synthesis releases capacity only for later actions',async()=>{
+ const g=new Game({heroIds:Array(6).fill('none')});g.addStones('red','gem',5);take(g,0,c=>c.type==='attack');g.startTurn(0);await g.executeAction(0,{type:'play',index:0,targetId:1},{chooseResponse:()=>null});assert.equal(g.stoneCounts('red').total,5);assert.equal(g.canDrawSpecial(0),false);g.endTurn();
+ g.startTurn(3);await g.executeAction(3,{type:'synthesize',gemCount:3});assert.equal(g.stoneCounts('red').total,2);g.endTurn();take(g,4,c=>c.type==='attack');g.startTurn(4);await g.executeAction(4,{type:'play',index:0,targetId:2},{chooseResponse:()=>null});assert.equal(g.stoneCounts('red').total,3);
+});
+test('cleansing option retains the cost of removing friendly shield or enemy poison',()=>{
+ for(const [name,target] of [['holyShield',3],['poison',1]]){
+  const g=make(),wind=take(g,0,c=>c.elements.includes('wind')),effect=g.deck.find(c=>c.name===name);g.attachCard(effect.id,target,{effectId:name,sourcePlayerId:0});
+  const s=model(g);transfer(s,0,3,s.players[0].hand.find(c=>c.id===wind.id));assert.equal(giftOptionValue(s,s.players[3]),0,name);
+ }
+});
