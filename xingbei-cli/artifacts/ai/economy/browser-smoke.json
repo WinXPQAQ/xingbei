@@ -1,0 +1,12 @@
+{
+  "default": "v1.2",
+  "candidateAction": {
+    "type": "play",
+    "index": 1,
+    "targetId": 5
+  },
+  "traceReplay": true,
+  "players": 6,
+  "errors": [],
+  "scope": "limited local browser smoke; no visual acceptance"
+}

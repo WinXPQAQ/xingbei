@@ -1,0 +1,10 @@
+{
+  "status": "interrupted",
+  "candidate": "experimental/economy-no-hand",
+  "opponent": "v1.2",
+  "plannedGames": 72,
+  "completedReport": false,
+  "elapsedSeconds": 611.8999999999996,
+  "cpuSeconds": 557.84,
+  "reason": "Unbounded a9 family already rejected for performance; superseded by frozen bounded fresh acceptance, not counted as completed or passing"
+}
