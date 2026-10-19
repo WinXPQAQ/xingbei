@@ -1,3 +1,5 @@
+// Auxiliary direct-access diagnostic, NOT a security boundary. Reflection on
+// these live proxies is not isolated. Production isolation is observation.js.
 // Evaluation-time capability check. The evaluator retains full state for metrics,
 // but strategies receive only their own hand and public objects. This adapter
 // intentionally throws on hidden access instead of silently returning fake cards.

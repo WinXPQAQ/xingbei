@@ -1,12 +1,10 @@
+import { isolatePolicy } from '../observation.js';
 import * as baseline from '../v1.0/index.js';
 import { readingAdjustment } from './reading.js';
 import { chooseDefense } from './defense.js';
 import { heroAdjustment } from './threats.js';
-export { chooseAiDiscard, cardScore, keepCards, giftScore, planWindAttacks } from '../v1.0/index.js';
-export const chooseAiResponse = baseline.chooseAiResponse;
-export const chooseAiRuleDecision = baseline.chooseAiRuleDecision;
 export function createPolicy({ reading = true, readingWeight = 1, history = true, defense = false, heroes = false } = {}) {
-  return {
+  return isolatePolicy({
     ...baseline,
     chooseAiResponse: defense ? (game, request) => chooseDefense(game, request, { heroThreats: heroes }) : baseline.chooseAiResponse,
     rankAiActions(game, actorId) {
@@ -18,8 +16,10 @@ export function createPolicy({ reading = true, readingWeight = 1, history = true
       }).sort((a, b) => b.score - a.score);
     },
     chooseAiAction(game, actorId) { return this.rankAiActions(game, actorId)[0].action; },
-  };
+  }, { history });
 }
 const policy = createPolicy();
 export const rankAiActions = (game, id) => policy.rankAiActions(game, id);
 export const chooseAiAction = (game, id) => policy.chooseAiAction(game, id);
+
+export const { chooseAiDiscard, cardScore, keepCards, giftScore, planWindAttacks, chooseAiResponse, chooseAiRuleDecision } = policy;

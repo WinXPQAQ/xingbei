@@ -10,10 +10,21 @@ export class PublicHistory {
     if (from.zone === 'hand') this.append({ type: 'leave', playerId: from.playerId, elements: publicTraits ? Object.freeze([...publicTraits.elements]) : null });
     if (to.zone === 'hand') this.append({ type: 'gain', playerId: to.playerId });
   }
-  attack(context) {
+  attack(context, game = null) {
     // Forced hits, lightning/storm restrictions and shields are not evidence of a missing element.
     if (context.forcedHit || !context.canCounter || context.card.name === 'darkStrike') return;
-    this.append({ type: 'unanswered', playerId: context.targetId, elements: Object.freeze([...context.attackTraits.elements]) });
+    let acceptCost = 0;
+    if (game) {
+      const target = game.player(context.targetId), actor = game.player(context.actorId);
+      let amount = context.amount ?? 2;
+      if (actor.hero.id === 'berserker' && actor.hero.skills.length) {
+        amount += Number(context.sourceHandCount > 3);
+        if (context.bloodBlade) amount += target.hand.length === 2 ? 2 : target.hand.length === 3 ? 1 : 0;
+      }
+      const heal = Math.min(target.healing, target.hero.id === 'priest' ? 1 : amount);
+      acceptCost = Math.max(0, target.hand.length + amount - heal - target.handLimit);
+    }
+    this.append({ type: 'unanswered', playerId: context.targetId, elements: Object.freeze([...context.attackTraits.elements]), acceptCost });
   }
 }
 

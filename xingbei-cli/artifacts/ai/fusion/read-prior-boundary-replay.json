@@ -1,0 +1,14 @@
+{
+  "input": "xingbei-cli/artifacts/ai/v1.1/read-prior-tune.json",
+  "sourceCommit": "c4b45e0d72e90e7de7313dc3aba7bf26676058a1",
+  "games": 72,
+  "audit": true,
+  "identical": [
+    "winner",
+    "turns",
+    "initial",
+    "metrics",
+    "outcome"
+  ],
+  "elapsedSeconds": 8.500193988
+}

@@ -210,7 +210,7 @@ export class Game {
     yield* this.present();
     this.timeline.push({ timing, playerId: context.playerId ?? context.targetId, cardId: context.card?.id ?? null, point: context.point ?? null });
     if (timing === Timing.TURN_START) this.publicHistory.append({ type: "turn" });
-    if (timing === Timing.ATTACK_HIT) this.publicHistory.attack(context);
+    if (timing === Timing.ATTACK_HIT) this.publicHistory.attack(context, this);
     const entries = this.triggers.get(timing, context);
     for (const entry of entries) {
       if (!entry.active) continue;
