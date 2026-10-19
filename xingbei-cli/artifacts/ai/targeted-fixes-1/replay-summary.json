@@ -1,0 +1,93 @@
+{
+  "allArchivedOutcomesAndMetricsMatch": true,
+  "outputs": [
+    {
+      "index": 0,
+      "config": {
+        "seed": 994001,
+        "lineup": "mirrorAssault",
+        "start": 0,
+        "team": "blue",
+        "heroIds": [
+          "berserker",
+          "berserker",
+          "windSwordmaster",
+          "windSwordmaster",
+          "marksman",
+          "marksman"
+        ]
+      },
+      "firstTrajectoryDifferenceSequence": 6,
+      "ordinaryCounts": [
+        34,
+        32
+      ]
+    },
+    {
+      "index": 1,
+      "config": {
+        "seed": 994001,
+        "lineup": "mirrorAssault",
+        "start": 1,
+        "team": "blue",
+        "heroIds": [
+          "berserker",
+          "berserker",
+          "windSwordmaster",
+          "windSwordmaster",
+          "marksman",
+          "marksman"
+        ]
+      },
+      "firstTrajectoryDifferenceSequence": 5,
+      "ordinaryCounts": [
+        34,
+        41
+      ]
+    },
+    {
+      "index": 2,
+      "config": {
+        "seed": 994001,
+        "lineup": "asymmetricReverse",
+        "start": 0,
+        "team": "blue",
+        "heroIds": [
+          "berserker",
+          "priest",
+          "sealer",
+          "marksman",
+          "guardianAngel",
+          "windSwordmaster"
+        ]
+      },
+      "firstTrajectoryDifferenceSequence": 1,
+      "ordinaryCounts": [
+        57,
+        57
+      ]
+    },
+    {
+      "index": 3,
+      "config": {
+        "seed": 994001,
+        "lineup": "asymmetricReverse",
+        "start": 2,
+        "team": "red",
+        "heroIds": [
+          "priest",
+          "berserker",
+          "marksman",
+          "sealer",
+          "windSwordmaster",
+          "guardianAngel"
+        ]
+      },
+      "firstTrajectoryDifferenceSequence": 4,
+      "ordinaryCounts": [
+        47,
+        48
+      ]
+    }
+  ]
+}

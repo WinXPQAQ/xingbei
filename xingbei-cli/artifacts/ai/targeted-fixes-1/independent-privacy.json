@@ -1,0 +1,186 @@
+{
+  "sha": "002d7c8e23643cad52bc677a37f209b8dbfbfec9",
+  "checks": [
+    {
+      "observer": 0,
+      "hero": "berserker",
+      "version": "experimental/targeted-fixes-1",
+      "passed": true
+    },
+    {
+      "observer": 0,
+      "hero": "berserker",
+      "version": "experimental/targeted-fixes-1-no-ownership",
+      "passed": true
+    },
+    {
+      "observer": 0,
+      "hero": "berserker",
+      "version": "experimental/targeted-fixes-1-no-energy",
+      "passed": true
+    },
+    {
+      "observer": 0,
+      "hero": "berserker",
+      "version": "experimental/targeted-fixes-1-no-healing",
+      "passed": true
+    },
+    {
+      "observer": 0,
+      "hero": "berserker",
+      "version": "experimental/targeted-fixes-1-no-ownership-energy-healing",
+      "passed": true
+    },
+    {
+      "observer": 1,
+      "hero": "windSwordmaster",
+      "version": "experimental/targeted-fixes-1",
+      "passed": true
+    },
+    {
+      "observer": 1,
+      "hero": "windSwordmaster",
+      "version": "experimental/targeted-fixes-1-no-ownership",
+      "passed": true
+    },
+    {
+      "observer": 1,
+      "hero": "windSwordmaster",
+      "version": "experimental/targeted-fixes-1-no-energy",
+      "passed": true
+    },
+    {
+      "observer": 1,
+      "hero": "windSwordmaster",
+      "version": "experimental/targeted-fixes-1-no-healing",
+      "passed": true
+    },
+    {
+      "observer": 1,
+      "hero": "windSwordmaster",
+      "version": "experimental/targeted-fixes-1-no-ownership-energy-healing",
+      "passed": true
+    },
+    {
+      "observer": 2,
+      "hero": "marksman",
+      "version": "experimental/targeted-fixes-1",
+      "passed": true
+    },
+    {
+      "observer": 2,
+      "hero": "marksman",
+      "version": "experimental/targeted-fixes-1-no-ownership",
+      "passed": true
+    },
+    {
+      "observer": 2,
+      "hero": "marksman",
+      "version": "experimental/targeted-fixes-1-no-energy",
+      "passed": true
+    },
+    {
+      "observer": 2,
+      "hero": "marksman",
+      "version": "experimental/targeted-fixes-1-no-healing",
+      "passed": true
+    },
+    {
+      "observer": 2,
+      "hero": "marksman",
+      "version": "experimental/targeted-fixes-1-no-ownership-energy-healing",
+      "passed": true
+    },
+    {
+      "observer": 3,
+      "hero": "sealer",
+      "version": "experimental/targeted-fixes-1",
+      "passed": true
+    },
+    {
+      "observer": 3,
+      "hero": "sealer",
+      "version": "experimental/targeted-fixes-1-no-ownership",
+      "passed": true
+    },
+    {
+      "observer": 3,
+      "hero": "sealer",
+      "version": "experimental/targeted-fixes-1-no-energy",
+      "passed": true
+    },
+    {
+      "observer": 3,
+      "hero": "sealer",
+      "version": "experimental/targeted-fixes-1-no-healing",
+      "passed": true
+    },
+    {
+      "observer": 3,
+      "hero": "sealer",
+      "version": "experimental/targeted-fixes-1-no-ownership-energy-healing",
+      "passed": true
+    },
+    {
+      "observer": 4,
+      "hero": "guardianAngel",
+      "version": "experimental/targeted-fixes-1",
+      "passed": true
+    },
+    {
+      "observer": 4,
+      "hero": "guardianAngel",
+      "version": "experimental/targeted-fixes-1-no-ownership",
+      "passed": true
+    },
+    {
+      "observer": 4,
+      "hero": "guardianAngel",
+      "version": "experimental/targeted-fixes-1-no-energy",
+      "passed": true
+    },
+    {
+      "observer": 4,
+      "hero": "guardianAngel",
+      "version": "experimental/targeted-fixes-1-no-healing",
+      "passed": true
+    },
+    {
+      "observer": 4,
+      "hero": "guardianAngel",
+      "version": "experimental/targeted-fixes-1-no-ownership-energy-healing",
+      "passed": true
+    },
+    {
+      "observer": 5,
+      "hero": "priest",
+      "version": "experimental/targeted-fixes-1",
+      "passed": true
+    },
+    {
+      "observer": 5,
+      "hero": "priest",
+      "version": "experimental/targeted-fixes-1-no-ownership",
+      "passed": true
+    },
+    {
+      "observer": 5,
+      "hero": "priest",
+      "version": "experimental/targeted-fixes-1-no-energy",
+      "passed": true
+    },
+    {
+      "observer": 5,
+      "hero": "priest",
+      "version": "experimental/targeted-fixes-1-no-healing",
+      "passed": true
+    },
+    {
+      "observer": 5,
+      "hero": "priest",
+      "version": "experimental/targeted-fixes-1-no-ownership-energy-healing",
+      "passed": true
+    }
+  ],
+  "scope": "30 same-public-state counterfactuals; not a formal proof or exhaustive nested-request audit"
+}

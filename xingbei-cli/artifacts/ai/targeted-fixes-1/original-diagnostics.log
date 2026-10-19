@@ -1,0 +1,70 @@
+windSwordmaster [
+  {
+    action: { type: 'play', index: 1, targetId: 0 },
+    score: 0.20400102850169333
+  },
+  {
+    action: { type: 'play', index: 0, targetId: 3 },
+    score: 0.13471507075175282
+  },
+  {
+    action: { type: 'play', index: 1, targetId: 3 },
+    score: 0.10702083587282729
+  }
+]
+marksman [
+  {
+    action: { type: 'play', index: 1, targetId: 4 },
+    score: -2.143159177252599
+  },
+  {
+    action: { type: 'play', index: 0, targetId: 4 },
+    score: -3.0768058319766425
+  },
+  {
+    action: { type: 'play', index: 1, targetId: 3 },
+    score: -4.62469094541224
+  }
+]
+sealer [
+  {
+    action: { type: 'play', index: 2, targetId: 3 },
+    score: -1.9951401071693056
+  },
+  {
+    action: { type: 'play', index: 1, targetId: 3 },
+    score: -2.572152931652184
+  },
+  {
+    action: { type: 'play', index: 0, targetId: 3 },
+    score: -2.798679606741892
+  }
+]
+priest [
+  {
+    action: { type: 'play', index: 4, targetId: 0 },
+    score: -0.6878179019159063
+  },
+  {
+    action: { type: 'play', index: 1, targetId: 0 },
+    score: -0.7391872303515186
+  },
+  {
+    action: { type: 'play', index: 0, targetId: 0 },
+    score: -0.7489661917355761
+  }
+]
+guardianAngel [
+  {
+    action: { type: 'play', index: 2, targetId: 4 },
+    score: -0.4737945028831225
+  },
+  {
+    action: { type: 'play', index: 2, targetId: 0 },
+    score: -1.2333333333333352
+  },
+  {
+    action: { type: 'play', index: 0, targetId: 3 },
+    score: -5.64774037263203
+  }
+]

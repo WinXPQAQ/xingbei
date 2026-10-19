@@ -1,0 +1,356 @@
+[
+  {
+    "case": 0,
+    "values": {
+      "v1.3-economy4": [
+        {
+          "cardId": "c77",
+          "targetId": 3,
+          "score": 0.4161310725612708,
+          "parts": {
+            "morale": 10.397090687388975,
+            "cups": 0,
+            "stones": -0.3726287122109191,
+            "conversion": 0.4352703154199179,
+            "ownHand": -3.300000000000001,
+            "otherHands": -4.107129049457436,
+            "healing": 0,
+            "energy": 0,
+            "effects": 0,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": -2.636472168579271,
+            "terminal": 0
+          }
+        },
+        {
+          "cardId": "c77",
+          "targetId": 4,
+          "score": 0.4432739315709995,
+          "parts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": 0.5211712950617287,
+            "conversion": 1.1613944592592598,
+            "ownHand": -3.3000000000000007,
+            "otherHands": 1.7761401974814794,
+            "healing": 0,
+            "energy": 0,
+            "effects": 0,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0.2845679797685269,
+            "terminal": 0
+          }
+        }
+      ],
+      "economy-capability1": [
+        {
+          "cardId": "c77",
+          "targetId": 3,
+          "score": 0.4161310725612708,
+          "parts": {
+            "morale": 10.397090687388975,
+            "cups": 0,
+            "stones": -0.3726287122109191,
+            "conversion": 0.4352703154199179,
+            "ownHand": -3.300000000000001,
+            "otherHands": -4.107129049457436,
+            "healing": 0,
+            "energy": 0,
+            "effects": 0,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": -2.636472168579271,
+            "terminal": 0
+          }
+        },
+        {
+          "cardId": "c77",
+          "targetId": 4,
+          "score": 0.4432739315709995,
+          "parts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": 0.5211712950617287,
+            "conversion": 1.1613944592592598,
+            "ownHand": -3.3000000000000007,
+            "otherHands": 1.7761401974814794,
+            "healing": 0,
+            "energy": 0,
+            "effects": 0,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0.2845679797685269,
+            "terminal": 0
+          }
+        }
+      ],
+      "team-route2": [
+        {
+          "cardId": "c77",
+          "targetId": 3,
+          "score": 0.22944386361223934,
+          "parts": {
+            "morale": 10.397090687388975,
+            "cups": 0,
+            "stones": -0.3726287122109191,
+            "conversion": 0.24858310647088025,
+            "ownHand": -3.300000000000001,
+            "otherHands": -4.107129049457436,
+            "healing": 0,
+            "energy": 0,
+            "effects": 0,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": -2.636472168579271,
+            "routeRisk": 0,
+            "capacity": 0,
+            "giftOptions": 0,
+            "terminal": 0
+          }
+        },
+        {
+          "cardId": "c77",
+          "targetId": 4,
+          "score": -0.2903313207771916,
+          "parts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": 0.5211712950617287,
+            "conversion": 0.42778920691106603,
+            "ownHand": -3.3000000000000007,
+            "otherHands": 1.7761401974814797,
+            "healing": 0,
+            "energy": 0,
+            "effects": 0,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0.2845679797685269,
+            "routeRisk": 0,
+            "capacity": 0,
+            "giftOptions": 0,
+            "terminal": 0
+          }
+        }
+      ],
+      "action-value2": [
+        {
+          "cardId": "c77",
+          "targetId": 3,
+          "score": 0.22944386361223224,
+          "parts": {
+            "morale": 10.397090687388975,
+            "cups": 0,
+            "stones": -0.3726287122109191,
+            "conversion": 0.24858310647088025,
+            "ownHand": -3.300000000000001,
+            "otherHands": -4.107129049457436,
+            "healing": 0,
+            "energy": 0,
+            "effects": 0,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": -2.636472168579271,
+            "routeRisk": 0,
+            "capacity": 0,
+            "giftOptions": 0,
+            "terminal": 0
+          }
+        },
+        {
+          "cardId": "c77",
+          "targetId": 4,
+          "score": -0.2903313207771987,
+          "parts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": 0.5211712950617287,
+            "conversion": 0.42778920691106603,
+            "ownHand": -3.3000000000000007,
+            "otherHands": 1.7761401974814797,
+            "healing": 0,
+            "energy": 0,
+            "effects": 0,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0.2845679797685269,
+            "routeRisk": 0,
+            "capacity": 0,
+            "giftOptions": 0,
+            "terminal": 0
+          }
+        }
+      ]
+    }
+  },
+  {
+    "case": 2,
+    "values": {
+      "v1.3-economy4": [
+        {
+          "cardId": "c89",
+          "targetId": 3,
+          "score": -0.3360137442037008,
+          "parts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": 0.7794017700617286,
+            "conversion": 0.24940856641975317,
+            "ownHand": -3.3000000000000007,
+            "otherHands": 1.2713474393148145,
+            "healing": 0,
+            "energy": 0,
+            "effects": 0,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0.6638284800000009,
+            "terminal": 0
+          }
+        },
+        {
+          "cardId": "c89",
+          "targetId": 4,
+          "score": -0.3360137442037008,
+          "parts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": 0.7794017700617286,
+            "conversion": 0.24940856641975317,
+            "ownHand": -3.3000000000000007,
+            "otherHands": 1.2713474393148145,
+            "healing": 0,
+            "energy": 0,
+            "effects": 0,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0.6638284800000009,
+            "terminal": 0
+          }
+        }
+      ],
+      "economy-capability1": [
+        {
+          "cardId": "c89",
+          "targetId": 3,
+          "score": -0.3360137442037008,
+          "parts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": 0.7794017700617286,
+            "conversion": 0.24940856641975317,
+            "ownHand": -3.3000000000000007,
+            "otherHands": 1.2713474393148145,
+            "healing": 0,
+            "energy": 0,
+            "effects": 0,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0.6638284800000009,
+            "terminal": 0
+          }
+        },
+        {
+          "cardId": "c89",
+          "targetId": 4,
+          "score": -0.3360137442037008,
+          "parts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": 0.7794017700617286,
+            "conversion": 0.24940856641975317,
+            "ownHand": -3.3000000000000007,
+            "otherHands": 1.2713474393148145,
+            "healing": 0,
+            "energy": 0,
+            "effects": 0,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0.6638284800000009,
+            "terminal": 0
+          }
+        }
+      ],
+      "team-route2": [
+        {
+          "cardId": "c89",
+          "targetId": 3,
+          "score": -0.5705968377255886,
+          "parts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": 0.7794017700617286,
+            "conversion": 0.014825472897869393,
+            "ownHand": -3.3000000000000007,
+            "otherHands": 1.2713474393148145,
+            "healing": 0,
+            "energy": 0,
+            "effects": 0,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0.6638284800000009,
+            "routeRisk": 0,
+            "capacity": 0,
+            "giftOptions": 0,
+            "terminal": 0
+          }
+        },
+        {
+          "cardId": "c89",
+          "targetId": 4,
+          "score": -0.5690614491741819,
+          "parts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": 0.7794017700617286,
+            "conversion": 0.016360861449276808,
+            "ownHand": -3.3000000000000007,
+            "otherHands": 1.2713474393148145,
+            "healing": 0,
+            "energy": 0,
+            "effects": 0,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0.6638284800000009,
+            "routeRisk": 0,
+            "capacity": 0,
+            "giftOptions": 0,
+            "terminal": 0
+          }
+        }
+      ],
+      "action-value2": [
+        {
+          "cardId": "c89",
+          "targetId": 3,
+          "score": -0.570596837725585,
+          "parts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": 0.7794017700617286,
+            "conversion": 0.014825472897869393,
+            "ownHand": -3.299999999999999,
+            "otherHands": 1.2713474393148145,
+            "healing": 0,
+            "energy": 0,
+            "effects": 0,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0.6638284800000009,
+            "routeRisk": 0,
+            "capacity": 0,
+            "giftOptions": 0,
+            "terminal": 0
+          }
+        },
+        {
+          "cardId": "c89",
+          "targetId": 4,
+          "score": -0.5690614491741783,
+          "parts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": 0.7794017700617286,
+            "conversion": 0.016360861449276808,
+            "ownHand": -3.299999999999999,
+            "otherHands": 1.2713474393148145,
+            "healing": 0,
+            "energy": 0,
+            "effects": 0,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0.6638284800000009,
+            "routeRisk": 0,
+            "capacity": 0,
+            "giftOptions": 0,
+            "terminal": 0
+          }
+        }
+      ]
+    }
+  }
+]

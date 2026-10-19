@@ -1,0 +1,889 @@
+{
+  "protocolSHA256": "3b0a84b6eb5dc2e968e30823056a5bc83f9679dca75ce887594bf311b9099be3",
+  "sourceHashes": {
+    "pair0": "eb2f7aaadb4eace163e0f5299f5e8d8d61418541d8b7150112c6ac2eae10f6b2",
+    "pair3": "f20b79c41d408adc0fced67583b81be1cf75ae11020f538a3fb543714d8e898d"
+  },
+  "selected": [
+    {
+      "config": {
+        "seed": 994001,
+        "lineup": "mirrorAssault",
+        "start": 0,
+        "team": "blue",
+        "heroIds": [
+          "berserker",
+          "berserker",
+          "windSwordmaster",
+          "windSwordmaster",
+          "marksman",
+          "marksman"
+        ]
+      },
+      "candidateArchived": {
+        "seed": 994001,
+        "lineup": "mirrorAssault",
+        "start": 0,
+        "team": "blue",
+        "heroIds": [
+          "berserker",
+          "berserker",
+          "windSwordmaster",
+          "windSwordmaster",
+          "marksman",
+          "marksman"
+        ],
+        "winner": "red",
+        "outcome": "loss",
+        "turns": 34,
+        "elapsedMs": 668.0569509999999,
+        "metrics": {
+          "candidate": {
+            "attacks": 16,
+            "hits": 5,
+            "damage": 14,
+            "attackDamage": 10,
+            "spellDamage": 4,
+            "moraleLost": 15,
+            "gems": 4,
+            "crystals": 3,
+            "cups": 2,
+            "actions": 20,
+            "exchanges": 0,
+            "turns": 17,
+            "highHandTurns": 6,
+            "idleEnergyTurns": 0,
+            "activeKeyCardsSpent": 0,
+            "gifts": 0,
+            "giftRecipientBurdenDelta": 0,
+            "giftHandValueDelta": 0,
+            "giftNextTurnHighHand": 0,
+            "passes": 1
+          },
+          "opponent": {
+            "attacks": 17,
+            "hits": 10,
+            "damage": 27,
+            "attackDamage": 22,
+            "spellDamage": 5,
+            "moraleLost": 9,
+            "gems": 6,
+            "crystals": 5,
+            "cups": 3,
+            "actions": 19,
+            "exchanges": 0,
+            "turns": 17,
+            "highHandTurns": 5,
+            "idleEnergyTurns": 0,
+            "activeKeyCardsSpent": 0,
+            "gifts": 0,
+            "giftRecipientBurdenDelta": 0,
+            "giftHandValueDelta": 0,
+            "giftNextTurnHighHand": 0,
+            "passes": 0
+          }
+        },
+        "initial": [
+          {
+            "id": 0,
+            "hero": "berserker",
+            "team": "red",
+            "handCount": 4
+          },
+          {
+            "id": 1,
+            "hero": "berserker",
+            "team": "blue",
+            "handCount": 4
+          },
+          {
+            "id": 2,
+            "hero": "windSwordmaster",
+            "team": "blue",
+            "handCount": 4
+          },
+          {
+            "id": 3,
+            "hero": "windSwordmaster",
+            "team": "red",
+            "handCount": 4
+          },
+          {
+            "id": 4,
+            "hero": "marksman",
+            "team": "red",
+            "handCount": 4
+          },
+          {
+            "id": 5,
+            "hero": "marksman",
+            "team": "blue",
+            "handCount": 4
+          }
+        ]
+      },
+      "selfArchived": {
+        "seed": 994001,
+        "lineup": "mirrorAssault",
+        "start": 0,
+        "team": "blue",
+        "heroIds": [
+          "berserker",
+          "berserker",
+          "windSwordmaster",
+          "windSwordmaster",
+          "marksman",
+          "marksman"
+        ],
+        "winner": "blue",
+        "outcome": "win",
+        "turns": 33,
+        "elapsedMs": 813.6264179999998,
+        "metrics": {
+          "candidate": {
+            "attacks": 19,
+            "hits": 11,
+            "damage": 25,
+            "attackDamage": 23,
+            "spellDamage": 2,
+            "moraleLost": 9,
+            "gems": 6,
+            "crystals": 5,
+            "cups": 2,
+            "actions": 19,
+            "exchanges": 0,
+            "turns": 17,
+            "highHandTurns": 9,
+            "idleEnergyTurns": 0,
+            "activeKeyCardsSpent": 2,
+            "gifts": 0,
+            "giftRecipientBurdenDelta": 0,
+            "giftHandValueDelta": 0,
+            "giftNextTurnHighHand": 0,
+            "passes": 0
+          },
+          "opponent": {
+            "attacks": 11,
+            "hits": 5,
+            "damage": 22,
+            "attackDamage": 13,
+            "spellDamage": 9,
+            "moraleLost": 15,
+            "gems": 3,
+            "crystals": 4,
+            "cups": 2,
+            "actions": 15,
+            "exchanges": 0,
+            "turns": 16,
+            "highHandTurns": 8,
+            "idleEnergyTurns": 0,
+            "activeKeyCardsSpent": 0,
+            "gifts": 0,
+            "giftRecipientBurdenDelta": 0,
+            "giftHandValueDelta": 0,
+            "giftNextTurnHighHand": 0,
+            "passes": 0
+          }
+        },
+        "initial": [
+          {
+            "id": 0,
+            "hero": "berserker",
+            "team": "red",
+            "handCount": 4
+          },
+          {
+            "id": 1,
+            "hero": "berserker",
+            "team": "blue",
+            "handCount": 4
+          },
+          {
+            "id": 2,
+            "hero": "windSwordmaster",
+            "team": "blue",
+            "handCount": 4
+          },
+          {
+            "id": 3,
+            "hero": "windSwordmaster",
+            "team": "red",
+            "handCount": 4
+          },
+          {
+            "id": 4,
+            "hero": "marksman",
+            "team": "red",
+            "handCount": 4
+          },
+          {
+            "id": 5,
+            "hero": "marksman",
+            "team": "blue",
+            "handCount": 4
+          }
+        ]
+      }
+    },
+    {
+      "config": {
+        "seed": 994001,
+        "lineup": "mirrorAssault",
+        "start": 1,
+        "team": "blue",
+        "heroIds": [
+          "berserker",
+          "berserker",
+          "windSwordmaster",
+          "windSwordmaster",
+          "marksman",
+          "marksman"
+        ]
+      },
+      "candidateArchived": {
+        "seed": 994001,
+        "lineup": "mirrorAssault",
+        "start": 1,
+        "team": "blue",
+        "heroIds": [
+          "berserker",
+          "berserker",
+          "windSwordmaster",
+          "windSwordmaster",
+          "marksman",
+          "marksman"
+        ],
+        "winner": "red",
+        "outcome": "loss",
+        "turns": 34,
+        "elapsedMs": 633.5987279999997,
+        "metrics": {
+          "candidate": {
+            "attacks": 20,
+            "hits": 11,
+            "damage": 35,
+            "attackDamage": 26,
+            "spellDamage": 9,
+            "moraleLost": 15,
+            "gems": 7,
+            "crystals": 5,
+            "cups": 2,
+            "actions": 21,
+            "exchanges": 0,
+            "turns": 17,
+            "highHandTurns": 5,
+            "idleEnergyTurns": 0,
+            "activeKeyCardsSpent": 1,
+            "gifts": 0,
+            "giftRecipientBurdenDelta": 0,
+            "giftHandValueDelta": 0,
+            "giftNextTurnHighHand": 0,
+            "passes": 0
+          },
+          "opponent": {
+            "attacks": 20,
+            "hits": 10,
+            "damage": 30,
+            "attackDamage": 27,
+            "spellDamage": 3,
+            "moraleLost": 13,
+            "gems": 6,
+            "crystals": 2,
+            "cups": 2,
+            "actions": 19,
+            "exchanges": 0,
+            "turns": 17,
+            "highHandTurns": 10,
+            "idleEnergyTurns": 0,
+            "activeKeyCardsSpent": 3,
+            "gifts": 0,
+            "giftRecipientBurdenDelta": 0,
+            "giftHandValueDelta": 0,
+            "giftNextTurnHighHand": 0,
+            "passes": 0
+          }
+        },
+        "initial": [
+          {
+            "id": 0,
+            "hero": "berserker",
+            "team": "red",
+            "handCount": 4
+          },
+          {
+            "id": 1,
+            "hero": "berserker",
+            "team": "blue",
+            "handCount": 4
+          },
+          {
+            "id": 2,
+            "hero": "windSwordmaster",
+            "team": "blue",
+            "handCount": 4
+          },
+          {
+            "id": 3,
+            "hero": "windSwordmaster",
+            "team": "red",
+            "handCount": 4
+          },
+          {
+            "id": 4,
+            "hero": "marksman",
+            "team": "red",
+            "handCount": 4
+          },
+          {
+            "id": 5,
+            "hero": "marksman",
+            "team": "blue",
+            "handCount": 4
+          }
+        ]
+      },
+      "selfArchived": {
+        "seed": 994001,
+        "lineup": "mirrorAssault",
+        "start": 1,
+        "team": "blue",
+        "heroIds": [
+          "berserker",
+          "berserker",
+          "windSwordmaster",
+          "windSwordmaster",
+          "marksman",
+          "marksman"
+        ],
+        "winner": "blue",
+        "outcome": "win",
+        "turns": 43,
+        "elapsedMs": 838.6952449999999,
+        "metrics": {
+          "candidate": {
+            "attacks": 22,
+            "hits": 11,
+            "damage": 33,
+            "attackDamage": 27,
+            "spellDamage": 6,
+            "moraleLost": 12,
+            "gems": 9,
+            "crystals": 4,
+            "cups": 3,
+            "actions": 24,
+            "exchanges": 0,
+            "turns": 22,
+            "highHandTurns": 7,
+            "idleEnergyTurns": 0,
+            "activeKeyCardsSpent": 2,
+            "gifts": 0,
+            "giftRecipientBurdenDelta": 0,
+            "giftHandValueDelta": 0,
+            "giftNextTurnHighHand": 0,
+            "passes": 0
+          },
+          "opponent": {
+            "attacks": 20,
+            "hits": 10,
+            "damage": 29,
+            "attackDamage": 25,
+            "spellDamage": 4,
+            "moraleLost": 16,
+            "gems": 5,
+            "crystals": 5,
+            "cups": 2,
+            "actions": 21,
+            "exchanges": 0,
+            "turns": 21,
+            "highHandTurns": 10,
+            "idleEnergyTurns": 0,
+            "activeKeyCardsSpent": 1,
+            "gifts": 0,
+            "giftRecipientBurdenDelta": 0,
+            "giftHandValueDelta": 0,
+            "giftNextTurnHighHand": 0,
+            "passes": 1
+          }
+        },
+        "initial": [
+          {
+            "id": 0,
+            "hero": "berserker",
+            "team": "red",
+            "handCount": 4
+          },
+          {
+            "id": 1,
+            "hero": "berserker",
+            "team": "blue",
+            "handCount": 4
+          },
+          {
+            "id": 2,
+            "hero": "windSwordmaster",
+            "team": "blue",
+            "handCount": 4
+          },
+          {
+            "id": 3,
+            "hero": "windSwordmaster",
+            "team": "red",
+            "handCount": 4
+          },
+          {
+            "id": 4,
+            "hero": "marksman",
+            "team": "red",
+            "handCount": 4
+          },
+          {
+            "id": 5,
+            "hero": "marksman",
+            "team": "blue",
+            "handCount": 4
+          }
+        ]
+      }
+    },
+    {
+      "config": {
+        "seed": 994001,
+        "lineup": "asymmetricReverse",
+        "start": 0,
+        "team": "blue",
+        "heroIds": [
+          "berserker",
+          "priest",
+          "sealer",
+          "marksman",
+          "guardianAngel",
+          "windSwordmaster"
+        ]
+      },
+      "candidateArchived": {
+        "seed": 994001,
+        "lineup": "asymmetricReverse",
+        "start": 0,
+        "team": "blue",
+        "heroIds": [
+          "berserker",
+          "priest",
+          "sealer",
+          "marksman",
+          "guardianAngel",
+          "windSwordmaster"
+        ],
+        "winner": "red",
+        "outcome": "loss",
+        "turns": 59,
+        "elapsedMs": 1923.7945560000007,
+        "metrics": {
+          "candidate": {
+            "attacks": 26,
+            "hits": 15,
+            "damage": 35,
+            "attackDamage": 30,
+            "spellDamage": 5,
+            "moraleLost": 15,
+            "gems": 9,
+            "crystals": 8,
+            "cups": 3,
+            "actions": 34,
+            "exchanges": 0,
+            "turns": 29,
+            "highHandTurns": 13,
+            "idleEnergyTurns": 1,
+            "activeKeyCardsSpent": 3,
+            "gifts": 1,
+            "giftRecipientBurdenDelta": 3.9000000000000004,
+            "giftHandValueDelta": 0.5999999999999996,
+            "giftNextTurnHighHand": 1,
+            "passes": 0
+          },
+          "opponent": {
+            "attacks": 26,
+            "hits": 13,
+            "damage": 36,
+            "attackDamage": 28,
+            "spellDamage": 8,
+            "moraleLost": 13,
+            "gems": 7,
+            "crystals": 4,
+            "cups": 2,
+            "actions": 29,
+            "exchanges": 0,
+            "turns": 30,
+            "highHandTurns": 11,
+            "idleEnergyTurns": 0,
+            "activeKeyCardsSpent": 0,
+            "gifts": 0,
+            "giftRecipientBurdenDelta": 0,
+            "giftHandValueDelta": 0,
+            "giftNextTurnHighHand": 0,
+            "passes": 0
+          }
+        },
+        "initial": [
+          {
+            "id": 0,
+            "hero": "berserker",
+            "team": "red",
+            "handCount": 4
+          },
+          {
+            "id": 1,
+            "hero": "priest",
+            "team": "blue",
+            "handCount": 4
+          },
+          {
+            "id": 2,
+            "hero": "sealer",
+            "team": "blue",
+            "handCount": 4
+          },
+          {
+            "id": 3,
+            "hero": "marksman",
+            "team": "red",
+            "handCount": 4
+          },
+          {
+            "id": 4,
+            "hero": "guardianAngel",
+            "team": "red",
+            "handCount": 4
+          },
+          {
+            "id": 5,
+            "hero": "windSwordmaster",
+            "team": "blue",
+            "handCount": 4
+          }
+        ]
+      },
+      "selfArchived": {
+        "seed": 994001,
+        "lineup": "asymmetricReverse",
+        "start": 0,
+        "team": "blue",
+        "heroIds": [
+          "berserker",
+          "priest",
+          "sealer",
+          "marksman",
+          "guardianAngel",
+          "windSwordmaster"
+        ],
+        "winner": "blue",
+        "outcome": "win",
+        "turns": 60,
+        "elapsedMs": 1040.6332189999957,
+        "metrics": {
+          "candidate": {
+            "attacks": 28,
+            "hits": 10,
+            "damage": 22,
+            "attackDamage": 20,
+            "spellDamage": 2,
+            "moraleLost": 13,
+            "gems": 10,
+            "crystals": 6,
+            "cups": 5,
+            "actions": 37,
+            "exchanges": 0,
+            "turns": 30,
+            "highHandTurns": 13,
+            "idleEnergyTurns": 0,
+            "activeKeyCardsSpent": 1,
+            "gifts": 3,
+            "giftRecipientBurdenDelta": 6.5,
+            "giftHandValueDelta": -24.499999999999996,
+            "giftNextTurnHighHand": 2,
+            "passes": 0
+          },
+          "opponent": {
+            "attacks": 28,
+            "hits": 13,
+            "damage": 35,
+            "attackDamage": 29,
+            "spellDamage": 6,
+            "moraleLost": 8,
+            "gems": 5,
+            "crystals": 8,
+            "cups": 3,
+            "actions": 27,
+            "exchanges": 0,
+            "turns": 30,
+            "highHandTurns": 10,
+            "idleEnergyTurns": 0,
+            "activeKeyCardsSpent": 1,
+            "gifts": 0,
+            "giftRecipientBurdenDelta": 0,
+            "giftHandValueDelta": 0,
+            "giftNextTurnHighHand": 0,
+            "passes": 0
+          }
+        },
+        "initial": [
+          {
+            "id": 0,
+            "hero": "berserker",
+            "team": "red",
+            "handCount": 4
+          },
+          {
+            "id": 1,
+            "hero": "priest",
+            "team": "blue",
+            "handCount": 4
+          },
+          {
+            "id": 2,
+            "hero": "sealer",
+            "team": "blue",
+            "handCount": 4
+          },
+          {
+            "id": 3,
+            "hero": "marksman",
+            "team": "red",
+            "handCount": 4
+          },
+          {
+            "id": 4,
+            "hero": "guardianAngel",
+            "team": "red",
+            "handCount": 4
+          },
+          {
+            "id": 5,
+            "hero": "windSwordmaster",
+            "team": "blue",
+            "handCount": 4
+          }
+        ]
+      }
+    },
+    {
+      "config": {
+        "seed": 994001,
+        "lineup": "asymmetricReverse",
+        "start": 2,
+        "team": "red",
+        "heroIds": [
+          "priest",
+          "berserker",
+          "marksman",
+          "sealer",
+          "windSwordmaster",
+          "guardianAngel"
+        ]
+      },
+      "candidateArchived": {
+        "seed": 994001,
+        "lineup": "asymmetricReverse",
+        "start": 2,
+        "team": "red",
+        "heroIds": [
+          "priest",
+          "berserker",
+          "marksman",
+          "sealer",
+          "windSwordmaster",
+          "guardianAngel"
+        ],
+        "winner": "blue",
+        "outcome": "loss",
+        "turns": 49,
+        "elapsedMs": 1390.3527810000014,
+        "metrics": {
+          "candidate": {
+            "attacks": 17,
+            "hits": 9,
+            "damage": 18,
+            "attackDamage": 18,
+            "spellDamage": 0,
+            "moraleLost": 15,
+            "gems": 10,
+            "crystals": 3,
+            "cups": 3,
+            "actions": 29,
+            "exchanges": 0,
+            "turns": 24,
+            "highHandTurns": 9,
+            "idleEnergyTurns": 0,
+            "activeKeyCardsSpent": 2,
+            "gifts": 2,
+            "giftRecipientBurdenDelta": 2.6,
+            "giftHandValueDelta": 4.699999999999993,
+            "giftNextTurnHighHand": 0,
+            "passes": 0
+          },
+          "opponent": {
+            "attacks": 15,
+            "hits": 7,
+            "damage": 26,
+            "attackDamage": 17,
+            "spellDamage": 9,
+            "moraleLost": 10,
+            "gems": 7,
+            "crystals": 4,
+            "cups": 3,
+            "actions": 24,
+            "exchanges": 0,
+            "turns": 25,
+            "highHandTurns": 12,
+            "idleEnergyTurns": 0,
+            "activeKeyCardsSpent": 0,
+            "gifts": 0,
+            "giftRecipientBurdenDelta": 0,
+            "giftHandValueDelta": 0,
+            "giftNextTurnHighHand": 0,
+            "passes": 0
+          }
+        },
+        "initial": [
+          {
+            "id": 0,
+            "hero": "priest",
+            "team": "red",
+            "handCount": 4
+          },
+          {
+            "id": 1,
+            "hero": "berserker",
+            "team": "blue",
+            "handCount": 4
+          },
+          {
+            "id": 2,
+            "hero": "marksman",
+            "team": "blue",
+            "handCount": 4
+          },
+          {
+            "id": 3,
+            "hero": "sealer",
+            "team": "red",
+            "handCount": 4
+          },
+          {
+            "id": 4,
+            "hero": "windSwordmaster",
+            "team": "red",
+            "handCount": 4
+          },
+          {
+            "id": 5,
+            "hero": "guardianAngel",
+            "team": "blue",
+            "handCount": 4
+          }
+        ]
+      },
+      "selfArchived": {
+        "seed": 994001,
+        "lineup": "asymmetricReverse",
+        "start": 2,
+        "team": "red",
+        "heroIds": [
+          "priest",
+          "berserker",
+          "marksman",
+          "sealer",
+          "windSwordmaster",
+          "guardianAngel"
+        ],
+        "winner": "red",
+        "outcome": "win",
+        "turns": 50,
+        "elapsedMs": 1331.2853770000002,
+        "metrics": {
+          "candidate": {
+            "attacks": 26,
+            "hits": 12,
+            "damage": 28,
+            "attackDamage": 24,
+            "spellDamage": 4,
+            "moraleLost": 13,
+            "gems": 10,
+            "crystals": 6,
+            "cups": 4,
+            "actions": 33,
+            "exchanges": 0,
+            "turns": 25,
+            "highHandTurns": 9,
+            "idleEnergyTurns": 0,
+            "activeKeyCardsSpent": 0,
+            "gifts": 1,
+            "giftRecipientBurdenDelta": 0,
+            "giftHandValueDelta": 4.5,
+            "giftNextTurnHighHand": 0,
+            "passes": 0
+          },
+          "opponent": {
+            "attacks": 23,
+            "hits": 12,
+            "damage": 25,
+            "attackDamage": 25,
+            "spellDamage": 0,
+            "moraleLost": 15,
+            "gems": 7,
+            "crystals": 8,
+            "cups": 4,
+            "actions": 24,
+            "exchanges": 0,
+            "turns": 25,
+            "highHandTurns": 9,
+            "idleEnergyTurns": 0,
+            "activeKeyCardsSpent": 3,
+            "gifts": 0,
+            "giftRecipientBurdenDelta": 0,
+            "giftHandValueDelta": 0,
+            "giftNextTurnHighHand": 0,
+            "passes": 0
+          }
+        },
+        "initial": [
+          {
+            "id": 0,
+            "hero": "priest",
+            "team": "red",
+            "handCount": 4
+          },
+          {
+            "id": 1,
+            "hero": "berserker",
+            "team": "blue",
+            "handCount": 4
+          },
+          {
+            "id": 2,
+            "hero": "marksman",
+            "team": "blue",
+            "handCount": 4
+          },
+          {
+            "id": 3,
+            "hero": "sealer",
+            "team": "red",
+            "handCount": 4
+          },
+          {
+            "id": 4,
+            "hero": "windSwordmaster",
+            "team": "red",
+            "handCount": 4
+          },
+          {
+            "id": 5,
+            "hero": "guardianAngel",
+            "team": "blue",
+            "handCount": 4
+          }
+        ]
+      }
+    }
+  ]
+}

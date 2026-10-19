@@ -1,3 +1,4 @@
+import {createEconomyPolicy as createTargetedFixesPolicy} from './targeted-fixes1/index.js';
 import { createEconomyPolicy as createActionValue2Policy } from './action-value2/index.js';
 import { createEconomyPolicy as createActionValuePolicy } from './action-value1/index.js';
 import { createEconomyPolicy as createTeamRoute2Policy } from './team-route2/index.js';
@@ -15,6 +16,11 @@ import * as baseline from './v1.0/index.js';
 import { createPolicy } from './v1.1/index.js';
 // Explicit matchups remain possible; no assumption that version ordering implies strength.
 const choices = {
+  'experimental/targeted-fixes-1': createTargetedFixesPolicy(),
+  'experimental/targeted-fixes-1-no-ownership': createTargetedFixesPolicy({ownership:false}),
+  'experimental/targeted-fixes-1-no-energy': createTargetedFixesPolicy({energy:false}),
+  'experimental/targeted-fixes-1-no-healing': createTargetedFixesPolicy({healing:false}),
+  'experimental/targeted-fixes-1-no-ownership-energy-healing': createTargetedFixesPolicy({ownership:false,energy:false,healing:false}),
   'experimental/action-value-2': createActionValue2Policy(),
   'experimental/action-value-2-no-projection': createActionValue2Policy({projection:false}),
   'experimental/action-value-2-no-tempo': createActionValue2Policy({tempo:false}),

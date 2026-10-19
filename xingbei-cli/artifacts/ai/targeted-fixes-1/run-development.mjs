@@ -1,0 +1,4 @@
+import fs from 'node:fs';import {playEconomyMatch}from '../../../tools/ai/economy-evaluate.mjs';
+const d=new URL('./',import.meta.url),p=JSON.parse(fs.readFileSync(new URL('development-protocol.json',d))),{rosters}=JSON.parse(fs.readFileSync('artifacts/ai/mandatory-refresh/protocol.json'));const job=Number(process.argv[2]),candidate=p.variants[job],results=[];
+for(const seed of p.seeds)for(const[lineup,b]of Object.entries(rosters))for(const start of p.starts)for(const team of p.teams){results.push(await playEconomyMatch({seed,lineup,start,team,heroIds:team==='red'?b:[b[1],b[0],b[3],b[2],b[5],b[4]]},{candidate,opponent:'v1.3',turnLimit:300,audit:true}));if(results.length%48===0)console.log({job,completed:results.length});}
+fs.writeFileSync(new URL(`development-${job}.json`,d),JSON.stringify({candidate,opponent:'v1.3',results},null,2));
