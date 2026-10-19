@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';import fs from 'node:fs';import {execFileSync} from 'node:child_process';
+import {Game} from '/workspace/xingbei-wind-economy/xingbei-cli/src/engine.js';import {getPolicy} from '/workspace/xingbei-wind-economy/xingbei-cli/src/ai/versions.js';
+const policy=getPolicy('experimental/action-value-1'),take=(g,id,f)=>g.moveCard(g.deck.find(f).id,{zone:'hand',playerId:id});
+const g=new Game({heroIds:['windSwordmaster','none','none','none','none','none']});take(g,0,c=>c.name==='holyShield');for(let i=0;i<3;i++)take(g,0,c=>c.name==='holyLight');for(let i=0;i<6;i++)take(g,3,c=>c.type==='attack');take(g,1,c=>c.type==='attack');g.teams.red.morale=1;g.startTurn(0);
+const rank=policy.rankAiActions(g,0),action=policy.chooseAiAction(g,0);assert.deepEqual(action,{type:'play',index:0,targetId:3});await g.executeAction(0,action);g.endTurn();g.startTurn(1);await g.executeAction(1,{type:'play',index:0,targetId:3},{chooseResponse:()=>null});assert.equal(g.teams.red.morale,1);assert.equal(g.player(3).hand.length,6);
+const h=new Game({heroIds:['windSwordmaster','none','none','none','none','none']});const gale=take(h,0,c=>c.type==='attack'&&c.uniqueSkills.includes('galeArt')),wind=take(h,0,c=>c.type==='attack'&&c.elements.includes('wind')),last=take(h,0,c=>c.type==='attack');h.startTurn(0);
+const options={chooseResponse:()=>null,choose:r=>r.type==='skillChoice'?['galeArt','windFury'].includes(r.skillId):r.type==='numberChoice'?0:r.defaultValue};
+for(const card of [gale,wind,last])await h.executeAction(0,{type:'play',index:h.player(0).hand.indexOf(card),targetId:1},options);
+assert.equal(h.turn.state.attackCount,3);assert.deepEqual(h.player(0).energy,{gem:0,crystal:0});
+const result={sha:execFileSync('git',['rev-parse','HEAD'],{cwd:'/workspace/xingbei-wind-economy',encoding:'utf8'}).trim(),supportSpell:{action,rank:rank.map(x=>({action:x.action,score:x.score})),moraleAfterAttack:g.teams.red.morale,recipientHandAfterAttack:g.player(3).hand.length},freeThirdAttack:{attackCount:h.turn.state.attackCount,energy:h.player(0).energy,rule:'galeArt and windFury permit three attacks without energy; threat energy condition is an approximation, not a rule'}};
+fs.writeFileSync('/tmp/action-value-opposite-engine.json',JSON.stringify(result,null,2));console.log(result);

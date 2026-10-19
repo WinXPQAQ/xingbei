@@ -1,0 +1,4494 @@
+{
+  "statsGate": false,
+  "corrected": {
+    "all": {
+      "games": 288,
+      "seeds": 6,
+      "mean": -0.03125,
+      "cluster95": [
+        -0.08680555555555557,
+        0.020833333333333332
+      ]
+    },
+    "mirrorAssault": {
+      "games": 72,
+      "seeds": 6,
+      "mean": -0.013888888888888886,
+      "cluster95": [
+        -0.16666666666666666,
+        0.13888888888888887
+      ]
+    },
+    "mirrorMixed": {
+      "games": 72,
+      "seeds": 6,
+      "mean": -0.1388888888888889,
+      "cluster95": [
+        -0.23611111111111108,
+        -0.041666666666666664
+      ]
+    },
+    "asymmetric": {
+      "games": 72,
+      "seeds": 6,
+      "mean": -0.1111111111111111,
+      "cluster95": [
+        -0.2222222222222222,
+        -0.013888888888888888
+      ]
+    },
+    "asymmetricReverse": {
+      "games": 72,
+      "seeds": 6,
+      "mean": 0.13888888888888887,
+      "cluster95": [
+        0.041666666666666664,
+        0.23611111111111108
+      ]
+    }
+  },
+  "ablations": [
+    {
+      "candidate": "experimental/action-value-1-no-draws",
+      "summary": {
+        "games": 144,
+        "seeds": 3,
+        "wins": 81,
+        "losses": 63,
+        "draws": 0,
+        "truncated": 0,
+        "scoreRate": 0.5625,
+        "winRate": 0.5625,
+        "clusterBootstrap95": [
+          0.5208333333333334,
+          0.625
+        ],
+        "metrics": {
+          "candidate": {
+            "totals": {
+              "attacks": 3051,
+              "hits": 1359,
+              "damage": 3428,
+              "attackDamage": 2793,
+              "spellDamage": 635,
+              "moraleLost": 1572,
+              "gems": 1016,
+              "crystals": 835,
+              "cups": 487,
+              "actions": 3796,
+              "exchanges": 0
+            },
+            "hitRate": 0.44542772861356933,
+            "perGame": {
+              "attacks": 21.1875,
+              "hits": 9.4375,
+              "damage": 23.805555555555557,
+              "attackDamage": 19.395833333333332,
+              "spellDamage": 4.409722222222222,
+              "moraleLost": 10.916666666666666,
+              "gems": 7.055555555555555,
+              "crystals": 5.798611111111111,
+              "cups": 3.3819444444444446,
+              "actions": 26.36111111111111,
+              "exchanges": 0
+            }
+          },
+          "opponent": {
+            "totals": {
+              "attacks": 2997,
+              "hits": 1312,
+              "damage": 3380,
+              "attackDamage": 2748,
+              "spellDamage": 632,
+              "moraleLost": 1606,
+              "gems": 980,
+              "crystals": 840,
+              "cups": 457,
+              "actions": 3782,
+              "exchanges": 0
+            },
+            "hitRate": 0.4377711044377711,
+            "perGame": {
+              "attacks": 20.8125,
+              "hits": 9.11111111111111,
+              "damage": 23.47222222222222,
+              "attackDamage": 19.083333333333332,
+              "spellDamage": 4.388888888888889,
+              "moraleLost": 11.152777777777779,
+              "gems": 6.805555555555555,
+              "crystals": 5.833333333333333,
+              "cups": 3.173611111111111,
+              "actions": 26.26388888888889,
+              "exchanges": 0
+            }
+          }
+        }
+      },
+      "pairedFullMinusAblated": {
+        "games": 144,
+        "seeds": 3,
+        "mean": -0.07638888888888888,
+        "cluster95": [
+          -0.25,
+          0.020833333333333332
+        ]
+      }
+    },
+    {
+      "candidate": "experimental/action-value-1-no-tempo",
+      "summary": {
+        "games": 144,
+        "seeds": 3,
+        "wins": 72,
+        "losses": 72,
+        "draws": 0,
+        "truncated": 0,
+        "scoreRate": 0.5,
+        "winRate": 0.5,
+        "clusterBootstrap95": [
+          0.4583333333333333,
+          0.5625
+        ],
+        "metrics": {
+          "candidate": {
+            "totals": {
+              "attacks": 2966,
+              "hits": 1345,
+              "damage": 3444,
+              "attackDamage": 2789,
+              "spellDamage": 655,
+              "moraleLost": 1601,
+              "gems": 997,
+              "crystals": 803,
+              "cups": 444,
+              "actions": 3864,
+              "exchanges": 0
+            },
+            "hitRate": 0.4534726904922454,
+            "perGame": {
+              "attacks": 20.59722222222222,
+              "hits": 9.340277777777779,
+              "damage": 23.916666666666668,
+              "attackDamage": 19.368055555555557,
+              "spellDamage": 4.548611111111111,
+              "moraleLost": 11.118055555555555,
+              "gems": 6.923611111111111,
+              "crystals": 5.576388888888889,
+              "cups": 3.0833333333333335,
+              "actions": 26.833333333333332,
+              "exchanges": 0
+            }
+          },
+          "opponent": {
+            "totals": {
+              "attacks": 2986,
+              "hits": 1350,
+              "damage": 3471,
+              "attackDamage": 2806,
+              "spellDamage": 665,
+              "moraleLost": 1565,
+              "gems": 1001,
+              "crystals": 840,
+              "cups": 463,
+              "actions": 3818,
+              "exchanges": 0
+            },
+            "hitRate": 0.4521098459477562,
+            "perGame": {
+              "attacks": 20.73611111111111,
+              "hits": 9.375,
+              "damage": 24.104166666666668,
+              "attackDamage": 19.48611111111111,
+              "spellDamage": 4.618055555555555,
+              "moraleLost": 10.868055555555555,
+              "gems": 6.951388888888889,
+              "crystals": 5.833333333333333,
+              "cups": 3.2152777777777777,
+              "actions": 26.51388888888889,
+              "exchanges": 0
+            }
+          }
+        }
+      },
+      "pairedFullMinusAblated": {
+        "games": 144,
+        "seeds": 3,
+        "mean": -0.013888888888888888,
+        "cluster95": [
+          -0.08333333333333333,
+          0.041666666666666664
+        ]
+      }
+    },
+    {
+      "candidate": "experimental/action-value-1-no-energy",
+      "summary": {
+        "games": 144,
+        "seeds": 3,
+        "wins": 70,
+        "losses": 74,
+        "draws": 0,
+        "truncated": 0,
+        "scoreRate": 0.4861111111111111,
+        "winRate": 0.4861111111111111,
+        "clusterBootstrap95": [
+          0.3541666666666667,
+          0.5833333333333334
+        ],
+        "metrics": {
+          "candidate": {
+            "totals": {
+              "attacks": 3019,
+              "hits": 1378,
+              "damage": 3485,
+              "attackDamage": 2844,
+              "spellDamage": 641,
+              "moraleLost": 1637,
+              "gems": 1002,
+              "crystals": 825,
+              "cups": 449,
+              "actions": 3891,
+              "exchanges": 0
+            },
+            "hitRate": 0.4564425306392845,
+            "perGame": {
+              "attacks": 20.96527777777778,
+              "hits": 9.569444444444445,
+              "damage": 24.20138888888889,
+              "attackDamage": 19.75,
+              "spellDamage": 4.451388888888889,
+              "moraleLost": 11.368055555555555,
+              "gems": 6.958333333333333,
+              "crystals": 5.729166666666667,
+              "cups": 3.1180555555555554,
+              "actions": 27.020833333333332,
+              "exchanges": 0
+            }
+          },
+          "opponent": {
+            "totals": {
+              "attacks": 3013,
+              "hits": 1366,
+              "damage": 3523,
+              "attackDamage": 2857,
+              "spellDamage": 666,
+              "moraleLost": 1577,
+              "gems": 1014,
+              "crystals": 842,
+              "cups": 464,
+              "actions": 3837,
+              "exchanges": 0
+            },
+            "hitRate": 0.45336873547958845,
+            "perGame": {
+              "attacks": 20.92361111111111,
+              "hits": 9.48611111111111,
+              "damage": 24.46527777777778,
+              "attackDamage": 19.84027777777778,
+              "spellDamage": 4.625,
+              "moraleLost": 10.95138888888889,
+              "gems": 7.041666666666667,
+              "crystals": 5.847222222222222,
+              "cups": 3.2222222222222223,
+              "actions": 26.645833333333332,
+              "exchanges": 0
+            }
+          }
+        }
+      },
+      "pairedFullMinusAblated": {
+        "games": 144,
+        "seeds": 3,
+        "mean": 0,
+        "cluster95": [
+          -0.020833333333333332,
+          0.020833333333333332
+        ]
+      }
+    },
+    {
+      "candidate": "experimental/action-value-1-no-allocation",
+      "summary": {
+        "games": 144,
+        "seeds": 3,
+        "wins": 68,
+        "losses": 76,
+        "draws": 0,
+        "truncated": 0,
+        "scoreRate": 0.4722222222222222,
+        "winRate": 0.4722222222222222,
+        "clusterBootstrap95": [
+          0.375,
+          0.5416666666666666
+        ],
+        "metrics": {
+          "candidate": {
+            "totals": {
+              "attacks": 3009,
+              "hits": 1353,
+              "damage": 3442,
+              "attackDamage": 2799,
+              "spellDamage": 643,
+              "moraleLost": 1632,
+              "gems": 985,
+              "crystals": 820,
+              "cups": 443,
+              "actions": 3884,
+              "exchanges": 0
+            },
+            "hitRate": 0.44965104685942175,
+            "perGame": {
+              "attacks": 20.895833333333332,
+              "hits": 9.395833333333334,
+              "damage": 23.90277777777778,
+              "attackDamage": 19.4375,
+              "spellDamage": 4.465277777777778,
+              "moraleLost": 11.333333333333334,
+              "gems": 6.840277777777778,
+              "crystals": 5.694444444444445,
+              "cups": 3.076388888888889,
+              "actions": 26.97222222222222,
+              "exchanges": 0
+            }
+          },
+          "opponent": {
+            "totals": {
+              "attacks": 3036,
+              "hits": 1377,
+              "damage": 3540,
+              "attackDamage": 2891,
+              "spellDamage": 649,
+              "moraleLost": 1553,
+              "gems": 1022,
+              "crystals": 856,
+              "cups": 476,
+              "actions": 3837,
+              "exchanges": 0
+            },
+            "hitRate": 0.4535573122529644,
+            "perGame": {
+              "attacks": 21.083333333333332,
+              "hits": 9.5625,
+              "damage": 24.583333333333332,
+              "attackDamage": 20.07638888888889,
+              "spellDamage": 4.506944444444445,
+              "moraleLost": 10.784722222222221,
+              "gems": 7.097222222222222,
+              "crystals": 5.944444444444445,
+              "cups": 3.3055555555555554,
+              "actions": 26.645833333333332,
+              "exchanges": 0
+            }
+          }
+        }
+      },
+      "pairedFullMinusAblated": {
+        "games": 144,
+        "seeds": 3,
+        "mean": 0.01388888888888889,
+        "cluster95": [
+          -0.020833333333333332,
+          0.0625
+        ]
+      }
+    }
+  ],
+  "detail": [
+    {
+      "sha": "ab54bfe742a0eb1b276e0f06d54617f002ecdf15",
+      "candidate": "experimental/action-value-1",
+      "opponent": "v1.3",
+      "summary": {
+        "games": 288,
+        "seeds": 6,
+        "wins": 135,
+        "losses": 153,
+        "draws": 0,
+        "truncated": 0,
+        "scoreRate": 0.46875,
+        "winRate": 0.46875,
+        "clusterBootstrap95": [
+          0.4131944444444445,
+          0.5208333333333334
+        ],
+        "metrics": {
+          "candidate": {
+            "totals": {
+              "attacks": 6082,
+              "hits": 2683,
+              "damage": 6742,
+              "attackDamage": 5557,
+              "spellDamage": 1185,
+              "moraleLost": 3222,
+              "gems": 1988,
+              "crystals": 1665,
+              "cups": 909,
+              "actions": 7708,
+              "exchanges": 0
+            },
+            "hitRate": 0.44113778362380796,
+            "perGame": {
+              "attacks": 21.118055555555557,
+              "hits": 9.315972222222221,
+              "damage": 23.40972222222222,
+              "attackDamage": 19.29513888888889,
+              "spellDamage": 4.114583333333333,
+              "moraleLost": 11.1875,
+              "gems": 6.902777777777778,
+              "crystals": 5.78125,
+              "cups": 3.15625,
+              "actions": 26.76388888888889,
+              "exchanges": 0
+            }
+          },
+          "opponent": {
+            "totals": {
+              "attacks": 6021,
+              "hits": 2654,
+              "damage": 6801,
+              "attackDamage": 5570,
+              "spellDamage": 1231,
+              "moraleLost": 3078,
+              "gems": 1997,
+              "crystals": 1736,
+              "cups": 947,
+              "actions": 7649,
+              "exchanges": 0
+            },
+            "hitRate": 0.4407905663511045,
+            "perGame": {
+              "attacks": 20.90625,
+              "hits": 9.215277777777779,
+              "damage": 23.614583333333332,
+              "attackDamage": 19.34027777777778,
+              "spellDamage": 4.274305555555555,
+              "moraleLost": 10.6875,
+              "gems": 6.934027777777778,
+              "crystals": 6.027777777777778,
+              "cups": 3.2881944444444446,
+              "actions": 26.55902777777778,
+              "exchanges": 0
+            }
+          }
+        }
+      },
+      "groups": {
+        "mirrorAssault": {
+          "games": 72,
+          "seeds": 6,
+          "wins": 35,
+          "losses": 37,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.4861111111111111,
+          "winRate": 0.4861111111111111,
+          "clusterBootstrap95": [
+            0.3333333333333333,
+            0.6388888888888888
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 1248,
+                "hits": 651,
+                "damage": 1802,
+                "attackDamage": 1496,
+                "spellDamage": 306,
+                "moraleLost": 931,
+                "gems": 420,
+                "crystals": 247,
+                "cups": 141,
+                "actions": 1255,
+                "exchanges": 0
+              },
+              "hitRate": 0.5216346153846154,
+              "perGame": {
+                "attacks": 17.333333333333332,
+                "hits": 9.041666666666666,
+                "damage": 25.02777777777778,
+                "attackDamage": 20.77777777777778,
+                "spellDamage": 4.25,
+                "moraleLost": 12.930555555555555,
+                "gems": 5.833333333333333,
+                "crystals": 3.4305555555555554,
+                "cups": 1.9583333333333333,
+                "actions": 17.430555555555557,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 1234,
+                "hits": 642,
+                "damage": 1849,
+                "attackDamage": 1525,
+                "spellDamage": 324,
+                "moraleLost": 853,
+                "gems": 410,
+                "crystals": 257,
+                "cups": 143,
+                "actions": 1253,
+                "exchanges": 0
+              },
+              "hitRate": 0.520259319286872,
+              "perGame": {
+                "attacks": 17.13888888888889,
+                "hits": 8.916666666666666,
+                "damage": 25.680555555555557,
+                "attackDamage": 21.180555555555557,
+                "spellDamage": 4.5,
+                "moraleLost": 11.847222222222221,
+                "gems": 5.694444444444445,
+                "crystals": 3.5694444444444446,
+                "cups": 1.9861111111111112,
+                "actions": 17.40277777777778,
+                "exchanges": 0
+              }
+            }
+          }
+        },
+        "mirrorMixed": {
+          "games": 72,
+          "seeds": 6,
+          "wins": 26,
+          "losses": 46,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.3611111111111111,
+          "winRate": 0.3611111111111111,
+          "clusterBootstrap95": [
+            0.2638888888888889,
+            0.4583333333333334
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 1641,
+                "hits": 615,
+                "damage": 1331,
+                "attackDamage": 1079,
+                "spellDamage": 252,
+                "moraleLost": 606,
+                "gems": 546,
+                "crystals": 554,
+                "cups": 279,
+                "actions": 2571,
+                "exchanges": 0
+              },
+              "hitRate": 0.37477148080438755,
+              "perGame": {
+                "attacks": 22.791666666666668,
+                "hits": 8.541666666666666,
+                "damage": 18.48611111111111,
+                "attackDamage": 14.98611111111111,
+                "spellDamage": 3.5,
+                "moraleLost": 8.416666666666666,
+                "gems": 7.583333333333333,
+                "crystals": 7.694444444444445,
+                "cups": 3.875,
+                "actions": 35.708333333333336,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 1662,
+                "hits": 635,
+                "damage": 1436,
+                "attackDamage": 1176,
+                "spellDamage": 260,
+                "moraleLost": 558,
+                "gems": 580,
+                "crystals": 614,
+                "cups": 322,
+                "actions": 2563,
+                "exchanges": 0
+              },
+              "hitRate": 0.38206979542719616,
+              "perGame": {
+                "attacks": 23.083333333333332,
+                "hits": 8.819444444444445,
+                "damage": 19.944444444444443,
+                "attackDamage": 16.333333333333332,
+                "spellDamage": 3.611111111111111,
+                "moraleLost": 7.75,
+                "gems": 8.055555555555555,
+                "crystals": 8.527777777777779,
+                "cups": 4.472222222222222,
+                "actions": 35.59722222222222,
+                "exchanges": 0
+              }
+            }
+          }
+        },
+        "asymmetric": {
+          "games": 72,
+          "seeds": 6,
+          "wins": 38,
+          "losses": 34,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.5277777777777778,
+          "winRate": 0.5277777777777778,
+          "clusterBootstrap95": [
+            0.4166666666666667,
+            0.6527777777777777
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 1523,
+                "hits": 658,
+                "damage": 1885,
+                "attackDamage": 1509,
+                "spellDamage": 376,
+                "moraleLost": 764,
+                "gems": 442,
+                "crystals": 373,
+                "cups": 210,
+                "actions": 1718,
+                "exchanges": 0
+              },
+              "hitRate": 0.43204202232435984,
+              "perGame": {
+                "attacks": 21.15277777777778,
+                "hits": 9.13888888888889,
+                "damage": 26.180555555555557,
+                "attackDamage": 20.958333333333332,
+                "spellDamage": 5.222222222222222,
+                "moraleLost": 10.61111111111111,
+                "gems": 6.138888888888889,
+                "crystals": 5.180555555555555,
+                "cups": 2.9166666666666665,
+                "actions": 23.86111111111111,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 1565,
+                "hits": 727,
+                "damage": 1684,
+                "attackDamage": 1422,
+                "spellDamage": 262,
+                "moraleLost": 915,
+                "gems": 571,
+                "crystals": 459,
+                "cups": 262,
+                "actions": 2075,
+                "exchanges": 0
+              },
+              "hitRate": 0.4645367412140575,
+              "perGame": {
+                "attacks": 21.73611111111111,
+                "hits": 10.097222222222221,
+                "damage": 23.38888888888889,
+                "attackDamage": 19.75,
+                "spellDamage": 3.638888888888889,
+                "moraleLost": 12.708333333333334,
+                "gems": 7.930555555555555,
+                "crystals": 6.375,
+                "cups": 3.638888888888889,
+                "actions": 28.819444444444443,
+                "exchanges": 0
+              }
+            }
+          }
+        },
+        "asymmetricReverse": {
+          "games": 72,
+          "seeds": 6,
+          "wins": 36,
+          "losses": 36,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.5,
+          "winRate": 0.5,
+          "clusterBootstrap95": [
+            0.38888888888888884,
+            0.611111111111111
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 1670,
+                "hits": 759,
+                "damage": 1724,
+                "attackDamage": 1473,
+                "spellDamage": 251,
+                "moraleLost": 921,
+                "gems": 580,
+                "crystals": 491,
+                "cups": 279,
+                "actions": 2164,
+                "exchanges": 0
+              },
+              "hitRate": 0.4544910179640719,
+              "perGame": {
+                "attacks": 23.194444444444443,
+                "hits": 10.541666666666666,
+                "damage": 23.944444444444443,
+                "attackDamage": 20.458333333333332,
+                "spellDamage": 3.486111111111111,
+                "moraleLost": 12.791666666666666,
+                "gems": 8.055555555555555,
+                "crystals": 6.819444444444445,
+                "cups": 3.875,
+                "actions": 30.055555555555557,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 1560,
+                "hits": 650,
+                "damage": 1832,
+                "attackDamage": 1447,
+                "spellDamage": 385,
+                "moraleLost": 752,
+                "gems": 436,
+                "crystals": 406,
+                "cups": 220,
+                "actions": 1758,
+                "exchanges": 0
+              },
+              "hitRate": 0.4166666666666667,
+              "perGame": {
+                "attacks": 21.666666666666668,
+                "hits": 9.027777777777779,
+                "damage": 25.444444444444443,
+                "attackDamage": 20.09722222222222,
+                "spellDamage": 5.347222222222222,
+                "moraleLost": 10.444444444444445,
+                "gems": 6.055555555555555,
+                "crystals": 5.638888888888889,
+                "cups": 3.0555555555555554,
+                "actions": 24.416666666666668,
+                "exchanges": 0
+              }
+            }
+          }
+        }
+      },
+      "byStart": {
+        "0": {
+          "games": 48,
+          "seeds": 6,
+          "mean": 0.5416666666666666,
+          "cluster95": [
+            0.3958333333333333,
+            0.6875
+          ]
+        },
+        "1": {
+          "games": 48,
+          "seeds": 6,
+          "mean": 0.4791666666666667,
+          "cluster95": [
+            0.4166666666666667,
+            0.5416666666666666
+          ]
+        },
+        "2": {
+          "games": 48,
+          "seeds": 6,
+          "mean": 0.3958333333333333,
+          "cluster95": [
+            0.3125,
+            0.5
+          ]
+        },
+        "3": {
+          "games": 48,
+          "seeds": 6,
+          "mean": 0.4375,
+          "cluster95": [
+            0.3541666666666667,
+            0.5208333333333334
+          ]
+        },
+        "4": {
+          "games": 48,
+          "seeds": 6,
+          "mean": 0.4583333333333333,
+          "cluster95": [
+            0.2916666666666667,
+            0.6041666666666666
+          ]
+        },
+        "5": {
+          "games": 48,
+          "seeds": 6,
+          "mean": 0.5,
+          "cluster95": [
+            0.2916666666666667,
+            0.6875
+          ]
+        }
+      },
+      "byColor": {
+        "red": {
+          "games": 144,
+          "seeds": 6,
+          "mean": 0.5208333333333333,
+          "cluster95": [
+            0.47222222222222215,
+            0.5902777777777777
+          ]
+        },
+        "blue": {
+          "games": 144,
+          "seeds": 6,
+          "mean": 0.41666666666666674,
+          "cluster95": [
+            0.3263888888888889,
+            0.5277777777777778
+          ]
+        }
+      }
+    },
+    {
+      "sha": "ab54bfe742a0eb1b276e0f06d54617f002ecdf15",
+      "candidate": "experimental/action-value-1",
+      "opponent": "v1.2",
+      "summary": {
+        "games": 288,
+        "seeds": 6,
+        "wins": 185,
+        "losses": 103,
+        "draws": 0,
+        "truncated": 0,
+        "scoreRate": 0.6423611111111112,
+        "winRate": 0.6423611111111112,
+        "clusterBootstrap95": [
+          0.6006944444444444,
+          0.6840277777777777
+        ],
+        "metrics": {
+          "candidate": {
+            "totals": {
+              "attacks": 7118,
+              "hits": 2875,
+              "damage": 7194,
+              "attackDamage": 6027,
+              "spellDamage": 1167,
+              "moraleLost": 3039,
+              "gems": 2512,
+              "crystals": 1544,
+              "cups": 996,
+              "actions": 9910,
+              "exchanges": 0
+            },
+            "hitRate": 0.4039055914582748,
+            "perGame": {
+              "attacks": 24.71527777777778,
+              "hits": 9.98263888888889,
+              "damage": 24.979166666666668,
+              "attackDamage": 20.927083333333332,
+              "spellDamage": 4.052083333333333,
+              "moraleLost": 10.552083333333334,
+              "gems": 8.722222222222221,
+              "crystals": 5.361111111111111,
+              "cups": 3.4583333333333335,
+              "actions": 34.40972222222222,
+              "exchanges": 0
+            }
+          },
+          "opponent": {
+            "totals": {
+              "attacks": 5966,
+              "hits": 2982,
+              "damage": 7860,
+              "attackDamage": 6261,
+              "spellDamage": 1599,
+              "moraleLost": 3135,
+              "gems": 3158,
+              "crystals": 2209,
+              "cups": 694,
+              "actions": 11123,
+              "exchanges": 0
+            },
+            "hitRate": 0.499832383506537,
+            "perGame": {
+              "attacks": 20.71527777777778,
+              "hits": 10.354166666666666,
+              "damage": 27.291666666666668,
+              "attackDamage": 21.739583333333332,
+              "spellDamage": 5.552083333333333,
+              "moraleLost": 10.885416666666666,
+              "gems": 10.965277777777779,
+              "crystals": 7.670138888888889,
+              "cups": 2.4097222222222223,
+              "actions": 38.62152777777778,
+              "exchanges": 0
+            }
+          }
+        }
+      },
+      "groups": {
+        "mirrorAssault": {
+          "games": 72,
+          "seeds": 6,
+          "wins": 43,
+          "losses": 29,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.5972222222222222,
+          "winRate": 0.5972222222222222,
+          "clusterBootstrap95": [
+            0.47222222222222227,
+            0.7083333333333334
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 1385,
+                "hits": 570,
+                "damage": 1729,
+                "attackDamage": 1370,
+                "spellDamage": 359,
+                "moraleLost": 854,
+                "gems": 432,
+                "crystals": 259,
+                "cups": 159,
+                "actions": 1391,
+                "exchanges": 0
+              },
+              "hitRate": 0.41155234657039713,
+              "perGame": {
+                "attacks": 19.23611111111111,
+                "hits": 7.916666666666667,
+                "damage": 24.01388888888889,
+                "attackDamage": 19.02777777777778,
+                "spellDamage": 4.986111111111111,
+                "moraleLost": 11.86111111111111,
+                "gems": 6,
+                "crystals": 3.5972222222222223,
+                "cups": 2.2083333333333335,
+                "actions": 19.319444444444443,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 1266,
+                "hits": 646,
+                "damage": 1752,
+                "attackDamage": 1596,
+                "spellDamage": 156,
+                "moraleLost": 955,
+                "gems": 536,
+                "crystals": 375,
+                "cups": 114,
+                "actions": 1533,
+                "exchanges": 0
+              },
+              "hitRate": 0.5102685624012638,
+              "perGame": {
+                "attacks": 17.583333333333332,
+                "hits": 8.972222222222221,
+                "damage": 24.333333333333332,
+                "attackDamage": 22.166666666666668,
+                "spellDamage": 2.1666666666666665,
+                "moraleLost": 13.26388888888889,
+                "gems": 7.444444444444445,
+                "crystals": 5.208333333333333,
+                "cups": 1.5833333333333333,
+                "actions": 21.291666666666668,
+                "exchanges": 0
+              }
+            }
+          }
+        },
+        "mirrorMixed": {
+          "games": 72,
+          "seeds": 6,
+          "wins": 59,
+          "losses": 13,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.8194444444444444,
+          "winRate": 0.8194444444444444,
+          "clusterBootstrap95": [
+            0.736111111111111,
+            0.9027777777777778
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 2172,
+                "hits": 805,
+                "damage": 1781,
+                "attackDamage": 1547,
+                "spellDamage": 234,
+                "moraleLost": 501,
+                "gems": 816,
+                "crystals": 549,
+                "cups": 342,
+                "actions": 3759,
+                "exchanges": 0
+              },
+              "hitRate": 0.37062615101289137,
+              "perGame": {
+                "attacks": 30.166666666666668,
+                "hits": 11.180555555555555,
+                "damage": 24.73611111111111,
+                "attackDamage": 21.48611111111111,
+                "spellDamage": 3.25,
+                "moraleLost": 6.958333333333333,
+                "gems": 11.333333333333334,
+                "crystals": 7.625,
+                "cups": 4.75,
+                "actions": 52.208333333333336,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 1643,
+                "hits": 811,
+                "damage": 2101,
+                "attackDamage": 1394,
+                "spellDamage": 707,
+                "moraleLost": 513,
+                "gems": 1076,
+                "crystals": 816,
+                "cups": 229,
+                "actions": 4273,
+                "exchanges": 0
+              },
+              "hitRate": 0.4936092513694461,
+              "perGame": {
+                "attacks": 22.819444444444443,
+                "hits": 11.26388888888889,
+                "damage": 29.180555555555557,
+                "attackDamage": 19.36111111111111,
+                "spellDamage": 9.819444444444445,
+                "moraleLost": 7.125,
+                "gems": 14.944444444444445,
+                "crystals": 11.333333333333334,
+                "cups": 3.1805555555555554,
+                "actions": 59.34722222222222,
+                "exchanges": 0
+              }
+            }
+          }
+        },
+        "asymmetric": {
+          "games": 72,
+          "seeds": 6,
+          "wins": 42,
+          "losses": 30,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.5833333333333334,
+          "winRate": 0.5833333333333334,
+          "clusterBootstrap95": [
+            0.5277777777777778,
+            0.6527777777777778
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 1574,
+                "hits": 725,
+                "damage": 1981,
+                "attackDamage": 1667,
+                "spellDamage": 314,
+                "moraleLost": 808,
+                "gems": 541,
+                "crystals": 320,
+                "cups": 220,
+                "actions": 1963,
+                "exchanges": 0
+              },
+              "hitRate": 0.4606099110546379,
+              "perGame": {
+                "attacks": 21.86111111111111,
+                "hits": 10.069444444444445,
+                "damage": 27.51388888888889,
+                "attackDamage": 23.15277777777778,
+                "spellDamage": 4.361111111111111,
+                "moraleLost": 11.222222222222221,
+                "gems": 7.513888888888889,
+                "crystals": 4.444444444444445,
+                "cups": 3.0555555555555554,
+                "actions": 27.26388888888889,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 1553,
+                "hits": 814,
+                "damage": 2010,
+                "attackDamage": 1565,
+                "spellDamage": 445,
+                "moraleLost": 922,
+                "gems": 876,
+                "crystals": 425,
+                "cups": 201,
+                "actions": 2866,
+                "exchanges": 0
+              },
+              "hitRate": 0.524146812620734,
+              "perGame": {
+                "attacks": 21.569444444444443,
+                "hits": 11.305555555555555,
+                "damage": 27.916666666666668,
+                "attackDamage": 21.73611111111111,
+                "spellDamage": 6.180555555555555,
+                "moraleLost": 12.805555555555555,
+                "gems": 12.166666666666666,
+                "crystals": 5.902777777777778,
+                "cups": 2.7916666666666665,
+                "actions": 39.80555555555556,
+                "exchanges": 0
+              }
+            }
+          }
+        },
+        "asymmetricReverse": {
+          "games": 72,
+          "seeds": 6,
+          "wins": 41,
+          "losses": 31,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.5694444444444444,
+          "winRate": 0.5694444444444444,
+          "clusterBootstrap95": [
+            0.47222222222222215,
+            0.6666666666666666
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 1987,
+                "hits": 775,
+                "damage": 1703,
+                "attackDamage": 1443,
+                "spellDamage": 260,
+                "moraleLost": 876,
+                "gems": 723,
+                "crystals": 416,
+                "cups": 275,
+                "actions": 2797,
+                "exchanges": 0
+              },
+              "hitRate": 0.39003522898842474,
+              "perGame": {
+                "attacks": 27.59722222222222,
+                "hits": 10.76388888888889,
+                "damage": 23.65277777777778,
+                "attackDamage": 20.041666666666668,
+                "spellDamage": 3.611111111111111,
+                "moraleLost": 12.166666666666666,
+                "gems": 10.041666666666666,
+                "crystals": 5.777777777777778,
+                "cups": 3.8194444444444446,
+                "actions": 38.84722222222222,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 1504,
+                "hits": 711,
+                "damage": 1997,
+                "attackDamage": 1706,
+                "spellDamage": 291,
+                "moraleLost": 745,
+                "gems": 670,
+                "crystals": 593,
+                "cups": 150,
+                "actions": 2451,
+                "exchanges": 0
+              },
+              "hitRate": 0.47273936170212766,
+              "perGame": {
+                "attacks": 20.88888888888889,
+                "hits": 9.875,
+                "damage": 27.73611111111111,
+                "attackDamage": 23.694444444444443,
+                "spellDamage": 4.041666666666667,
+                "moraleLost": 10.347222222222221,
+                "gems": 9.305555555555555,
+                "crystals": 8.23611111111111,
+                "cups": 2.0833333333333335,
+                "actions": 34.041666666666664,
+                "exchanges": 0
+              }
+            }
+          }
+        }
+      },
+      "byStart": {
+        "0": {
+          "games": 48,
+          "seeds": 6,
+          "mean": 0.7083333333333334,
+          "cluster95": [
+            0.6041666666666666,
+            0.8333333333333334
+          ]
+        },
+        "1": {
+          "games": 48,
+          "seeds": 6,
+          "mean": 0.5833333333333334,
+          "cluster95": [
+            0.4375,
+            0.75
+          ]
+        },
+        "2": {
+          "games": 48,
+          "seeds": 6,
+          "mean": 0.5416666666666666,
+          "cluster95": [
+            0.3958333333333333,
+            0.7083333333333334
+          ]
+        },
+        "3": {
+          "games": 48,
+          "seeds": 6,
+          "mean": 0.7083333333333334,
+          "cluster95": [
+            0.6666666666666666,
+            0.75
+          ]
+        },
+        "4": {
+          "games": 48,
+          "seeds": 6,
+          "mean": 0.625,
+          "cluster95": [
+            0.5,
+            0.75
+          ]
+        },
+        "5": {
+          "games": 48,
+          "seeds": 6,
+          "mean": 0.6875,
+          "cluster95": [
+            0.5833333333333334,
+            0.8125
+          ]
+        }
+      },
+      "byColor": {
+        "red": {
+          "games": 144,
+          "seeds": 6,
+          "mean": 0.7013888888888888,
+          "cluster95": [
+            0.638888888888889,
+            0.763888888888889
+          ]
+        },
+        "blue": {
+          "games": 144,
+          "seeds": 6,
+          "mean": 0.5833333333333334,
+          "cluster95": [
+            0.5069444444444444,
+            0.6666666666666666
+          ]
+        }
+      }
+    },
+    {
+      "sha": "ab54bfe742a0eb1b276e0f06d54617f002ecdf15",
+      "candidate": "experimental/action-value-1",
+      "opponent": "v1.0",
+      "summary": {
+        "games": 288,
+        "seeds": 6,
+        "wins": 228,
+        "losses": 60,
+        "draws": 0,
+        "truncated": 0,
+        "scoreRate": 0.7916666666666666,
+        "winRate": 0.7916666666666666,
+        "clusterBootstrap95": [
+          0.7465277777777778,
+          0.8368055555555555
+        ],
+        "metrics": {
+          "candidate": {
+            "totals": {
+              "attacks": 6621,
+              "hits": 3188,
+              "damage": 7894,
+              "attackDamage": 6914,
+              "spellDamage": 980,
+              "moraleLost": 2634,
+              "gems": 2220,
+              "crystals": 2124,
+              "cups": 1162,
+              "actions": 8104,
+              "exchanges": 0
+            },
+            "hitRate": 0.4814982631022504,
+            "perGame": {
+              "attacks": 22.989583333333332,
+              "hits": 11.069444444444445,
+              "damage": 27.40972222222222,
+              "attackDamage": 24.006944444444443,
+              "spellDamage": 3.4027777777777777,
+              "moraleLost": 9.145833333333334,
+              "gems": 7.708333333333333,
+              "crystals": 7.375,
+              "cups": 4.034722222222222,
+              "actions": 28.13888888888889,
+              "exchanges": 0
+            }
+          },
+          "opponent": {
+            "totals": {
+              "attacks": 6865,
+              "hits": 2799,
+              "damage": 6437,
+              "attackDamage": 5388,
+              "spellDamage": 1049,
+              "moraleLost": 3101,
+              "gems": 2068,
+              "crystals": 1520,
+              "cups": 714,
+              "actions": 8578,
+              "exchanges": 0
+            },
+            "hitRate": 0.40772032046613255,
+            "perGame": {
+              "attacks": 23.836805555555557,
+              "hits": 9.71875,
+              "damage": 22.350694444444443,
+              "attackDamage": 18.708333333333332,
+              "spellDamage": 3.642361111111111,
+              "moraleLost": 10.76736111111111,
+              "gems": 7.180555555555555,
+              "crystals": 5.277777777777778,
+              "cups": 2.4791666666666665,
+              "actions": 29.78472222222222,
+              "exchanges": 0
+            }
+          }
+        }
+      },
+      "groups": {
+        "mirrorAssault": {
+          "games": 72,
+          "seeds": 6,
+          "wins": 43,
+          "losses": 29,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.5972222222222222,
+          "winRate": 0.5972222222222222,
+          "clusterBootstrap95": [
+            0.5,
+            0.6944444444444445
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 1510,
+                "hits": 721,
+                "damage": 1988,
+                "attackDamage": 1757,
+                "spellDamage": 231,
+                "moraleLost": 849,
+                "gems": 440,
+                "crystals": 376,
+                "cups": 205,
+                "actions": 1351,
+                "exchanges": 0
+              },
+              "hitRate": 0.4774834437086093,
+              "perGame": {
+                "attacks": 20.97222222222222,
+                "hits": 10.01388888888889,
+                "damage": 27.61111111111111,
+                "attackDamage": 24.40277777777778,
+                "spellDamage": 3.2083333333333335,
+                "moraleLost": 11.791666666666666,
+                "gems": 6.111111111111111,
+                "crystals": 5.222222222222222,
+                "cups": 2.8472222222222223,
+                "actions": 18.76388888888889,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 1607,
+                "hits": 717,
+                "damage": 1734,
+                "attackDamage": 1550,
+                "spellDamage": 184,
+                "moraleLost": 929,
+                "gems": 415,
+                "crystals": 317,
+                "cups": 155,
+                "actions": 1375,
+                "exchanges": 0
+              },
+              "hitRate": 0.44617299315494713,
+              "perGame": {
+                "attacks": 22.319444444444443,
+                "hits": 9.958333333333334,
+                "damage": 24.083333333333332,
+                "attackDamage": 21.52777777777778,
+                "spellDamage": 2.5555555555555554,
+                "moraleLost": 12.902777777777779,
+                "gems": 5.763888888888889,
+                "crystals": 4.402777777777778,
+                "cups": 2.1527777777777777,
+                "actions": 19.09722222222222,
+                "exchanges": 0
+              }
+            }
+          }
+        },
+        "mirrorMixed": {
+          "games": 72,
+          "seeds": 6,
+          "wins": 66,
+          "losses": 6,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.9166666666666666,
+          "winRate": 0.9166666666666666,
+          "clusterBootstrap95": [
+            0.875,
+            0.9583333333333334
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 1763,
+                "hits": 831,
+                "damage": 1865,
+                "attackDamage": 1637,
+                "spellDamage": 228,
+                "moraleLost": 420,
+                "gems": 638,
+                "crystals": 690,
+                "cups": 353,
+                "actions": 2695,
+                "exchanges": 0
+              },
+              "hitRate": 0.471355643788996,
+              "perGame": {
+                "attacks": 24.48611111111111,
+                "hits": 11.541666666666666,
+                "damage": 25.90277777777778,
+                "attackDamage": 22.73611111111111,
+                "spellDamage": 3.1666666666666665,
+                "moraleLost": 5.833333333333333,
+                "gems": 8.86111111111111,
+                "crystals": 9.583333333333334,
+                "cups": 4.902777777777778,
+                "actions": 37.43055555555556,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 1759,
+                "hits": 641,
+                "damage": 1389,
+                "attackDamage": 1020,
+                "spellDamage": 369,
+                "moraleLost": 544,
+                "gems": 589,
+                "crystals": 460,
+                "cups": 180,
+                "actions": 2947,
+                "exchanges": 0
+              },
+              "hitRate": 0.36441159749857877,
+              "perGame": {
+                "attacks": 24.430555555555557,
+                "hits": 8.902777777777779,
+                "damage": 19.291666666666668,
+                "attackDamage": 14.166666666666666,
+                "spellDamage": 5.125,
+                "moraleLost": 7.555555555555555,
+                "gems": 8.180555555555555,
+                "crystals": 6.388888888888889,
+                "cups": 2.5,
+                "actions": 40.93055555555556,
+                "exchanges": 0
+              }
+            }
+          }
+        },
+        "asymmetric": {
+          "games": 72,
+          "seeds": 6,
+          "wins": 59,
+          "losses": 13,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.8194444444444444,
+          "winRate": 0.8194444444444444,
+          "clusterBootstrap95": [
+            0.7777777777777778,
+            0.8611111111111112
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 1612,
+                "hits": 792,
+                "damage": 2129,
+                "attackDamage": 1866,
+                "spellDamage": 263,
+                "moraleLost": 652,
+                "gems": 516,
+                "crystals": 471,
+                "cups": 277,
+                "actions": 1848,
+                "exchanges": 0
+              },
+              "hitRate": 0.4913151364764268,
+              "perGame": {
+                "attacks": 22.38888888888889,
+                "hits": 11,
+                "damage": 29.569444444444443,
+                "attackDamage": 25.916666666666668,
+                "spellDamage": 3.6527777777777777,
+                "moraleLost": 9.055555555555555,
+                "gems": 7.166666666666667,
+                "crystals": 6.541666666666667,
+                "cups": 3.8472222222222223,
+                "actions": 25.666666666666668,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 1748,
+                "hits": 739,
+                "damage": 1718,
+                "attackDamage": 1420,
+                "spellDamage": 298,
+                "moraleLost": 904,
+                "gems": 624,
+                "crystals": 363,
+                "cups": 201,
+                "actions": 2434,
+                "exchanges": 0
+              },
+              "hitRate": 0.42276887871853547,
+              "perGame": {
+                "attacks": 24.27777777777778,
+                "hits": 10.26388888888889,
+                "damage": 23.86111111111111,
+                "attackDamage": 19.72222222222222,
+                "spellDamage": 4.138888888888889,
+                "moraleLost": 12.555555555555555,
+                "gems": 8.666666666666666,
+                "crystals": 5.041666666666667,
+                "cups": 2.7916666666666665,
+                "actions": 33.80555555555556,
+                "exchanges": 0
+              }
+            }
+          }
+        },
+        "asymmetricReverse": {
+          "games": 72,
+          "seeds": 6,
+          "wins": 60,
+          "losses": 12,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.8333333333333334,
+          "winRate": 0.8333333333333334,
+          "clusterBootstrap95": [
+            0.736111111111111,
+            0.9305555555555555
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 1736,
+                "hits": 844,
+                "damage": 1912,
+                "attackDamage": 1654,
+                "spellDamage": 258,
+                "moraleLost": 713,
+                "gems": 626,
+                "crystals": 587,
+                "cups": 327,
+                "actions": 2210,
+                "exchanges": 0
+              },
+              "hitRate": 0.4861751152073733,
+              "perGame": {
+                "attacks": 24.11111111111111,
+                "hits": 11.722222222222221,
+                "damage": 26.555555555555557,
+                "attackDamage": 22.97222222222222,
+                "spellDamage": 3.5833333333333335,
+                "moraleLost": 9.902777777777779,
+                "gems": 8.694444444444445,
+                "crystals": 8.152777777777779,
+                "cups": 4.541666666666667,
+                "actions": 30.694444444444443,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 1751,
+                "hits": 702,
+                "damage": 1596,
+                "attackDamage": 1398,
+                "spellDamage": 198,
+                "moraleLost": 724,
+                "gems": 440,
+                "crystals": 380,
+                "cups": 178,
+                "actions": 1822,
+                "exchanges": 0
+              },
+              "hitRate": 0.4009137635636779,
+              "perGame": {
+                "attacks": 24.319444444444443,
+                "hits": 9.75,
+                "damage": 22.166666666666668,
+                "attackDamage": 19.416666666666668,
+                "spellDamage": 2.75,
+                "moraleLost": 10.055555555555555,
+                "gems": 6.111111111111111,
+                "crystals": 5.277777777777778,
+                "cups": 2.4722222222222223,
+                "actions": 25.305555555555557,
+                "exchanges": 0
+              }
+            }
+          }
+        }
+      },
+      "byStart": {
+        "0": {
+          "games": 48,
+          "seeds": 6,
+          "mean": 0.8333333333333334,
+          "cluster95": [
+            0.7708333333333334,
+            0.9166666666666666
+          ]
+        },
+        "1": {
+          "games": 48,
+          "seeds": 6,
+          "mean": 0.7916666666666666,
+          "cluster95": [
+            0.6666666666666666,
+            0.875
+          ]
+        },
+        "2": {
+          "games": 48,
+          "seeds": 6,
+          "mean": 0.6875,
+          "cluster95": [
+            0.5833333333333334,
+            0.7916666666666666
+          ]
+        },
+        "3": {
+          "games": 48,
+          "seeds": 6,
+          "mean": 0.7083333333333334,
+          "cluster95": [
+            0.6041666666666666,
+            0.8125
+          ]
+        },
+        "4": {
+          "games": 48,
+          "seeds": 6,
+          "mean": 0.8541666666666666,
+          "cluster95": [
+            0.7916666666666666,
+            0.9166666666666666
+          ]
+        },
+        "5": {
+          "games": 48,
+          "seeds": 6,
+          "mean": 0.875,
+          "cluster95": [
+            0.7916666666666666,
+            0.9583333333333334
+          ]
+        }
+      },
+      "byColor": {
+        "red": {
+          "games": 144,
+          "seeds": 6,
+          "mean": 0.8611111111111112,
+          "cluster95": [
+            0.8125,
+            0.8958333333333334
+          ]
+        },
+        "blue": {
+          "games": 144,
+          "seeds": 6,
+          "mean": 0.7222222222222222,
+          "cluster95": [
+            0.6597222222222222,
+            0.7847222222222223
+          ]
+        }
+      }
+    },
+    {
+      "sha": "ab54bfe742a0eb1b276e0f06d54617f002ecdf15",
+      "candidate": "v1.3",
+      "opponent": "v1.3",
+      "summary": {
+        "games": 288,
+        "seeds": 6,
+        "wins": 144,
+        "losses": 144,
+        "draws": 0,
+        "truncated": 0,
+        "scoreRate": 0.5,
+        "winRate": 0.5,
+        "clusterBootstrap95": [
+          0.5,
+          0.5
+        ],
+        "metrics": {
+          "candidate": {
+            "totals": {
+              "attacks": 6260,
+              "hits": 2722,
+              "damage": 6885,
+              "attackDamage": 5664,
+              "spellDamage": 1221,
+              "moraleLost": 3196,
+              "gems": 2039,
+              "crystals": 1767,
+              "cups": 959,
+              "actions": 7846,
+              "exchanges": 0
+            },
+            "hitRate": 0.43482428115015975,
+            "perGame": {
+              "attacks": 21.73611111111111,
+              "hits": 9.45138888888889,
+              "damage": 23.90625,
+              "attackDamage": 19.666666666666668,
+              "spellDamage": 4.239583333333333,
+              "moraleLost": 11.097222222222221,
+              "gems": 7.079861111111111,
+              "crystals": 6.135416666666667,
+              "cups": 3.329861111111111,
+              "actions": 27.243055555555557,
+              "exchanges": 0
+            }
+          },
+          "opponent": {
+            "totals": {
+              "attacks": 6260,
+              "hits": 2722,
+              "damage": 6885,
+              "attackDamage": 5664,
+              "spellDamage": 1221,
+              "moraleLost": 3196,
+              "gems": 2039,
+              "crystals": 1767,
+              "cups": 959,
+              "actions": 7846,
+              "exchanges": 0
+            },
+            "hitRate": 0.43482428115015975,
+            "perGame": {
+              "attacks": 21.73611111111111,
+              "hits": 9.45138888888889,
+              "damage": 23.90625,
+              "attackDamage": 19.666666666666668,
+              "spellDamage": 4.239583333333333,
+              "moraleLost": 11.097222222222221,
+              "gems": 7.079861111111111,
+              "crystals": 6.135416666666667,
+              "cups": 3.329861111111111,
+              "actions": 27.243055555555557,
+              "exchanges": 0
+            }
+          }
+        }
+      },
+      "groups": {
+        "mirrorAssault": {
+          "games": 72,
+          "seeds": 6,
+          "wins": 36,
+          "losses": 36,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.5,
+          "winRate": 0.5,
+          "clusterBootstrap95": [
+            0.5,
+            0.5
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 1326,
+                "hits": 671,
+                "damage": 1902,
+                "attackDamage": 1577,
+                "spellDamage": 325,
+                "moraleLost": 916,
+                "gems": 433,
+                "crystals": 273,
+                "cups": 158,
+                "actions": 1346,
+                "exchanges": 0
+              },
+              "hitRate": 0.5060331825037707,
+              "perGame": {
+                "attacks": 18.416666666666668,
+                "hits": 9.319444444444445,
+                "damage": 26.416666666666668,
+                "attackDamage": 21.90277777777778,
+                "spellDamage": 4.513888888888889,
+                "moraleLost": 12.722222222222221,
+                "gems": 6.013888888888889,
+                "crystals": 3.7916666666666665,
+                "cups": 2.1944444444444446,
+                "actions": 18.694444444444443,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 1326,
+                "hits": 671,
+                "damage": 1902,
+                "attackDamage": 1577,
+                "spellDamage": 325,
+                "moraleLost": 916,
+                "gems": 433,
+                "crystals": 273,
+                "cups": 158,
+                "actions": 1346,
+                "exchanges": 0
+              },
+              "hitRate": 0.5060331825037707,
+              "perGame": {
+                "attacks": 18.416666666666668,
+                "hits": 9.319444444444445,
+                "damage": 26.416666666666668,
+                "attackDamage": 21.90277777777778,
+                "spellDamage": 4.513888888888889,
+                "moraleLost": 12.722222222222221,
+                "gems": 6.013888888888889,
+                "crystals": 3.7916666666666665,
+                "cups": 2.1944444444444446,
+                "actions": 18.694444444444443,
+                "exchanges": 0
+              }
+            }
+          }
+        },
+        "mirrorMixed": {
+          "games": 72,
+          "seeds": 6,
+          "wins": 36,
+          "losses": 36,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.5,
+          "winRate": 0.5,
+          "clusterBootstrap95": [
+            0.5,
+            0.5
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 1612,
+                "hits": 603,
+                "damage": 1355,
+                "attackDamage": 1090,
+                "spellDamage": 265,
+                "moraleLost": 600,
+                "gems": 548,
+                "crystals": 589,
+                "cups": 296,
+                "actions": 2485,
+                "exchanges": 0
+              },
+              "hitRate": 0.3740694789081886,
+              "perGame": {
+                "attacks": 22.38888888888889,
+                "hits": 8.375,
+                "damage": 18.819444444444443,
+                "attackDamage": 15.13888888888889,
+                "spellDamage": 3.6805555555555554,
+                "moraleLost": 8.333333333333334,
+                "gems": 7.611111111111111,
+                "crystals": 8.180555555555555,
+                "cups": 4.111111111111111,
+                "actions": 34.513888888888886,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 1612,
+                "hits": 603,
+                "damage": 1355,
+                "attackDamage": 1090,
+                "spellDamage": 265,
+                "moraleLost": 600,
+                "gems": 548,
+                "crystals": 589,
+                "cups": 296,
+                "actions": 2485,
+                "exchanges": 0
+              },
+              "hitRate": 0.3740694789081886,
+              "perGame": {
+                "attacks": 22.38888888888889,
+                "hits": 8.375,
+                "damage": 18.819444444444443,
+                "attackDamage": 15.13888888888889,
+                "spellDamage": 3.6805555555555554,
+                "moraleLost": 8.333333333333334,
+                "gems": 7.611111111111111,
+                "crystals": 8.180555555555555,
+                "cups": 4.111111111111111,
+                "actions": 34.513888888888886,
+                "exchanges": 0
+              }
+            }
+          }
+        },
+        "asymmetric": {
+          "games": 72,
+          "seeds": 6,
+          "wins": 46,
+          "losses": 26,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.6388888888888888,
+          "winRate": 0.6388888888888888,
+          "clusterBootstrap95": [
+            0.5694444444444445,
+            0.6944444444444443
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 1649,
+                "hits": 715,
+                "damage": 1951,
+                "attackDamage": 1575,
+                "spellDamage": 376,
+                "moraleLost": 717,
+                "gems": 464,
+                "crystals": 439,
+                "cups": 237,
+                "actions": 1822,
+                "exchanges": 0
+              },
+              "hitRate": 0.4335961188599151,
+              "perGame": {
+                "attacks": 22.90277777777778,
+                "hits": 9.930555555555555,
+                "damage": 27.09722222222222,
+                "attackDamage": 21.875,
+                "spellDamage": 5.222222222222222,
+                "moraleLost": 9.958333333333334,
+                "gems": 6.444444444444445,
+                "crystals": 6.097222222222222,
+                "cups": 3.2916666666666665,
+                "actions": 25.305555555555557,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 1673,
+                "hits": 733,
+                "damage": 1677,
+                "attackDamage": 1422,
+                "spellDamage": 255,
+                "moraleLost": 963,
+                "gems": 594,
+                "crystals": 466,
+                "cups": 268,
+                "actions": 2193,
+                "exchanges": 0
+              },
+              "hitRate": 0.43813508667065154,
+              "perGame": {
+                "attacks": 23.23611111111111,
+                "hits": 10.180555555555555,
+                "damage": 23.291666666666668,
+                "attackDamage": 19.75,
+                "spellDamage": 3.5416666666666665,
+                "moraleLost": 13.375,
+                "gems": 8.25,
+                "crystals": 6.472222222222222,
+                "cups": 3.7222222222222223,
+                "actions": 30.458333333333332,
+                "exchanges": 0
+              }
+            }
+          }
+        },
+        "asymmetricReverse": {
+          "games": 72,
+          "seeds": 6,
+          "wins": 26,
+          "losses": 46,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.3611111111111111,
+          "winRate": 0.3611111111111111,
+          "clusterBootstrap95": [
+            0.3055555555555555,
+            0.4305555555555555
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 1673,
+                "hits": 733,
+                "damage": 1677,
+                "attackDamage": 1422,
+                "spellDamage": 255,
+                "moraleLost": 963,
+                "gems": 594,
+                "crystals": 466,
+                "cups": 268,
+                "actions": 2193,
+                "exchanges": 0
+              },
+              "hitRate": 0.43813508667065154,
+              "perGame": {
+                "attacks": 23.23611111111111,
+                "hits": 10.180555555555555,
+                "damage": 23.291666666666668,
+                "attackDamage": 19.75,
+                "spellDamage": 3.5416666666666665,
+                "moraleLost": 13.375,
+                "gems": 8.25,
+                "crystals": 6.472222222222222,
+                "cups": 3.7222222222222223,
+                "actions": 30.458333333333332,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 1649,
+                "hits": 715,
+                "damage": 1951,
+                "attackDamage": 1575,
+                "spellDamage": 376,
+                "moraleLost": 717,
+                "gems": 464,
+                "crystals": 439,
+                "cups": 237,
+                "actions": 1822,
+                "exchanges": 0
+              },
+              "hitRate": 0.4335961188599151,
+              "perGame": {
+                "attacks": 22.90277777777778,
+                "hits": 9.930555555555555,
+                "damage": 27.09722222222222,
+                "attackDamage": 21.875,
+                "spellDamage": 5.222222222222222,
+                "moraleLost": 9.958333333333334,
+                "gems": 6.444444444444445,
+                "crystals": 6.097222222222222,
+                "cups": 3.2916666666666665,
+                "actions": 25.305555555555557,
+                "exchanges": 0
+              }
+            }
+          }
+        }
+      },
+      "byStart": {
+        "0": {
+          "games": 48,
+          "seeds": 6,
+          "mean": 0.5,
+          "cluster95": [
+            0.5,
+            0.5
+          ]
+        },
+        "1": {
+          "games": 48,
+          "seeds": 6,
+          "mean": 0.5,
+          "cluster95": [
+            0.5,
+            0.5
+          ]
+        },
+        "2": {
+          "games": 48,
+          "seeds": 6,
+          "mean": 0.5,
+          "cluster95": [
+            0.5,
+            0.5
+          ]
+        },
+        "3": {
+          "games": 48,
+          "seeds": 6,
+          "mean": 0.5,
+          "cluster95": [
+            0.5,
+            0.5
+          ]
+        },
+        "4": {
+          "games": 48,
+          "seeds": 6,
+          "mean": 0.5,
+          "cluster95": [
+            0.5,
+            0.5
+          ]
+        },
+        "5": {
+          "games": 48,
+          "seeds": 6,
+          "mean": 0.5,
+          "cluster95": [
+            0.5,
+            0.5
+          ]
+        }
+      },
+      "byColor": {
+        "red": {
+          "games": 144,
+          "seeds": 6,
+          "mean": 0.5625000000000001,
+          "cluster95": [
+            0.5,
+            0.6111111111111112
+          ]
+        },
+        "blue": {
+          "games": 144,
+          "seeds": 6,
+          "mean": 0.4375,
+          "cluster95": [
+            0.3888888888888889,
+            0.5
+          ]
+        }
+      }
+    },
+    {
+      "sha": "ab54bfe742a0eb1b276e0f06d54617f002ecdf15",
+      "candidate": "experimental/action-value-1",
+      "opponent": "experimental/economy-capability-1",
+      "summary": {
+        "games": 288,
+        "seeds": 6,
+        "wins": 116,
+        "losses": 172,
+        "draws": 0,
+        "truncated": 0,
+        "scoreRate": 0.4027777777777778,
+        "winRate": 0.4027777777777778,
+        "clusterBootstrap95": [
+          0.34722222222222215,
+          0.4618055555555556
+        ],
+        "metrics": {
+          "candidate": {
+            "totals": {
+              "attacks": 6069,
+              "hits": 2600,
+              "damage": 6599,
+              "attackDamage": 5366,
+              "spellDamage": 1233,
+              "moraleLost": 3269,
+              "gems": 1952,
+              "crystals": 1642,
+              "cups": 887,
+              "actions": 7624,
+              "exchanges": 0
+            },
+            "hitRate": 0.4284066567803592,
+            "perGame": {
+              "attacks": 21.072916666666668,
+              "hits": 9.027777777777779,
+              "damage": 22.913194444444443,
+              "attackDamage": 18.631944444444443,
+              "spellDamage": 4.28125,
+              "moraleLost": 11.350694444444445,
+              "gems": 6.777777777777778,
+              "crystals": 5.701388888888889,
+              "cups": 3.079861111111111,
+              "actions": 26.47222222222222,
+              "exchanges": 0
+            }
+          },
+          "opponent": {
+            "totals": {
+              "attacks": 6111,
+              "hits": 2712,
+              "damage": 6947,
+              "attackDamage": 5721,
+              "spellDamage": 1226,
+              "moraleLost": 3034,
+              "gems": 2032,
+              "crystals": 1762,
+              "cups": 1001,
+              "actions": 7677,
+              "exchanges": 0
+            },
+            "hitRate": 0.44378988708885614,
+            "perGame": {
+              "attacks": 21.21875,
+              "hits": 9.416666666666666,
+              "damage": 24.12152777777778,
+              "attackDamage": 19.864583333333332,
+              "spellDamage": 4.256944444444445,
+              "moraleLost": 10.534722222222221,
+              "gems": 7.055555555555555,
+              "crystals": 6.118055555555555,
+              "cups": 3.4756944444444446,
+              "actions": 26.65625,
+              "exchanges": 0
+            }
+          }
+        }
+      },
+      "groups": {
+        "mirrorAssault": {
+          "games": 72,
+          "seeds": 6,
+          "wins": 33,
+          "losses": 39,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.4583333333333333,
+          "winRate": 0.4583333333333333,
+          "clusterBootstrap95": [
+            0.3611111111111111,
+            0.5694444444444445
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 1277,
+                "hits": 644,
+                "damage": 1817,
+                "attackDamage": 1481,
+                "spellDamage": 336,
+                "moraleLost": 943,
+                "gems": 408,
+                "crystals": 246,
+                "cups": 147,
+                "actions": 1269,
+                "exchanges": 0
+              },
+              "hitRate": 0.5043069694596711,
+              "perGame": {
+                "attacks": 17.73611111111111,
+                "hits": 8.944444444444445,
+                "damage": 25.23611111111111,
+                "attackDamage": 20.569444444444443,
+                "spellDamage": 4.666666666666667,
+                "moraleLost": 13.097222222222221,
+                "gems": 5.666666666666667,
+                "crystals": 3.4166666666666665,
+                "cups": 2.0416666666666665,
+                "actions": 17.625,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 1284,
+                "hits": 673,
+                "damage": 1915,
+                "attackDamage": 1597,
+                "spellDamage": 318,
+                "moraleLost": 873,
+                "gems": 422,
+                "crystals": 277,
+                "cups": 160,
+                "actions": 1287,
+                "exchanges": 0
+              },
+              "hitRate": 0.5241433021806854,
+              "perGame": {
+                "attacks": 17.833333333333332,
+                "hits": 9.347222222222221,
+                "damage": 26.59722222222222,
+                "attackDamage": 22.180555555555557,
+                "spellDamage": 4.416666666666667,
+                "moraleLost": 12.125,
+                "gems": 5.861111111111111,
+                "crystals": 3.8472222222222223,
+                "cups": 2.2222222222222223,
+                "actions": 17.875,
+                "exchanges": 0
+              }
+            }
+          }
+        },
+        "mirrorMixed": {
+          "games": 72,
+          "seeds": 6,
+          "wins": 20,
+          "losses": 52,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.2777777777777778,
+          "winRate": 0.2777777777777778,
+          "clusterBootstrap95": [
+            0.20833333333333334,
+            0.34722222222222227
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 1631,
+                "hits": 597,
+                "damage": 1323,
+                "attackDamage": 1062,
+                "spellDamage": 261,
+                "moraleLost": 606,
+                "gems": 522,
+                "crystals": 547,
+                "cups": 268,
+                "actions": 2472,
+                "exchanges": 0
+              },
+              "hitRate": 0.3660331085223789,
+              "perGame": {
+                "attacks": 22.65277777777778,
+                "hits": 8.291666666666666,
+                "damage": 18.375,
+                "attackDamage": 14.75,
+                "spellDamage": 3.625,
+                "moraleLost": 8.416666666666666,
+                "gems": 7.25,
+                "crystals": 7.597222222222222,
+                "cups": 3.7222222222222223,
+                "actions": 34.333333333333336,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 1660,
+                "hits": 650,
+                "damage": 1444,
+                "attackDamage": 1208,
+                "spellDamage": 236,
+                "moraleLost": 543,
+                "gems": 577,
+                "crystals": 607,
+                "cups": 327,
+                "actions": 2504,
+                "exchanges": 0
+              },
+              "hitRate": 0.39156626506024095,
+              "perGame": {
+                "attacks": 23.055555555555557,
+                "hits": 9.027777777777779,
+                "damage": 20.055555555555557,
+                "attackDamage": 16.77777777777778,
+                "spellDamage": 3.2777777777777777,
+                "moraleLost": 7.541666666666667,
+                "gems": 8.01388888888889,
+                "crystals": 8.430555555555555,
+                "cups": 4.541666666666667,
+                "actions": 34.77777777777778,
+                "exchanges": 0
+              }
+            }
+          }
+        },
+        "asymmetric": {
+          "games": 72,
+          "seeds": 6,
+          "wins": 31,
+          "losses": 41,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.4305555555555556,
+          "winRate": 0.4305555555555556,
+          "clusterBootstrap95": [
+            0.3055555555555555,
+            0.5416666666666666
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 1557,
+                "hits": 644,
+                "damage": 1811,
+                "attackDamage": 1436,
+                "spellDamage": 375,
+                "moraleLost": 776,
+                "gems": 443,
+                "crystals": 389,
+                "cups": 205,
+                "actions": 1761,
+                "exchanges": 0
+              },
+              "hitRate": 0.41361592806679515,
+              "perGame": {
+                "attacks": 21.625,
+                "hits": 8.944444444444445,
+                "damage": 25.15277777777778,
+                "attackDamage": 19.944444444444443,
+                "spellDamage": 5.208333333333333,
+                "moraleLost": 10.777777777777779,
+                "gems": 6.152777777777778,
+                "crystals": 5.402777777777778,
+                "cups": 2.8472222222222223,
+                "actions": 24.458333333333332,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 1645,
+                "hits": 748,
+                "damage": 1732,
+                "attackDamage": 1461,
+                "spellDamage": 271,
+                "moraleLost": 883,
+                "gems": 587,
+                "crystals": 480,
+                "cups": 287,
+                "actions": 2134,
+                "exchanges": 0
+              },
+              "hitRate": 0.4547112462006079,
+              "perGame": {
+                "attacks": 22.84722222222222,
+                "hits": 10.38888888888889,
+                "damage": 24.055555555555557,
+                "attackDamage": 20.291666666666668,
+                "spellDamage": 3.763888888888889,
+                "moraleLost": 12.26388888888889,
+                "gems": 8.152777777777779,
+                "crystals": 6.666666666666667,
+                "cups": 3.986111111111111,
+                "actions": 29.63888888888889,
+                "exchanges": 0
+              }
+            }
+          }
+        },
+        "asymmetricReverse": {
+          "games": 72,
+          "seeds": 6,
+          "wins": 32,
+          "losses": 40,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.4444444444444444,
+          "winRate": 0.4444444444444444,
+          "clusterBootstrap95": [
+            0.3611111111111111,
+            0.5694444444444445
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 1604,
+                "hits": 715,
+                "damage": 1648,
+                "attackDamage": 1387,
+                "spellDamage": 261,
+                "moraleLost": 944,
+                "gems": 579,
+                "crystals": 460,
+                "cups": 267,
+                "actions": 2122,
+                "exchanges": 0
+              },
+              "hitRate": 0.44576059850374067,
+              "perGame": {
+                "attacks": 22.27777777777778,
+                "hits": 9.930555555555555,
+                "damage": 22.88888888888889,
+                "attackDamage": 19.26388888888889,
+                "spellDamage": 3.625,
+                "moraleLost": 13.11111111111111,
+                "gems": 8.041666666666666,
+                "crystals": 6.388888888888889,
+                "cups": 3.7083333333333335,
+                "actions": 29.47222222222222,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 1522,
+                "hits": 641,
+                "damage": 1856,
+                "attackDamage": 1455,
+                "spellDamage": 401,
+                "moraleLost": 735,
+                "gems": 446,
+                "crystals": 398,
+                "cups": 227,
+                "actions": 1752,
+                "exchanges": 0
+              },
+              "hitRate": 0.4211563731931669,
+              "perGame": {
+                "attacks": 21.13888888888889,
+                "hits": 8.902777777777779,
+                "damage": 25.77777777777778,
+                "attackDamage": 20.208333333333332,
+                "spellDamage": 5.569444444444445,
+                "moraleLost": 10.208333333333334,
+                "gems": 6.194444444444445,
+                "crystals": 5.527777777777778,
+                "cups": 3.1527777777777777,
+                "actions": 24.333333333333332,
+                "exchanges": 0
+              }
+            }
+          }
+        }
+      },
+      "byStart": {
+        "0": {
+          "games": 48,
+          "seeds": 6,
+          "mean": 0.4375,
+          "cluster95": [
+            0.3125,
+            0.5625
+          ]
+        },
+        "1": {
+          "games": 48,
+          "seeds": 6,
+          "mean": 0.4583333333333333,
+          "cluster95": [
+            0.3125,
+            0.5833333333333334
+          ]
+        },
+        "2": {
+          "games": 48,
+          "seeds": 6,
+          "mean": 0.375,
+          "cluster95": [
+            0.2916666666666667,
+            0.4583333333333333
+          ]
+        },
+        "3": {
+          "games": 48,
+          "seeds": 6,
+          "mean": 0.3541666666666667,
+          "cluster95": [
+            0.22916666666666666,
+            0.4791666666666667
+          ]
+        },
+        "4": {
+          "games": 48,
+          "seeds": 6,
+          "mean": 0.3958333333333333,
+          "cluster95": [
+            0.3125,
+            0.5
+          ]
+        },
+        "5": {
+          "games": 48,
+          "seeds": 6,
+          "mean": 0.3958333333333333,
+          "cluster95": [
+            0.2708333333333333,
+            0.5
+          ]
+        }
+      },
+      "byColor": {
+        "red": {
+          "games": 144,
+          "seeds": 6,
+          "mean": 0.5277777777777778,
+          "cluster95": [
+            0.47222222222222227,
+            0.5833333333333334
+          ]
+        },
+        "blue": {
+          "games": 144,
+          "seeds": 6,
+          "mean": 0.27777777777777785,
+          "cluster95": [
+            0.17361111111111108,
+            0.3958333333333333
+          ]
+        }
+      }
+    },
+    {
+      "sha": "ab54bfe742a0eb1b276e0f06d54617f002ecdf15",
+      "candidate": "experimental/action-value-1-no-draws",
+      "opponent": "v1.3",
+      "summary": {
+        "games": 144,
+        "seeds": 3,
+        "wins": 81,
+        "losses": 63,
+        "draws": 0,
+        "truncated": 0,
+        "scoreRate": 0.5625,
+        "winRate": 0.5625,
+        "clusterBootstrap95": [
+          0.5208333333333334,
+          0.625
+        ],
+        "metrics": {
+          "candidate": {
+            "totals": {
+              "attacks": 3051,
+              "hits": 1359,
+              "damage": 3428,
+              "attackDamage": 2793,
+              "spellDamage": 635,
+              "moraleLost": 1572,
+              "gems": 1016,
+              "crystals": 835,
+              "cups": 487,
+              "actions": 3796,
+              "exchanges": 0
+            },
+            "hitRate": 0.44542772861356933,
+            "perGame": {
+              "attacks": 21.1875,
+              "hits": 9.4375,
+              "damage": 23.805555555555557,
+              "attackDamage": 19.395833333333332,
+              "spellDamage": 4.409722222222222,
+              "moraleLost": 10.916666666666666,
+              "gems": 7.055555555555555,
+              "crystals": 5.798611111111111,
+              "cups": 3.3819444444444446,
+              "actions": 26.36111111111111,
+              "exchanges": 0
+            }
+          },
+          "opponent": {
+            "totals": {
+              "attacks": 2997,
+              "hits": 1312,
+              "damage": 3380,
+              "attackDamage": 2748,
+              "spellDamage": 632,
+              "moraleLost": 1606,
+              "gems": 980,
+              "crystals": 840,
+              "cups": 457,
+              "actions": 3782,
+              "exchanges": 0
+            },
+            "hitRate": 0.4377711044377711,
+            "perGame": {
+              "attacks": 20.8125,
+              "hits": 9.11111111111111,
+              "damage": 23.47222222222222,
+              "attackDamage": 19.083333333333332,
+              "spellDamage": 4.388888888888889,
+              "moraleLost": 11.152777777777779,
+              "gems": 6.805555555555555,
+              "crystals": 5.833333333333333,
+              "cups": 3.173611111111111,
+              "actions": 26.26388888888889,
+              "exchanges": 0
+            }
+          }
+        }
+      },
+      "groups": {
+        "mirrorAssault": {
+          "games": 36,
+          "seeds": 3,
+          "wins": 21,
+          "losses": 15,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.5833333333333334,
+          "winRate": 0.5833333333333334,
+          "clusterBootstrap95": [
+            0.5,
+            0.6666666666666666
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 630,
+                "hits": 331,
+                "damage": 943,
+                "attackDamage": 761,
+                "spellDamage": 182,
+                "moraleLost": 447,
+                "gems": 211,
+                "crystals": 123,
+                "cups": 72,
+                "actions": 643,
+                "exchanges": 0
+              },
+              "hitRate": 0.5253968253968254,
+              "perGame": {
+                "attacks": 17.5,
+                "hits": 9.194444444444445,
+                "damage": 26.194444444444443,
+                "attackDamage": 21.13888888888889,
+                "spellDamage": 5.055555555555555,
+                "moraleLost": 12.416666666666666,
+                "gems": 5.861111111111111,
+                "crystals": 3.4166666666666665,
+                "cups": 2,
+                "actions": 17.86111111111111,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 616,
+                "hits": 316,
+                "damage": 912,
+                "attackDamage": 736,
+                "spellDamage": 176,
+                "moraleLost": 449,
+                "gems": 203,
+                "crystals": 129,
+                "cups": 69,
+                "actions": 643,
+                "exchanges": 0
+              },
+              "hitRate": 0.512987012987013,
+              "perGame": {
+                "attacks": 17.11111111111111,
+                "hits": 8.777777777777779,
+                "damage": 25.333333333333332,
+                "attackDamage": 20.444444444444443,
+                "spellDamage": 4.888888888888889,
+                "moraleLost": 12.472222222222221,
+                "gems": 5.638888888888889,
+                "crystals": 3.5833333333333335,
+                "cups": 1.9166666666666667,
+                "actions": 17.86111111111111,
+                "exchanges": 0
+              }
+            }
+          }
+        },
+        "mirrorMixed": {
+          "games": 36,
+          "seeds": 3,
+          "wins": 19,
+          "losses": 17,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.5277777777777778,
+          "winRate": 0.5277777777777778,
+          "clusterBootstrap95": [
+            0.4166666666666667,
+            0.5833333333333334
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 846,
+                "hits": 300,
+                "damage": 694,
+                "attackDamage": 534,
+                "spellDamage": 160,
+                "moraleLost": 297,
+                "gems": 272,
+                "crystals": 287,
+                "cups": 156,
+                "actions": 1253,
+                "exchanges": 0
+              },
+              "hitRate": 0.3546099290780142,
+              "perGame": {
+                "attacks": 23.5,
+                "hits": 8.333333333333334,
+                "damage": 19.27777777777778,
+                "attackDamage": 14.833333333333334,
+                "spellDamage": 4.444444444444445,
+                "moraleLost": 8.25,
+                "gems": 7.555555555555555,
+                "crystals": 7.972222222222222,
+                "cups": 4.333333333333333,
+                "actions": 34.80555555555556,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 822,
+                "hits": 304,
+                "damage": 714,
+                "attackDamage": 558,
+                "spellDamage": 156,
+                "moraleLost": 295,
+                "gems": 257,
+                "crystals": 307,
+                "cups": 150,
+                "actions": 1232,
+                "exchanges": 0
+              },
+              "hitRate": 0.36982968369829683,
+              "perGame": {
+                "attacks": 22.833333333333332,
+                "hits": 8.444444444444445,
+                "damage": 19.833333333333332,
+                "attackDamage": 15.5,
+                "spellDamage": 4.333333333333333,
+                "moraleLost": 8.194444444444445,
+                "gems": 7.138888888888889,
+                "crystals": 8.527777777777779,
+                "cups": 4.166666666666667,
+                "actions": 34.22222222222222,
+                "exchanges": 0
+              }
+            }
+          }
+        },
+        "asymmetric": {
+          "games": 36,
+          "seeds": 3,
+          "wins": 24,
+          "losses": 12,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.6666666666666666,
+          "winRate": 0.6666666666666666,
+          "clusterBootstrap95": [
+            0.5833333333333334,
+            0.75
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 780,
+                "hits": 358,
+                "damage": 957,
+                "attackDamage": 781,
+                "spellDamage": 176,
+                "moraleLost": 360,
+                "gems": 246,
+                "crystals": 195,
+                "cups": 117,
+                "actions": 877,
+                "exchanges": 0
+              },
+              "hitRate": 0.45897435897435895,
+              "perGame": {
+                "attacks": 21.666666666666668,
+                "hits": 9.944444444444445,
+                "damage": 26.583333333333332,
+                "attackDamage": 21.694444444444443,
+                "spellDamage": 4.888888888888889,
+                "moraleLost": 10,
+                "gems": 6.833333333333333,
+                "crystals": 5.416666666666667,
+                "cups": 3.25,
+                "actions": 24.36111111111111,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 783,
+                "hits": 359,
+                "damage": 821,
+                "attackDamage": 695,
+                "spellDamage": 126,
+                "moraleLost": 497,
+                "gems": 294,
+                "crystals": 210,
+                "cups": 128,
+                "actions": 1054,
+                "exchanges": 0
+              },
+              "hitRate": 0.45849297573435505,
+              "perGame": {
+                "attacks": 21.75,
+                "hits": 9.972222222222221,
+                "damage": 22.805555555555557,
+                "attackDamage": 19.305555555555557,
+                "spellDamage": 3.5,
+                "moraleLost": 13.805555555555555,
+                "gems": 8.166666666666666,
+                "crystals": 5.833333333333333,
+                "cups": 3.5555555555555554,
+                "actions": 29.27777777777778,
+                "exchanges": 0
+              }
+            }
+          }
+        },
+        "asymmetricReverse": {
+          "games": 36,
+          "seeds": 3,
+          "wins": 17,
+          "losses": 19,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.4722222222222222,
+          "winRate": 0.4722222222222222,
+          "clusterBootstrap95": [
+            0.3333333333333333,
+            0.5833333333333334
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 795,
+                "hits": 370,
+                "damage": 834,
+                "attackDamage": 717,
+                "spellDamage": 117,
+                "moraleLost": 468,
+                "gems": 287,
+                "crystals": 230,
+                "cups": 142,
+                "actions": 1023,
+                "exchanges": 0
+              },
+              "hitRate": 0.46540880503144655,
+              "perGame": {
+                "attacks": 22.083333333333332,
+                "hits": 10.277777777777779,
+                "damage": 23.166666666666668,
+                "attackDamage": 19.916666666666668,
+                "spellDamage": 3.25,
+                "moraleLost": 13,
+                "gems": 7.972222222222222,
+                "crystals": 6.388888888888889,
+                "cups": 3.9444444444444446,
+                "actions": 28.416666666666668,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 776,
+                "hits": 333,
+                "damage": 933,
+                "attackDamage": 759,
+                "spellDamage": 174,
+                "moraleLost": 365,
+                "gems": 226,
+                "crystals": 194,
+                "cups": 110,
+                "actions": 853,
+                "exchanges": 0
+              },
+              "hitRate": 0.42912371134020616,
+              "perGame": {
+                "attacks": 21.555555555555557,
+                "hits": 9.25,
+                "damage": 25.916666666666668,
+                "attackDamage": 21.083333333333332,
+                "spellDamage": 4.833333333333333,
+                "moraleLost": 10.13888888888889,
+                "gems": 6.277777777777778,
+                "crystals": 5.388888888888889,
+                "cups": 3.0555555555555554,
+                "actions": 23.694444444444443,
+                "exchanges": 0
+              }
+            }
+          }
+        }
+      },
+      "byStart": {
+        "0": {
+          "games": 24,
+          "seeds": 3,
+          "mean": 0.5,
+          "cluster95": [
+            0.25,
+            0.625
+          ]
+        },
+        "1": {
+          "games": 24,
+          "seeds": 3,
+          "mean": 0.5416666666666666,
+          "cluster95": [
+            0.375,
+            0.625
+          ]
+        },
+        "2": {
+          "games": 24,
+          "seeds": 3,
+          "mean": 0.5833333333333334,
+          "cluster95": [
+            0.375,
+            0.75
+          ]
+        },
+        "3": {
+          "games": 24,
+          "seeds": 3,
+          "mean": 0.5416666666666666,
+          "cluster95": [
+            0.375,
+            0.75
+          ]
+        },
+        "4": {
+          "games": 24,
+          "seeds": 3,
+          "mean": 0.5833333333333334,
+          "cluster95": [
+            0.5,
+            0.625
+          ]
+        },
+        "5": {
+          "games": 24,
+          "seeds": 3,
+          "mean": 0.625,
+          "cluster95": [
+            0.375,
+            0.875
+          ]
+        }
+      },
+      "byColor": {
+        "red": {
+          "games": 72,
+          "seeds": 3,
+          "mean": 0.5972222222222222,
+          "cluster95": [
+            0.4583333333333333,
+            0.75
+          ]
+        },
+        "blue": {
+          "games": 72,
+          "seeds": 3,
+          "mean": 0.5277777777777778,
+          "cluster95": [
+            0.4583333333333333,
+            0.625
+          ]
+        }
+      }
+    },
+    {
+      "sha": "ab54bfe742a0eb1b276e0f06d54617f002ecdf15",
+      "candidate": "experimental/action-value-1-no-tempo",
+      "opponent": "v1.3",
+      "summary": {
+        "games": 144,
+        "seeds": 3,
+        "wins": 72,
+        "losses": 72,
+        "draws": 0,
+        "truncated": 0,
+        "scoreRate": 0.5,
+        "winRate": 0.5,
+        "clusterBootstrap95": [
+          0.4583333333333333,
+          0.5625
+        ],
+        "metrics": {
+          "candidate": {
+            "totals": {
+              "attacks": 2966,
+              "hits": 1345,
+              "damage": 3444,
+              "attackDamage": 2789,
+              "spellDamage": 655,
+              "moraleLost": 1601,
+              "gems": 997,
+              "crystals": 803,
+              "cups": 444,
+              "actions": 3864,
+              "exchanges": 0
+            },
+            "hitRate": 0.4534726904922454,
+            "perGame": {
+              "attacks": 20.59722222222222,
+              "hits": 9.340277777777779,
+              "damage": 23.916666666666668,
+              "attackDamage": 19.368055555555557,
+              "spellDamage": 4.548611111111111,
+              "moraleLost": 11.118055555555555,
+              "gems": 6.923611111111111,
+              "crystals": 5.576388888888889,
+              "cups": 3.0833333333333335,
+              "actions": 26.833333333333332,
+              "exchanges": 0
+            }
+          },
+          "opponent": {
+            "totals": {
+              "attacks": 2986,
+              "hits": 1350,
+              "damage": 3471,
+              "attackDamage": 2806,
+              "spellDamage": 665,
+              "moraleLost": 1565,
+              "gems": 1001,
+              "crystals": 840,
+              "cups": 463,
+              "actions": 3818,
+              "exchanges": 0
+            },
+            "hitRate": 0.4521098459477562,
+            "perGame": {
+              "attacks": 20.73611111111111,
+              "hits": 9.375,
+              "damage": 24.104166666666668,
+              "attackDamage": 19.48611111111111,
+              "spellDamage": 4.618055555555555,
+              "moraleLost": 10.868055555555555,
+              "gems": 6.951388888888889,
+              "crystals": 5.833333333333333,
+              "cups": 3.2152777777777777,
+              "actions": 26.51388888888889,
+              "exchanges": 0
+            }
+          }
+        }
+      },
+      "groups": {
+        "mirrorAssault": {
+          "games": 36,
+          "seeds": 3,
+          "wins": 22,
+          "losses": 14,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.6111111111111112,
+          "winRate": 0.6111111111111112,
+          "clusterBootstrap95": [
+            0.5,
+            0.6666666666666666
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 614,
+                "hits": 322,
+                "damage": 945,
+                "attackDamage": 755,
+                "spellDamage": 190,
+                "moraleLost": 452,
+                "gems": 212,
+                "crystals": 115,
+                "cups": 66,
+                "actions": 632,
+                "exchanges": 0
+              },
+              "hitRate": 0.5244299674267101,
+              "perGame": {
+                "attacks": 17.055555555555557,
+                "hits": 8.944444444444445,
+                "damage": 26.25,
+                "attackDamage": 20.97222222222222,
+                "spellDamage": 5.277777777777778,
+                "moraleLost": 12.555555555555555,
+                "gems": 5.888888888888889,
+                "crystals": 3.1944444444444446,
+                "cups": 1.8333333333333333,
+                "actions": 17.555555555555557,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 607,
+                "hits": 323,
+                "damage": 933,
+                "attackDamage": 743,
+                "spellDamage": 190,
+                "moraleLost": 448,
+                "gems": 191,
+                "crystals": 134,
+                "cups": 64,
+                "actions": 628,
+                "exchanges": 0
+              },
+              "hitRate": 0.5321252059308073,
+              "perGame": {
+                "attacks": 16.86111111111111,
+                "hits": 8.972222222222221,
+                "damage": 25.916666666666668,
+                "attackDamage": 20.63888888888889,
+                "spellDamage": 5.277777777777778,
+                "moraleLost": 12.444444444444445,
+                "gems": 5.305555555555555,
+                "crystals": 3.7222222222222223,
+                "cups": 1.7777777777777777,
+                "actions": 17.444444444444443,
+                "exchanges": 0
+              }
+            }
+          }
+        },
+        "mirrorMixed": {
+          "games": 36,
+          "seeds": 3,
+          "wins": 16,
+          "losses": 20,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.4444444444444444,
+          "winRate": 0.4444444444444444,
+          "clusterBootstrap95": [
+            0.3333333333333333,
+            0.5833333333333334
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 818,
+                "hits": 318,
+                "damage": 709,
+                "attackDamage": 558,
+                "spellDamage": 151,
+                "moraleLost": 302,
+                "gems": 269,
+                "crystals": 286,
+                "cups": 142,
+                "actions": 1311,
+                "exchanges": 0
+              },
+              "hitRate": 0.38875305623471884,
+              "perGame": {
+                "attacks": 22.72222222222222,
+                "hits": 8.833333333333334,
+                "damage": 19.694444444444443,
+                "attackDamage": 15.5,
+                "spellDamage": 4.194444444444445,
+                "moraleLost": 8.38888888888889,
+                "gems": 7.472222222222222,
+                "crystals": 7.944444444444445,
+                "cups": 3.9444444444444446,
+                "actions": 36.416666666666664,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 838,
+                "hits": 319,
+                "damage": 748,
+                "attackDamage": 593,
+                "spellDamage": 155,
+                "moraleLost": 289,
+                "gems": 283,
+                "crystals": 303,
+                "cups": 160,
+                "actions": 1297,
+                "exchanges": 0
+              },
+              "hitRate": 0.38066825775656327,
+              "perGame": {
+                "attacks": 23.27777777777778,
+                "hits": 8.86111111111111,
+                "damage": 20.77777777777778,
+                "attackDamage": 16.47222222222222,
+                "spellDamage": 4.305555555555555,
+                "moraleLost": 8.027777777777779,
+                "gems": 7.861111111111111,
+                "crystals": 8.416666666666666,
+                "cups": 4.444444444444445,
+                "actions": 36.02777777777778,
+                "exchanges": 0
+              }
+            }
+          }
+        },
+        "asymmetric": {
+          "games": 36,
+          "seeds": 3,
+          "wins": 18,
+          "losses": 18,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.5,
+          "winRate": 0.5,
+          "clusterBootstrap95": [
+            0.3333333333333333,
+            0.75
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 756,
+                "hits": 341,
+                "damage": 934,
+                "attackDamage": 769,
+                "spellDamage": 165,
+                "moraleLost": 402,
+                "gems": 230,
+                "crystals": 179,
+                "cups": 105,
+                "actions": 870,
+                "exchanges": 0
+              },
+              "hitRate": 0.45105820105820105,
+              "perGame": {
+                "attacks": 21,
+                "hits": 9.472222222222221,
+                "damage": 25.944444444444443,
+                "attackDamage": 21.36111111111111,
+                "spellDamage": 4.583333333333333,
+                "moraleLost": 11.166666666666666,
+                "gems": 6.388888888888889,
+                "crystals": 4.972222222222222,
+                "cups": 2.9166666666666665,
+                "actions": 24.166666666666668,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 773,
+                "hits": 377,
+                "damage": 873,
+                "attackDamage": 736,
+                "spellDamage": 137,
+                "moraleLost": 452,
+                "gems": 303,
+                "crystals": 216,
+                "cups": 131,
+                "actions": 1040,
+                "exchanges": 0
+              },
+              "hitRate": 0.48771021992238034,
+              "perGame": {
+                "attacks": 21.47222222222222,
+                "hits": 10.472222222222221,
+                "damage": 24.25,
+                "attackDamage": 20.444444444444443,
+                "spellDamage": 3.8055555555555554,
+                "moraleLost": 12.555555555555555,
+                "gems": 8.416666666666666,
+                "crystals": 6,
+                "cups": 3.638888888888889,
+                "actions": 28.88888888888889,
+                "exchanges": 0
+              }
+            }
+          }
+        },
+        "asymmetricReverse": {
+          "games": 36,
+          "seeds": 3,
+          "wins": 16,
+          "losses": 20,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.4444444444444444,
+          "winRate": 0.4444444444444444,
+          "clusterBootstrap95": [
+            0.4166666666666667,
+            0.5
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 778,
+                "hits": 364,
+                "damage": 856,
+                "attackDamage": 707,
+                "spellDamage": 149,
+                "moraleLost": 445,
+                "gems": 286,
+                "crystals": 223,
+                "cups": 131,
+                "actions": 1051,
+                "exchanges": 0
+              },
+              "hitRate": 0.46786632390745503,
+              "perGame": {
+                "attacks": 21.61111111111111,
+                "hits": 10.11111111111111,
+                "damage": 23.77777777777778,
+                "attackDamage": 19.63888888888889,
+                "spellDamage": 4.138888888888889,
+                "moraleLost": 12.36111111111111,
+                "gems": 7.944444444444445,
+                "crystals": 6.194444444444445,
+                "cups": 3.638888888888889,
+                "actions": 29.194444444444443,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 768,
+                "hits": 331,
+                "damage": 917,
+                "attackDamage": 734,
+                "spellDamage": 183,
+                "moraleLost": 376,
+                "gems": 224,
+                "crystals": 187,
+                "cups": 108,
+                "actions": 853,
+                "exchanges": 0
+              },
+              "hitRate": 0.4309895833333333,
+              "perGame": {
+                "attacks": 21.333333333333332,
+                "hits": 9.194444444444445,
+                "damage": 25.47222222222222,
+                "attackDamage": 20.38888888888889,
+                "spellDamage": 5.083333333333333,
+                "moraleLost": 10.444444444444445,
+                "gems": 6.222222222222222,
+                "crystals": 5.194444444444445,
+                "cups": 3,
+                "actions": 23.694444444444443,
+                "exchanges": 0
+              }
+            }
+          }
+        }
+      },
+      "byStart": {
+        "0": {
+          "games": 24,
+          "seeds": 3,
+          "mean": 0.5833333333333334,
+          "cluster95": [
+            0.375,
+            0.75
+          ]
+        },
+        "1": {
+          "games": 24,
+          "seeds": 3,
+          "mean": 0.5,
+          "cluster95": [
+            0.25,
+            0.75
+          ]
+        },
+        "2": {
+          "games": 24,
+          "seeds": 3,
+          "mean": 0.4166666666666667,
+          "cluster95": [
+            0.25,
+            0.625
+          ]
+        },
+        "3": {
+          "games": 24,
+          "seeds": 3,
+          "mean": 0.5,
+          "cluster95": [
+            0.375,
+            0.625
+          ]
+        },
+        "4": {
+          "games": 24,
+          "seeds": 3,
+          "mean": 0.3333333333333333,
+          "cluster95": [
+            0.25,
+            0.375
+          ]
+        },
+        "5": {
+          "games": 24,
+          "seeds": 3,
+          "mean": 0.6666666666666666,
+          "cluster95": [
+            0.625,
+            0.75
+          ]
+        }
+      },
+      "byColor": {
+        "red": {
+          "games": 72,
+          "seeds": 3,
+          "mean": 0.5277777777777778,
+          "cluster95": [
+            0.5,
+            0.5833333333333334
+          ]
+        },
+        "blue": {
+          "games": 72,
+          "seeds": 3,
+          "mean": 0.47222222222222215,
+          "cluster95": [
+            0.3333333333333333,
+            0.625
+          ]
+        }
+      }
+    },
+    {
+      "sha": "ab54bfe742a0eb1b276e0f06d54617f002ecdf15",
+      "candidate": "experimental/action-value-1-no-energy",
+      "opponent": "v1.3",
+      "summary": {
+        "games": 144,
+        "seeds": 3,
+        "wins": 70,
+        "losses": 74,
+        "draws": 0,
+        "truncated": 0,
+        "scoreRate": 0.4861111111111111,
+        "winRate": 0.4861111111111111,
+        "clusterBootstrap95": [
+          0.3541666666666667,
+          0.5833333333333334
+        ],
+        "metrics": {
+          "candidate": {
+            "totals": {
+              "attacks": 3019,
+              "hits": 1378,
+              "damage": 3485,
+              "attackDamage": 2844,
+              "spellDamage": 641,
+              "moraleLost": 1637,
+              "gems": 1002,
+              "crystals": 825,
+              "cups": 449,
+              "actions": 3891,
+              "exchanges": 0
+            },
+            "hitRate": 0.4564425306392845,
+            "perGame": {
+              "attacks": 20.96527777777778,
+              "hits": 9.569444444444445,
+              "damage": 24.20138888888889,
+              "attackDamage": 19.75,
+              "spellDamage": 4.451388888888889,
+              "moraleLost": 11.368055555555555,
+              "gems": 6.958333333333333,
+              "crystals": 5.729166666666667,
+              "cups": 3.1180555555555554,
+              "actions": 27.020833333333332,
+              "exchanges": 0
+            }
+          },
+          "opponent": {
+            "totals": {
+              "attacks": 3013,
+              "hits": 1366,
+              "damage": 3523,
+              "attackDamage": 2857,
+              "spellDamage": 666,
+              "moraleLost": 1577,
+              "gems": 1014,
+              "crystals": 842,
+              "cups": 464,
+              "actions": 3837,
+              "exchanges": 0
+            },
+            "hitRate": 0.45336873547958845,
+            "perGame": {
+              "attacks": 20.92361111111111,
+              "hits": 9.48611111111111,
+              "damage": 24.46527777777778,
+              "attackDamage": 19.84027777777778,
+              "spellDamage": 4.625,
+              "moraleLost": 10.95138888888889,
+              "gems": 7.041666666666667,
+              "crystals": 5.847222222222222,
+              "cups": 3.2222222222222223,
+              "actions": 26.645833333333332,
+              "exchanges": 0
+            }
+          }
+        }
+      },
+      "groups": {
+        "mirrorAssault": {
+          "games": 36,
+          "seeds": 3,
+          "wins": 21,
+          "losses": 15,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.5833333333333334,
+          "winRate": 0.5833333333333334,
+          "clusterBootstrap95": [
+            0.4166666666666667,
+            0.75
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 642,
+                "hits": 340,
+                "damage": 962,
+                "attackDamage": 779,
+                "spellDamage": 183,
+                "moraleLost": 458,
+                "gems": 218,
+                "crystals": 121,
+                "cups": 70,
+                "actions": 652,
+                "exchanges": 0
+              },
+              "hitRate": 0.5295950155763239,
+              "perGame": {
+                "attacks": 17.833333333333332,
+                "hits": 9.444444444444445,
+                "damage": 26.72222222222222,
+                "attackDamage": 21.63888888888889,
+                "spellDamage": 5.083333333333333,
+                "moraleLost": 12.722222222222221,
+                "gems": 6.055555555555555,
+                "crystals": 3.361111111111111,
+                "cups": 1.9444444444444444,
+                "actions": 18.11111111111111,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 628,
+                "hits": 327,
+                "damage": 949,
+                "attackDamage": 764,
+                "spellDamage": 185,
+                "moraleLost": 446,
+                "gems": 201,
+                "crystals": 126,
+                "cups": 64,
+                "actions": 647,
+                "exchanges": 0
+              },
+              "hitRate": 0.5207006369426752,
+              "perGame": {
+                "attacks": 17.444444444444443,
+                "hits": 9.083333333333334,
+                "damage": 26.36111111111111,
+                "attackDamage": 21.22222222222222,
+                "spellDamage": 5.138888888888889,
+                "moraleLost": 12.38888888888889,
+                "gems": 5.583333333333333,
+                "crystals": 3.5,
+                "cups": 1.7777777777777777,
+                "actions": 17.97222222222222,
+                "exchanges": 0
+              }
+            }
+          }
+        },
+        "mirrorMixed": {
+          "games": 36,
+          "seeds": 3,
+          "wins": 16,
+          "losses": 20,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.4444444444444444,
+          "winRate": 0.4444444444444444,
+          "clusterBootstrap95": [
+            0.3333333333333333,
+            0.5833333333333334
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 818,
+                "hits": 318,
+                "damage": 709,
+                "attackDamage": 558,
+                "spellDamage": 151,
+                "moraleLost": 302,
+                "gems": 269,
+                "crystals": 286,
+                "cups": 142,
+                "actions": 1311,
+                "exchanges": 0
+              },
+              "hitRate": 0.38875305623471884,
+              "perGame": {
+                "attacks": 22.72222222222222,
+                "hits": 8.833333333333334,
+                "damage": 19.694444444444443,
+                "attackDamage": 15.5,
+                "spellDamage": 4.194444444444445,
+                "moraleLost": 8.38888888888889,
+                "gems": 7.472222222222222,
+                "crystals": 7.944444444444445,
+                "cups": 3.9444444444444446,
+                "actions": 36.416666666666664,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 838,
+                "hits": 319,
+                "damage": 748,
+                "attackDamage": 593,
+                "spellDamage": 155,
+                "moraleLost": 289,
+                "gems": 283,
+                "crystals": 303,
+                "cups": 160,
+                "actions": 1297,
+                "exchanges": 0
+              },
+              "hitRate": 0.38066825775656327,
+              "perGame": {
+                "attacks": 23.27777777777778,
+                "hits": 8.86111111111111,
+                "damage": 20.77777777777778,
+                "attackDamage": 16.47222222222222,
+                "spellDamage": 4.305555555555555,
+                "moraleLost": 8.027777777777779,
+                "gems": 7.861111111111111,
+                "crystals": 8.416666666666666,
+                "cups": 4.444444444444445,
+                "actions": 36.02777777777778,
+                "exchanges": 0
+              }
+            }
+          }
+        },
+        "asymmetric": {
+          "games": 36,
+          "seeds": 3,
+          "wins": 18,
+          "losses": 18,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.5,
+          "winRate": 0.5,
+          "clusterBootstrap95": [
+            0.3333333333333333,
+            0.75
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 756,
+                "hits": 341,
+                "damage": 934,
+                "attackDamage": 769,
+                "spellDamage": 165,
+                "moraleLost": 402,
+                "gems": 230,
+                "crystals": 179,
+                "cups": 105,
+                "actions": 870,
+                "exchanges": 0
+              },
+              "hitRate": 0.45105820105820105,
+              "perGame": {
+                "attacks": 21,
+                "hits": 9.472222222222221,
+                "damage": 25.944444444444443,
+                "attackDamage": 21.36111111111111,
+                "spellDamage": 4.583333333333333,
+                "moraleLost": 11.166666666666666,
+                "gems": 6.388888888888889,
+                "crystals": 4.972222222222222,
+                "cups": 2.9166666666666665,
+                "actions": 24.166666666666668,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 773,
+                "hits": 377,
+                "damage": 873,
+                "attackDamage": 736,
+                "spellDamage": 137,
+                "moraleLost": 452,
+                "gems": 303,
+                "crystals": 216,
+                "cups": 131,
+                "actions": 1040,
+                "exchanges": 0
+              },
+              "hitRate": 0.48771021992238034,
+              "perGame": {
+                "attacks": 21.47222222222222,
+                "hits": 10.472222222222221,
+                "damage": 24.25,
+                "attackDamage": 20.444444444444443,
+                "spellDamage": 3.8055555555555554,
+                "moraleLost": 12.555555555555555,
+                "gems": 8.416666666666666,
+                "crystals": 6,
+                "cups": 3.638888888888889,
+                "actions": 28.88888888888889,
+                "exchanges": 0
+              }
+            }
+          }
+        },
+        "asymmetricReverse": {
+          "games": 36,
+          "seeds": 3,
+          "wins": 15,
+          "losses": 21,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.4166666666666667,
+          "winRate": 0.4166666666666667,
+          "clusterBootstrap95": [
+            0.25,
+            0.5833333333333334
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 803,
+                "hits": 379,
+                "damage": 880,
+                "attackDamage": 738,
+                "spellDamage": 142,
+                "moraleLost": 475,
+                "gems": 285,
+                "crystals": 239,
+                "cups": 132,
+                "actions": 1058,
+                "exchanges": 0
+              },
+              "hitRate": 0.47198007471980075,
+              "perGame": {
+                "attacks": 22.305555555555557,
+                "hits": 10.527777777777779,
+                "damage": 24.444444444444443,
+                "attackDamage": 20.5,
+                "spellDamage": 3.9444444444444446,
+                "moraleLost": 13.194444444444445,
+                "gems": 7.916666666666667,
+                "crystals": 6.638888888888889,
+                "cups": 3.6666666666666665,
+                "actions": 29.38888888888889,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 774,
+                "hits": 343,
+                "damage": 953,
+                "attackDamage": 764,
+                "spellDamage": 189,
+                "moraleLost": 390,
+                "gems": 227,
+                "crystals": 197,
+                "cups": 109,
+                "actions": 853,
+                "exchanges": 0
+              },
+              "hitRate": 0.44315245478036175,
+              "perGame": {
+                "attacks": 21.5,
+                "hits": 9.527777777777779,
+                "damage": 26.47222222222222,
+                "attackDamage": 21.22222222222222,
+                "spellDamage": 5.25,
+                "moraleLost": 10.833333333333334,
+                "gems": 6.305555555555555,
+                "crystals": 5.472222222222222,
+                "cups": 3.0277777777777777,
+                "actions": 23.694444444444443,
+                "exchanges": 0
+              }
+            }
+          }
+        }
+      },
+      "byStart": {
+        "0": {
+          "games": 24,
+          "seeds": 3,
+          "mean": 0.5833333333333334,
+          "cluster95": [
+            0.375,
+            0.75
+          ]
+        },
+        "1": {
+          "games": 24,
+          "seeds": 3,
+          "mean": 0.5416666666666666,
+          "cluster95": [
+            0.5,
+            0.625
+          ]
+        },
+        "2": {
+          "games": 24,
+          "seeds": 3,
+          "mean": 0.4583333333333333,
+          "cluster95": [
+            0.25,
+            0.75
+          ]
+        },
+        "3": {
+          "games": 24,
+          "seeds": 3,
+          "mean": 0.375,
+          "cluster95": [
+            0.25,
+            0.5
+          ]
+        },
+        "4": {
+          "games": 24,
+          "seeds": 3,
+          "mean": 0.2916666666666667,
+          "cluster95": [
+            0,
+            0.5
+          ]
+        },
+        "5": {
+          "games": 24,
+          "seeds": 3,
+          "mean": 0.6666666666666666,
+          "cluster95": [
+            0.5,
+            0.875
+          ]
+        }
+      },
+      "byColor": {
+        "red": {
+          "games": 72,
+          "seeds": 3,
+          "mean": 0.4861111111111111,
+          "cluster95": [
+            0.4166666666666667,
+            0.5833333333333334
+          ]
+        },
+        "blue": {
+          "games": 72,
+          "seeds": 3,
+          "mean": 0.48611111111111116,
+          "cluster95": [
+            0.2916666666666667,
+            0.7083333333333334
+          ]
+        }
+      }
+    },
+    {
+      "sha": "ab54bfe742a0eb1b276e0f06d54617f002ecdf15",
+      "candidate": "experimental/action-value-1-no-allocation",
+      "opponent": "v1.3",
+      "summary": {
+        "games": 144,
+        "seeds": 3,
+        "wins": 68,
+        "losses": 76,
+        "draws": 0,
+        "truncated": 0,
+        "scoreRate": 0.4722222222222222,
+        "winRate": 0.4722222222222222,
+        "clusterBootstrap95": [
+          0.375,
+          0.5416666666666666
+        ],
+        "metrics": {
+          "candidate": {
+            "totals": {
+              "attacks": 3009,
+              "hits": 1353,
+              "damage": 3442,
+              "attackDamage": 2799,
+              "spellDamage": 643,
+              "moraleLost": 1632,
+              "gems": 985,
+              "crystals": 820,
+              "cups": 443,
+              "actions": 3884,
+              "exchanges": 0
+            },
+            "hitRate": 0.44965104685942175,
+            "perGame": {
+              "attacks": 20.895833333333332,
+              "hits": 9.395833333333334,
+              "damage": 23.90277777777778,
+              "attackDamage": 19.4375,
+              "spellDamage": 4.465277777777778,
+              "moraleLost": 11.333333333333334,
+              "gems": 6.840277777777778,
+              "crystals": 5.694444444444445,
+              "cups": 3.076388888888889,
+              "actions": 26.97222222222222,
+              "exchanges": 0
+            }
+          },
+          "opponent": {
+            "totals": {
+              "attacks": 3036,
+              "hits": 1377,
+              "damage": 3540,
+              "attackDamage": 2891,
+              "spellDamage": 649,
+              "moraleLost": 1553,
+              "gems": 1022,
+              "crystals": 856,
+              "cups": 476,
+              "actions": 3837,
+              "exchanges": 0
+            },
+            "hitRate": 0.4535573122529644,
+            "perGame": {
+              "attacks": 21.083333333333332,
+              "hits": 9.5625,
+              "damage": 24.583333333333332,
+              "attackDamage": 20.07638888888889,
+              "spellDamage": 4.506944444444445,
+              "moraleLost": 10.784722222222221,
+              "gems": 7.097222222222222,
+              "crystals": 5.944444444444445,
+              "cups": 3.3055555555555554,
+              "actions": 26.645833333333332,
+              "exchanges": 0
+            }
+          }
+        }
+      },
+      "groups": {
+        "mirrorAssault": {
+          "games": 36,
+          "seeds": 3,
+          "wins": 16,
+          "losses": 20,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.4444444444444444,
+          "winRate": 0.4444444444444444,
+          "clusterBootstrap95": [
+            0.25,
+            0.6666666666666666
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 621,
+                "hits": 322,
+                "damage": 909,
+                "attackDamage": 736,
+                "spellDamage": 173,
+                "moraleLost": 470,
+                "gems": 210,
+                "crystals": 115,
+                "cups": 66,
+                "actions": 639,
+                "exchanges": 0
+              },
+              "hitRate": 0.5185185185185185,
+              "perGame": {
+                "attacks": 17.25,
+                "hits": 8.944444444444445,
+                "damage": 25.25,
+                "attackDamage": 20.444444444444443,
+                "spellDamage": 4.805555555555555,
+                "moraleLost": 13.055555555555555,
+                "gems": 5.833333333333333,
+                "crystals": 3.1944444444444446,
+                "cups": 1.8333333333333333,
+                "actions": 17.75,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 626,
+                "hits": 340,
+                "damage": 967,
+                "attackDamage": 797,
+                "spellDamage": 170,
+                "moraleLost": 420,
+                "gems": 206,
+                "crystals": 136,
+                "cups": 71,
+                "actions": 632,
+                "exchanges": 0
+              },
+              "hitRate": 0.5431309904153354,
+              "perGame": {
+                "attacks": 17.38888888888889,
+                "hits": 9.444444444444445,
+                "damage": 26.86111111111111,
+                "attackDamage": 22.13888888888889,
+                "spellDamage": 4.722222222222222,
+                "moraleLost": 11.666666666666666,
+                "gems": 5.722222222222222,
+                "crystals": 3.7777777777777777,
+                "cups": 1.9722222222222223,
+                "actions": 17.555555555555557,
+                "exchanges": 0
+              }
+            }
+          }
+        },
+        "mirrorMixed": {
+          "games": 36,
+          "seeds": 3,
+          "wins": 16,
+          "losses": 20,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.4444444444444444,
+          "winRate": 0.4444444444444444,
+          "clusterBootstrap95": [
+            0.3333333333333333,
+            0.5833333333333334
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 818,
+                "hits": 318,
+                "damage": 709,
+                "attackDamage": 558,
+                "spellDamage": 151,
+                "moraleLost": 302,
+                "gems": 269,
+                "crystals": 286,
+                "cups": 142,
+                "actions": 1311,
+                "exchanges": 0
+              },
+              "hitRate": 0.38875305623471884,
+              "perGame": {
+                "attacks": 22.72222222222222,
+                "hits": 8.833333333333334,
+                "damage": 19.694444444444443,
+                "attackDamage": 15.5,
+                "spellDamage": 4.194444444444445,
+                "moraleLost": 8.38888888888889,
+                "gems": 7.472222222222222,
+                "crystals": 7.944444444444445,
+                "cups": 3.9444444444444446,
+                "actions": 36.416666666666664,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 838,
+                "hits": 319,
+                "damage": 748,
+                "attackDamage": 593,
+                "spellDamage": 155,
+                "moraleLost": 289,
+                "gems": 283,
+                "crystals": 303,
+                "cups": 160,
+                "actions": 1297,
+                "exchanges": 0
+              },
+              "hitRate": 0.38066825775656327,
+              "perGame": {
+                "attacks": 23.27777777777778,
+                "hits": 8.86111111111111,
+                "damage": 20.77777777777778,
+                "attackDamage": 16.47222222222222,
+                "spellDamage": 4.305555555555555,
+                "moraleLost": 8.027777777777779,
+                "gems": 7.861111111111111,
+                "crystals": 8.416666666666666,
+                "cups": 4.444444444444445,
+                "actions": 36.02777777777778,
+                "exchanges": 0
+              }
+            }
+          }
+        },
+        "asymmetric": {
+          "games": 36,
+          "seeds": 3,
+          "wins": 20,
+          "losses": 16,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.5555555555555556,
+          "winRate": 0.5555555555555556,
+          "clusterBootstrap95": [
+            0.4166666666666667,
+            0.75
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 760,
+                "hits": 337,
+                "damage": 947,
+                "attackDamage": 773,
+                "spellDamage": 174,
+                "moraleLost": 391,
+                "gems": 221,
+                "crystals": 183,
+                "cups": 102,
+                "actions": 865,
+                "exchanges": 0
+              },
+              "hitRate": 0.44342105263157894,
+              "perGame": {
+                "attacks": 21.11111111111111,
+                "hits": 9.36111111111111,
+                "damage": 26.305555555555557,
+                "attackDamage": 21.47222222222222,
+                "spellDamage": 4.833333333333333,
+                "moraleLost": 10.86111111111111,
+                "gems": 6.138888888888889,
+                "crystals": 5.083333333333333,
+                "cups": 2.8333333333333335,
+                "actions": 24.02777777777778,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 779,
+                "hits": 374,
+                "damage": 868,
+                "attackDamage": 732,
+                "spellDamage": 136,
+                "moraleLost": 454,
+                "gems": 306,
+                "crystals": 214,
+                "cups": 132,
+                "actions": 1044,
+                "exchanges": 0
+              },
+              "hitRate": 0.48010269576379977,
+              "perGame": {
+                "attacks": 21.63888888888889,
+                "hits": 10.38888888888889,
+                "damage": 24.11111111111111,
+                "attackDamage": 20.333333333333332,
+                "spellDamage": 3.7777777777777777,
+                "moraleLost": 12.61111111111111,
+                "gems": 8.5,
+                "crystals": 5.944444444444445,
+                "cups": 3.6666666666666665,
+                "actions": 29,
+                "exchanges": 0
+              }
+            }
+          }
+        },
+        "asymmetricReverse": {
+          "games": 36,
+          "seeds": 3,
+          "wins": 16,
+          "losses": 20,
+          "draws": 0,
+          "truncated": 0,
+          "scoreRate": 0.4444444444444444,
+          "winRate": 0.4444444444444444,
+          "clusterBootstrap95": [
+            0.25,
+            0.6666666666666666
+          ],
+          "metrics": {
+            "candidate": {
+              "totals": {
+                "attacks": 810,
+                "hits": 376,
+                "damage": 877,
+                "attackDamage": 732,
+                "spellDamage": 145,
+                "moraleLost": 469,
+                "gems": 285,
+                "crystals": 236,
+                "cups": 133,
+                "actions": 1069,
+                "exchanges": 0
+              },
+              "hitRate": 0.4641975308641975,
+              "perGame": {
+                "attacks": 22.5,
+                "hits": 10.444444444444445,
+                "damage": 24.36111111111111,
+                "attackDamage": 20.333333333333332,
+                "spellDamage": 4.027777777777778,
+                "moraleLost": 13.027777777777779,
+                "gems": 7.916666666666667,
+                "crystals": 6.555555555555555,
+                "cups": 3.6944444444444446,
+                "actions": 29.694444444444443,
+                "exchanges": 0
+              }
+            },
+            "opponent": {
+              "totals": {
+                "attacks": 793,
+                "hits": 344,
+                "damage": 957,
+                "attackDamage": 769,
+                "spellDamage": 188,
+                "moraleLost": 390,
+                "gems": 227,
+                "crystals": 203,
+                "cups": 113,
+                "actions": 864,
+                "exchanges": 0
+              },
+              "hitRate": 0.4337957124842371,
+              "perGame": {
+                "attacks": 22.02777777777778,
+                "hits": 9.555555555555555,
+                "damage": 26.583333333333332,
+                "attackDamage": 21.36111111111111,
+                "spellDamage": 5.222222222222222,
+                "moraleLost": 10.833333333333334,
+                "gems": 6.305555555555555,
+                "crystals": 5.638888888888889,
+                "cups": 3.138888888888889,
+                "actions": 24,
+                "exchanges": 0
+              }
+            }
+          }
+        }
+      },
+      "byStart": {
+        "0": {
+          "games": 24,
+          "seeds": 3,
+          "mean": 0.5833333333333334,
+          "cluster95": [
+            0.5,
+            0.75
+          ]
+        },
+        "1": {
+          "games": 24,
+          "seeds": 3,
+          "mean": 0.5416666666666666,
+          "cluster95": [
+            0.5,
+            0.625
+          ]
+        },
+        "2": {
+          "games": 24,
+          "seeds": 3,
+          "mean": 0.4166666666666667,
+          "cluster95": [
+            0.25,
+            0.625
+          ]
+        },
+        "3": {
+          "games": 24,
+          "seeds": 3,
+          "mean": 0.375,
+          "cluster95": [
+            0.125,
+            0.625
+          ]
+        },
+        "4": {
+          "games": 24,
+          "seeds": 3,
+          "mean": 0.2916666666666667,
+          "cluster95": [
+            0.125,
+            0.5
+          ]
+        },
+        "5": {
+          "games": 24,
+          "seeds": 3,
+          "mean": 0.625,
+          "cluster95": [
+            0.5,
+            0.75
+          ]
+        }
+      },
+      "byColor": {
+        "red": {
+          "games": 72,
+          "seeds": 3,
+          "mean": 0.49999999999999994,
+          "cluster95": [
+            0.4583333333333333,
+            0.5416666666666666
+          ]
+        },
+        "blue": {
+          "games": 72,
+          "seeds": 3,
+          "mean": 0.4444444444444444,
+          "cluster95": [
+            0.25,
+            0.5416666666666666
+          ]
+        }
+      }
+    }
+  ],
+  "performance": {
+    "times": {
+      "experimental/economy-capability-1": {
+        "samples": 30,
+        "medianMs": 3.9370650000000182,
+        "p95Ms": 67.012832
+      },
+      "experimental/action-value-1": {
+        "samples": 30,
+        "medianMs": 7.04690800000003,
+        "p95Ms": 78.20698700000003
+      }
+    },
+    "ratios": {
+      "median": 1.7898886607155324,
+      "p95": 1.1670449474512585
+    },
+    "scope": "same-process 10 archived public observations ×3 measured repetitions; not entire match latency"
+  }
+}
