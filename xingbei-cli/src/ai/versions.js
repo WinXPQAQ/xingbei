@@ -13,6 +13,8 @@ const choices = {
   'all-1': createPolicy({ defense: true, heroes: true }),
   'read-off': createPolicy({ reading: false }),
 };
+// Promoted after the preregistered holdout gate; exactly the frozen read-1 candidate.
+choices['v1.1'] = choices['read-1'];
 export const policies = Object.freeze(Object.fromEntries(Object.entries(choices).map(([id, policy]) => [id, Object.freeze({ ...policy, runAiAction: (game, actorId, options) => runPolicyAction(policy, game, actorId, options) })])));
 export function getPolicy(id) {
   if (!Object.hasOwn(policies, id)) throw new Error(`Unknown AI policy: ${id}`);

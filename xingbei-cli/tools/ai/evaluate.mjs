@@ -1,3 +1,4 @@
+import { policyView, publicRequest } from './privacy.mjs';
 import { Game, Timing } from '../../src/engine.js';
 import { getPolicy } from '../../src/ai/versions.js';
 
@@ -18,28 +19,33 @@ export function schedule({ firstSeed, seeds, selected = Object.keys(lineups) }) 
     [0,1].flatMap(start => ['red','blue'].map(team => ({ lineup, seed, start, team })))));
 }
 const emptyMetrics = () => ({ attacks: 0, hits: 0, damage: 0, attackDamage: 0, spellDamage: 0, moraleLost: 0, gems: 0, crystals: 0, cups: 0, actions: 0 });
-export async function playMatch(config, { candidate = 'read-1', opponent = 'v1.0', turnLimit = 500 } = {}) {
+export async function playMatch(config, { candidate = 'read-1', opponent = 'v1.0', turnLimit = 500, audit = false, observations = true } = {}) {
   const { lineup, seed, start, team } = config;
   const heroIds = mirrorRoster(lineups[lineup], seed % 3);
   const game = new Game({ seed, heroIds }).setup();
   game.current = start;
+  if (!observations) game.publicHistory = { events: [], sequence: 0, move() {}, attack() {}, append() {} };
   const policies = { red: getPolicy(team === 'red' ? candidate : opponent), blue: getPolicy(team === 'blue' ? candidate : opponent) };
   const metrics = { red: emptyMetrics(), blue: emptyMetrics() };
   const initial = game.players.map(p => ({ id: p.id, hero: p.hero.id, team: p.team, cards: p.hand.map(c => c.id) }));
   const policy = id => policies[game.player(id).team];
+  const view = id => audit ? policyView(game, id) : game;
+  const discard = (id, excess) => policy(id).chooseAiDiscard(view(id), id, excess);
+  const response = request => { const v = view(request.target.id); return policy(request.target.id).chooseAiResponse(v, audit ? publicRequest(request,v) : request); };
   const options = {
-    overflow: (player, excess) => policy(player.id).chooseAiDiscard(game, player.id, excess),
+    overflow: (player, excess) => discard(player.id, excess),
     choose: request => decide(request),
-    chooseResponse: request => policy(request.target.id).chooseAiResponse(game, request),
+    chooseResponse: response,
     resolveOverflow: request => game.resolveOverflowWithDecisions(request.player.id,
-      policy(request.player.id).chooseAiDiscard(game, request.player.id, request.player.hand.length - request.player.handLimit), options),
+      discard(request.player.id, request.player.hand.length - request.player.handLimit), options),
   };
   function decide(request) {
     if (request.type === 'response') return options.chooseResponse(request);
     if (request.type === 'overflow') return options.resolveOverflow(request);
     const id = request.playerId ?? request.player?.id;
     if (id == null) throw new Error(`Unrouted decision: ${request.type}`);
-    return policy(id).chooseAiRuleDecision(request, game);
+    const v = view(id);
+    return policy(id).chooseAiRuleDecision(audit ? publicRequest(request, v) : request, v);
   }
   // All synchronous nested choices (e.g. draw overflow / angel shelter) are routed
   // too. Never fall back to the production AI imported by Game.
@@ -71,7 +77,7 @@ export async function playMatch(config, { candidate = 'read-1', opponent = 'v1.0
       let actions = 0;
       do {
         if (++actions > 20) throw new Error(`Action limit: ${JSON.stringify(config)}`);
-        const action = policy(id).chooseAiAction(game, id);
+        const action = policy(id).chooseAiAction(view(id), id);
         metrics[game.player(id).team].actions++;
         if (action.type === 'pass') { if (game.turn.hasExtraActions()) game.skipExtraActions(id); break; }
         await game.executeAction(id, action, options);

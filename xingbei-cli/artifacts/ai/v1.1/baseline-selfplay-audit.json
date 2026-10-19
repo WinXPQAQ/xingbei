@@ -1,0 +1,14 @@
+{
+  "input": "xingbei-cli/artifacts/ai/v1.1/baseline-selfplay.json",
+  "sourceCommit": "8a20f63cc038b3fdad725cdf4fc61f6eab56e90a",
+  "games": 240,
+  "audit": true,
+  "identical": [
+    "winner",
+    "turns",
+    "initial",
+    "metrics",
+    "outcome"
+  ],
+  "elapsedSeconds": 11.409694596000001
+}

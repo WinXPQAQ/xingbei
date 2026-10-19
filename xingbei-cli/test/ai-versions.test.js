@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { Game } from '../src/engine.js';
 import * as production from '../src/ai.js';
+import { rankAiActions as originalRank } from '../src/ai/actions.js';
 import { getPolicy } from '../src/ai/versions.js';
 import { PublicHistory, publicBeliefs } from '../src/ai/public-history.js';
 import { hitEstimate } from '../src/ai/v1.1/reading.js';
@@ -16,8 +17,8 @@ test('v1.0 frozen module hashes and disabled reading preserve the original polic
   for(const [name,hash] of Object.entries(hashes.files)) assert.equal(createHash('sha256').update(readFileSync(new URL(`../src/ai/v1.0/${name}`,import.meta.url))).digest('hex'),hash);
   for(const hero of Object.values(lineups).flat()) {
     const game=new Game({seed:32,playerHeroId:hero}).setup();
-    assert.deepEqual(getPolicy('v1.0').chooseAiAction(game,0),production.chooseAiAction(game,0));
-    assert.deepEqual(getPolicy('read-off').chooseAiAction(game,0),production.chooseAiAction(game,0));
+    assert.deepEqual(getPolicy('v1.0').chooseAiAction(game,0),originalRank(game,0)[0].action);
+    assert.deepEqual(getPolicy('read-off').chooseAiAction(game,0),originalRank(game,0)[0].action);
     assert.equal(getPolicy('read-1').chooseAiResponse,getPolicy('v1.0').chooseAiResponse);
     assert.equal(getPolicy('read-1').chooseAiRuleDecision,getPolicy('v1.0').chooseAiRuleDecision);
     assert.equal(getPolicy('read-1').chooseAiDiscard,getPolicy('v1.0').chooseAiDiscard);
@@ -129,4 +130,30 @@ test('standalone version runner owns nested decisions and restores engine fallba
   const fallback=()=>{throw new Error('production fallback must not run')};g.automaticDecision=fallback;
   getPolicy('v1.0').runAiAction(g,0);
   assert.equal(g.automaticDecision,fallback);g.assertCardLocations();
+});
+
+test('full games under a private-state capability guard match unrestricted policy decisions',async()=>{
+  for(const lineup of Object.keys(lineups)) {
+    const config={lineup,seed:91,start:1,team:'blue'};
+    const plain=await playMatch(config,{candidate:'read-1',opponent:'v1.0'});
+    const guarded=await playMatch(config,{candidate:'read-1',opponent:'v1.0',audit:true});
+    assert.equal(guarded.winner,plain.winner);assert.equal(guarded.turns,plain.turns);assert.deepEqual(guarded.metrics,plain.metrics);
+  }
+});
+
+test('observation hooks never alter baseline rules, RNG or results',async()=>{
+  const config={lineup:'spell',seed:14,start:0,team:'red'};
+  const observed=await playMatch(config,{candidate:'v1.0',opponent:'v1.0'});
+  const silent=await playMatch(config,{candidate:'v1.0',opponent:'v1.0',observations:false});
+  assert.equal(observed.winner,silent.winner);assert.equal(observed.turns,silent.turns);assert.deepEqual(observed.metrics,silent.metrics);
+});
+
+
+test('production v1.1 is the frozen read-1 candidate with baseline defense/skills/discard',()=>{
+  const g=new Game({seed:117}).setup();
+  assert.equal(production.AI_POLICY_VERSION,'v1.1');
+  assert.deepEqual(production.rankAiActions(g,0),getPolicy('read-1').rankAiActions(g,0));
+  assert.equal(production.chooseAiResponse,getPolicy('v1.0').chooseAiResponse);
+  assert.equal(production.chooseAiRuleDecision,getPolicy('v1.0').chooseAiRuleDecision);
+  assert.equal(production.chooseAiDiscard,getPolicy('v1.0').chooseAiDiscard);
 });

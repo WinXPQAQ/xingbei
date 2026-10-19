@@ -1,23 +1,14 @@
-import { resolveSync } from "./resolution/decisions.js";
-import { rankAiActions } from "./ai/actions.js";
-import { chooseAiRuleDecision } from "./ai/decisions.js";
-export { rankAiActions } from "./ai/actions.js";
-export { chooseAiResponse, chooseAiRuleDecision } from "./ai/decisions.js";
-export { cardScore, chooseAiDiscard, keepCards, giftScore } from "./ai/evaluation.js";
-export { planWindAttacks } from "./ai/wind-plan.js";
-
-export function chooseAiAction(game, actorId) { return rankAiActions(game, actorId)[0].action; }
-
-export function runAiAction(game, actorId, { autoRespond = true } = {}) {
-  const action = chooseAiAction(game, actorId);
-  const options = { autoRespond, ai: true, overflow: "ai", choose: request => chooseAiRuleDecision(request, game) };
-  if (action.type === "refresh") game.refreshUnableHand(actorId, options);
-  else if (action.type === "purchase") game.purchase(actorId, options);
-  else if (action.type === "refine") game.refine(actorId, action.stones, options);
-  else if (action.type === "synthesize") game.synthesize(actorId, action.gemCount, options);
-  else if (action.type === "skill") resolveSync(game.skillActionSteps(actorId, action, options), request => game.automaticDecision(request, options));
-  else if (action.type === "play") game.play(actorId, action.index, action.targetId, options);
-  else if (game.turn.hasExtraActions()) game.skipExtraActions(actorId);
-  else game.log.push(`${game.player(actorId).name}跳过行动`);
-  return action;
-}
+// Shared production policy for CLI, browser and automatic engine decisions.
+import { getPolicy } from "./ai/versions.js";
+export const AI_POLICY_VERSION = "v1.1";
+const policy = getPolicy(AI_POLICY_VERSION);
+export const rankAiActions = (game, actorId) => policy.rankAiActions(game, actorId);
+export const chooseAiAction = (game, actorId) => policy.chooseAiAction(game, actorId);
+export const chooseAiResponse = policy.chooseAiResponse;
+export const chooseAiRuleDecision = policy.chooseAiRuleDecision;
+export const chooseAiDiscard = policy.chooseAiDiscard;
+export const cardScore = policy.cardScore;
+export const keepCards = policy.keepCards;
+export const giftScore = policy.giftScore;
+export const planWindAttacks = policy.planWindAttacks;
+export const runAiAction = (game, actorId, options) => policy.runAiAction(game, actorId, options);
