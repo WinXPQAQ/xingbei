@@ -58,7 +58,7 @@ export function isolatePolicy(raw, {history = true} = {}) {
     for (const key of ['target','actor','player','nextTarget']) if (request[key]) out[key] = v.player(request[key].id);
     if (request.counterTargets) out.counterTargets = request.counterTargets.map(p => v.player(p.id));
     if (request.valid) out.valid = request.valid.map(e => typeof e === 'number' ? e : {index: e.index, card: v.cards.get(e.card.id)});
-    if (request.context) out.context = { targetId: request.context.targetId, amount: request.context.amount, card: v.cards.get(request.context.card?.id) };
+    if (request.context) out.context = { targetId: request.context.targetId, amount: request.context.amount, damageType: request.context.damageType, card: v.cards.get(request.context.card?.id) };
     if (request.attack) out.attack = v.cards.get(request.attack.id);
     return out;
   };

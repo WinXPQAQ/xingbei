@@ -542,10 +542,10 @@ export class Game {
     const id = yield { type: "playerChoice", playerId, title, ...metadata, choices: targets.map(id => ({ value: id, label: `${this.player(id).name} · ${this.player(id).hero.name}` })), defaultValue: targets.includes(playerId) ? playerId : targets[0] };
     if (!targets.includes(id)) throw new RuleError("无效的目标选择"); return id;
   }
-  *chooseBasicEffect(playerId, cards, title) {
+  *chooseBasicEffect(playerId, cards, title, metadata = {}) {
     const effects = cards.filter(card => card.location.zone === "status" && card.category === "basic");
     if (!effects.length) throw new RuleError("没有基础效果可以选择");
-    const id = yield { type: "effectChoice", playerId, title, choices: effects.map((card, index) => ({ value: card.id, label: `${this.player(card.location.playerId).name}：${this.effects.get(card.attachment.effectId)?.name ?? cardName(card)} · ${index + 1}${card.attachment.sourcePlayerId == null ? "" : "（来自" + this.player(card.attachment.sourcePlayerId).name + "）"}` })), defaultValue: effects[0].id };
+    const id = yield { type: "effectChoice", playerId, title, ...metadata, choices: effects.map((card, index) => ({ value: card.id, label: `${this.player(card.location.playerId).name}：${this.effects.get(card.attachment.effectId)?.name ?? cardName(card)} · ${index + 1}${card.attachment.sourcePlayerId == null ? "" : "（来自" + this.player(card.attachment.sourcePlayerId).name + "）"}` })), defaultValue: effects[0].id };
     if (!effects.some(card => card.id === id)) throw new RuleError("无效的基础效果"); return id;
   }
   *removeBasicEffectSteps(cardId, actorId, options = {}) {

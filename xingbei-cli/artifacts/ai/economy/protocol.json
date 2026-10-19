@@ -1,0 +1,8 @@
+{
+  "purpose":"v1.3 candidate quality gate; production stays v1.2",
+  "training":{"seed":61001,"starts":[0,1],"rosters":3,"gamesPerPair":12,"iterations":"Both exploratory iterations retained. Dirty source at run time: not frozen acceptance evidence."},
+  "acceptance":{"firstSeed":72001,"seeds":6,"starts":[0,1,2,3,4,5],"colors":["red","blue"],"rosters":["mirrorAssault","mirrorMixed","asymmetric"],"gamesPerPair":216,"turnLimit":300,"pairedFactionSwap":true},
+  "pairs":[["experimental/economy-1","v1.2"],["experimental/economy-1","v1.0"],["experimental/economy-1","experimental/style-flow"],["experimental/economy-1","experimental/style-reserve"],["v1.2","experimental/style-flow"],["v1.2","experimental/style-reserve"],["experimental/economy-no-sequence","v1.2"],["experimental/economy-no-hand","v1.2"]],
+  "gates":{"testsAndPrivacy":"all pass; no unresolved blocking review issues","versusV12":"score >= 0.55, seed-cluster bootstrap lower bound >= 0.45, each lineup >= 0.45","versusV10":"score >= 0.55","styles":"score >= 0.50 against each independent-scoring style","truncation":"<= 1% per pair; counted as half score, never called a win","ablation":"report every result; do not infer causality from one matchup"},
+  "constraints":["Freeze source before acceptance; no weight changes based on acceptance outcomes","A failed gate does not promote the candidate; retain evidence and reserve fresh seeds for later iterations","Six seed clusters and three rosters are limited evidence, not human-strength validation","Style opponents share legality and mandatory-rule helpers but use separate action/response scores","Telemetry is diagnostic: burden/idle energy use declared heuristic definitions, not ground-truth regret"]
+}

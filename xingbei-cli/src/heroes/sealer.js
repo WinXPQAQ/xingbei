@@ -60,7 +60,7 @@ function createSkills(hero) {
       },
       *resolveAction({ game, player, targetIds, options }) {
         const target = game.player(targetIds[0]), effects = target.getBasicEffects();
-        const id = yield* game.chooseBasicEffect(player.id, effects, "封印破碎：选择收入手中的基础效果");
+        const id = yield* game.chooseBasicEffect(player.id, effects, "封印破碎：选择收入手中的基础效果", { skillId: "sealBreaking" });
         yield* game.paySkillEnergy(player.id, "crystal");
         game.removeEffect(id, { zone: "hand", playerId: player.id });
         game.draw(player.id, 0, { overflow: options.overflow });

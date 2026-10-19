@@ -11,7 +11,7 @@ function createSkills(hero) {
       *resolveAction({ game, player, cards, targetIds, options }) {
         game.discardCards(player.id, cards, { reason: "waterPower" }); yield* game.flushRuleEvents(options);
         if (player.hand.length) {
-          const given = yield* game.chooseHandCards(player.id, 1, () => true, { title: "水之神力：交给队友1张牌", purpose: "give", recipientId: targetIds[0] });
+          const given = yield* game.chooseHandCards(player.id, 1, () => true, { title: "水之神力：交给队友1张牌", purpose: "give", skillId: "waterPower", recipientId: targetIds[0] });
           game.giveCards(player.id, targetIds[0], given);
         } else game.logSkill(player.id, "waterPower", "支付费用后无剩余手牌，未交牌");
         game.changeHealing(player.id, 1); game.changeHealing(targetIds[0], 1);
