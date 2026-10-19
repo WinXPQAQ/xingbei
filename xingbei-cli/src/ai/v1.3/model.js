@@ -1,7 +1,10 @@
 // Pure approximate evaluator over a detached public observation. Never a Game.
 // Units are heuristic team utility, NOT damage or a calibrated win probability.
 export const weights = Object.freeze({ morale: 30, cup: 48, stone: 5, healing: 2.5, unknown: 2.6 });
-export const clone = s => structuredClone(s);
+import {costBeliefs} from '../v1.1/fusion.js';
+// History/beliefs are immutable for a decision. Cloning them at every simulated
+// branch made long-history wind sequences unusably slow without adding evidence.
+export const clone = s => {const {history,beliefs,...mutable}=s;return {...structuredClone(mutable),history,beliefs};};
 export const traits = (c, id) => c?.traits?.[id]?.elements ?? c?.elements ?? [];
 export const cardData = c => ({id:c.id,name:c.name,type:c.type,elements:[...c.elements],uniqueSkills:[...c.uniqueSkills],traits:structuredClone(c.traits)});
 export function stateOf(g, id, { economy = true } = {}) {
@@ -11,7 +14,8 @@ export function stateOf(g, id, { economy = true } = {}) {
    known:[],healing:p.healing,healingLimit:g.getHealingLimit(p.id),energy:{...p.energy},
    effects:p.statuses.map(c=>({id:c.id,name:c.attachment.effectId,card:{id:c.id,name:c.name,type:c.type,elements:[...c.elements],uniqueSkills:[...c.uniqueSkills],traits:c.traits}})) })),
   teams:Object.fromEntries(Object.entries(g.teams).map(([t,v])=>[t,{morale:v.morale,cups:v.cups,...g.stoneCounts(t)}])),
-  history:structuredClone(g.publicHistory?.events??[]) };
+  history:Object.freeze(structuredClone(g.publicHistory?.events??[]).map(e=>{if(e.elements)Object.freeze(e.elements);return Object.freeze(e);})),
+  beliefs:Object.freeze(Object.fromEntries([...costBeliefs(g)].map(([id,gaps])=>[id,Object.freeze(gaps)]))) };
 }
 export function burden(n, limit=6) { const x=Math.max(0,n-(limit-3));return 1.3*x*x; }
 export function handValue(s,p) {

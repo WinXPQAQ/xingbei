@@ -1,0 +1,77 @@
+{
+  "purpose": "Bounded economy-2 fresh acceptance after performance rejection of a9",
+  "previousAcceptance": "72001-72006 used only for rejected economy-1; no weight tuning from them",
+  "firstSeed": 82001,
+  "seeds": 6,
+  "starts": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "colors": [
+    "red",
+    "blue"
+  ],
+  "rosters": [
+    "mirrorAssault",
+    "mirrorMixed",
+    "asymmetric",
+    "asymmetricReverse"
+  ],
+  "pairs": [
+    [
+      "experimental/economy-2",
+      "v1.2"
+    ],
+    [
+      "experimental/economy-2",
+      "v1.0"
+    ],
+    [
+      "experimental/economy-2",
+      "experimental/style-flow"
+    ],
+    [
+      "experimental/economy-2",
+      "experimental/style-reserve"
+    ],
+    [
+      "v1.2",
+      "experimental/style-flow"
+    ],
+    [
+      "v1.2",
+      "experimental/style-reserve"
+    ],
+    [
+      "experimental/economy-2-no-sequence",
+      "v1.2"
+    ],
+    [
+      "experimental/economy-2-no-hand",
+      "v1.2"
+    ]
+  ],
+  "gamesPerPair": 288,
+  "totalGames": 2304,
+  "turnLimit": 300,
+  "gates": {
+    "testsAndPrivacy": "all pass; no unresolved blocking review issues",
+    "versusV12": "score >= 0.55, seed-cluster bootstrap lower bound >= 0.45, each lineup >= 0.45",
+    "versusV10": "score >= 0.55",
+    "styles": "score >= 0.50 against each independent-scoring style",
+    "truncation": "<= 1% per pair; counted as half score, never called a win",
+    "ablation": "report every result; do not infer causality from one matchup"
+  },
+  "performanceGate": "Stress full-wind/history case must finish below 2 seconds on this host (observational timing); deterministic per-root expansion cap128 required in tests",
+  "constraints": [
+    "No default change or push before parent acceptance",
+    "Freeze source before running; no tuning from these seeds",
+    "Both asymmetric hero assignments included from start",
+    "Treat asymmetric pair as one balanced lineup for lineup gate; also report each assignment",
+    "Independent styles remain stress tests, not human-strength evidence"
+  ]
+}

@@ -19,7 +19,7 @@ export function enumerate(g,id) {
  return actions;
 }
 export function createEconomyPolicy({sequence=true,economy=true}={}) {
- const version=!economy?'experimental/economy-no-hand':!sequence?'experimental/economy-no-sequence':'experimental/economy-1';
+ const version=!economy?'experimental/economy-2-no-hand':!sequence?'experimental/economy-2-no-sequence':'experimental/economy-2';
  const state=(g,id)=>stateOf(g,id,{economy});
  const raw={...baseline,
   rankAiActions(g,id) {const s=state(g,id);return enumerate(g,id).map(action=>{const plan=actionPlan(s,id,action,{sequence});return {action,score:plan.score,reason:'expected-state-difference',explanation:explain(s,plan)};}).sort((a,b)=>b.score-a.score);},

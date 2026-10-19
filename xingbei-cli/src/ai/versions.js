@@ -1,5 +1,6 @@
 import { createFusionPolicy } from './v1.1/fusion.js';
 import { createEconomyPolicy } from './v1.3/index.js';
+import { createEconomyPolicy as createFrozenEconomyPolicy } from './v1.3-a9/index.js';
 import { createChallenger } from './v1.3/challengers.js';
 import { runPolicyAction } from './runner.js';
 import * as baseline from './v1.0/index.js';
@@ -7,9 +8,12 @@ import { createPolicy } from './v1.1/index.js';
 // Explicit matchups remain possible; no assumption that version ordering implies strength.
 const choices = {
   'v1.0': baseline,
-  'experimental/economy-1': createEconomyPolicy(),
-  'experimental/economy-no-sequence': createEconomyPolicy({ sequence: false }),
-  'experimental/economy-no-hand': createEconomyPolicy({ economy: false }),
+  'experimental/economy-1': createFrozenEconomyPolicy(),
+  'experimental/economy-2': createEconomyPolicy(),
+  'experimental/economy-2-no-sequence': createEconomyPolicy({ sequence: false }),
+  'experimental/economy-2-no-hand': createEconomyPolicy({ economy: false }),
+  'experimental/economy-no-sequence': createFrozenEconomyPolicy({ sequence: false }),
+  'experimental/economy-no-hand': createFrozenEconomyPolicy({ economy: false }),
   'experimental/style-flow': createChallenger('flow'),
   'experimental/style-reserve': createChallenger('reserve'),
   'fusion-1': createFusionPolicy(),

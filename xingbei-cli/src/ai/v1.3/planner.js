@@ -1,11 +1,12 @@
 import {createDeck} from '../../cards.js';
-import {costBeliefs} from '../v1.1/fusion.js';
 import {clone,traits,value,difference,spend,remove,draw,damage,heal,payEnergy,stones,transfer,overflow} from './model.js';
 const printed=createDeck();
 const lightRate=printed.filter(c=>c.name==='holyLight').length/printed.length;
 const special=(c,id)=>c.uniqueSkills.includes(id);
 const enemy=(s,id)=>s.players.filter(p=>p.team!==s.players[id].team);
 const terminal=s=>Object.values(s.teams).some(t=>t.morale<=0||t.cups>=5);
+export const SEARCH_LIMIT=128;
+const searchBudget=()=>({left:SEARCH_LIMIT,used:0});
 export function piercingOptions(s,id,targetId,allowed=null) {
  const result=[{card:null,state:clone(s),score:0,parts:difference(s,s)}];
  for(const c of s.players[id].hand.filter(c=>c.type==='spell'&&(!allowed||allowed.includes(c.id)))) {
@@ -20,7 +21,7 @@ export function giftOptions(s,id,targetId,cards=s.players[id].hand) {
 export function probability(s,id,c,targetId,{forced=false,storm=false}={}) {
  const target=s.players[targetId];if(forced)return {hit:1,light:0,counter:0};
  if(target.effects.some(e=>e.name==='holyShield')&&!storm)return {hit:0,light:0,counter:0,shield:true};
- const gaps=costBeliefs({publicHistory:{events:s.history}}).get(targetId)??{},elements=traits(c,id);
+ const gaps=s.beliefs[targetId]??{},elements=traits(c,id);
  const canCounter=c.name!=='darkStrike'&&!storm&&!(s.players[id].hero==='marksman'&&elements.includes('thunder'));
  const counter=canCounter?printed.filter(x=>x.type==='attack'&&(x.name==='darkStrike'||x.elements.some(e=>elements.includes(e)))).length/printed.length*(1-Math.min(...elements.map(e=>gaps[e]??0))):0;
  const light=lightRate*(1-(gaps.light??0)),r=counter+light,hit=(1-r)**target.count;
@@ -83,16 +84,27 @@ export function magicBranches(s,sourceId,targetId,amount=2,participants=[sourceI
  else branches.push({probability:(1-hitChance)*(1-lightShare),state:answer,path:['magic-relay-horizon']});
  return branches.filter(b=>b.probability>0);
 }
-export function bestAttack(s,id,{count=0,depth=1,restriction=null,sequence=true}={}) {
+export function bestAttack(s,id,{count=0,depth=1,restriction=null,sequence=true,budget=searchBudget()}={}) {
  let best={score:0,branches:[{probability:1,state:s,path:['pass']}],card:null,targetId:null};
  if(terminal(s)||depth<1)return best;
+ const immediate=[];
  for(const c of s.players[id].hand.filter(c=>c.type==='attack'&&(!restriction||traits(c,id).includes(restriction)))) for(const t of enemy(s,id)) {
-  const candidate=planAttack(s,id,c,t.id,{count,depth,sequence});
+  if(!budget.left)break;
+  const candidate=planAttack(s,id,c,t.id,{count,depth:1,sequence,budget});
+  immediate.push({...candidate,card:c.id,targetId:t.id});
   if(candidate.score>best.score)best={...candidate,card:c.id,targetId:t.id};
+ }
+ // Two best immediate continuations receive deeper search. Immediate negative
+ // candidates remain eligible: a costly second attack can enable the third.
+ if(depth>1)for(const entry of immediate.sort((a,b)=>b.score-a.score).slice(0,2)) {
+  if(!budget.left)break;
+  const c=s.players[id].hand.find(c=>c.id===entry.card),candidate=planAttack(s,id,c,entry.targetId,{count,depth,sequence,budget});
+  if(candidate.score>best.score)best={...candidate,card:c.id,targetId:entry.targetId};
  }
  return best;
 }
-export function planAttack(s,id,c,targetId,{count=0,depth=1,sequence=true}={}) {
+export function planAttack(s,id,c,targetId,{count=0,depth=1,sequence=true,budget=searchBudget()}={}) {
+ budget.left--;budget.used++;
  let best=null;
  const precision=s.players[id].hero==='marksman'&&special(c,'precisionShot')?[false,true]:[false];
  for(const usePrecision of precision) {
@@ -109,7 +121,7 @@ export function planAttack(s,id,c,targetId,{count=0,depth=1,sequence=true}={}) {
     for(const option of choices.filter(o=>o.skill)) {
      const next=clone(b.state);if(option.cost)payEnergy(next,id);
      next.turn??={usedSkills:{}};next.turn.usedSkills??={};next.turn.usedSkills[option.skill]=true;
-     const found=bestAttack(next,id,{count:count+1,depth:depth-1,restriction:option.restriction,sequence});
+     const found=bestAttack(next,id,{count:count+1,depth:depth-1,restriction:option.restriction,sequence,budget});
      const gain=expected(found.branches)-value(b.state);if(gain>follow.score)follow={...found,score:gain};
     }
     return follow.branches.map(f=>({probability:b.probability*f.probability,state:f.state,path:[...b.path,...f.path]}));
@@ -132,8 +144,9 @@ export function removeEffectOptions(s,id,targets,{take=false}={}) {
  return result.sort((a,b)=>value(b.state)-value(a.state));
 }
 export function actionPlan(s,id,action,{sequence=true}={}) {
+ const budget=searchBudget();
  const p=s.players[id],card=action.type==='play'?p.hand[action.index]:null;
- if(card?.type==='attack')return planAttack(s,id,card,action.targetId,{count:s.turn?.attackCount??0,depth:sequence?Math.max(1,3-(s.turn?.attackCount??0)):1,sequence});
+ if(card?.type==='attack'){const plan=planAttack(s,id,card,action.targetId,{count:s.turn?.attackCount??0,depth:sequence?Math.max(1,3-(s.turn?.attackCount??0)):1,sequence,budget});return {...plan,search:{limit:SEARCH_LIMIT,used:budget.used}};}
  let next=clone(s),actor=next.players[id],target=action.targetId??action.targetIds?.[0],spell=false,magic=null;
  const costs=(action.cardIds??[]).map(cid=>p.hand.find(c=>c.id===cid));
  if(action.type==='pass')return {score:0,branches:[{probability:1,state:next,path:['pass']}]};
@@ -172,12 +185,12 @@ export function actionPlan(s,id,action,{sequence=true}={}) {
  if(['purchase','synthesize','refine'].includes(action.type)&&p.hero==='priest')heal(next,id,1);
  let branches=magic??[{probability:1,state:next,path:[action.skillId??card?.name??action.type]}];
  if(sequence&&!terminal(next)&&((spell&&p.hero==='sealer')||action.skillId==='snipe')) {
-  branches=branches.flatMap(branch=>{const follow=bestAttack(branch.state,id,{depth:1,sequence});return follow.score>0?follow.branches.map(b=>({...b,probability:b.probability*branch.probability,path:[...branch.path,...b.path]})):[branch];});
+  branches=branches.flatMap(branch=>{const follow=bestAttack(branch.state,id,{depth:1,sequence,budget});return follow.score>0?follow.branches.map(b=>({...b,probability:b.probability*branch.probability,path:[...branch.path,...b.path]})):[branch];});
  }
- return {score:expected(branches)-value(s),branches};
+ return {score:expected(branches)-value(s),branches,search:{limit:SEARCH_LIMIT,used:budget.used}};
 }
 export function explain(s,plan) {
  const parts=Object.fromEntries(Object.keys(difference(s,s)).map(k=>[k,0]));
  for(const b of plan.branches)for(const [k,v] of Object.entries(difference(s,b.state)))parts[k]+=b.probability*v;
- return {parts,branches:plan.branches.map(b=>({probability:b.probability,path:b.path})),precision:plan.precision??null};
+ return {parts,branches:plan.branches.map(b=>({probability:b.probability,path:b.path})),precision:plan.precision??null,search:plan.search??null};
 }

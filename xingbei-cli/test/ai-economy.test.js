@@ -6,11 +6,24 @@ import {AI_POLICY_VERSION} from '../src/ai.js';
 import {captureObservation,observationView} from '../src/ai/observation.js';
 import {stateOf,value,clone,damage,nextTurnRisk} from '../src/ai/v1.3/model.js';
 import {piercingOptions,actionPlan} from '../src/ai/v1.3/planner.js';
-const p=getPolicy('experimental/economy-1');
+import {SEARCH_LIMIT} from '../src/ai/v1.3/planner.js';
+const p=getPolicy('experimental/economy-2');
 const take=(g,id,name)=>g.moveCard(g.deck.find(typeof name==='function'?name:c=>c.name===name).id,{zone:'hand',playerId:id});
 const fill=(g,id,n)=>{while(g.player(id).hand.length<n)take(g,id,c=>c.type==='attack');};
 const model=(g,id=0)=>stateOf(observationView(captureObservation(g,id,{actions:true})),id);
 const snapshot=g=>JSON.stringify({cards:[...g.cards.values()].map(c=>c.toJSON()),players:g.players.map(p=>({id:p.id,hand:p.hand.map(c=>c.id),healing:p.healing,energy:p.energy,hero:p.hero.state})),teams:g.teams,turn:g.turn.state,history:g.publicHistory,log:g.log});
+test('wind search has a deterministic expansion budget even with full public history',()=>{
+ const g=new Game({seed:19,playerHeroId:'windSwordmaster'});for(let i=0;i<6;i++)take(g,0,'windStrike');for(const id of [1,2,5])fill(g,id,6);g.player(0).energy.crystal=2;g.startTurn(0);
+ for(let i=0;i<300;i++)g.publicHistory.append({type:'turn',playerId:i%6});
+ const ranks=p.rankAiActions(g,0);assert.equal(SEARCH_LIMIT,128);assert.ok(ranks.every(r=>(r.explanation.search?.used??0)<=SEARCH_LIMIT));
+ assert.deepEqual(p.rankAiActions(g,0),ranks);
+});
+test('shared planning history is deeply read-only and confined to one observation',()=>{
+ const g=new Game({seed:21}).setup();g.publicHistory.append({type:'unanswered',playerId:1,elements:['fire'],acceptCost:2});
+ const s=model(g),branch=clone(s),fresh=model(g),event=s.history.at(-1);
+ assert.equal(branch.history,s.history);assert.equal(branch.beliefs,s.beliefs);assert.notEqual(fresh.history,s.history);
+ assert.throws(()=>event.elements.push('water'),TypeError);branch.players[0].healing=99;assert.notEqual(s.players[0].healing,99);assert.notEqual(g.player(0).healing,99);
+});
 
 test('candidate remains opt-in; high-probability attack can lose to passing',()=>{
  assert.equal(AI_POLICY_VERSION,'v1.2');
@@ -40,6 +53,12 @@ test('public next-turn risk values holding defense, public seat order and enemy 
  const s=model(g),safe=clone(s);safe.players[0].healing=3;assert.ok(nextTurnRisk(s)<nextTurnRisk(safe));
  const protectedState=clone(s);protectedState.players[0].hand[0].name='holyLight';assert.ok(nextTurnRisk(protectedState)>nextTurnRisk(s));
  const imminent=clone(s);imminent.current=5;assert.equal(nextTurnRisk(imminent),0);assert.ok(nextTurnRisk(s)<0);
+});
+test('positive local state gain can be reversed by next-turn survival risk',()=>{
+ const g=new Game({seed:19,playerHeroId:'marksman'});for(let i=0;i<6;i++)take(g,0,c=>c.name==='fireStrike'&&!c.hasUniqueSkill('precisionShot')&&!c.hasUniqueSkill('flashTrap'));
+ for(const id of [1,2,5])fill(g,id,3);g.player(0).healing=2;g.teams.red.morale=1;const seal=g.deck.find(c=>c.hasUniqueSkill('fireSeal'));g.attachCard(seal.id,0,{effectId:'fireSeal',sourcePlayerId:1});
+ const ranks=p.rankAiActions(g,0),attack=ranks.find(r=>r.action.type==='play'&&r.action.targetId===1),parts=attack.explanation.parts;
+ assert.ok(attack.score-parts.nextTurnRisk-parts.otherTurnRisk>0);assert.ok(attack.score<0);assert.equal(ranks[0].action.type,'pass');
 });
 test('gift valuation uses public seal and full completed waterPower effect; trace never mutates overflow',async()=>{
  const g=new Game({seed:12,heroIds:['priest','berserker','sealer','marksman','guardianAngel','windSwordmaster']});
@@ -88,7 +107,7 @@ test('six-seat hidden permutations preserve action/nested traces for candidate a
    {type:'healing',playerId:id,choices:[{value:0}],context:{amount:2}},
    {type:'skillChoice',playerId:id,skillId:'spellExcitation'},
    {type:'response',target:g.player(id),actor:g.players.find(p=>p.team!==g.player(id).team),valid:g.player(id).hand.filter(c=>c.name==='holyLight').map(c=>({card:c,index:g.player(id).hand.indexOf(c)})),counterTargets:[],shieldable:true}];
-  const names=['experimental/economy-1','experimental/economy-no-sequence','experimental/economy-no-hand'];
+  const names=['experimental/economy-2','experimental/economy-2-no-sequence','experimental/economy-2-no-hand'];
   const before=snapshot(g),expected=names.map(n=>requests.map(r=>getPolicy(n).traceDecision(g,id,r)));assert.equal(snapshot(g),before);
   expected.forEach((traces,i)=>traces.forEach(t=>assert.deepEqual(getPolicy(names[i]).replayTrace(JSON.parse(JSON.stringify(t))),t.request?t.decision:t.candidates)));
   const observation=captureObservation(g,id,{actions:true}),counts=g.players.map(p=>p.hand.length);
