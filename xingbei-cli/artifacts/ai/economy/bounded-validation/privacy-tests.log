@@ -1,0 +1,45 @@
+✔ wind search has a deterministic expansion budget even with full public history (1072.187187ms)
+✔ shared planning history is deeply read-only and confined to one observation (2.838844ms)
+✔ candidate remains opt-in; high-probability attack can lose to passing (4.029438ms)
+✔ piercing separates shedding benefit from harmful opponent replenishment; low burden declines (4.135206ms)
+✔ seal cost and removal both appear; covered sacredDomain costs do not trigger seals (33.506572ms)
+✔ public next-turn risk values holding defense, public seat order and enemy preparation (1.831364ms)
+✔ positive local state gain can be reversed by next-turn survival risk (21.459803ms)
+✔ gift valuation uses public seal and full completed waterPower effect; trace never mutates overflow (6.725566ms)
+✔ real precision attack resolves without cloning functions; card conservation (5.477136ms)
+✔ public guardian energy prevents false spell terminal, but not attack/direct-draw overflow (3.104141ms)
+✔ sealed water payment still transfers an anonymous newly drawn card in the plan (2.63001ms)
+✔ magic bullet cannot kill through a public shield; genuine no-response engine agrees (1.838514ms)
+✔ sealBreaking real effect request identifies transfer into hand and preserves trace replay (20.648777ms)
+✔ six-seat hidden permutations preserve action/nested traces for candidate and ablations (1364.435825ms)
+✔ six heroes × three public states × three hidden permutations: identical observations and every queried decision (1845.792141ms)
+✔ reflection and mutation of detached view cannot expose or mutate the engine (7.973937ms)
+✔ wrapped baseline decisions match frozen behavior on six hero observations (187.150723ms)
+✔ fusion evidence strengthens only with public acceptance cost (0.394571ms)
+✔ fusion sequence requires actual own cards, third attack or available extra resources (3.020515ms)
+✔ fusion complete games: all six lineups, rule legality and card conservation (1139.431407ms)
+✔ basic cards bearing seal effects remain removable public effects (1.187729ms)
+✔ covered discard hides traits from public history, ordinary public discard remains evidence (0.782944ms)
+✔ v1.0 frozen module hashes and disabled reading preserve the original policy (112.44317ms)
+✔ response rules: dark wildcard, dark attack, holy light, and actual trait intersection (0.79406ms)
+✔ public evidence is soft, expires on draws/discards/turns, and excludes forced/uncounterable hits (1.318025ms)
+✔ private movements expose only counts; public plays expose immutable traits, never snapshots (0.970854ms)
+✔ reading changes equal target rankings on public evidence without altering defense or rules (1.504645ms)
+✔ all six heroes: policy cannot inspect other hands, hidden registry, deck, logs or presentation snapshots (28.049556ms)
+✔ mirror schedule pairs seed, lineup and start identically, with both policy colors (0.464246ms)
+✔ baseline selfplay is identical under policy-label exchange, with all decisions routed (367.744461ms)
+✔ defense is independently selectable and never assumes four cards are safe (3.121387ms)
+✔ defense and hero threats read public counts, not enemy spell or attack identities (1.861609ms)
+✔ standalone version runner owns nested decisions and restores engine fallback (1.552756ms)
+✔ full games under a private-state capability guard match unrestricted policy decisions (1867.252074ms)
+✔ observation hooks never alter baseline rules, RNG or results (89.850696ms)
+✔ production v1.2 aliases fusion-1 while v1.1 remains read-1 (12.677404ms)
+✔ stable v1.2 and frozen fusion-1 produce identical full games across six lineups (1650.987686ms)
+ℹ tests 37
+ℹ suites 0
+ℹ pass 37
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4282.742548

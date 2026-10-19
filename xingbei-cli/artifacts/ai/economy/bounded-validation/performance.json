@@ -1,0 +1,8 @@
+{
+  "elapsedMs": 1424.256702,
+  "historyEvents": 256,
+  "actions": 19,
+  "maxExpansions": 128,
+  "limitScope": "per root action; not wall clock guarantee",
+  "concurrentEvaluation": true
+}
