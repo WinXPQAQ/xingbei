@@ -1,3 +1,4 @@
+import { PublicHistory } from "./ai/public-history.js";
 import { logCard, skillLabel, effectLabel } from "./action-log.js";
 import { chooseAiDiscard, chooseAiResponse, chooseAiRuleDecision } from "./ai.js";
 import { initializeSealer } from "./heroes/sealer.js";
@@ -43,6 +44,7 @@ export class Game {
       catch (error) { throw new RuleError(error.message); }
     }
     this.random = seededRandom(seed);
+    this.publicHistory = new PublicHistory();
     this.players = names.map((name, seat) => new Player({ id: seat, name, team: teams[seat], hero: heroIds ? createHero(heroIds[seat], heroRules) : createDefaultHero(seat, heroRules) }));
     this.teams = { red: { morale: 15, achievements: [], cups: 0 }, blue: { morale: 15, achievements: [], cups: 0 } };
     this.deck = []; this.discard = []; this.field = []; this.outside = [];
@@ -133,9 +135,12 @@ export class Game {
       if (!card.attachment || !this.canAttach(card, destination.playerId, card.attachment.effectId)) throw new RuleError("状态区需要合法且不重复的挂载效果");
     }
     const from = card.location;
+    const publicTraits = from.zone === "hand" && (destination.zone === "field" || (destination.zone === "discard" && visibility === "public"))
+      ? card.getTraits({ game: this, playerId: from.playerId, purpose: "public-observation" }) : null;
     const index = previous.indexOf(card);
     if (index < 0) throw new RuleError("牌位置与区域不一致");
     previous.splice(index, 1); next.push(card);
+    this.publicHistory.move(from, destination, publicTraits);
     card.setLocation(destination);
     card.discardVisibility = destination.zone === "discard" ? visibility : null;
     if (destination.zone !== "status") card.attachment = null;
@@ -204,6 +209,8 @@ export class Game {
     if (timing !== Timing.CARD_EXPOSED) yield* this.flushRuleEvents(options);
     yield* this.present();
     this.timeline.push({ timing, playerId: context.playerId ?? context.targetId, cardId: context.card?.id ?? null, point: context.point ?? null });
+    if (timing === Timing.TURN_START) this.publicHistory.append({ type: "turn" });
+    if (timing === Timing.ATTACK_HIT) this.publicHistory.attack(context);
     const entries = this.triggers.get(timing, context);
     for (const entry of entries) {
       if (!entry.active) continue;
