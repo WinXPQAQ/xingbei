@@ -1,0 +1,14 @@
+{
+  "url": "http://127.0.0.1:4173/",
+  "httpStatus": 200,
+  "title": "星杯传说",
+  "pageErrors": [],
+  "default": "v1.1",
+  "candidate": "fusion-1",
+  "action": {
+    "type": "play",
+    "index": 1,
+    "targetId": 0
+  },
+  "cardConservation": true
+}

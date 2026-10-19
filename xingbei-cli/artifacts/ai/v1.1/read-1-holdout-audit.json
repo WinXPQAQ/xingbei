@@ -1,0 +1,14 @@
+{
+  "input": "xingbei-cli/artifacts/ai/v1.1/read-1-holdout.json",
+  "sourceCommit": "8a20f63cc038b3fdad725cdf4fc61f6eab56e90a",
+  "games": 72,
+  "audit": true,
+  "identical": [
+    "winner",
+    "turns",
+    "initial",
+    "metrics",
+    "outcome"
+  ],
+  "elapsedSeconds": 4.249598634
+}

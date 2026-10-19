@@ -1,0 +1,7 @@
+{
+  "command": "node src/cli.js",
+  "transport": "PTY",
+  "steps": ["输入0并回车选择狂战士", "六人对局状态及行动提示出现", "输入quit并回车"],
+  "exitCode": 0,
+  "scope": "有限启动与正常退出检查，不是完整交互回归"
+}

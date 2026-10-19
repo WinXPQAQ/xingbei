@@ -45,3 +45,13 @@ node xingbei-cli/tools/benchmark-ai.mjs 100 xingbei-cli/artifacts/ai/benchmark.j
 ```
 
 方法和限制见 [AI 说明](../docs/ai-policy.md)。
+
+## 版本化 AI 评测
+
+新实验使用 `evaluate-ai.mjs`，不要用旧 `benchmark-ai.mjs` 的历史单文件导入方式评估模块化版本。示例：
+
+```bash
+node xingbei-cli/tools/evaluate-ai.mjs read-1 v1.0 holdout 200 /tmp/xingbei-holdout.json
+```
+
+版本、六组镜像阵容、换边/先手设计、隐私边界、置信区间与交叉评估见 [AI版本说明](../docs/ai-versions.md)，本轮事先登记与所有候选结果见 [实验记录](../docs/ai-v1.1-experiments.md)。

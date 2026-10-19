@@ -1,0 +1,32 @@
+{
+  "scope": "36 baseline trajectories, reused tune seeds 1–3, starts 0/1; compare top action before executed actions, excludes pass; not new win-rate evidence",
+  "games": 36,
+  "executedActions": 2798,
+  "changedTopAction": 1,
+  "byHero": {
+    "windSwordmaster": {
+      "executedActions": 432,
+      "changedTopAction": 0
+    },
+    "marksman": {
+      "executedActions": 322,
+      "changedTopAction": 1
+    },
+    "berserker": {
+      "executedActions": 262,
+      "changedTopAction": 0
+    },
+    "sealer": {
+      "executedActions": 679,
+      "changedTopAction": 0
+    },
+    "priest": {
+      "executedActions": 621,
+      "changedTopAction": 0
+    },
+    "guardianAngel": {
+      "executedActions": 482,
+      "changedTopAction": 0
+    }
+  }
+}
