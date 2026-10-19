@@ -1,0 +1,12 @@
+{
+  httpStatus: 200,
+  pageErrors: [],
+  default: 'v1.3',
+  candidate: 'experimental/economy-4',
+  action: { type: 'play', index: 3, targetId: 5 },
+  defaultEqualsCandidate: true,
+  traceReplay: true,
+  cardConservation: true,
+  modeAndSixHeroEntry: true,
+  scope: 'limited browser entry smoke, not visual acceptance'
+}

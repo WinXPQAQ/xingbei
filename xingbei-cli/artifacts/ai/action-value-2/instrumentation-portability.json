@@ -1,0 +1,5 @@
+{
+  "originalInstrumentedSHA256": "ba433898482bbd8d1ee03a0e42e4ba5061c9db14f6c00460fb3241d13f56723f",
+  "portableInstrumentedSHA256": "a0d0f50b326d279e5c98449ce2cd3a6bf379694aecee067ff9d47f9f9a5642d5",
+  "changes": "Only absolute imports changed to repository-relative imports; renderer asserts exact score and frozen branches after removing diagnostic steps for each selected case."
+}
