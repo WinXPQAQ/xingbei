@@ -1,0 +1,22 @@
+✔ current legal fifth cup beats preparation and matches real engine win; ordinary attack cannot synthesize afterward (26.148951ms)
+✔ shared route is bounded, grows near fifth cup, and does not count three allied options separately (3.137292ms)
+✔ enemy fifth-cup blocking responds to resources, seats, potential pre-turn responses and alternate synthesizers (1.184706ms)
+✔ actual wind gift unlocks angel cleansing of basic seal and healing, without inventing recipient skills (4.986829ms)
+✔ full stone capacity has no automatic reward without gain opportunities; low morale weak hand has greater post-buy risk (4.201614ms)
+✔ private teammate/enemy faces and future deck order cannot change candidate ranking (45.798314ms)
+✔ no cleansing target grants no bond value; unknown overflow cannot guarantee a gifted wind survives (1.222732ms)
+✔ real snipe blocks imminent fifth cup, and real low-morale overflow can lose after buying (6.995615ms)
+✔ risk requires an intervening threat; distant response opportunity is not a guaranteed synthesis (1.733794ms)
+✔ real full resource pool wastes hit gain; synthesis releases capacity only for later actions (1.611941ms)
+✔ cleansing option retains the cost of removing friendly shield or enemy poison (3.990551ms)
+✔ priest personal water option is not counted twice; transferred water has recipient capability value (1.087381ms)
+✔ public healing can preserve an imminent fifth cup: model matches candidate real response (8.241665ms)
+✔ healing preservation respects public cups, resources, available amount and priest cap (1.179077ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 286.154596

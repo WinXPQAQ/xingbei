@@ -1,0 +1,1085 @@
+[
+  {
+    "case": 3,
+    "actorId": 1,
+    "hero": "sealer",
+    "hand": [
+      {
+        "id": "c14",
+        "name": "waterStrike",
+        "type": "attack",
+        "elements": [
+          "water"
+        ],
+        "uniqueSkills": [
+          "galeArt",
+          "flashTrap"
+        ],
+        "traits": {
+          "0": {
+            "elements": [
+              "water"
+            ],
+            "fates": [
+              "J"
+            ]
+          },
+          "1": {
+            "elements": [
+              "water"
+            ],
+            "fates": [
+              "J"
+            ]
+          },
+          "2": {
+            "elements": [
+              "water"
+            ],
+            "fates": [
+              "J"
+            ]
+          },
+          "3": {
+            "elements": [
+              "water"
+            ],
+            "fates": [
+              "J"
+            ]
+          },
+          "4": {
+            "elements": [
+              "water"
+            ],
+            "fates": [
+              "J"
+            ]
+          },
+          "5": {
+            "elements": [
+              "water"
+            ],
+            "fates": [
+              "J"
+            ]
+          }
+        }
+      },
+      {
+        "id": "c69",
+        "name": "windStrike",
+        "type": "attack",
+        "elements": [
+          "wind"
+        ],
+        "uniqueSkills": [
+          "healingLight",
+          "angelWall"
+        ],
+        "traits": {
+          "0": {
+            "elements": [
+              "wind"
+            ],
+            "fates": [
+              "S"
+            ]
+          },
+          "1": {
+            "elements": [
+              "wind"
+            ],
+            "fates": [
+              "S"
+            ]
+          },
+          "2": {
+            "elements": [
+              "wind"
+            ],
+            "fates": [
+              "S"
+            ]
+          },
+          "3": {
+            "elements": [
+              "wind"
+            ],
+            "fates": [
+              "S"
+            ]
+          },
+          "4": {
+            "elements": [
+              "wind"
+            ],
+            "fates": [
+              "S"
+            ]
+          },
+          "5": {
+            "elements": [
+              "wind"
+            ],
+            "fates": [
+              "S"
+            ]
+          }
+        }
+      },
+      {
+        "id": "c149",
+        "name": "magicBullet",
+        "type": "spell",
+        "elements": [
+          "thunder"
+        ],
+        "uniqueSkills": [],
+        "traits": {
+          "0": {
+            "elements": [
+              "thunder"
+            ],
+            "fates": [
+              "J"
+            ]
+          },
+          "1": {
+            "elements": [
+              "thunder"
+            ],
+            "fates": [
+              "J"
+            ]
+          },
+          "2": {
+            "elements": [
+              "thunder"
+            ],
+            "fates": [
+              "J"
+            ]
+          },
+          "3": {
+            "elements": [
+              "thunder"
+            ],
+            "fates": [
+              "J"
+            ]
+          },
+          "4": {
+            "elements": [
+              "thunder"
+            ],
+            "fates": [
+              "J"
+            ]
+          },
+          "5": {
+            "elements": [
+              "thunder"
+            ],
+            "fates": [
+              "J"
+            ]
+          }
+        }
+      },
+      {
+        "id": "c120",
+        "name": "holyLight",
+        "type": "spell",
+        "elements": [
+          "light"
+        ],
+        "uniqueSkills": [],
+        "traits": {
+          "0": {
+            "elements": [
+              "light"
+            ],
+            "fates": [
+              "J"
+            ]
+          },
+          "1": {
+            "elements": [
+              "light"
+            ],
+            "fates": [
+              "J"
+            ]
+          },
+          "2": {
+            "elements": [
+              "light"
+            ],
+            "fates": [
+              "J"
+            ]
+          },
+          "3": {
+            "elements": [
+              "light"
+            ],
+            "fates": [
+              "J"
+            ]
+          },
+          "4": {
+            "elements": [
+              "light"
+            ],
+            "fates": [
+              "J"
+            ]
+          },
+          "5": {
+            "elements": [
+              "light"
+            ],
+            "fates": [
+              "J"
+            ]
+          }
+        }
+      }
+    ],
+    "handValue": 32.800000000000004,
+    "team": {
+      "morale": 14,
+      "cups": 0,
+      "gem": 0,
+      "crystal": 0,
+      "total": 0
+    },
+    "plans": [
+      {
+        "action": {
+          "type": "play",
+          "index": 2,
+          "targetId": 3
+        },
+        "finalHands": [
+          {
+            "probability": 0.17896839104456214,
+            "path": [
+              "magic-hit-check",
+              "hit"
+            ],
+            "hand": [
+              "c14",
+              "c120"
+            ]
+          },
+          {
+            "probability": 0.1595757050436275,
+            "path": [
+              "magic-hit-check",
+              "light"
+            ],
+            "hand": [
+              "c14",
+              "c120"
+            ]
+          },
+          {
+            "probability": 0.06381126610149165,
+            "path": [
+              "magic-hit-check",
+              "counter",
+              "counter-hit"
+            ],
+            "hand": [
+              "c14",
+              "c120"
+            ]
+          },
+          {
+            "probability": 0.29472226743994845,
+            "path": [
+              "magic-hit-check",
+              "counter",
+              "counter-answered"
+            ],
+            "hand": [
+              "c14",
+              "c120"
+            ]
+          },
+          {
+            "probability": 0.1960085925925925,
+            "path": [
+              "magic-light"
+            ],
+            "hand": [
+              "c14",
+              "c69",
+              "c120"
+            ]
+          },
+          {
+            "probability": 0.07452720278808231,
+            "path": [
+              "magic-relay",
+              "magic-hit-check"
+            ],
+            "hand": [
+              "c14",
+              "c69",
+              "c120"
+            ]
+          },
+          {
+            "probability": 0.020956019110979416,
+            "path": [
+              "magic-relay",
+              "magic-light"
+            ],
+            "hand": [
+              "c14",
+              "c69",
+              "c120"
+            ]
+          },
+          {
+            "probability": 0.01143055587871605,
+            "path": [
+              "magic-relay",
+              "magic-relay-horizon"
+            ],
+            "hand": [
+              "c14",
+              "c69",
+              "c120"
+            ]
+          }
+        ],
+        "paidHand": 30.4,
+        "directCost": -2.4000000000000057,
+        "bare": {
+          "score": -4.093376950291031,
+          "parts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": 0,
+            "conversion": 0,
+            "ownHand": -2.4000000000000052,
+            "otherHands": 0.41273697711623336,
+            "healing": 0,
+            "energy": 0,
+            "effects": -2,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": -0.1061139274072498,
+            "terminal": 0
+          },
+          "branches": [
+            {
+              "probability": 0.6970776296296297,
+              "path": [
+                "magic-hit-check"
+              ]
+            },
+            {
+              "probability": 0.1960085925925925,
+              "path": [
+                "magic-light"
+              ]
+            },
+            {
+              "probability": 0.07452720278808231,
+              "path": [
+                "magic-relay",
+                "magic-hit-check"
+              ]
+            },
+            {
+              "probability": 0.020956019110979416,
+              "path": [
+                "magic-relay",
+                "magic-light"
+              ]
+            },
+            {
+              "probability": 0.01143055587871605,
+              "path": [
+                "magic-relay",
+                "magic-relay-horizon"
+              ]
+            }
+          ],
+          "precision": null,
+          "search": {
+            "limit": 128,
+            "used": 0
+          }
+        },
+        "full": {
+          "score": -3.389295366428577,
+          "parts": {
+            "morale": 1.5403757652473646,
+            "cups": 0,
+            "stones": 0.5757856247153523,
+            "conversion": 0.28634942567129934,
+            "ownHand": -7.00071235555556,
+            "otherHands": 1.5865885350452358,
+            "healing": 0,
+            "energy": 0,
+            "effects": -0.5263886628002578,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0.14870630124799544,
+            "terminal": 0
+          },
+          "branches": [
+            {
+              "probability": 0.17896839104456214,
+              "path": [
+                "magic-hit-check",
+                "hit"
+              ]
+            },
+            {
+              "probability": 0.1595757050436275,
+              "path": [
+                "magic-hit-check",
+                "light"
+              ]
+            },
+            {
+              "probability": 0.06381126610149165,
+              "path": [
+                "magic-hit-check",
+                "counter",
+                "counter-hit"
+              ]
+            },
+            {
+              "probability": 0.29472226743994845,
+              "path": [
+                "magic-hit-check",
+                "counter",
+                "counter-answered"
+              ]
+            },
+            {
+              "probability": 0.1960085925925925,
+              "path": [
+                "magic-light"
+              ]
+            },
+            {
+              "probability": 0.07452720278808231,
+              "path": [
+                "magic-relay",
+                "magic-hit-check"
+              ]
+            },
+            {
+              "probability": 0.020956019110979416,
+              "path": [
+                "magic-relay",
+                "magic-light"
+              ]
+            },
+            {
+              "probability": 0.01143055587871605,
+              "path": [
+                "magic-relay",
+                "magic-relay-horizon"
+              ]
+            }
+          ],
+          "precision": null,
+          "search": {
+            "limit": 128,
+            "used": 30
+          }
+        },
+        "follow": [
+          {
+            "path": [
+              "magic-hit-check"
+            ],
+            "probability": 0.6970776296296297,
+            "card": "c69",
+            "targetId": 3,
+            "gain": 1.010047595755644,
+            "ownHand": [
+              "c14",
+              "c69",
+              "c120"
+            ],
+            "postHandValue": 30.4
+          },
+          {
+            "path": [
+              "magic-light"
+            ],
+            "probability": 0.1960085925925925,
+            "card": null,
+            "targetId": null,
+            "gain": 0,
+            "ownHand": [
+              "c14",
+              "c69",
+              "c120"
+            ],
+            "postHandValue": 30.4
+          },
+          {
+            "path": [
+              "magic-relay",
+              "magic-hit-check"
+            ],
+            "probability": 0.07452720278808231,
+            "card": null,
+            "targetId": null,
+            "gain": 0,
+            "ownHand": [
+              "c14",
+              "c69",
+              "c120"
+            ],
+            "postHandValue": 30.4
+          },
+          {
+            "path": [
+              "magic-relay",
+              "magic-light"
+            ],
+            "probability": 0.020956019110979416,
+            "card": null,
+            "targetId": null,
+            "gain": 0,
+            "ownHand": [
+              "c14",
+              "c69",
+              "c120"
+            ],
+            "postHandValue": 30.4
+          },
+          {
+            "path": [
+              "magic-relay",
+              "magic-relay-horizon"
+            ],
+            "probability": 0.01143055587871605,
+            "card": null,
+            "targetId": null,
+            "gain": 0,
+            "ownHand": [
+              "c14",
+              "c69",
+              "c120"
+            ],
+            "postHandValue": 30.4
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "case": 4,
+    "actorId": 5,
+    "hero": "priest",
+    "hand": [
+      {
+        "id": "c58",
+        "name": "windStrike",
+        "type": "attack",
+        "elements": [
+          "wind"
+        ],
+        "uniqueSkills": [
+          "stormArt",
+          "precisionShot"
+        ],
+        "traits": {
+          "0": {
+            "elements": [
+              "wind"
+            ],
+            "fates": [
+              "J"
+            ]
+          },
+          "1": {
+            "elements": [
+              "wind"
+            ],
+            "fates": [
+              "J"
+            ]
+          },
+          "2": {
+            "elements": [
+              "wind"
+            ],
+            "fates": [
+              "J"
+            ]
+          },
+          "3": {
+            "elements": [
+              "wind"
+            ],
+            "fates": [
+              "J"
+            ]
+          },
+          "4": {
+            "elements": [
+              "wind"
+            ],
+            "fates": [
+              "J"
+            ]
+          },
+          "5": {
+            "elements": [
+              "wind"
+            ],
+            "fates": [
+              "J"
+            ]
+          }
+        }
+      },
+      {
+        "id": "c36",
+        "name": "fireStrike",
+        "type": "attack",
+        "elements": [
+          "fire"
+        ],
+        "uniqueSkills": [
+          "bloodyRoar",
+          "bloodLament"
+        ],
+        "traits": {
+          "0": {
+            "elements": [
+              "fire"
+            ],
+            "fates": [
+              "X"
+            ]
+          },
+          "1": {
+            "elements": [
+              "fire"
+            ],
+            "fates": [
+              "X"
+            ]
+          },
+          "2": {
+            "elements": [
+              "fire"
+            ],
+            "fates": [
+              "X"
+            ]
+          },
+          "3": {
+            "elements": [
+              "fire"
+            ],
+            "fates": [
+              "X"
+            ]
+          },
+          "4": {
+            "elements": [
+              "fire"
+            ],
+            "fates": [
+              "X"
+            ]
+          },
+          "5": {
+            "elements": [
+              "fire"
+            ],
+            "fates": [
+              "X"
+            ]
+          }
+        }
+      },
+      {
+        "id": "c13",
+        "name": "waterStrike",
+        "type": "attack",
+        "elements": [
+          "water"
+        ],
+        "uniqueSkills": [
+          "galeArt",
+          "flashTrap"
+        ],
+        "traits": {
+          "0": {
+            "elements": [
+              "water"
+            ],
+            "fates": [
+              "J"
+            ]
+          },
+          "1": {
+            "elements": [
+              "water"
+            ],
+            "fates": [
+              "J"
+            ]
+          },
+          "2": {
+            "elements": [
+              "water"
+            ],
+            "fates": [
+              "J"
+            ]
+          },
+          "3": {
+            "elements": [
+              "water"
+            ],
+            "fates": [
+              "J"
+            ]
+          },
+          "4": {
+            "elements": [
+              "water"
+            ],
+            "fates": [
+              "J"
+            ]
+          },
+          "5": {
+            "elements": [
+              "water"
+            ],
+            "fates": [
+              "J"
+            ]
+          }
+        }
+      },
+      {
+        "id": "c116",
+        "name": "holyLight",
+        "type": "spell",
+        "elements": [
+          "light"
+        ],
+        "uniqueSkills": [
+          "healingArt"
+        ],
+        "traits": {
+          "0": {
+            "elements": [
+              "light"
+            ],
+            "fates": [
+              "S"
+            ]
+          },
+          "1": {
+            "elements": [
+              "light"
+            ],
+            "fates": [
+              "S"
+            ]
+          },
+          "2": {
+            "elements": [
+              "light"
+            ],
+            "fates": [
+              "S"
+            ]
+          },
+          "3": {
+            "elements": [
+              "light"
+            ],
+            "fates": [
+              "S"
+            ]
+          },
+          "4": {
+            "elements": [
+              "light"
+            ],
+            "fates": [
+              "S"
+            ]
+          },
+          "5": {
+            "elements": [
+              "light"
+            ],
+            "fates": [
+              "S"
+            ]
+          }
+        }
+      },
+      {
+        "id": "c85",
+        "name": "thunderStrike",
+        "type": "attack",
+        "elements": [
+          "thunder"
+        ],
+        "uniqueSkills": [
+          "speedBlessing",
+          "lightning"
+        ],
+        "traits": {
+          "0": {
+            "elements": [
+              "thunder"
+            ],
+            "fates": [
+              "Y"
+            ]
+          },
+          "1": {
+            "elements": [
+              "thunder"
+            ],
+            "fates": [
+              "Y"
+            ]
+          },
+          "2": {
+            "elements": [
+              "thunder"
+            ],
+            "fates": [
+              "Y"
+            ]
+          },
+          "3": {
+            "elements": [
+              "thunder"
+            ],
+            "fates": [
+              "Y"
+            ]
+          },
+          "4": {
+            "elements": [
+              "thunder"
+            ],
+            "fates": [
+              "Y"
+            ]
+          },
+          "5": {
+            "elements": [
+              "thunder"
+            ],
+            "fates": [
+              "Y"
+            ]
+          }
+        }
+      }
+    ],
+    "handValue": 34.39999999999999,
+    "team": {
+      "morale": 10,
+      "cups": 1,
+      "gem": 0,
+      "crystal": 0,
+      "total": 0
+    },
+    "plans": [
+      {
+        "action": {
+          "type": "skill",
+          "skillId": "waterPower",
+          "cardIds": [
+            "c13"
+          ],
+          "targetIds": [
+            2
+          ]
+        },
+        "finalHands": [
+          {
+            "probability": 1,
+            "path": [
+              "waterPower"
+            ],
+            "hand": [
+              "c58",
+              "c116",
+              "c85"
+            ]
+          }
+        ],
+        "paidHand": 27.7,
+        "directCost": -6.699999999999992,
+        "bare": {
+          "score": -7.699999999999989,
+          "parts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": 0,
+            "conversion": 0,
+            "ownHand": -9.999999999999993,
+            "otherHands": 1.299999999999998,
+            "healing": 5,
+            "energy": 0,
+            "effects": -4,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0,
+            "terminal": 0
+          },
+          "branches": [
+            {
+              "probability": 1,
+              "path": [
+                "waterPower"
+              ]
+            }
+          ],
+          "precision": null,
+          "search": {
+            "limit": 128,
+            "used": 0
+          }
+        },
+        "full": {
+          "score": -7.699999999999989,
+          "parts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": 0,
+            "conversion": 0,
+            "ownHand": -9.999999999999993,
+            "otherHands": 1.299999999999998,
+            "healing": 5,
+            "energy": 0,
+            "effects": -4,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0,
+            "terminal": 0
+          },
+          "branches": [
+            {
+              "probability": 1,
+              "path": [
+                "waterPower"
+              ]
+            }
+          ],
+          "precision": null,
+          "search": {
+            "limit": 128,
+            "used": 0
+          }
+        },
+        "follow": null
+      },
+      {
+        "action": {
+          "type": "skill",
+          "skillId": "waterPower",
+          "cardIds": [
+            "c13"
+          ],
+          "targetIds": [
+            1
+          ]
+        },
+        "finalHands": [
+          {
+            "probability": 1,
+            "path": [
+              "waterPower"
+            ],
+            "hand": [
+              "c58",
+              "c116",
+              "c85"
+            ]
+          }
+        ],
+        "paidHand": 27.7,
+        "directCost": -6.699999999999992,
+        "bare": {
+          "score": -12.899999999999977,
+          "parts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": 0,
+            "conversion": 0,
+            "ownHand": -9.999999999999993,
+            "otherHands": -3.9000000000000004,
+            "healing": 5,
+            "energy": 0,
+            "effects": -4,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0,
+            "terminal": 0
+          },
+          "branches": [
+            {
+              "probability": 1,
+              "path": [
+                "waterPower"
+              ]
+            }
+          ],
+          "precision": null,
+          "search": {
+            "limit": 128,
+            "used": 0
+          }
+        },
+        "full": {
+          "score": -12.899999999999977,
+          "parts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": 0,
+            "conversion": 0,
+            "ownHand": -9.999999999999993,
+            "otherHands": -3.9000000000000004,
+            "healing": 5,
+            "energy": 0,
+            "effects": -4,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0,
+            "terminal": 0
+          },
+          "branches": [
+            {
+              "probability": 1,
+              "path": [
+                "waterPower"
+              ]
+            }
+          ],
+          "precision": null,
+          "search": {
+            "limit": 128,
+            "used": 0
+          }
+        },
+        "follow": null
+      }
+    ]
+  }
+]

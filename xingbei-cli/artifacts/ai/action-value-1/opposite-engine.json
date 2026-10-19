@@ -1,0 +1,70 @@
+{
+  "sha": "ab54bfe742a0eb1b276e0f06d54617f002ecdf15",
+  "supportSpell": {
+    "action": {
+      "type": "play",
+      "index": 0,
+      "targetId": 3
+    },
+    "rank": [
+      {
+        "action": {
+          "type": "play",
+          "index": 0,
+          "targetId": 3
+        },
+        "score": 7.525488281250034
+      },
+      {
+        "action": {
+          "type": "play",
+          "index": 0,
+          "targetId": 0
+        },
+        "score": 0.6000000000000227
+      },
+      {
+        "action": {
+          "type": "play",
+          "index": 0,
+          "targetId": 4
+        },
+        "score": 0.6000000000000227
+      },
+      {
+        "action": {
+          "type": "play",
+          "index": 0,
+          "targetId": 1
+        },
+        "score": -5.399999999999977
+      },
+      {
+        "action": {
+          "type": "play",
+          "index": 0,
+          "targetId": 2
+        },
+        "score": -5.399999999999977
+      },
+      {
+        "action": {
+          "type": "play",
+          "index": 0,
+          "targetId": 5
+        },
+        "score": -5.399999999999977
+      }
+    ],
+    "moraleAfterAttack": 1,
+    "recipientHandAfterAttack": 6
+  },
+  "freeThirdAttack": {
+    "attackCount": 3,
+    "energy": {
+      "gem": 0,
+      "crystal": 0
+    },
+    "rule": "galeArt and windFury permit three attacks without energy; threat energy condition is an approximation, not a rule"
+  }
+}

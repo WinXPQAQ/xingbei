@@ -1,0 +1,41 @@
+{
+  "scope": "Static code/protocol only; no ongoing outcomes read",
+  "sourceSHA": "0ada54a7d978d29164c35164d56717f54728b153",
+  "fileSHA256": {
+    "protocol.json": "2d8a9521159f388900fa21c16ad86abb7ecef72a068abfa996bd42e3b3b17a19",
+    "run.mjs": "2c8c0fecf8468f19adc493982c7b9fe485084c1ad0415cae9590db25ae6801fc",
+    "analyze.mjs": "f7ae1e99564362f988a3c3be09bf4dbeb4e8e32f4403f12f0fc7dd59423ee16d"
+  },
+  "expectedTotal": 25920,
+  "jobCounts": [
+    11520,
+    1440,
+    1440,
+    11520
+  ],
+  "shardCounts": [
+    6480,
+    6480,
+    6480,
+    6480
+  ],
+  "uniqueConfigurationKeys": 25920,
+  "pairedMainSelfSeeds": 240,
+  "bootstrap": {
+    "equalSeedClusters": true,
+    "replicates": 100000,
+    "LCGResetEachEstimate": true,
+    "oneSidedLowerIndex": 999,
+    "descriptiveIndices": [
+      2499,
+      97499
+    ],
+    "fiveEndpointAlphaEach": 0.01
+  },
+  "blockingFindings": [],
+  "operationalLimitations": [
+    "Runner/analyzer hashes are recorded here; their hashes are not included in runtime manifests.",
+    "On resume, independently validate existing result rows before restarting; runner resume validation is weaker than final analyzer validation.",
+    "noninferiorityPass is only the statistical gate; final acceptance also requires error, truncation, correctness, privacy and all-cell performance gates."
+  ]
+}

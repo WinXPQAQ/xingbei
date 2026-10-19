@@ -1,0 +1,37 @@
+{
+  "sourceSHA": "0ada54a7d978d29164c35164d56717f54728b153",
+  "diagnosticEquivalence": {
+    "sourceSHA": "0ada54a7d978d29164c35164d56717f54728b153",
+    "observations": 180,
+    "plans": 3990,
+    "steps": 8712,
+    "exactPlansAfterRemovingMetadata": true,
+    "partsReconcile": true
+  },
+  "freshPressureSnapshotLegalCoverageChecked": 180,
+  "originalCaseScoresVerified": {
+    "case1EarthTo0": 0.20400102850169333,
+    "case1Purchase": -11.536000000000001,
+    "case3MagicTo3": -1.9951401071693056
+  },
+  "toolChanges": [
+    "Explicit final-gate authorization flag and no-overwrite guard",
+    "Every non-refresh observed decision asserts complete legal ranking, finite scores and actual choice equal to top rank",
+    "Rendered attack steps distinguish initial attack from additional attacks"
+  ],
+  "negativeCaseSamplingPerformed": false,
+  "confirmationOutcomesRead": false,
+  "performanceTimingPerformed": false,
+  "sourceDiffEmpty": true,
+  "scriptSHA256": {
+    "diagnostic-planner.mjs": "e42b8d9eb013377b7e44d17a15423fcc01fe4bf79d02608c952f04f6c7c679be",
+    "audit-diagnostic-planner.mjs": "c2a41bd3a9ff999675ea02f32427bbe0f46cce48a2ec05baa68189373cc83c1f",
+    "collect-negative-cases.mjs": "9efd5dc1585068537cfc82b2eba8bd4dbfacf1e5a506b140b7d96dee4e4510af",
+    "render-negative-cases.mjs": "f0351f9eb72385555ad9de244146d9f523eb618303fa17434929080165e8f6d3"
+  },
+  "limitations": [
+    "Annotated steps cover modeled proactive attacks, not full response or magic-relay engine event logs.",
+    "Exposure-terminal branches can have no recorded attack step; wording explicitly reports no recorded proactive attack.",
+    "Finite snapshot equivalence does not prove all possible states."
+  ]
+}

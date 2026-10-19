@@ -1,0 +1,32 @@
+✔ current legal fifth cup beats preparation and matches real engine win; ordinary attack cannot synthesize afterward (24.390704ms)
+✔ shared route is bounded, grows near fifth cup, and does not count three allied options separately (2.172462ms)
+✔ enemy fifth-cup blocking responds to resources, seats, potential pre-turn responses and alternate synthesizers (1.954185ms)
+✔ actual wind gift unlocks angel cleansing of basic seal and healing, without inventing recipient skills (17.798422ms)
+✔ full stone capacity has no automatic reward without gain opportunities; low morale weak hand has greater post-buy risk (3.881655ms)
+✔ private teammate/enemy faces and future deck order cannot change candidate ranking (29.551589ms)
+✔ no cleansing target grants no bond value; unknown overflow cannot guarantee a gifted wind survives (1.892935ms)
+✔ real snipe blocks imminent fifth cup, and real low-morale overflow can lose after buying (9.817979ms)
+✔ risk requires an intervening threat; distant response opportunity is not a guaranteed synthesis (3.317784ms)
+✔ real full resource pool wastes hit gain; synthesis releases capacity only for later actions (1.933236ms)
+✔ cleansing option retains the cost of removing friendly shield or enemy poison (3.635962ms)
+✔ priest personal water option is not counted twice; transferred water has recipient capability value (2.174472ms)
+✔ public healing can preserve an imminent fifth cup: model matches candidate real response (7.167203ms)
+✔ healing preservation respects public cups, resources, available amount and priest cap (1.478822ms)
+✔ original wind energy remains stored in all first-attack branches; no invented forced sword shadow cost (18.738908ms)
+✔ public prior is normalized, buys produce expected defenses and real three-attack possibilities without playable invented cards (1.432751ms)
+✔ wind ordinary spell backlog differs from sealer spell-then-attack; support card retains meaningful value (12.076796ms)
+✔ gem allocation depends on public unmet teammate need and reverses when already supplied (2.028358ms)
+✔ sealer explanation splits first spell and optional attack and reconciles without treating entire path as spell cost (11.846253ms)
+✔ real earth lethal wins; optional storm art applies only against shield and does not consume energy (12.21556ms)
+✔ real purchase at low morale can lose to incoming damage, and public risk decreases with safer morale/defense (9.974771ms)
+✔ ordinary action candidates cannot pass; optional extra remains passable (29.308108ms)
+✔ joint draw categories do not invent two actions from one unknown card (0.189256ms)
+✔ unknown own attack demand and supplied own gem reverse shared allocation value (1.115122ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 236.554733

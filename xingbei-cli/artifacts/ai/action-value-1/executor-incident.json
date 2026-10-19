@@ -1,0 +1,12 @@
+{
+  "event": "exec-server transport disconnected during report preparation",
+  "failedAction": "create process to write docs/ai-action-value-1-results.md and read progress",
+  "failedActionOutcome": "process creation rejected; report write did not execute",
+  "recovery": "next harmless pwd succeeded; all 9 original evaluation sessions checked",
+  "completedJobsAtRecovery": [0,2,3,5,6,7,8],
+  "runningJobsAtRecovery": [1,4],
+  "reruns": [],
+  "frozenSHA": "ab54bfe742a0eb1b276e0f06d54617f002ecdf15",
+  "sourceToolsTestsProtocolDiffAtRecovery": "empty",
+  "resultsOverwritten": false
+}

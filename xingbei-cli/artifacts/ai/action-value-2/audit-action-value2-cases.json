@@ -1,0 +1,76 @@
+{
+  "allChecksPassed": true,
+  "sha": "73027d7c45fdac2211a9d73c473a7b0bb30114e4",
+  "recordedScan": {
+    "matches": 55,
+    "ordinaryEvents": 1322,
+    "negativeEvents": 35
+  },
+  "result": [
+    {
+      "hero": "windSwordmaster",
+      "seed": 883001,
+      "start": 3,
+      "team": "blue",
+      "lineup": "mirrorAssault",
+      "turn": 24,
+      "actorId": 2,
+      "legalCount": 13,
+      "best": -2,
+      "worst": -13179.026938222381,
+      "outcome": "loss"
+    },
+    {
+      "hero": "sealer",
+      "seed": 883001,
+      "start": 0,
+      "team": "red",
+      "lineup": "mirrorMixed",
+      "turn": 43,
+      "actorId": 0,
+      "legalCount": 12,
+      "best": -2.175068528958789,
+      "worst": -9.928322160332694,
+      "outcome": "win"
+    },
+    {
+      "hero": "priest",
+      "seed": 883001,
+      "start": 0,
+      "team": "red",
+      "lineup": "mirrorMixed",
+      "turn": 47,
+      "actorId": 4,
+      "legalCount": 58,
+      "best": -0.04197795179950248,
+      "worst": -34.900000000000006,
+      "outcome": "win"
+    },
+    {
+      "hero": "guardianAngel",
+      "seed": 883001,
+      "start": 5,
+      "team": "blue",
+      "lineup": "mirrorMixed",
+      "turn": 58,
+      "actorId": 2,
+      "legalCount": 11,
+      "best": -3.8724674452640215,
+      "worst": -13.89310889726346,
+      "outcome": "loss"
+    },
+    {
+      "hero": "marksman",
+      "seed": 883002,
+      "start": 3,
+      "team": "red",
+      "lineup": "mirrorAssault",
+      "turn": 2,
+      "actorId": 4,
+      "legalCount": 7,
+      "best": -0.3221166989043702,
+      "worst": -9.588050902386293,
+      "outcome": "win"
+    }
+  ]
+}

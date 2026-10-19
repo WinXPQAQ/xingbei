@@ -1,0 +1,56 @@
+{
+  "allScanRecordsMatch": true,
+  "ignoredFields": [
+    "elapsedMs"
+  ],
+  "games": 55,
+  "ordinaryEvents": 1322,
+  "negativeEvents": 35,
+  "cases": [
+    {
+      "hero": "windSwordmaster",
+      "seed": 883001,
+      "lineup": "mirrorAssault",
+      "start": 3,
+      "team": "blue",
+      "turn": 24,
+      "actorId": 2
+    },
+    {
+      "hero": "sealer",
+      "seed": 883001,
+      "lineup": "mirrorMixed",
+      "start": 0,
+      "team": "red",
+      "turn": 43,
+      "actorId": 0
+    },
+    {
+      "hero": "priest",
+      "seed": 883001,
+      "lineup": "mirrorMixed",
+      "start": 0,
+      "team": "red",
+      "turn": 47,
+      "actorId": 4
+    },
+    {
+      "hero": "guardianAngel",
+      "seed": 883001,
+      "lineup": "mirrorMixed",
+      "start": 5,
+      "team": "blue",
+      "turn": 58,
+      "actorId": 2
+    },
+    {
+      "hero": "marksman",
+      "seed": 883002,
+      "lineup": "mirrorAssault",
+      "start": 3,
+      "team": "red",
+      "turn": 2,
+      "actorId": 4
+    }
+  ]
+}

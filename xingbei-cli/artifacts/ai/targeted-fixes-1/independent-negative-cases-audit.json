@@ -1,0 +1,81 @@
+{
+  "sourceSHA": "0ada54a7d978d29164c35164d56717f54728b153",
+  "allChecksPassed": true,
+  "realEngineReplayedMatches": 15,
+  "ordinaryEvents": 301,
+  "negativeEvents": 14,
+  "cases": [
+    {
+      "hero": "marksman",
+      "turn": 4,
+      "legalChoices": 10,
+      "bestScore": -0.8864734128272973,
+      "actualChoice": {
+        "type": "play",
+        "index": 1,
+        "targetId": 2
+      },
+      "subsequentOutcome": "win"
+    },
+    {
+      "hero": "berserker",
+      "turn": 25,
+      "legalChoices": 16,
+      "bestScore": -0.5,
+      "actualChoice": {
+        "type": "refine",
+        "stones": {
+          "gem": 1,
+          "crystal": 0
+        }
+      },
+      "subsequentOutcome": "loss"
+    },
+    {
+      "hero": "windSwordmaster",
+      "turn": 26,
+      "legalChoices": 13,
+      "bestScore": -4.400000000000006,
+      "actualChoice": {
+        "type": "refine",
+        "stones": {
+          "gem": 0,
+          "crystal": 1
+        }
+      },
+      "subsequentOutcome": "loss"
+    },
+    {
+      "hero": "sealer",
+      "turn": 1,
+      "legalChoices": 18,
+      "bestScore": -0.6669219759370968,
+      "actualChoice": {
+        "type": "play",
+        "index": 0,
+        "targetId": 5
+      },
+      "subsequentOutcome": "loss"
+    },
+    {
+      "hero": "priest",
+      "turn": 4,
+      "legalChoices": 12,
+      "bestScore": -1.0621215127855583,
+      "actualChoice": {
+        "type": "play",
+        "index": 0,
+        "targetId": 1
+      },
+      "subsequentOutcome": "win"
+    }
+  ],
+  "legalChoices": 69,
+  "exactReplayIgnoringOnlyElapsedMs": true,
+  "completeLegalSetsAllFiniteNegative": true,
+  "publicObservationWhitelist": true,
+  "diagnosticPlansAndPartsExact": true,
+  "selection": "Full fixed-order real-engine scan rerun, equality includes stopping point, every picked case and all match outcomes/metrics.",
+  "originalSHA256": "27de440e1aea6838203cf9edbc2a1e411b9ee4e2669d919064c08f92ab0229a2",
+  "limitations": "Observed subsequent outcomes do not establish optimality; branch probabilities remain model estimates. Finite privacy checks are not a formal proof."
+}

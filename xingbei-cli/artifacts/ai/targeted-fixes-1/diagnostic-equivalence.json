@@ -1,0 +1,8 @@
+{
+  "sourceSHA": "0ada54a7d978d29164c35164d56717f54728b153",
+  "observations": 180,
+  "plans": 3990,
+  "steps": 8712,
+  "exactPlansAfterRemovingMetadata": true,
+  "partsReconcile": true
+}

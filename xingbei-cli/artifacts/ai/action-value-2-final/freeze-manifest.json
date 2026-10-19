@@ -1,0 +1,9 @@
+{
+ "sourceSHA":"73027d7c45fdac2211a9d73c473a7b0bb30114e4",
+ "deliverySHA":"87ff27772ce5ad92f5f81b4f3e8c90657c2ccd96",
+ "protocolSHA256":"da148171638d2ba7bcc5d55f888d9400cd56d49cffc252d088f12f95bad376a2",
+ "rostersFileSHA256":"05d74edfe17df1516dd8535b03acba55bcacffb18a2d54afbf8a1da7eca2b08d",
+ "rostersVerifiedAgainst":"87ff27772ce5ad92f5f81b4f3e8c90657c2ccd96",
+ "policyDiffAgainstSource":"empty",
+ "note":"Saved before outcome analysis. Runner records only completion counts during execution; full outcomes inspected only after all five comparisons finish."
+}

@@ -1,3 +1,8 @@
+import {createEconomyPolicy as createTargetedFixesPolicy} from './targeted-fixes1/index.js';
+import { createEconomyPolicy as createActionValue2Policy } from './action-value2/index.js';
+import { createEconomyPolicy as createActionValuePolicy } from './action-value1/index.js';
+import { createEconomyPolicy as createTeamRoute2Policy } from './team-route2/index.js';
+import { createEconomyPolicy as createTeamRoutePolicy } from './team-route1/index.js';
 import { createEconomyPolicy as createCapabilityPolicy } from './economy-capability1/index.js';
 import { createFusionPolicy } from './v1.1/fusion.js';
 import { createEconomyPolicy as createEconomy4Policy } from './v1.3-economy4/index.js';
@@ -11,7 +16,30 @@ import * as baseline from './v1.0/index.js';
 import { createPolicy } from './v1.1/index.js';
 // Explicit matchups remain possible; no assumption that version ordering implies strength.
 const choices = {
+  'experimental/targeted-fixes-1': createTargetedFixesPolicy(),
+  'experimental/targeted-fixes-1-no-ownership': createTargetedFixesPolicy({ownership:false}),
+  'experimental/targeted-fixes-1-no-energy': createTargetedFixesPolicy({energy:false}),
+  'experimental/targeted-fixes-1-no-healing': createTargetedFixesPolicy({healing:false}),
+  'experimental/targeted-fixes-1-no-ownership-energy-healing': createTargetedFixesPolicy({ownership:false,energy:false,healing:false}),
+  'experimental/action-value-2': createActionValue2Policy(),
+  'experimental/action-value-2-no-projection': createActionValue2Policy({projection:false}),
+  'experimental/action-value-2-no-tempo': createActionValue2Policy({tempo:false}),
+  'experimental/action-value-2-no-energy': createActionValue2Policy({energy:false}),
+  'experimental/action-value-2-no-allocation': createActionValue2Policy({allocation:false}),
+  'experimental/action-value-1': createActionValuePolicy(),
+  'experimental/action-value-1-no-draws': createActionValuePolicy({draws:false}),
+  'experimental/action-value-1-no-tempo': createActionValuePolicy({tempo:false}),
+  'experimental/action-value-1-no-energy': createActionValuePolicy({energy:false}),
+  'experimental/action-value-1-no-allocation': createActionValuePolicy({allocation:false}),
   'v1.0': baseline,
+  'experimental/team-route-2': createTeamRoute2Policy(),
+  'experimental/team-route-2-no-routes': createTeamRoute2Policy({routes:false}),
+  'experimental/team-route-2-no-gifts': createTeamRoute2Policy({gifts:false}),
+  'experimental/team-route-2-no-risk': createTeamRoute2Policy({risk:false}),
+  'experimental/team-route-1': createTeamRoutePolicy(),
+  'experimental/team-route-1-no-routes': createTeamRoutePolicy({routes:false}),
+  'experimental/team-route-1-no-gifts': createTeamRoutePolicy({gifts:false}),
+  'experimental/team-route-1-no-risk': createTeamRoutePolicy({risk:false}),
   'experimental/economy-capability-1': createCapabilityPolicy(),
   'experimental/economy-1': createFrozenEconomyPolicy(),
   'experimental/economy-2': createEconomy2Policy(),
@@ -41,6 +69,8 @@ choices['v1.1'] = choices['read-1'];
 choices['v1.2'] = choices['fusion-1'];
 // Exact accepted economy-4 policy; historical stable aliases remain frozen.
 choices['v1.3'] = choices['experimental/economy-4'];
+// Accepted targeted fixes; alias only, frozen candidate behavior is unchanged.
+choices['v1.4'] = choices['experimental/targeted-fixes-1'];
 choices['experimental/read-1'] = choices['read-1'];
 choices['experimental/fusion-1'] = choices['fusion-1'];
 export const policies = Object.freeze(Object.fromEntries(Object.entries(choices).map(([id, frozen]) => { const policy = legalPolicy(frozen); return [id, Object.freeze({ ...policy, runAiAction: (game, actorId, options) => runPolicyAction(policy, game, actorId, options) })]; })));

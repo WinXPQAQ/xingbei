@@ -1,0 +1,81 @@
+{
+  "baseHEAD": "e0655183ade696ba5dabbe6cceb08842b49e12db",
+  "frozenStrategySHA": "0ada54a7d978d29164c35164d56717f54728b153",
+  "allChecksPassed": true,
+  "productionChanges": "xingbei-cli/src/ai.js\nxingbei-cli/src/ai/versions.js",
+  "defaultVersion": "v1.4",
+  "stableAliasExactlyFrozen": true,
+  "historicalAliasesPreserved": true,
+  "historicalPolicyFilesUnchanged": true,
+  "deploymentFilesUnchanged": true,
+  "frozenCandidateUnchanged": true,
+  "web": {
+    "versionSmoke": {
+      "version": "v1.4",
+      "actionEqual": true,
+      "oldAliases": true
+    },
+    "state": {
+      "current": 0,
+      "completed": false,
+      "endRejected": true,
+      "legalCards": 4,
+      "hand": 4
+    },
+    "errors": [],
+    "scope": "Actual human Web refresh button twice in an injected reachable-shape fixture; first remains unable, second regains attacks; ordinary end rejected. Not natural match or visual acceptance."
+  },
+  "cli": {
+    "exitCode": 0,
+    "ordinaryEndKeepsActionPrompt": true,
+    "quitDoesNotEndTurn": true,
+    "scope": "PTY actual CLI initial human turn; no complete game or visual acceptance"
+  },
+  "automaticEngine": {
+    "realEngineCases": [
+      {
+        "change": "protect",
+        "chosen": 2,
+        "afterDamageHand": 3,
+        "finalHand": 6,
+        "winner": "blue"
+      },
+      {
+        "change": "threeCups",
+        "chosen": 0,
+        "afterDamageHand": 5,
+        "finalHand": 5,
+        "winner": null
+      },
+      {
+        "change": "twoStones",
+        "chosen": 0,
+        "afterDamageHand": 5,
+        "finalHand": 5,
+        "winner": null
+      },
+      {
+        "change": "oneHealing",
+        "chosen": 0,
+        "afterDamageHand": 5,
+        "finalHand": 5,
+        "winner": null
+      },
+      {
+        "change": "realPriest",
+        "chosen": 0,
+        "afterDamageHand": 5,
+        "finalHand": 5,
+        "winner": null
+      }
+    ],
+    "ownEnergy": 3.5,
+    "nonObserverEnergyUnchanged": 6
+  },
+  "independentVersionTests": "17",
+  "scope": "Release mapping and finite entry smokes, including browser fixture; not a new strength evaluation, complete browser response-branch certification or deployed-server verification.",
+  "productionSHA256": {
+    "src/ai.js": "b5e390b61591ad569e1b1448e338714eee163676e25b7d05a233e11df9fedd60",
+    "src/ai/versions.js": "bfae0614304d06d92c2c5a63fc9aedf503ad1953bdf9baa589e84d1167e68456"
+  }
+}

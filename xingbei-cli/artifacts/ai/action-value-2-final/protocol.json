@@ -1,0 +1,17 @@
+{
+  "sourceSHA": "73027d7c45fdac2211a9d73c473a7b0bb30114e4",
+  "deliverySHA": "87ff27772ce5ad92f5f81b4f3e8c90657c2ccd96",
+  "firstSeed": 994001, "lastSeed": 994030, "turnLimit": 300,
+  "rostersSource": "artifacts/ai/mandatory-refresh/protocol.json",
+  "starts": [0,1,2,3,4,5], "teams": ["red","blue"],
+  "blueMapping": [1,0,3,2,5,4],
+  "pairs": [["experimental/action-value-2","v1.3"],["experimental/action-value-2","v1.2"],["experimental/action-value-2","v1.0"],["v1.3","v1.3"],["experimental/action-value-2","experimental/team-route-2"]],
+  "gamesPerPair": 1440, "totalGames": 7200,
+  "rules": "Frozen shared mandatory-action/mandatory-refresh engine and legality adapter for ALL historical and candidate policies; historical source unchanged; audit privacy view enabled, public observations enabled.",
+  "primary": {"comparison": "pair0 minus pair3 same seed,lineup,start,team", "endpoints": ["all","mirrorAssault","mirrorMixed","asymmetric","asymmetricReverse"], "margin": -0.05, "resampling": "whole seed clusters, equal cluster weight", "bootstrapReplicates": 100000, "rng": "LCG initial 918273, a1664525,c1013904223,uint32; reset for each endpoint", "lowerQuantileIndex": 999, "oneSidedAlphaPerEndpoint": 0.01, "familyAlphaBonferroni": 0.05, "gate": "all five lower bounds >= -0.05", "limitation": "Cluster bootstrap approximate inference with 30 independent clusters; not exact finite-sample coverage"},
+  "secondary": "All five comparisons overall/by lineup/start/color, descriptive two-sided 95% cluster bootstrap indices2499/97499; do not select ablation or claim superiority from this gate",
+  "truncation": "Retain all; half point primary, candidate truncated=0 sensitivity (selfbaseline remains half); each comparison <=1% truncated; engine never declares draw at cutoff",
+  "correctnessGate": "zero rule violations/engine errors, full tests/privacy/natural-case checks pass",
+  "performanceGate": "Six heroes x 3-hand/6-hand/long-public-history >=100 events x10 fixed observations x5 repetitions; per cell candidate/capability baseline median <=2 and p95 <=3; fixed seeds995001..995010; raw timing retained and no concurrent evaluations during measured timing",
+  "stopping": "Run all 7200 once before inspecting outcomes. No added seeds after failure. Infrastructure restart resumes exact missing configurations, keeps error log; no dropping outcomes. Strategy never changes. Performance-only behavior-preserving optimization requires recorded equivalence verification and cannot erase original failure. Parent acceptance before default replacement."
+}

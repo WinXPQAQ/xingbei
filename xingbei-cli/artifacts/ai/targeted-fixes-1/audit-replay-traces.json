@@ -1,0 +1,8 @@
+{
+  "compressedReplaysVerify": true,
+  "publicObservations": 891,
+  "ordinary": 350,
+  "requests": 541,
+  "allOffRequestDecisionsMatchStable": true,
+  "scope": "All recorded ordinary and public rule/response observations across the eight mechanically selected replays; not an exhaustive privacy proof."
+}

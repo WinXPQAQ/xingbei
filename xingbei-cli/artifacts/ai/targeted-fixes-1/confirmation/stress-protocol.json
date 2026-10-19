@@ -1,0 +1,41 @@
+{
+  "frozenSHA": "0ada54a7d978d29164c35164d56717f54728b153",
+  "seeds": [
+    1101001,
+    1101002,
+    1101003,
+    1101004,
+    1101005,
+    1101006,
+    1101007,
+    1101008,
+    1101009,
+    1101010
+  ],
+  "heroes": [
+    "berserker",
+    "windSwordmaster",
+    "marksman",
+    "sealer",
+    "guardianAngel",
+    "priest"
+  ],
+  "cells": [
+    "hand3",
+    "hand6",
+    "history100"
+  ],
+  "construction": "hand3/hand6: seeded Game.setup with each hero at its fixed seat; moveCard adjusts only observer hand using current seeded deck, then startTurn and assertCardLocations. Explicit legal fixtures, not claimed natural trajectories. history100: naturally play all six heroes in this order with candidate vs v1.3, starts 0..5 and candidate colors red/blue in that order; first ordinary non-refresh decision per hero with at least 100 stored public events. Stop seed scan once all six captured. Report missing cells without substituting seeds.",
+  "policies": [
+    "experimental/economy-capability-1",
+    "experimental/targeted-fixes-1"
+  ],
+  "measurement": "Same-process public replayTrace scoring only, not production end-to-end latency. Each 10-snapshot cell gets one unmeasured warmup per policy and snapshot, then 5 measured repetitions. Alternate policy order by repetition and snapshot. Quantiles sorted[floor(N*q)], max retained. Report each cell separately, raw times retained. Raw historical replay may include diagnostic pass; no game is driven through replayTrace.",
+  "gate": {
+    "everyCellMedianRatioAtMost": 2,
+    "everyCellP95RatioAtMost": 3
+  },
+  "scheduling": "Construct and verify snapshots now. Formal timing only after parent confirms 25920-game run completed. No automatic rerun of failed cells; any rerun retained separately with reason.",
+  "limitations": "Deterministic fixtures cover specified states, not exhaustive hero states. Natural long-history hand counts vary. Concurrent host noise remains possible even after match jobs finish. No policy or weight tuning permitted.",
+  "deliverySHA": "0ada54a7d978d29164c35164d56717f54728b153"
+}

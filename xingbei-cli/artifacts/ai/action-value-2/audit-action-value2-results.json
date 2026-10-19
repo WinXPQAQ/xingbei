@@ -1,0 +1,199 @@
+{
+  "allChecksPassed": true,
+  "count": 2016,
+  "gateChecks": {
+    "vs13Point": true,
+    "vs13Lower": true,
+    "rosterPoint": true,
+    "olderPoint": true,
+    "truncation": true,
+    "median": true,
+    "p95": true
+  },
+  "performance": {
+    "median": 1.9416254524617564,
+    "p95": 1.5661001588601267
+  },
+  "sourceSHA": "73027d7c45fdac2211a9d73c473a7b0bb30114e4",
+  "groups": [
+    {
+      "job": 0,
+      "games": 288,
+      "wins": 150,
+      "losses": 138,
+      "truncated": 0,
+      "exchanges": 0,
+      "maxTurns": 103
+    },
+    {
+      "job": 1,
+      "games": 288,
+      "wins": 175,
+      "losses": 113,
+      "truncated": 0,
+      "exchanges": 0,
+      "maxTurns": 161
+    },
+    {
+      "job": 2,
+      "games": 288,
+      "wins": 229,
+      "losses": 59,
+      "truncated": 0,
+      "exchanges": 0,
+      "maxTurns": 132
+    },
+    {
+      "job": 3,
+      "games": 288,
+      "wins": 144,
+      "losses": 144,
+      "truncated": 0,
+      "exchanges": 0,
+      "maxTurns": 82
+    },
+    {
+      "job": 4,
+      "games": 288,
+      "wins": 144,
+      "losses": 144,
+      "truncated": 0,
+      "exchanges": 0,
+      "maxTurns": 102
+    },
+    {
+      "job": 5,
+      "games": 144,
+      "wins": 79,
+      "losses": 65,
+      "truncated": 0,
+      "exchanges": 0,
+      "maxTurns": 94
+    },
+    {
+      "job": 6,
+      "games": 144,
+      "wins": 74,
+      "losses": 70,
+      "truncated": 0,
+      "exchanges": 0,
+      "maxTurns": 94
+    },
+    {
+      "job": 7,
+      "games": 144,
+      "wins": 72,
+      "losses": 72,
+      "truncated": 0,
+      "exchanges": 0,
+      "maxTurns": 94
+    },
+    {
+      "job": 8,
+      "games": 144,
+      "wins": 73,
+      "losses": 71,
+      "truncated": 0,
+      "exchanges": 0,
+      "maxTurns": 94
+    }
+  ],
+  "corrected": {
+    "all": {
+      "games": 288,
+      "seeds": 6,
+      "mean": 0.020833333333333332,
+      "cluster95": [
+        -0.017361111111111112,
+        0.055555555555555546
+      ]
+    },
+    "mirrorAssault": {
+      "games": 72,
+      "seeds": 6,
+      "mean": -0.041666666666666664,
+      "cluster95": [
+        -0.09722222222222222,
+        0.027777777777777776
+      ]
+    },
+    "mirrorMixed": {
+      "games": 72,
+      "seeds": 6,
+      "mean": -0.041666666666666664,
+      "cluster95": [
+        -0.09722222222222222,
+        0.027777777777777776
+      ]
+    },
+    "asymmetric": {
+      "games": 72,
+      "seeds": 6,
+      "mean": 0.08333333333333333,
+      "cluster95": [
+        -0.041666666666666664,
+        0.19444444444444442
+      ]
+    },
+    "asymmetricReverse": {
+      "games": 72,
+      "seeds": 6,
+      "mean": 0.08333333333333333,
+      "cluster95": [
+        -0.04166666666666668,
+        0.20833333333333334
+      ]
+    }
+  },
+  "ablations": [
+    {
+      "candidate": "experimental/action-value-2-no-projection",
+      "paired": {
+        "games": 144,
+        "seeds": 3,
+        "mean": -0.027777777777777776,
+        "cluster95": [
+          -0.0625,
+          0
+        ]
+      }
+    },
+    {
+      "candidate": "experimental/action-value-2-no-tempo",
+      "paired": {
+        "games": 144,
+        "seeds": 3,
+        "mean": 0.006944444444444444,
+        "cluster95": [
+          -0.020833333333333332,
+          0.041666666666666664
+        ]
+      }
+    },
+    {
+      "candidate": "experimental/action-value-2-no-energy",
+      "paired": {
+        "games": 144,
+        "seeds": 3,
+        "mean": 0.020833333333333332,
+        "cluster95": [
+          0,
+          0.041666666666666664
+        ]
+      }
+    },
+    {
+      "candidate": "experimental/action-value-2-no-allocation",
+      "paired": {
+        "games": 144,
+        "seeds": 3,
+        "mean": 0.013888888888888888,
+        "cluster95": [
+          0,
+          0.041666666666666664
+        ]
+      }
+    }
+  ],
+  "fullFirst3": 75
+}

@@ -1,0 +1,142 @@
+{
+  "allChecksPassed": true,
+  "count": 2112,
+  "sourceSHA": "b84f377098977e246fbcacd153a899f1f84c99d4",
+  "groups": [
+    {
+      "job": 0,
+      "games": 384,
+      "wins": 229,
+      "losses": 155,
+      "truncated": 0
+    },
+    {
+      "job": 1,
+      "games": 384,
+      "wins": 228,
+      "losses": 156,
+      "truncated": 0
+    },
+    {
+      "job": 2,
+      "games": 384,
+      "wins": 289,
+      "losses": 95,
+      "truncated": 0
+    },
+    {
+      "job": 3,
+      "games": 384,
+      "wins": 192,
+      "losses": 192,
+      "truncated": 0
+    },
+    {
+      "job": 4,
+      "games": 192,
+      "wins": 95,
+      "losses": 97,
+      "truncated": 0
+    },
+    {
+      "job": 5,
+      "games": 192,
+      "wins": 113,
+      "losses": 79,
+      "truncated": 0
+    },
+    {
+      "job": 6,
+      "games": 192,
+      "wins": 101,
+      "losses": 91,
+      "truncated": 0
+    }
+  ],
+  "corrected": {
+    "all": {
+      "games": 384,
+      "seeds": 8,
+      "mean": 0.09635416666666666,
+      "cluster95": [
+        0.0625,
+        0.1328125
+      ]
+    },
+    "mirrorAssault": {
+      "games": 96,
+      "seeds": 8,
+      "mean": 0.07291666666666667,
+      "cluster95": [
+        0.020833333333333336,
+        0.11458333333333333
+      ]
+    },
+    "mirrorMixed": {
+      "games": 96,
+      "seeds": 8,
+      "mean": 0.09375,
+      "cluster95": [
+        -1.734723475976807e-18,
+        0.18749999999999997
+      ]
+    },
+    "asymmetric": {
+      "games": 96,
+      "seeds": 8,
+      "mean": 0.08333333333333333,
+      "cluster95": [
+        0,
+        0.16666666666666666
+      ]
+    },
+    "asymmetricReverse": {
+      "games": 96,
+      "seeds": 8,
+      "mean": 0.13541666666666666,
+      "cluster95": [
+        0.020833333333333336,
+        0.24999999999999997
+      ]
+    }
+  },
+  "ablations": [
+    {
+      "candidate": "experimental/team-route-2-no-routes",
+      "paired": {
+        "games": 192,
+        "seeds": 4,
+        "mean": 0.09895833333333334,
+        "cluster95": [
+          0.026041666666666668,
+          0.16666666666666669
+        ]
+      }
+    },
+    {
+      "candidate": "experimental/team-route-2-no-gifts",
+      "paired": {
+        "games": 192,
+        "seeds": 4,
+        "mean": 0.005208333333333332,
+        "cluster95": [
+          -0.046875,
+          0.0625
+        ]
+      }
+    },
+    {
+      "candidate": "experimental/team-route-2-no-risk",
+      "paired": {
+        "games": 192,
+        "seeds": 4,
+        "mean": 0.06770833333333334,
+        "cluster95": [
+          0.04687499999999999,
+          0.09375000000000001
+        ]
+      }
+    }
+  ],
+  "fullFirst4": 114
+}

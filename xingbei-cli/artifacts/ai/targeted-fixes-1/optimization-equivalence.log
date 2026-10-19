@@ -1,0 +1,8 @@
+{
+  observations: 180,
+  rankedActions: 3990,
+  optimizedSHA256: 'e17bf3c87f2f43f824dc53544cb80ee4f30f411e6f38a3cc125239e3ee955598',
+  referenceSHA256: 'e17bf3c87f2f43f824dc53544cb80ee4f30f411e6f38a3cc125239e3ee955598',
+  equal: true,
+  scope: 'Full three-fix policy complete raw rankings/scores/explanations exact equality vs original repeated-components explanation algorithm; all-off stable equality separately tested. No unknown card identities accessed.'
+}

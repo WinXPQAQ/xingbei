@@ -1,0 +1,16 @@
+{
+  "utc": "2026-10-19T19:03:53.191Z",
+  "sourceSHA": "0ada54a7d978d29164c35164d56717f54728b153",
+  "completed": 25920,
+  "total": 25920,
+  "counts": [
+    6480,
+    6480,
+    6480,
+    6480
+  ],
+  "state": "complete; outcomes analyzed",
+  "elapsedSeconds": 3958.91545703125,
+  "estimatedRemainingSeconds": 0,
+  "errors": []
+}

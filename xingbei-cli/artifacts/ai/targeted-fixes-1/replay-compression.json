@@ -1,0 +1,29 @@
+{
+  "lossless": true,
+  "manifest": [
+    {
+      "file": "replay-0.json.gz",
+      "uncompressedBytes": 17215615,
+      "compressedBytes": 643883,
+      "uncompressedSHA256": "86eda52462a5a66891f4953b6bb3053f558b9f4b8fb8accf4a76b0ea74170787"
+    },
+    {
+      "file": "replay-1.json.gz",
+      "uncompressedBytes": 20852809,
+      "compressedBytes": 806511,
+      "uncompressedSHA256": "11bb4e7c6f90a7464d51863cad12e12c6eb39c9ef6e4c1d4bf92f17e86aad5a4"
+    },
+    {
+      "file": "replay-2.json.gz",
+      "uncompressedBytes": 39986171,
+      "compressedBytes": 1464827,
+      "uncompressedSHA256": "bb41ee1bba6777103ba1f930eedc0ba6e7f2520e52db0703fa862db8a8d60265"
+    },
+    {
+      "file": "replay-3.json.gz",
+      "uncompressedBytes": 30183706,
+      "compressedBytes": 1185899,
+      "uncompressedSHA256": "4283a6517b075c565e03c00df489535dc31da117e77f3eb71554d393549215d1"
+    }
+  ]
+}

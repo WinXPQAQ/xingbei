@@ -1,0 +1,11 @@
+{
+  "plans": 100,
+  "stepCount": 290,
+  "allOriginalFieldsDeepEqual": true,
+  "scope": "All original five public snapshots and all recorded legal actions; sequence off/on. Not an exhaustive proof over every reachable state.",
+  "hashes": {
+    "planner": "8e89a59dc514b36bf92520cc4a594bac25826c9d63f12893d4ad6c3202e4c6e7",
+    "diagnostic": "ba433898482bbd8d1ee03a0e42e4ba5061c9db14f6c00460fb3241d13f56723f",
+    "model": "03fbfc2d65231f283bf39d51c4dbd01d664bc403c571fed3a7ea28a32179ba48"
+  }
+}

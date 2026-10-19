@@ -1,0 +1,16 @@
+{
+  "versionSmoke": {
+    "version": "v1.4",
+    "actionEqual": true,
+    "oldAliases": true
+  },
+  "state": {
+    "current": 0,
+    "completed": false,
+    "endRejected": true,
+    "legalCards": 4,
+    "hand": 4
+  },
+  "errors": [],
+  "scope": "Actual human Web refresh button twice in an injected reachable-shape fixture; first remains unable, second regains attacks; ordinary end rejected. Not natural match or visual acceptance."
+}

@@ -1,0 +1,47 @@
+{
+  "freeThreeAttackSteps": [
+    {
+      "attackCount": 1,
+      "energy": {
+        "gem": 0,
+        "crystal": 0
+      },
+      "pending": [
+        {
+          "type": "attack",
+          "element": null,
+          "sourceSkillId": "galeArt"
+        },
+        {
+          "type": "attack",
+          "element": "wind",
+          "sourceSkillId": "windFury"
+        }
+      ]
+    },
+    {
+      "attackCount": 2,
+      "energy": {
+        "gem": 0,
+        "crystal": 0
+      },
+      "pending": [
+        {
+          "type": "attack",
+          "element": null,
+          "sourceSkillId": "galeArt"
+        }
+      ]
+    },
+    {
+      "attackCount": 3,
+      "energy": {
+        "gem": 0,
+        "crystal": 0
+      },
+      "pending": []
+    }
+  ],
+  "freeThirdAttackTargetHand": 6,
+  "supportShieldAbsorbedActualAttack": true
+}
