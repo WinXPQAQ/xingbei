@@ -93,3 +93,8 @@ test('cleansing option retains the cost of removing friendly shield or enemy poi
   const s=model(g);transfer(s,0,3,s.players[0].hand.find(c=>c.id===wind.id));assert.equal(giftOptionValue(s,s.players[3]),0,name);
  }
 });
+test('priest personal water option is not counted twice; transferred water has recipient capability value',()=>{
+ const g=make();take(g,0,c=>c.elements.includes('water'));take(g,0,c=>c.type==='attack');const s=model(g);
+ assert.equal(giftOptionValue(s,s.players[0]),0);
+ const recipient=s.players[3];recipient.skillIds=['waterPower'];recipient.hero='priest';recipient.count=1;transfer(s,0,3,s.players[0].hand[0]);assert.ok(giftOptionValue(s,recipient)>0);
+});

@@ -211,6 +211,6 @@ export function giftOptionValue(s,p) {
   best=Math.max(best,Math.max(0,removal+healing-2)*.7,threat);
  }
  if(owns('angelBlessing')&&has('water'))best=Math.max(best,s.players.some(t=>t.team===p.team&&t.count>=5)?1.5:0);
- if(owns('waterPower')&&has('water')&&p.count>=2)best=Math.max(best,p.healing<p.healingLimit?1.5:.5);
+ if(p.id!==s.observer&&owns('waterPower')&&has('water')&&p.count>=2)best=Math.max(best,p.healing<p.healingLimit?1.5:.5);
  return discount*Math.min(10,best);
 }

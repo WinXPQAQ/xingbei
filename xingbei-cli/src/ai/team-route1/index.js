@@ -7,7 +7,7 @@ import {requestData,requestFromData} from '../v1.3-economy4/trace.js';
 const combinations=(items,n)=>n===0?[[]]:items.flatMap((item,i)=>combinations(items.slice(i+1),n-1).map(rest=>[item,...rest]));
 export function enumerate(g,id) {
  if(g.canRefreshUnableHand(id))return [{type:'refresh'}];
- const p=g.player(id),actions=[{type:'pass'}];
+ const p=g.player(id),actions=g.turn.hasExtraActions()?[{type:'pass'}]:[];
  for(const {index,targets} of g.legalCards(id))for(const targetId of targets)actions.push({type:'play',index,targetId});
  for(const entry of g.legalSkillActions(id))for(const mode of entry.spec.modes?.map(m=>m.value)??[undefined]) {
   const spec=g.skillActionSpec(id,{skillId:entry.skillId,mode});

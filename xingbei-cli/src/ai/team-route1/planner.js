@@ -181,7 +181,7 @@ export function actionPlan(s,id,action,{sequence=true}={}) {
  }else if(action.type==='purchase'){draw(next,id,3);stones(next,p.team,'gem',1);stones(next,p.team,'crystal',1);}
  else if(action.type==='synthesize'){stones(next,p.team,'gem',-action.gemCount);stones(next,p.team,'crystal',-(3-action.gemCount));draw(next,id,3);next.teams[p.team].cups++;next.teams[p.team==='red'?'blue':'red'].morale--;}
  else if(action.type==='refine'){for(const kind of ['gem','crystal']){stones(next,p.team,kind,-action.stones[kind]);next.players[id].energy[kind]+=action.stones[kind];}}
- else if(action.type==='refresh'){next.players[id].hand=[];next.players[id].count=0;draw(next,id,Math.min(4,p.limit));}
+ else if(action.type==='refresh')return {score:0,branches:[{probability:1,state:next,path:['exchange-procedure-replan']}],unscoredProcedure:true};
  if(['purchase','synthesize','refine'].includes(action.type)&&p.hero==='priest')heal(next,id,1);
  let branches=magic??[{probability:1,state:next,path:[action.skillId??card?.name??action.type]}];
  if(sequence&&!terminal(next)&&((spell&&p.hero==='sealer')||action.skillId==='snipe')) {
