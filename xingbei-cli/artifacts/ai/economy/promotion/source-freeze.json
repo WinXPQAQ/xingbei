@@ -1,0 +1,22 @@
+{
+  "frozenCommit": "f11768dc96f6015dd4a2dfc71a76d84e3f31b381",
+  "allIdentical": true,
+  "files": [
+    {
+      "path": "xingbei-cli/src/ai/v1.3-economy4/index.js",
+      "sha256": "e1b2071bab938c76e6be75db8810e8fb9961b758b32e58bfd3fb34037bbb882f"
+    },
+    {
+      "path": "xingbei-cli/src/ai/v1.3-economy4/model.js",
+      "sha256": "bf6d4eea8eeb9d15a95cc7a7a595b4190e4c778b696a22931568655d857edfba"
+    },
+    {
+      "path": "xingbei-cli/src/ai/v1.3-economy4/planner.js",
+      "sha256": "f6f17e2f0e9851d1ba02497aeeaf5fc00ec17d511b9b82b979b77973db55adb8"
+    },
+    {
+      "path": "xingbei-cli/src/ai/v1.3-economy4/trace.js",
+      "sha256": "9d09a5b26a29d47f0c75337c26d7c2bdb1b49be8857410bc7e1233aba3c6476b"
+    }
+  ]
+}

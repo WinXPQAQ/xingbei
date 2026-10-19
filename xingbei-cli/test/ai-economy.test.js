@@ -25,8 +25,8 @@ test('shared planning history is deeply read-only and confined to one observatio
  assert.throws(()=>event.elements.push('water'),TypeError);branch.players[0].healing=99;assert.notEqual(s.players[0].healing,99);assert.notEqual(g.player(0).healing,99);
 });
 
-test('candidate remains opt-in; high-probability attack can lose to passing',()=>{
- assert.equal(AI_POLICY_VERSION,'v1.2');
+test('historical economy-3 remains opt-in; high-probability attack can lose to passing',()=>{
+ assert.equal(AI_POLICY_VERSION,'v1.3');
  const g=new Game({seed:7,playerHeroId:'sealer'});take(g,0,'darkStrike');g.addStones('red','gem',5);g.startTurn(0);
  g.turn.state.completed=true;g.turn.state.pendingActions=[{type:'attack',sourceSkillId:'spellExcitation'}];
  const ranks=p.rankAiActions(g,0);assert.equal(ranks[0].action.type,'pass');assert.ok(ranks.filter(r=>r.action.type==='play').every(r=>r.score<0));

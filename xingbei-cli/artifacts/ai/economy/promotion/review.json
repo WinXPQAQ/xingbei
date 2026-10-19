@@ -1,0 +1,6 @@
+{
+  "reviewer": "review_economy_model",
+  "approved": true,
+  "scope": "Only default and alias source changed; frozen candidate, historical versions and engine unchanged;136 tests and48 replay games verified",
+  "blockingIssues": []
+}

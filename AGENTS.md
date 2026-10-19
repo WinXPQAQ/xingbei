@@ -275,3 +275,7 @@ Web 默认端口是 `4173`，可通过 `PORT` 修改；`server.js` 未指定 `HO
 - 部署使用独立裸仓库和SHA版本目录；不得通过pull/reset覆盖开发工作区。每分钟检查，有更新才跑npm test、隔离HTTP检查、切换current并重启；失败保留或回退旧版，同一失败提交需显式retry或等待后续新提交。
 - 当前服务使用 `~/.local/share/xingbei-deploy/current/xingbei-cli`，仍监听0.0.0.0:4173并显示TEST_MODE版本。开发工作区的未推送修改不会自动进入此服务；通过main合并上线。
 - 部署脚本的稳定运行副本在 `~/.local/share/xingbei-deploy/update-server.mjs`，修改部署脚本／unit需检查后重新安装，不在自动业务部署时替换控制程序。截图目录通过配置挂载，不能随release清理。
+
+## AI稳定v1.3（2026-10-19）
+
+父线程最终验收后，v1.3严格映射冻结economy-4（f11768dc96f6015dd4a2dfc71a76d84e3f31b381），CLI/Web/引擎共用默认改为v1.3，旧稳定版本及全部实验入口保留。发布只调整路由，不重调策略。28800局、120主种子及30风格种子通过全部预登记门，四阵容同时98.75%下界>−5pp。永久pass、契约及其他旧辅助/有限规划仍是限制；非镜像仅非劣，不声称分别显著改善或真人强度。记录见xingbei-cli/docs/ai-v1.3-release.md和ai-economy4-confirmation.md。

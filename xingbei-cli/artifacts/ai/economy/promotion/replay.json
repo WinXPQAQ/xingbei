@@ -1,0 +1,17 @@
+{
+  "referenceCommit": "f11768dc96f6015dd4a2dfc71a76d84e3f31b381",
+  "configs": 24,
+  "games": 48,
+  "candidates": [
+    "v1.3",
+    "production"
+  ],
+  "matched": [
+    "winner",
+    "turns",
+    "initial",
+    "metrics",
+    "outcome"
+  ],
+  "allMatched": true
+}

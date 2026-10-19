@@ -2,7 +2,8 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { getPolicy } from "../src/ai/versions.js";
 import { Game } from "../src/engine.js";
-import { chooseAiAction, rankAiActions, chooseAiRuleDecision, chooseAiDiscard, keepCards, cardScore, planWindAttacks, runAiAction } from "../src/ai.js";
+// Historical v1.2 behavioral contracts remain tested explicitly after promotion.
+const { chooseAiAction, rankAiActions, chooseAiRuleDecision, chooseAiDiscard, keepCards, cardScore, planWindAttacks, runAiAction } = Object.fromEntries(Object.entries(getPolicy("v1.2")).filter(([,v])=>typeof v === "function").map(([k,v])=>[k,v.bind(getPolicy("v1.2"))]));
 
 const make = heroId => new Game({ seed: 13, shuffleDeck: false, playerHeroId: heroId });
 const take = (game, id, predicate) => {

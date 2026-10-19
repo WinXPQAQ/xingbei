@@ -2,7 +2,10 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { createDeck, createBasicCard, compareHandCards, ATTACKS } from "../src/cards.js";
 import { Game, RuleError } from "../src/engine.js";
-import { chooseAiAction, rankAiActions } from "../src/ai.js";
+import { getPolicy } from "../src/ai/versions.js";
+const legacy = getPolicy("v1.2");
+const chooseAiAction = (...args) => legacy.chooseAiAction(...args);
+const rankAiActions = (...args) => legacy.rankAiActions(...args);
 
 const card = (name, element = "water", fate = "J", id = Math.random().toString()) => createBasicCard({ id, name, element, fate });
 
@@ -173,7 +176,12 @@ test("六人魔弹跳过已参与者，刷新后红二再传给蓝三", async ()
       } });
       assert.deepEqual(targets, [1, 3, 5, 4, 2, 3, 5]);
       assert.deepEqual(next, [3, 5, 4, 2, 3, 5, 0]);
-    } else game.play(0, 0, 1, { autoRespond: true });
+    } else {
+      // This tests relay rules, so explicitly request every legal relay rather
+      // than depending on whichever production AI is currently promoted.
+      game.automaticDecision = r => r.type === "response" ? r.valid[0] : legacy.chooseAiRuleDecision(r, game);
+      game.play(0, 0, 1, { autoRespond: true });
+    }
     assert.equal(game.players[5].hand.length, 6);
     assert.equal(game.discard.filter(item => item.id.startsWith("magic")).length, 7);
     assert.match(game.log.join(" "), /刷新魔弹指定记录/);
@@ -360,7 +368,7 @@ test("无法行动要求全部手牌不可用、空余位不超过2且英雄无�
   assert.throws(() => game.refreshUnableHand(0), RuleError);
 });
 
-test("AI优先给己方圣盾，并向手牌最多的敌人使用中毒或虚弱", () => {
+test("冻结v1.2优先给己方圣盾，并向手牌最多的敌人使用中毒或虚弱", () => {
   const game = new Game({ heroRules: false, shuffleDeck: false, seed: 1 });
   setHand(game, 0, [card("holyShield")]);
   assert.ok([0, 3, 4].includes(chooseAiAction(game, 0).targetId));
