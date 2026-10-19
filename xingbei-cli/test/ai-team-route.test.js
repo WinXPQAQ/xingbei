@@ -1,0 +1,79 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {Game} from '../src/engine.js';
+import {captureObservation,observationView} from '../src/ai/observation.js';
+import {getPolicy} from '../src/ai/versions.js';
+import {stateOf,clone,giftOptionValue,components,transfer,overflow} from '../src/ai/team-route1/model.js';
+import {teamOpportunity,conversionChance,capacityCost,drawDanger} from '../src/ai/team-route1/routes.js';
+import {actionPlan} from '../src/ai/team-route1/planner.js';
+const make=()=>new Game({seed:73,heroIds:['priest','marksman','sealer','guardianAngel','windSwordmaster','berserker']});
+const take=(g,id,fn)=>g.moveCard(g.deck.find(fn).id,{zone:'hand',playerId:id});
+const model=g=>stateOf(observationView(captureObservation(g,0,{actions:true})),0);
+const policy=getPolicy('experimental/team-route-1');
+test('current legal fifth cup beats preparation and matches real engine win; ordinary attack cannot synthesize afterward',async()=>{
+ const g=make();take(g,0,c=>c.type==='attack');g.addStones('red','gem',3);g.teams.red.cups=4;g.teams.red.morale=1;g.startTurn(0);
+ assert.equal(policy.chooseAiAction(g,0).type,'synthesize');
+ await g.executeAction(0,policy.chooseAiAction(g,0));assert.equal(g.winner,'red');
+ const h=make();take(h,0,c=>c.type==='attack');h.addStones('red','gem',3);h.startTurn(0);
+ await h.executeAction(0,{type:'play',index:0,targetId:1});assert.equal(h.canDrawSpecial(0),false);assert.throws(()=>h.synthesize(0,3));
+});
+test('shared route is bounded, grows near fifth cup, and does not count three allied options separately',()=>{
+ const s=model(make());s.teams.red.gem=3;s.players[0].count=3;s.players[3].count=5;s.players[4].count=5;
+ const early=teamOpportunity(s,'red');s.teams.red.cups=4;assert.ok(teamOpportunity(s,'red')>early*3);
+ const late=teamOpportunity(s,'red');s.teams.red.gem=1;assert.ok(teamOpportunity(s,'red')<late/4);
+ s.teams.red.gem=3;s.players[3].count=3;s.players[4].count=3;assert.ok(teamOpportunity(s,'red')<180);
+});
+test('enemy fifth-cup blocking responds to resources, seats, potential pre-turn responses and alternate synthesizers',()=>{
+ const s=model(make());s.teams.blue.gem=3;s.teams.blue.cups=4;for(const p of s.players)p.count=0;
+ for(const id of [2,5])s.players[id].count=6;s.players[1].count=3;
+ const ready=teamOpportunity(s,'blue');s.players[1].count=4;const blocked=teamOpportunity(s,'blue');assert.ok(ready-blocked>40);
+ s.teams.blue.gem=1;const poorBlocked=teamOpportunity(s,'blue');s.players[1].count=3;assert.ok(teamOpportunity(s,'blue')-poorBlocked<(ready-blocked)/4);
+ const p=s.players[5];p.count=4;const noResponse=conversionChance(s,p);s.players[3].count=3;s.players[4].count=3;assert.ok(conversionChance(s,p)>noResponse);
+ s.teams.blue.gem=3;s.players[2].count=0;s.players[1].count=4;assert.ok(teamOpportunity(s,'blue')>blocked);
+});
+test('actual wind gift unlocks angel cleansing of basic seal and healing, without inventing recipient skills',async()=>{
+ const g=make(),water=take(g,0,c=>c.elements.includes('water')),wind=take(g,0,c=>c.elements.includes('wind'));
+ take(g,2,c=>c.type==='attack');
+ const seal=g.deck.find(c=>c.hasUniqueSkill('fireSeal'));g.attachCard(seal.id,4,{effectId:'fireSeal',sourcePlayerId:2});
+ g.startTurn(0);const s=model(g);transfer(s,0,3,s.players[0].hand.find(c=>c.id===wind.id));
+ const useful=giftOptionValue(s,s.players[3]);assert.ok(useful>0);const absent=clone(s);absent.players[3].skillIds=[];assert.equal(giftOptionValue(absent,absent.players[3]),0);
+ const clear=clone(s);for(const p of clear.players)p.effects=[];assert.ok(giftOptionValue(clear,clear.players[3])<useful);
+ const noThreat=clone(clear);noThreat.players[2].skillIds=[];assert.ok(giftOptionValue(noThreat,noThreat.players[3])<giftOptionValue(clear,clear.players[3]));
+ await g.executeAction(0,{type:'skill',skillId:'waterPower',cardIds:[water.id],targetIds:[3]},{choose:r=>r.type==='cardChoice'?[g.player(0).hand.findIndex(c=>c.id===wind.id)]:r.defaultValue});
+ assert.equal(g.player(3).healing,1);g.endTurn();g.startTurn(3);
+ assert.ok(g.legalSkillActions(3).some(x=>x.skillId==='windCleansing'));
+ await g.executeAction(3,{type:'skill',skillId:'windCleansing',cardIds:[wind.id],targetIds:[4]},{choose:r=>r.type==='effectChoice'?seal.id:r.type==='playerChoice'?3:r.defaultValue});
+ assert.equal(g.player(4).getStatus('fireSeal').length,0);assert.equal(g.player(3).healing,2);
+});
+test('full stone capacity has no automatic reward without gain opportunities; low morale weak hand has greater post-buy risk',()=>{
+ const s=model(make());s.teams.red.gem=5;assert.equal(capacityCost(s,'red'),0);
+ s.players[3].count=3;assert.ok(capacityCost(s,'red')>0);s.teams.red.gem=4;assert.equal(capacityCost(s,'red'),0);
+ const g=make();for(let i=0;i<3;i++)take(g,0,c=>c.name==='weakness');for(const id of [1,2,5])take(g,id,c=>c.type==='attack');g.teams.red.morale=1;g.startTurn(0);
+ const low=model(g),after=actionPlan(low,0,{type:'purchase'}).branches[0].state;
+ assert.ok(drawDanger(after,after.players[0])>drawDanger(low,low.players[0]));
+ const safe=clone(after);safe.teams.red.morale=15;assert.equal(drawDanger(safe,safe.players[0]),0);
+ const defended=clone(after);defended.players[0].hand=[{type:'spell',name:'holyLight',elements:['light']}];assert.ok(drawDanger(defended,defended.players[0])<drawDanger(after,after.players[0]));
+});
+test('private teammate/enemy faces and future deck order cannot change candidate ranking',()=>{
+ const g=make();for(let i=0;i<4;i++)take(g,0,c=>c.type==='attack');for(let id=1;id<6;id++)take(g,id,c=>c.type==='attack');g.startTurn(0);
+ const before=policy.rankAiActions(g,0),obs=captureObservation(g,0,{actions:true});
+ for(let id=1;id<6;id++){const old=g.player(id).hand[0];const next=g.deck.find(c=>c.name==='holyLight');g.moveCard(old.id,{zone:'deck'});g.moveCard(next.id,{zone:'hand',playerId:id});}g.deck.reverse();
+ // Fixture card moves can add no public reveals, but their count history differs;
+ // restore the same public evidence to isolate inaccessible faces.
+ g.publicHistory.events=structuredClone(obs.publicHistory.events);
+ assert.deepEqual(policy.rankAiActions(g,0),before);
+});
+
+test('no cleansing target grants no bond value; unknown overflow cannot guarantee a gifted wind survives',()=>{
+ const g=make();const wind=take(g,0,c=>c.elements.includes('wind'));const s=model(g);transfer(s,0,3,s.players[0].hand[0]);
+ assert.equal(giftOptionValue(s,s.players[3]),0);
+ s.players[3].limit=0;overflow(s,3);assert.equal(s.players[3].known.length,0);assert.equal(giftOptionValue(s,s.players[3]),0);
+});
+test('real snipe blocks imminent fifth cup, and real low-morale overflow can lose after buying',async()=>{
+ const g=new Game({heroIds:['marksman','none','none','none','none','none']});g.player(0).energy.crystal=1;
+ g.addStones('blue','gem',3);g.teams.blue.cups=4;g.startTurn(0);
+ await g.executeAction(0,{type:'skill',skillId:'snipe',cardIds:[],targetIds:[1]});g.skipExtraActions(0);g.endTurn();g.startTurn(1);
+ assert.equal(g.player(1).hand.length,5);assert.equal(g.canDrawSpecial(1),false);assert.throws(()=>g.synthesize(1,3));
+ const h=new Game({heroIds:Array(6).fill('none')});for(let i=0;i<3;i++)take(h,0,c=>c.name==='holyLight');h.teams.red.morale=1;h.startTurn(0);await h.executeAction(0,{type:'purchase'});h.endTurn();h.startTurn(1);
+ const fire=take(h,1,c=>c.type==='attack');await h.executeAction(1,{type:'play',index:h.player(1).hand.indexOf(fire),targetId:0},{chooseResponse:()=>null,overflow:'ai'});assert.equal(h.winner,'blue');
+});
