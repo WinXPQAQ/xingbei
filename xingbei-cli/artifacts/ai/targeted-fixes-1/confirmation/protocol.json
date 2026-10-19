@@ -1,0 +1,14 @@
+{
+ "sourceSHA":"0ada54a7d978d29164c35164d56717f54728b153",
+ "firstSeed":1100001,"seedCounts":[240,30,30,240],"turnLimit":300,
+ "pairs":[["experimental/targeted-fixes-1","v1.3"],["experimental/targeted-fixes-1","v1.2"],["experimental/targeted-fixes-1","v1.0"],["v1.3","v1.3"]],
+ "rostersSource":"artifacts/ai/mandatory-refresh/protocol.json","starts":[0,1,2,3,4,5],"teams":["red","blue"],"blueMapping":[1,0,3,2,5,4],"shards":4,"totalGames":25920,
+ "primary":{"comparison":"pair0 minus pair3 same seed,lineup,start,team","endpoints":["all","mirrorAssault","mirrorMixed","asymmetric","asymmetricReverse"],"margin":-0.05,"bootstrapReplicates":100000,"rng":"LCG initial918273,a1664525,c1013904223,uint32 reset per endpoint","lowerQuantileIndex":999,"oneSidedAlpha":0.01,"familyAlphaBonferroni":0.05,"resampling":"whole independent seed clusters, equal weights","gate":"all five lower bounds >= -0.05"},
+ "descriptiveCI":{"indices":[2499,97499],"groups":["all","lineup","start","team"]},
+ "truncation":"Retain all, half-score primary; candidate truncated=0 sensitivity vs half-score self; each comparison <=1%",
+ "correctness":"zero engine errors/rule violations; full tests/privacy/independent audit pass",
+ "performance":"new seeds1101001..1101010 six heroes x3hand/6hand/natural100history x10 x5 repetitions per policy; median<=2 and p95<=3 vs capability1 every cell; one timing after match jobs done",
+ "stopping":"run full matrix once; do not inspect outcomes until all complete; never add seeds or tune after results. If infrastructure failure resume only validated missing exact keys, retain errors. If candidate fails report blocker and minimal bugfix plan, no additional candidate confirmation. If passes collect final frozen natural cases from1102001..1102004 fixed order max192games.",
+ "powerPlanning":"240 based on prior worst seed SD.23665, approximate single-endpoint80% power at true difference0/margin.05 requires225; NOT guarantee joint80% or finite-sample bootstrap coverage.",
+ "protocolDocument":"docs/ai-targeted-fixes-1-protocol.md"
+}

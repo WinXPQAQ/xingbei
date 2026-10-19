@@ -1,0 +1,55 @@
+{
+  "sourceSHA": "0ada54a7d978d29164c35164d56717f54728b153",
+  "blockingFindings": [],
+  "fullTests": {
+    "passed": 218,
+    "failed": 0,
+    "log": "../independent-node-tests.log",
+    "note": "Executed against the identical precommit working tree; frozen source privacy and engine checks rerun here."
+  },
+  "privacyChecks": 30,
+  "engineCases": 5,
+  "stress": {
+    "sha": "0ada54a7d978d29164c35164d56717f54728b153",
+    "snapshots": 180,
+    "cells": {
+      "berserker/hand3": 10,
+      "berserker/hand6": 10,
+      "windSwordmaster/hand3": 10,
+      "windSwordmaster/hand6": 10,
+      "marksman/hand3": 10,
+      "marksman/hand6": 10,
+      "sealer/hand3": 10,
+      "sealer/hand6": 10,
+      "guardianAngel/hand3": 10,
+      "guardianAngel/hand6": 10,
+      "priest/hand3": 10,
+      "priest/hand6": 10,
+      "marksman/history100": 10,
+      "sealer/history100": 10,
+      "guardianAngel/history100": 10,
+      "priest/history100": 10,
+      "berserker/history100": 10,
+      "windSwordmaster/history100": 10
+    },
+    "allLegal": true,
+    "allPublic": true,
+    "deterministicReplay": true,
+    "longHistoryMin": 100,
+    "snapshotSHA256": "3c71bd31bf5c43677489d832bffd7a1eb13c2005ed13a1e16697c62691c49b1b",
+    "naturalMatches": 11
+  },
+  "formalTimingPerformed": false,
+  "limitations": [
+    "Public fourth-cup healing is a sufficient current resource/hand feasibility condition, not a promise that the target acts next or wins.",
+    "Thirty hidden-state counterfactuals and 180 public fixtures are finite coverage, not formal privacy or performance proofs.",
+    "Sample planning approximates individual endpoint power using prior strategy variance; no joint 80 percent power guarantee.",
+    "Blind trace disagreements establish implementation differences, not causal attribution of match defeat."
+  ],
+  "evidenceHashes": {
+    "stress-protocol.json": "76c76b773df20428dd51f71df27e43eb6d54c843bdb1da18ea0724fc877ae242",
+    "stress-verification.json": "34346b1f904c26b0fc623bab3f3d9d5fb2c28bf64214e9d2859f1c902008dbb8",
+    "independent-privacy.json": "51f2d23e74af3584c9686fca8de5debcdddeffc59ec3ce9ed8bac86bd4b86d53",
+    "independent-engine.json": "5295da396ea329e2b18bb68cc58f528acb56656ac3a1d7fcaa39d8ebfcdec0f5"
+  }
+}
