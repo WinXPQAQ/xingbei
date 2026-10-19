@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { getPolicy } from "../src/ai/versions.js";
 import { Game } from "../src/engine.js";
 import { chooseAiAction, rankAiActions, chooseAiRuleDecision, chooseAiDiscard, keepCards, cardScore, planWindAttacks, runAiAction } from "../src/ai.js";
 
@@ -35,7 +36,11 @@ test("AI提炼：通常必须2颗；容量只有1也不提炼，神官和风剑�
   assert.equal(chooseAiAction(wind, 0).type, "refine");
 });
 
-test("风剑搜索并实际执行三刀：风系疾风技第二刀，无需剑影；不足三刀不浪费疾风/能量", () => {
+test("冻结v1.1风剑搜索并实际执行三刀：风系疾风技第二刀，无需剑影；不足三刀不浪费疾风/能量", () => {
+  const policy=getPolicy("v1.1");
+  const {runAiAction,planWindAttacks,chooseAiRuleDecision}=policy;
+  const chooseAiAction=(g,id)=>policy.chooseAiAction(g,id);
+  const offer=(game,skillId,context={})=>chooseAiRuleDecision({type:"skillChoice",playerId:0,skillId,context,energy:game.player(0).energy,reservedEnergy:0},game);
   const game = make("windSwordmaster");
   const first = take(game, 0, card => card.name === "fireStrike" && !card.hasUniqueSkill("galeArt"));
   const gale = take(game, 0, card => card.element === "wind" && card.hasUniqueSkill("galeArt"));
@@ -194,4 +199,16 @@ test("六角色决策不读其他手牌/牌库、不中途改状态；禁用英�
   const game = new Game({ heroRules: false, playerHeroId: "windSwordmaster" });
   take(game, 0, card => card.hasUniqueSkill("galeArt")); take(game, 0, "windStrike"); take(game, 0, "earthStrike");
   assert.equal(planWindAttacks(game, 0).count, 1);
+});
+
+test("v1.2风剑执行合法三刀并允许放弃冗余额外行动，保留冻结候选费用行为",()=>{
+ const g=make('windSwordmaster');
+ take(g,0,c=>c.name==='fireStrike'&&!c.hasUniqueSkill('galeArt'));
+ take(g,0,c=>c.element==='wind'&&c.hasUniqueSkill('galeArt'));
+ take(g,0,c=>c.name==='earthStrike'&&!c.hasUniqueSkill('galeArt'));
+ g.player(0).energy.crystal=1;g.startTurn(0);
+ const actions=[];
+ do {actions.push(runAiAction(g,0,{autoRespond:false}));g.assertCardLocations();assert.ok(actions.length<=4);} while(g.turn.hasExtraActions());
+ assert.deepEqual(actions.map(a=>a.type),['play','play','play','pass']);
+ assert.equal(g.turn.state.attackCount,3);assert.equal(g.player(0).energy.crystal,0);
 });

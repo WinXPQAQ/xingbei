@@ -126,7 +126,7 @@ export class Game {
     return card;
   }
 
-  moveCard(cardId, destination, { animate = true, reason = null, targetId = null, visibility = DiscardVisibility.PUBLIC } = {}) {
+  moveCard(cardId, destination, { animate = true, reason = null, targetId = null, visibility = DiscardVisibility.PUBLIC, covered = false } = {}) {
     if (!Object.values(DiscardVisibility).includes(visibility)) throw new RuleError("无效的弃牌可见性");
     const card = this.cards.get(cardId);
     if (!card) throw new RuleError(`不存在牌 ${cardId}`);
@@ -135,7 +135,7 @@ export class Game {
       if (!card.attachment || !this.canAttach(card, destination.playerId, card.attachment.effectId)) throw new RuleError("状态区需要合法且不重复的挂载效果");
     }
     const from = card.location;
-    const publicTraits = from.zone === "hand" && (destination.zone === "field" || (destination.zone === "discard" && visibility === "public"))
+    const publicTraits = !covered && from.zone === "hand" && (destination.zone === "field" || (destination.zone === "discard" && visibility === "public"))
       ? card.getTraits({ game: this, playerId: from.playerId, purpose: "public-observation" }) : null;
     const index = previous.indexOf(card);
     if (index < 0) throw new RuleError("牌位置与区域不一致");
@@ -615,7 +615,7 @@ export class Game {
     if (cards.some(card => card.location.zone !== "hand" || card.location.playerId !== playerId)) throw new RuleError("弃牌必须来自本人手牌");
     const detail = this.describeCards(cards, playerId, { hidden: visibility === "hidden" || covered });
     this.queueExposure(playerId, cards, { visibility, reason, covered });
-    for (const card of cards) this.moveCard(card.id, { zone: "discard" }, { animate: false, visibility });
+    for (const card of cards) this.moveCard(card.id, { zone: "discard" }, { animate: false, visibility, covered });
     this.recordPresentation("discard", { playerId, cards: cards.map(card => card.toJSON()), visibility, reason });
     this.log.push(`${this.actorLabel(playerId)}${visibility === "hidden" ? "暗弃" : covered ? "盖牌明弃" : "明弃"}${cards.length}张手牌${detail}`);
     if (player.hand.length <= player.handLimit) delete player.pendingOverflow;

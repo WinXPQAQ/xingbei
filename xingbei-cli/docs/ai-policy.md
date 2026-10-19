@@ -59,4 +59,4 @@ node xingbei-cli/tools/benchmark-ai.mjs 100 xingbei-cli/artifacts/ai/benchmark.j
 
 ## 后续观测与融合验收
 
-默认策略暂维持v1.1/read-1。新策略通过`ai/observation.js`接收自身合法观测副本；冻结v1.0不改写。`fusion-1`整合公开吃刀代价与有限英雄攻击序列，评测协议见`ai-fusion-preregistration.md`，结果与局限见`ai-fusion-results.md`。模块拆分用于归因，不代表英雄与攻击应分开优化。
+默认策略已验收切换v1.2/fusion-1，v1.1/read-1保持历史语义；最终边界与局限见`ai-v1.2-release.md`。新策略通过`ai/observation.js`接收自身合法观测副本；冻结v1.0不改写。`fusion-1`整合公开吃刀代价与有限英雄攻击序列，评测协议见`ai-fusion-preregistration.md`，结果与局限见`ai-fusion-results.md`。模块拆分用于归因，不代表英雄与攻击应分开优化。

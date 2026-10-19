@@ -17,6 +17,8 @@ const choices = {
 };
 // Promoted after the preregistered holdout gate; exactly the frozen read-1 candidate.
 choices['v1.1'] = choices['read-1'];
+// Stable release alias: preserve historical v1.1 semantics.
+choices['v1.2'] = choices['fusion-1'];
 choices['experimental/read-1'] = choices['read-1'];
 choices['experimental/fusion-1'] = choices['fusion-1'];
 export const policies = Object.freeze(Object.fromEntries(Object.entries(choices).map(([id, policy]) => [id, Object.freeze({ ...policy, runAiAction: (game, actorId, options) => runPolicyAction(policy, game, actorId, options) })])));

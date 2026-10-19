@@ -51,7 +51,7 @@ test('wrapped baseline decisions match frozen behavior on six hero observations'
  }
 });
 
-test('fusion evidence strengthens only with public acceptance cost; forced hit observations excluded',async()=>{
+test('fusion evidence strengthens only with public acceptance cost',async()=>{
  const {costBeliefs}=await import('../src/ai/v1.1/fusion.js');
  const cheap={publicHistory:{events:[{type:'unanswered',playerId:1,elements:['fire'],acceptCost:0}]}},costly={publicHistory:{events:[{type:'unanswered',playerId:1,elements:['fire'],acceptCost:2}]}};
  assert.ok(costBeliefs(costly).get(1).fire>costBeliefs(cheap).get(1).fire);assert.ok(costBeliefs(costly).get(1).fire<1);
@@ -74,3 +74,12 @@ test('fusion complete games: all six lineups, rule legality and card conservatio
 });
 
 test('basic cards bearing seal effects remain removable public effects',()=>{const g=new Game({seed:9}).setup();const seal=g.deck.find(c=>c.hasUniqueSkill('fireSeal'));g.attachCard(seal.id,0,{effectId:'fireSeal',sourcePlayerId:3});assert.deepEqual(observationView(captureObservation(g,0)).player(0).getBasicEffects().map(c=>c.id),g.player(0).getBasicEffects().map(c=>c.id));});
+
+test('covered discard hides traits from public history, ordinary public discard remains evidence',()=>{
+ const g=new Game({seed:1});
+ for(const covered of [true,false]) {
+  const c=g.moveCard(g.deck.find(c=>c.type==='attack').id,{zone:'hand',playerId:1});
+  g.discardCards(1,[c],{visibility:'public',covered});
+  assert.deepEqual(g.publicHistory.events.at(-1).elements,covered?null:c.elements);
+ }
+});

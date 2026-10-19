@@ -1,0 +1,14 @@
+{
+  "input": "xingbei-cli/artifacts/ai/fusion/fusion-1-read-prior-fusion.json",
+  "sourceCommit": "6d425b4439e298cf9c30cf21cf382ec1f627340a",
+  "games": 72,
+  "audit": true,
+  "identical": [
+    "winner",
+    "turns",
+    "initial",
+    "metrics",
+    "outcome"
+  ],
+  "elapsedSeconds": 18.240366004
+}

@@ -1,0 +1,6 @@
+{
+  "selectedHero": 0,
+  "actionPrompt": true,
+  "quitExit": 0,
+  "defaultEntry": "src/ai.js v1.2"
+}

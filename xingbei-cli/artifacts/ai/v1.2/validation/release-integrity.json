@@ -1,0 +1,13 @@
+{
+  "stableVersion": "v1.2",
+  "candidate": "fusion-1",
+  "unchangedFrozenAlgorithmFiles": [
+    "xingbei-cli/src/ai/v1.1/fusion.js",
+    "xingbei-cli/src/ai/observation.js",
+    "xingbei-cli/src/ai/public-history.js"
+  ],
+  "passedTests": 98,
+  "replayedFrozenGames": 216,
+  "independentReviews": 2,
+  "coveredDiscardFix": "public traits suppressed; no change to rule resolution"
+}

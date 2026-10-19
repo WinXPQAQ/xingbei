@@ -149,11 +149,22 @@ test('observation hooks never alter baseline rules, RNG or results',async()=>{
 });
 
 
-test('production v1.1 is the frozen read-1 candidate with baseline defense/skills/discard',()=>{
-  const g=new Game({seed:117}).setup();
-  assert.equal(production.AI_POLICY_VERSION,'v1.1');
-  assert.deepEqual(production.rankAiActions(g,0),getPolicy('read-1').rankAiActions(g,0));
-
-
-
+test('production v1.2 aliases fusion-1 while v1.1 remains read-1',()=>{
+  assert.equal(production.AI_POLICY_VERSION,'v1.2');
+  for(const method of ['rankAiActions','chooseAiAction','chooseAiResponse','chooseAiRuleDecision','chooseAiDiscard','cardScore','keepCards','giftScore','planWindAttacks']) {
+    assert.equal(getPolicy('v1.2')[method],getPolicy('fusion-1')[method]);
+    assert.equal(getPolicy('v1.1')[method],getPolicy('read-1')[method]);
+  }
+  for(const hero of new Set(Object.values(lineups).flat())) {
+    const g=new Game({seed:117,playerHeroId:hero}).setup();
+    assert.deepEqual(production.rankAiActions(g,0),getPolicy('fusion-1').rankAiActions(g,0));
+  }
+});
+test('stable v1.2 and frozen fusion-1 produce identical full games across six lineups',async()=>{
+  for(const lineup of Object.keys(lineups)) {
+    const config={lineup,seed:40001,start:0,team:'red'};
+    const stable=await playMatch(config,{candidate:'v1.2',opponent:'v1.0'});
+    const candidate=await playMatch(config,{candidate:'fusion-1',opponent:'v1.0'});
+    for(const key of ['winner','turns','initial','metrics','outcome'])assert.deepEqual(stable[key],candidate[key]);
+  }
 });
