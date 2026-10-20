@@ -1,0 +1,219 @@
+[ 'seed', 'hero', 'cell', 'actorId', 'source', 'observation' ]
+{
+  'berserker:hand3': {
+    'experimental/targeted-fixes-1': {
+      median: 0.8262690000001385,
+      p95: 1.1440980000002128,
+      max: 1.5364879999997356
+    },
+    'experimental/plans-2': {
+      median: 0.9517849999992904,
+      p95: 1.34900000000016,
+      max: 1.414307999999437
+    }
+  },
+  'berserker:hand6': {
+    'experimental/plans-2': {
+      median: 1.7974739999999656,
+      p95: 2.9760119999996277,
+      max: 6.294100000000981
+    },
+    'experimental/targeted-fixes-1': {
+      median: 1.545231000000058,
+      p95: 2.275177999999869,
+      max: 2.433661999999913
+    }
+  },
+  'windSwordmaster:hand3': {
+    'experimental/targeted-fixes-1': {
+      median: 19.499112000001332,
+      p95: 35.58210400000007,
+      max: 36.31905999999981
+    },
+    'experimental/plans-2': {
+      median: 23.11248699999942,
+      p95: 32.74329299999954,
+      max: 38.02664000000004
+    }
+  },
+  'windSwordmaster:hand6': {
+    'experimental/plans-2': {
+      median: 45.54300599999988,
+      p95: 62.19609500000024,
+      max: 62.76507800000036
+    },
+    'experimental/targeted-fixes-1': {
+      median: 52.488508999999794,
+      p95: 78.58289699999978,
+      max: 79.99452999999994
+    }
+  },
+  'marksman:hand3': {
+    'experimental/targeted-fixes-1': {
+      median: 1.1883440000001428,
+      p95: 1.6390590000000884,
+      max: 1.9055019999996148
+    },
+    'experimental/plans-2': {
+      median: 1.3856749999995372,
+      p95: 1.8886470000002191,
+      max: 2.115762000000359
+    }
+  },
+  'marksman:hand6': {
+    'experimental/plans-2': {
+      median: 3.278667999999925,
+      p95: 3.977910999999949,
+      max: 5.465485000000172
+    },
+    'experimental/targeted-fixes-1': {
+      median: 2.7936229999995703,
+      p95: 3.8926060000012512,
+      max: 6.985460999998395
+    }
+  },
+  'sealer:hand3': {
+    'experimental/targeted-fixes-1': {
+      median: 2.6344689999996262,
+      p95: 4.422456000000238,
+      max: 4.777111999999761
+    },
+    'experimental/plans-2': {
+      median: 3.3038759999999456,
+      p95: 4.964595999999801,
+      max: 5.615107999999964
+    }
+  },
+  'sealer:hand6': {
+    'experimental/plans-2': {
+      median: 10.033331000000544,
+      p95: 15.306173999999373,
+      max: 17.576834999999846
+    },
+    'experimental/targeted-fixes-1': {
+      median: 8.215548000000126,
+      p95: 14.180771999999706,
+      max: 16.402863000000252
+    }
+  },
+  'guardianAngel:hand3': {
+    'experimental/targeted-fixes-1': {
+      median: 0.9402679999993779,
+      p95: 1.7812490000001162,
+      max: 2.203192000000854
+    },
+    'experimental/plans-2': {
+      median: 1.0501100000001315,
+      p95: 2.161420000000362,
+      max: 3.554627000000437
+    }
+  },
+  'guardianAngel:hand6': {
+    'experimental/plans-2': {
+      median: 2.5770840000004682,
+      p95: 4.292005000000245,
+      max: 4.933863000000201
+    },
+    'experimental/targeted-fixes-1': {
+      median: 2.1957210000000487,
+      p95: 3.553584999999657,
+      max: 3.8718250000001717
+    }
+  },
+  'priest:hand3': {
+    'experimental/targeted-fixes-1': {
+      median: 0.9921850000000632,
+      p95: 1.27915799999937,
+      max: 1.610768000000462
+    },
+    'experimental/plans-2': {
+      median: 1.2432550000003175,
+      p95: 1.4896680000001652,
+      max: 1.651717999999164
+    }
+  },
+  'priest:hand6': {
+    'experimental/plans-2': {
+      median: 2.386953999999605,
+      p95: 3.038985999999568,
+      max: 3.4465070000005653
+    },
+    'experimental/targeted-fixes-1': {
+      median: 1.9579899999998815,
+      p95: 2.562753000000157,
+      max: 2.7296080000000984
+    }
+  },
+  'marksman:history100': {
+    'experimental/targeted-fixes-1': {
+      median: 1.9788520000001881,
+      p95: 3.0756099999998696,
+      max: 3.5807850000001054
+    },
+    'experimental/plans-2': {
+      median: 3.201585000000705,
+      p95: 4.667380000000776,
+      max: 5.02355500000067
+    }
+  },
+  'sealer:history100': {
+    'experimental/plans-2': {
+      median: 5.052628999999797,
+      p95: 10.11839499999951,
+      max: 11.052910999999767
+    },
+    'experimental/targeted-fixes-1': {
+      median: 3.008449999999357,
+      p95: 5.6732540000011795,
+      max: 6.055746999999883
+    }
+  },
+  'guardianAngel:history100': {
+    'experimental/targeted-fixes-1': {
+      median: 2.0024259999991045,
+      p95: 4.02585100000033,
+      max: 7.628641000000243
+    },
+    'experimental/plans-2': {
+      median: 3.0106640000012703,
+      p95: 6.225979999999254,
+      max: 7.037969000000885
+    }
+  },
+  'priest:history100': {
+    'experimental/plans-2': {
+      median: 2.4751130000004196,
+      p95: 6.581154999999853,
+      max: 7.2963700000000244
+    },
+    'experimental/targeted-fixes-1': {
+      median: 1.8064770000000863,
+      p95: 3.7536499999987427,
+      max: 4.380627000000459
+    }
+  },
+  'berserker:history100': {
+    'experimental/targeted-fixes-1': {
+      median: 1.1248399999999492,
+      p95: 2.0034459999997125,
+      max: 2.754775999999765
+    },
+    'experimental/plans-2': {
+      median: 1.605489999999918,
+      p95: 2.7095689999996466,
+      max: 3.1374109999997017
+    }
+  },
+  'windSwordmaster:history100': {
+    'experimental/plans-2': {
+      median: 11.750675999999658,
+      p95: 90.2058820000002,
+      max: 129.12406199999987
+    },
+    'experimental/targeted-fixes-1': {
+      median: 6.201284000000669,
+      p95: 42.27390099999957,
+      max: 66.57137599999987
+    }
+  }
+}

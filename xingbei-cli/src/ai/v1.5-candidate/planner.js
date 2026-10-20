@@ -74,6 +74,7 @@ export function attackBranches(input,id,c,targetId,{precision=null,active=true,c
  }
  return branches.map(b=>({...b,steps:[{type:'attack',actorId:id,targetId,card:c.name,elements:traits(c,id),active,precision:usePrecision,result:b.path.join(' → ')}]}));
 }
+function evaluatedBranches(branches) {const branchParts=branches.map(b=>components(b.state));return {branchParts,total:branches.reduce((sum,b,i)=>sum+b.probability*Object.values(branchParts[i]).reduce((a,b)=>a+b,0),0)};}
 export function expected(branches) {return branches.reduce((sum,b)=>sum+b.probability*value(b.state),0);}
 export function magicBranches(s,sourceId,targetId,amount=2,participants=[sourceId,targetId],depth=1) {
  s=clone(s);s.uncertain=true;
@@ -88,7 +89,7 @@ export function magicBranches(s,sourceId,targetId,amount=2,participants=[sourceI
  return branches.filter(b=>b.probability>0);
 }
 export function bestAttack(s,id,{count=0,depth=1,restriction=null,sequence=true,budget=searchBudget()}={}) {
- let best={score:0,branches:[{probability:1,state:s,path:['pass']}],card:null,targetId:null};
+ let best={score:0,total:value(s),branches:[{probability:1,state:s,path:['pass']}],card:null,targetId:null};
  if(terminal(s)||depth<1)return best;
  const immediate=[];
  for(const c of s.players[id].hand.filter(c=>c.type==='attack'&&(!restriction||traits(c,id).includes(restriction)))) for(const t of enemy(s,id)) {
@@ -125,12 +126,12 @@ export function planAttack(s,id,c,targetId,{count=0,depth=1,sequence=true,budget
      const next=clone(b.state);if(option.cost)payEnergy(next,id);
      next.turn??={usedSkills:{}};next.turn.usedSkills??={};next.turn.usedSkills[option.skill]=true;
      const found=bestAttack(next,id,{count:count+1,depth:depth-1,restriction:option.restriction,sequence,budget});
-     const gain=expected(found.branches)-value(b.state);if(gain>follow.score)follow={...found,score:gain};
+     const gain=found.total-value(b.state);if(gain>follow.score)follow={...found,score:gain};
     }
     return follow.branches.map(f=>({probability:b.probability*f.probability,state:f.state,path:[...b.path,...f.path],steps:[...(b.steps??[]),...(f.steps??[])]}));
    });
   }
-  const score=expected(branches)-value(s);if(!best||score>best.score)best={score,branches,precision:usePrecision};
+  const evaluated=evaluatedBranches(branches),score=evaluated.total-value(s);if(!best||score>best.score)best={score,branches,...evaluated,precision:usePrecision};
  }
  return best;
 }
@@ -192,10 +193,11 @@ export function actionPlan(s,id,action,{sequence=true}={}) {
  if(sequence&&!terminal(next)&&((spell&&p.hero==='sealer')||action.skillId==='snipe')) {
   branches=branches.flatMap(branch=>{const follow=bestAttack(branch.state,id,{depth:1,sequence,budget});return follow.score>0?follow.branches.map(b=>({...b,probability:b.probability*branch.probability,path:[...branch.path,...b.path],steps:[...branch.steps,...(b.steps??[])]})):[branch];});
  }
- return {score:expected(branches)-value(s),branches,primaryBranches,search:{limit:SEARCH_LIMIT,used:budget.used}};
+ const evaluated=evaluatedBranches(branches);
+ return {score:evaluated.total-value(s),branches,...evaluated,primaryBranches,search:{limit:SEARCH_LIMIT,used:budget.used}};
 }
 export function explain(s,plan,base=components(s)) {
  const parts=Object.fromEntries(Object.keys(base).map(k=>[k,0]));
- for(const b of plan.branches)for(const [k,v] of Object.entries((()=>{const after=components(b.state);return Object.fromEntries(Object.keys(base).map(k=>[k,after[k]-base[k]]));})()))parts[k]+=b.probability*v;
+ for(const [i,b] of plan.branches.entries())for(const [k,v] of Object.entries((()=>{const after=plan.branchParts?.[i]??components(b.state);return Object.fromEntries(Object.keys(base).map(k=>[k,after[k]-base[k]]));})()))parts[k]+=b.probability*v;
  return {parts,branches:plan.branches.map(b=>({probability:b.probability,path:b.path,steps:b.steps??[]})),primaryParts:plan.primaryBranches===plan.branches?parts:plan.primaryBranches?explain(s,{branches:plan.primaryBranches},base).parts:null,precision:plan.precision??null,search:plan.search??null};
 }

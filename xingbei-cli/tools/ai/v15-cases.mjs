@@ -2,7 +2,7 @@ import fs from 'node:fs';import assert from 'node:assert/strict';import {playEco
 const source=JSON.parse(fs.readFileSync('artifacts/ai/targeted-fixes-1/negative-cases.json')),results=[];
 for(const old of source.cases){const history=[];let found;
  await playEconomyMatch(old.config,{candidate:'v1.4',opponent:'v1.3',turnLimit:300,decisionVersions:['v1.4'],onPublicAction:e=>history.push(e),onOrdinaryDecision:e=>{if(e.turn===old.turn&&e.actorId===old.actorId){assert.deepEqual(JSON.parse(JSON.stringify(e.ranked)),old.ranked);found={old,observation:e.observation,history:[...history]};}}});
- assert(found);found.current=getPolicy('experimental/plans-1').replayTrace({version:'experimental/plans-1',observation:found.observation}).filter(r=>r.action.type!=='pass');results.push(found);
+ assert(found);found.current=getPolicy('experimental/plans-2').replayTrace({version:'experimental/plans-2',observation:found.observation}).filter(r=>r.action.type!=='pass');results.push(found);
 }
 fs.writeFileSync('artifacts/ai/v1.5/five-comparison.json',JSON.stringify(results,null,2));
 const name=x=>CARD_NAMES[x]??UNIQUE_SKILL_NAMES[x]??({spellExcitation:'法术激荡',waterPower:'水之神力',hit:'命中',light:'圣光抵消',counter:'应战',refine:'提炼'}[x]??x);

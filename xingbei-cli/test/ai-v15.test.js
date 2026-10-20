@@ -1,8 +1,9 @@
+import {terminalForecast} from '../src/ai/v1.5-candidate/horizon.js';
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {Game} from '../src/engine.js';import {getPolicy} from '../src/ai/versions.js';import {captureObservation,observationView} from '../src/ai/observation.js';
-import {stateOf,clone,value,components,energyPlan,transfer,damage} from '../src/ai/v1.5-candidate/model.js';
+import {stateOf,clone,value,components,energyPlan,energyUses,allocationValue,transfer,damage} from '../src/ai/v1.5-candidate/model.js';
 import {actionPlan,attackBranches,explain} from '../src/ai/v1.5-candidate/planner.js';
-const policy=getPolicy('experimental/plans-1');
+const policy=getPolicy('experimental/plans-2');
 const take=(g,id,pred)=>{const c=g.deck.find(pred);assert(c);g.moveCard(c.id,{zone:'hand',playerId:id});return c;};
 const model=(g,id=0)=>stateOf(observationView(captureObservation(g,id)),id);
 const cases=JSON.parse(fs.readFileSync(new URL('../artifacts/ai/targeted-fixes-1/negative-cases.json',import.meta.url))).cases;
@@ -57,4 +58,24 @@ test('v15 real magic relay records sources, cancellation and public settlement w
  const g=new Game({heroIds:['sealer',...Array(5).fill('none')]});take(g,0,c=>c.name==='magicBullet');const first=g.magicTarget(0,new Set([0])).id;take(g,first,c=>c.name==='magicBullet');const second=g.magicTarget(first,new Set([0,first])).id;take(g,second,c=>c.name==='holyLight');g.startTurn(0);
  await g.executeAction(0,{type:'play',index:0,targetId:first},{chooseResponse:()=>({index:0}),choose:()=>false});
  const events=g.publicHistory.actions;assert(events.some(e=>e.type==='magic'&&e.actorId===0&&e.targetId===first));assert(events.some(e=>e.type==='magic'&&e.actorId===first&&e.targetId===second&&e.amount===3));assert(events.some(e=>e.type==='response'&&e.actorId===second&&e.result==='cancel'));assert(!events.some(e=>e.type==='damage'));
+});
+test('v15 exact shared assignment cannot prefer spending a gem to an equivalent crystal for a flexible user',()=>{
+ const c=cases[2],s=stateOf(observationView(c.observation),c.actorId);
+ const crystal=actionPlan(s,c.actorId,{type:'refine',stones:{gem:0,crystal:1}}),gem=actionPlan(s,c.actorId,{type:'refine',stones:{gem:1,crystal:0}});
+ assert(crystal.score>=gem.score-1e-8,'retaining a gem can satisfy every remaining crystal use as well as gem-only uses');
+});
+
+test('v15 future unknown own draws have bounded comeback opportunity, not assumed useless cards',()=>{
+ const g=new Game({heroIds:Array(6).fill('none')});for(let i=0;i<4;i++)take(g,0,c=>c.name==='holyLight');for(let i=0;i<6;i++)take(g,1,c=>c.type==='attack');g.teams.blue.morale=1;g.startTurn(0);const s=model(g);for(const p of s.players)if(p.team==='blue')p.count=6;
+ const known=terminalForecast(s);const unknown=clone(s);unknown.players[0].hand=[];const future=terminalForecast(unknown);assert(future>known);assert(Math.abs(future)<=150);
+});
+
+test('v15 exact resource assignment matches independent table DP across every legal shared pool',()=>{
+ for(const c of cases.slice(0,3)){const s=stateOf(observationView(c.observation),c.actorId),team=s.players[c.actorId].team;for(const p of s.players)p.energy={gem:0,crystal:0};const uses=s.players.filter(p=>p.team===team).flatMap(p=>energyUses(s,p));
+  for(let gem=0;gem<=5;gem++)for(let crystal=0;crystal<=5-gem;crystal++){
+   s.teams[team].gem=gem;s.teams[team].crystal=crystal;
+   let table=new Map([['0,0',0]]);for(const u of uses){const next=new Map(table);for(const [key,v]of table){const [g,c]=key.split(',').map(Number);if(g<gem){const k=`${g+1},${c}`;next.set(k,Math.max(next.get(k)??-Infinity,v+u.value*.8-5));}if(u.kind==='either'&&c<crystal){const k=`${g},${c+1}`;next.set(k,Math.max(next.get(k)??-Infinity,v+u.value*.8-5));}}table=next;}
+   assert(Math.abs(allocationValue(s,team)-Math.max(...table.values()))<1e-8);
+  }
+ }
 });

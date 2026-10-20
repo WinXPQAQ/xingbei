@@ -94,14 +94,14 @@ export function allocationValue(s,team) {
   let gem=p.energy.gem,crystal=p.energy.crystal;
   return energyUses(s,p).filter(use=>{if(use.kind==='gem'&&gem){gem--;return false;}if(use.kind==='either'&&(gem||crystal)){if(crystal)crystal--;else gem--;return false;}return true;});
  });
- let gem=s.teams[team].gem,crystal=s.teams[team].crystal,v=0;
- for(const use of needs.sort((a,b)=>(a.kind==='gem'?-1:0)-(b.kind==='gem'?-1:0)||b.value-a.value)) {
-  if(use.kind==='gem'){if(!gem)continue;gem--;}else if(crystal)crystal--;else if(gem)gem--;else continue;
-  // One future refine action is required; reserve is less ready than personal energy.
-  v+=use.value*.8;
- }
- // Currency and skill opportunities compete for the same stone; do not add both.
- return Math.max(0,v-(s.teams[team].gem+s.teams[team].crystal)*weights.stone);
+ const {gem,crystal}=s.teams[team];
+ // Exact assignment for the two permitted use classes. Enumerate the number of
+ // gem-only slots; all remaining flexible slots accept either remaining stone.
+ // Equivalent to the small 2-D DP, without allocating a table for every leaf.
+ const prefix=kind=>{const values=needs.filter(u=>u.kind===kind).map(u=>u.value*.8-weights.stone).filter(v=>v>0).sort((a,b)=>b-a),out=[0];for(const v of values)out.push(out.at(-1)+v);return out;};
+ const only=prefix('gem'),either=prefix('either');let best=0;
+ for(let g=0;g<=Math.min(gem,only.length-1);g++)best=Math.max(best,only[g]+either[Math.min(gem+crystal-g,either.length-1)]);
+ return best;
 }
 export function nextTurnRisk(s,playerId=s.observer) {
  const p=s.players[playerId];let risk=0,pressure=0,defenses=p.hand.filter(c=>['darkStrike','holyLight'].includes(c.name)).length;

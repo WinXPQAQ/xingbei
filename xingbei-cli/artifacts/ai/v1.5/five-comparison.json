@@ -2327,7 +2327,7 @@
             "sequence": 3
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 1,
             "skillId": "rage",
             "sequence": 4
@@ -2702,7 +2702,7 @@
         "counter": false
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 1,
         "skillId": "rage"
       },
@@ -6936,7 +6936,7 @@
             "sequence": 3
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 1,
             "skillId": "rage",
             "sequence": 4
@@ -7096,9 +7096,16 @@
             "sequence": 20
           },
           {
+            "type": "stones",
+            "team": "red",
+            "sequence": 21,
+            "gem": 1,
+            "crystal": 0
+          },
+          {
             "type": "turn",
             "playerId": 5,
-            "sequence": 21
+            "sequence": 22
           },
           {
             "type": "play",
@@ -7115,7 +7122,7 @@
               "speedBlessing",
               "windBlade"
             ],
-            "sequence": 22
+            "sequence": 23
           },
           {
             "type": "attack",
@@ -7126,7 +7133,7 @@
               "wind"
             ],
             "counter": false,
-            "sequence": 23
+            "sequence": 24
           },
           {
             "type": "play",
@@ -7140,7 +7147,7 @@
               "S"
             ],
             "uniqueSkills": [],
-            "sequence": 24
+            "sequence": 25
           },
           {
             "type": "response",
@@ -7152,7 +7159,7 @@
               "dark"
             ],
             "result": "redirect",
-            "sequence": 25
+            "sequence": 26
           },
           {
             "type": "attack",
@@ -7163,13 +7170,13 @@
               "dark"
             ],
             "counter": true,
-            "sequence": 26
+            "sequence": 27
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 0,
             "skillId": "rage",
-            "sequence": 27
+            "sequence": 28
           },
           {
             "type": "attackResult",
@@ -7177,14 +7184,21 @@
             "targetId": 2,
             "card": "darkStrike",
             "result": "hit",
-            "sequence": 28
+            "sequence": 29
           },
           {
             "type": "healing",
             "playerId": 2,
             "result": "prevent",
             "amount": 0,
-            "sequence": 29
+            "sequence": 30
+          },
+          {
+            "type": "morale",
+            "team": "blue",
+            "amount": -2,
+            "count": 13,
+            "sequence": 31
           },
           {
             "type": "damage",
@@ -7192,18 +7206,25 @@
             "targetId": 2,
             "result": "attack",
             "amount": 3,
-            "sequence": 30
+            "sequence": 32
+          },
+          {
+            "type": "stones",
+            "team": "red",
+            "sequence": 33,
+            "gem": 0,
+            "crystal": 1
           },
           {
             "type": "turn",
             "playerId": 0,
-            "sequence": 31
+            "sequence": 34
           },
           {
             "type": "effect",
             "playerId": 0,
             "result": "removed",
-            "sequence": 32,
+            "sequence": 35,
             "effectId": "weakness"
           },
           {
@@ -7221,7 +7242,7 @@
               "earthSeal",
               "soulTreasure"
             ],
-            "sequence": 33
+            "sequence": 36
           },
           {
             "type": "attack",
@@ -7232,13 +7253,13 @@
               "earth"
             ],
             "counter": false,
-            "sequence": 34
+            "sequence": 37
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 0,
             "skillId": "rage",
-            "sequence": 35
+            "sequence": 38
           },
           {
             "type": "attackResult",
@@ -7246,20 +7267,27 @@
             "targetId": 5,
             "card": "earthStrike",
             "result": "hit",
-            "sequence": 36
+            "sequence": 39
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 0,
             "skillId": "rage",
-            "sequence": 37
+            "sequence": 40
           },
           {
             "type": "healing",
             "playerId": 5,
             "result": "prevent",
             "amount": 0,
-            "sequence": 38
+            "sequence": 41
+          },
+          {
+            "type": "morale",
+            "team": "blue",
+            "amount": -1,
+            "count": 12,
+            "sequence": 42
           },
           {
             "type": "damage",
@@ -7267,12 +7295,19 @@
             "targetId": 5,
             "result": "attack",
             "amount": 4,
-            "sequence": 39
+            "sequence": 43
+          },
+          {
+            "type": "stones",
+            "team": "red",
+            "sequence": 44,
+            "gem": 1,
+            "crystal": 0
           },
           {
             "type": "turn",
             "playerId": 1,
-            "sequence": 40
+            "sequence": 45
           },
           {
             "type": "spell",
@@ -7282,7 +7317,7 @@
             "elements": [
               "earth"
             ],
-            "sequence": 41
+            "sequence": 46
           },
           {
             "type": "play",
@@ -7295,20 +7330,20 @@
               "J"
             ],
             "uniqueSkills": [],
-            "sequence": 42
+            "sequence": 47
           },
           {
             "type": "effect",
             "sourceId": 1,
             "targetId": 0,
             "result": "attached",
-            "sequence": 43,
+            "sequence": 48,
             "effectId": "weakness"
           },
           {
             "type": "turn",
             "playerId": 2,
-            "sequence": 44
+            "sequence": 49
           },
           {
             "type": "play",
@@ -7325,7 +7360,7 @@
               "galeArt",
               "flashTrap"
             ],
-            "sequence": 45
+            "sequence": 50
           },
           {
             "type": "attack",
@@ -7336,7 +7371,7 @@
               "water"
             ],
             "counter": false,
-            "sequence": 46
+            "sequence": 51
           },
           {
             "type": "skillResponse",
@@ -7344,19 +7379,19 @@
             "targetId": 4,
             "skillId": "galeArt",
             "accepted": true,
-            "sequence": 47
+            "sequence": 52
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 2,
             "skillId": "galeArt",
-            "sequence": 48
+            "sequence": 53
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 2,
             "skillId": "galeArt",
-            "sequence": 49
+            "sequence": 54
           },
           {
             "type": "attackResult",
@@ -7364,14 +7399,14 @@
             "targetId": 4,
             "card": "waterStrike",
             "result": "hit",
-            "sequence": 50
+            "sequence": 55
           },
           {
             "type": "healing",
             "playerId": 4,
             "result": "prevent",
             "amount": 0,
-            "sequence": 51
+            "sequence": 56
           },
           {
             "type": "damage",
@@ -7379,26 +7414,33 @@
             "targetId": 4,
             "result": "attack",
             "amount": 2,
-            "sequence": 52
+            "sequence": 57
+          },
+          {
+            "type": "stones",
+            "team": "blue",
+            "sequence": 58,
+            "gem": 1,
+            "crystal": 0
           },
           {
             "type": "skillResponse",
             "playerId": 2,
             "skillId": "windFury",
             "accepted": true,
-            "sequence": 53
+            "sequence": 59
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 2,
             "skillId": "windFury",
-            "sequence": 54
+            "sequence": 60
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 2,
             "skillId": "windFury",
-            "sequence": 55
+            "sequence": 61
           },
           {
             "type": "play",
@@ -7415,7 +7457,7 @@
               "speedBlessing",
               "windBlade"
             ],
-            "sequence": 56
+            "sequence": 62
           },
           {
             "type": "attack",
@@ -7426,13 +7468,13 @@
               "wind"
             ],
             "counter": false,
-            "sequence": 57
+            "sequence": 63
           },
           {
             "type": "effect",
             "playerId": 0,
             "result": "removed",
-            "sequence": 58,
+            "sequence": 64,
             "effectId": "holyShield"
           },
           {
@@ -7441,7 +7483,7 @@
             "targetId": 0,
             "card": "windStrike",
             "result": "holyShield",
-            "sequence": 59
+            "sequence": 65
           },
           {
             "type": "play",
@@ -7458,7 +7500,7 @@
               "fireSeal",
               "soulTreasure"
             ],
-            "sequence": 60
+            "sequence": 66
           },
           {
             "type": "attack",
@@ -7469,13 +7511,13 @@
               "fire"
             ],
             "counter": false,
-            "sequence": 61
+            "sequence": 67
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 2,
             "skillId": "holySword",
-            "sequence": 62
+            "sequence": 68
           },
           {
             "type": "attackResult",
@@ -7483,14 +7525,21 @@
             "targetId": 0,
             "card": "fireStrike",
             "result": "hit",
-            "sequence": 63
+            "sequence": 69
           },
           {
             "type": "healing",
             "playerId": 0,
             "result": "prevent",
             "amount": 0,
-            "sequence": 64
+            "sequence": 70
+          },
+          {
+            "type": "morale",
+            "team": "red",
+            "amount": -1,
+            "count": 14,
+            "sequence": 71
           },
           {
             "type": "damage",
@@ -7498,29 +7547,52 @@
             "targetId": 0,
             "result": "attack",
             "amount": 2,
-            "sequence": 65
+            "sequence": 72
           },
           {
-            "type": "skill",
+            "type": "stones",
+            "team": "blue",
+            "sequence": 73,
+            "gem": 1,
+            "crystal": 0
+          },
+          {
+            "type": "skillNote",
             "playerId": 2,
             "skillId": "holySword",
-            "sequence": 66
+            "sequence": 74
           },
           {
             "type": "discard",
             "playerId": 2,
             "count": 1,
-            "sequence": 67
+            "sequence": 75
           },
           {
             "type": "turn",
             "playerId": 3,
-            "sequence": 68
+            "sequence": 76
+          },
+          {
+            "type": "synthesize",
+            "team": "red",
+            "playerId": 3,
+            "count": 1,
+            "sequence": 77,
+            "gem": 2,
+            "crystal": 1
+          },
+          {
+            "type": "morale",
+            "team": "blue",
+            "amount": -1,
+            "count": 11,
+            "sequence": 78
           },
           {
             "type": "turn",
             "playerId": 4,
-            "sequence": 69
+            "sequence": 79
           },
           {
             "type": "play",
@@ -7534,7 +7606,7 @@
               "S"
             ],
             "uniqueSkills": [],
-            "sequence": 70
+            "sequence": 80
           },
           {
             "type": "attack",
@@ -7545,7 +7617,7 @@
               "dark"
             ],
             "counter": false,
-            "sequence": 71
+            "sequence": 81
           },
           {
             "type": "play",
@@ -7559,7 +7631,7 @@
               "X"
             ],
             "uniqueSkills": [],
-            "sequence": 72
+            "sequence": 82
           },
           {
             "type": "response",
@@ -7571,13 +7643,13 @@
               "light"
             ],
             "result": "cancel",
-            "sequence": 73
+            "sequence": 83
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 4,
             "skillId": "piercingShot",
-            "sequence": 74
+            "sequence": 84
           },
           {
             "type": "discard",
@@ -7586,14 +7658,21 @@
             "elements": [
               "thunder"
             ],
-            "sequence": 75
+            "sequence": 85
           },
           {
             "type": "healing",
             "playerId": 5,
             "result": "prevent",
             "amount": 0,
-            "sequence": 76
+            "sequence": 86
+          },
+          {
+            "type": "morale",
+            "team": "blue",
+            "amount": -1,
+            "count": 10,
+            "sequence": 87
           },
           {
             "type": "damage",
@@ -7601,12 +7680,12 @@
             "targetId": 5,
             "result": "spell",
             "amount": 2,
-            "sequence": 77
+            "sequence": 88
           },
           {
             "type": "turn",
             "playerId": 5,
-            "sequence": 78
+            "sequence": 89
           },
           {
             "type": "play",
@@ -7623,7 +7702,7 @@
               "speedBlessing",
               "lightning"
             ],
-            "sequence": 79
+            "sequence": 90
           },
           {
             "type": "attack",
@@ -7634,13 +7713,13 @@
               "thunder"
             ],
             "counter": false,
-            "sequence": 80
+            "sequence": 91
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 5,
             "skillId": "lightningArrow",
-            "sequence": 81
+            "sequence": 92
           },
           {
             "type": "play",
@@ -7656,7 +7735,7 @@
             "uniqueSkills": [
               "healingArt"
             ],
-            "sequence": 82
+            "sequence": 93
           },
           {
             "type": "response",
@@ -7668,13 +7747,13 @@
               "light"
             ],
             "result": "cancel",
-            "sequence": 83
+            "sequence": 94
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 5,
             "skillId": "piercingShot",
-            "sequence": 84
+            "sequence": 95
           },
           {
             "type": "discard",
@@ -7683,14 +7762,21 @@
             "elements": [
               "wind"
             ],
-            "sequence": 85
+            "sequence": 96
           },
           {
             "type": "healing",
             "playerId": 0,
             "result": "prevent",
             "amount": 0,
-            "sequence": 86
+            "sequence": 97
+          },
+          {
+            "type": "morale",
+            "team": "red",
+            "amount": -1,
+            "count": 13,
+            "sequence": 98
           },
           {
             "type": "damage",
@@ -7698,24 +7784,24 @@
             "targetId": 0,
             "result": "spell",
             "amount": 2,
-            "sequence": 87
+            "sequence": 99
           },
           {
             "type": "turn",
             "playerId": 0,
-            "sequence": 88
+            "sequence": 100
           },
           {
             "type": "effect",
             "playerId": 0,
             "result": "removed",
-            "sequence": 89,
+            "sequence": 101,
             "effectId": "weakness"
           },
           {
             "type": "turn",
             "playerId": 1,
-            "sequence": 90
+            "sequence": 102
           },
           {
             "type": "play",
@@ -7728,7 +7814,7 @@
               "Y"
             ],
             "uniqueSkills": [],
-            "sequence": 91
+            "sequence": 103
           },
           {
             "type": "magic",
@@ -7736,7 +7822,7 @@
             "targetId": 3,
             "card": "magicBullet",
             "amount": 2,
-            "sequence": 92
+            "sequence": 104
           },
           {
             "type": "magicResult",
@@ -7744,14 +7830,21 @@
             "targetId": 3,
             "result": "hit",
             "amount": 2,
-            "sequence": 93
+            "sequence": 105
           },
           {
             "type": "healing",
             "playerId": 3,
             "result": "prevent",
             "amount": 0,
-            "sequence": 94
+            "sequence": 106
+          },
+          {
+            "type": "morale",
+            "team": "red",
+            "amount": -1,
+            "count": 12,
+            "sequence": 107
           },
           {
             "type": "damage",
@@ -7759,12 +7852,12 @@
             "targetId": 3,
             "result": "spell",
             "amount": 2,
-            "sequence": 95
+            "sequence": 108
           },
           {
             "type": "turn",
             "playerId": 2,
-            "sequence": 96
+            "sequence": 109
           },
           {
             "type": "spell",
@@ -7774,7 +7867,7 @@
             "elements": [
               "water"
             ],
-            "sequence": 97
+            "sequence": 110
           },
           {
             "type": "play",
@@ -7787,20 +7880,20 @@
               "H"
             ],
             "uniqueSkills": [],
-            "sequence": 98
+            "sequence": 111
           },
           {
             "type": "effect",
             "sourceId": 2,
             "targetId": 0,
             "result": "attached",
-            "sequence": 99,
+            "sequence": 112,
             "effectId": "poison"
           },
           {
             "type": "turn",
             "playerId": 3,
-            "sequence": 100
+            "sequence": 113
           },
           {
             "type": "play",
@@ -7817,7 +7910,7 @@
               "powerBlessing",
               "fireball"
             ],
-            "sequence": 101
+            "sequence": 114
           },
           {
             "type": "attack",
@@ -7828,7 +7921,7 @@
               "fire"
             ],
             "counter": false,
-            "sequence": 102
+            "sequence": 115
           },
           {
             "type": "attackResult",
@@ -7836,14 +7929,14 @@
             "targetId": 5,
             "card": "fireStrike",
             "result": "hit",
-            "sequence": 103
+            "sequence": 116
           },
           {
             "type": "healing",
             "playerId": 5,
             "result": "prevent",
             "amount": 0,
-            "sequence": 104
+            "sequence": 117
           },
           {
             "type": "damage",
@@ -7851,12 +7944,19 @@
             "targetId": 5,
             "result": "attack",
             "amount": 2,
-            "sequence": 105
+            "sequence": 118
+          },
+          {
+            "type": "stones",
+            "team": "red",
+            "sequence": 119,
+            "gem": 1,
+            "crystal": 0
           },
           {
             "type": "turn",
             "playerId": 4,
-            "sequence": 106
+            "sequence": 120
           },
           {
             "type": "play",
@@ -7873,7 +7973,7 @@
               "speedBlessing",
               "windBlade"
             ],
-            "sequence": 107
+            "sequence": 121
           },
           {
             "type": "attack",
@@ -7884,7 +7984,7 @@
               "wind"
             ],
             "counter": false,
-            "sequence": 108
+            "sequence": 122
           },
           {
             "type": "play",
@@ -7901,7 +8001,7 @@
               "galeArt",
               "precisionShot"
             ],
-            "sequence": 109
+            "sequence": 123
           },
           {
             "type": "response",
@@ -7913,13 +8013,13 @@
               "wind"
             ],
             "result": "redirect",
-            "sequence": 110
+            "sequence": 124
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 4,
             "skillId": "piercingShot",
-            "sequence": 111
+            "sequence": 125
           },
           {
             "type": "discard",
@@ -7928,14 +8028,21 @@
             "elements": [
               "wind"
             ],
-            "sequence": 112
+            "sequence": 126
           },
           {
             "type": "healing",
             "playerId": 5,
             "result": "prevent",
             "amount": 0,
-            "sequence": 113
+            "sequence": 127
+          },
+          {
+            "type": "morale",
+            "team": "blue",
+            "amount": -1,
+            "count": 9,
+            "sequence": 128
           },
           {
             "type": "damage",
@@ -7943,7 +8050,7 @@
             "targetId": 5,
             "result": "spell",
             "amount": 2,
-            "sequence": 114
+            "sequence": 129
           },
           {
             "type": "attack",
@@ -7954,7 +8061,7 @@
               "wind"
             ],
             "counter": true,
-            "sequence": 115
+            "sequence": 130
           },
           {
             "type": "skillResponse",
@@ -7962,19 +8069,19 @@
             "targetId": 0,
             "skillId": "precisionShot",
             "accepted": true,
-            "sequence": 116
+            "sequence": 131
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 5,
             "skillId": "precisionShot",
-            "sequence": 117
+            "sequence": 132
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 5,
             "skillId": "precisionShot",
-            "sequence": 118
+            "sequence": 133
           },
           {
             "type": "attackResult",
@@ -7982,14 +8089,21 @@
             "targetId": 0,
             "card": "windStrike",
             "result": "hit",
-            "sequence": 119
+            "sequence": 134
           },
           {
             "type": "healing",
             "playerId": 0,
             "result": "prevent",
             "amount": 0,
-            "sequence": 120
+            "sequence": 135
+          },
+          {
+            "type": "morale",
+            "team": "red",
+            "amount": -1,
+            "count": 11,
+            "sequence": 136
           },
           {
             "type": "damage",
@@ -7997,31 +8111,38 @@
             "targetId": 0,
             "result": "attack",
             "amount": 1,
-            "sequence": 121
+            "sequence": 137
+          },
+          {
+            "type": "stones",
+            "team": "blue",
+            "sequence": 138,
+            "gem": 0,
+            "crystal": 1
           },
           {
             "type": "turn",
             "playerId": 5,
-            "sequence": 122
+            "sequence": 139
           },
           {
             "type": "skillAction",
             "playerId": 5,
             "targetId": 0,
             "skillId": "flashTrap",
-            "sequence": 123
+            "sequence": 140
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 5,
             "skillId": "flashTrap",
-            "sequence": 124
+            "sequence": 141
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 5,
             "skillId": "flashTrap",
-            "sequence": 125
+            "sequence": 142
           },
           {
             "type": "play",
@@ -8037,14 +8158,21 @@
               "galeArt",
               "flashTrap"
             ],
-            "sequence": 126
+            "sequence": 143
           },
           {
             "type": "healing",
             "playerId": 0,
             "result": "prevent",
             "amount": 0,
-            "sequence": 127
+            "sequence": 144
+          },
+          {
+            "type": "morale",
+            "team": "red",
+            "amount": -2,
+            "count": 9,
+            "sequence": 145
           },
           {
             "type": "damage",
@@ -8052,19 +8180,26 @@
             "targetId": 0,
             "result": "spell",
             "amount": 2,
-            "sequence": 128
+            "sequence": 146
           },
           {
             "type": "turn",
             "playerId": 0,
-            "sequence": 129
+            "sequence": 147
           },
           {
             "type": "healing",
             "playerId": 0,
             "result": "prevent",
             "amount": 0,
-            "sequence": 130
+            "sequence": 148
+          },
+          {
+            "type": "morale",
+            "team": "red",
+            "amount": -1,
+            "count": 8,
+            "sequence": 149
           },
           {
             "type": "damage",
@@ -8072,13 +8207,13 @@
             "targetId": 0,
             "result": "spell",
             "amount": 1,
-            "sequence": 131
+            "sequence": 150
           },
           {
             "type": "effect",
             "playerId": 0,
             "result": "removed",
-            "sequence": 132,
+            "sequence": 151,
             "effectId": "poison"
           },
           {
@@ -8093,7 +8228,7 @@
               "S"
             ],
             "uniqueSkills": [],
-            "sequence": 133
+            "sequence": 152
           },
           {
             "type": "attack",
@@ -8104,13 +8239,13 @@
               "dark"
             ],
             "counter": false,
-            "sequence": 134
+            "sequence": 153
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 0,
             "skillId": "rage",
-            "sequence": 135
+            "sequence": 154
           },
           {
             "type": "attackResult",
@@ -8118,20 +8253,27 @@
             "targetId": 5,
             "card": "darkStrike",
             "result": "hit",
-            "sequence": 136
+            "sequence": 155
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 0,
             "skillId": "rage",
-            "sequence": 137
+            "sequence": 156
           },
           {
             "type": "healing",
             "playerId": 5,
             "result": "prevent",
             "amount": 0,
-            "sequence": 138
+            "sequence": 157
+          },
+          {
+            "type": "morale",
+            "team": "blue",
+            "amount": -3,
+            "count": 6,
+            "sequence": 158
           },
           {
             "type": "damage",
@@ -8139,22 +8281,59 @@
             "targetId": 5,
             "result": "attack",
             "amount": 4,
-            "sequence": 139
+            "sequence": 159
+          },
+          {
+            "type": "stones",
+            "team": "red",
+            "sequence": 160,
+            "gem": 1,
+            "crystal": 0
           },
           {
             "type": "turn",
             "playerId": 1,
-            "sequence": 140
+            "sequence": 161
+          },
+          {
+            "type": "synthesize",
+            "team": "blue",
+            "playerId": 1,
+            "count": 1,
+            "sequence": 162,
+            "gem": 2,
+            "crystal": 1
+          },
+          {
+            "type": "morale",
+            "team": "red",
+            "amount": -1,
+            "count": 7,
+            "sequence": 163
           },
           {
             "type": "turn",
             "playerId": 2,
-            "sequence": 141
+            "sequence": 164
+          },
+          {
+            "type": "stones",
+            "team": "blue",
+            "sequence": 165,
+            "gem": 1,
+            "crystal": 0
+          },
+          {
+            "type": "stones",
+            "team": "blue",
+            "sequence": 166,
+            "gem": 0,
+            "crystal": 1
           },
           {
             "type": "turn",
             "playerId": 3,
-            "sequence": 142
+            "sequence": 167
           },
           {
             "type": "spell",
@@ -8164,7 +8343,7 @@
             "elements": [
               "water"
             ],
-            "sequence": 143
+            "sequence": 168
           },
           {
             "type": "play",
@@ -8177,32 +8356,53 @@
               "J"
             ],
             "uniqueSkills": [],
-            "sequence": 144
+            "sequence": 169
           },
           {
             "type": "effect",
             "sourceId": 3,
             "targetId": 5,
             "result": "attached",
-            "sequence": 145,
+            "sequence": 170,
             "effectId": "poison"
           },
           {
             "type": "turn",
             "playerId": 4,
-            "sequence": 146
+            "sequence": 171
+          },
+          {
+            "type": "stones",
+            "team": "red",
+            "sequence": 172,
+            "gem": 1,
+            "crystal": 0
+          },
+          {
+            "type": "stones",
+            "team": "red",
+            "sequence": 173,
+            "gem": 0,
+            "crystal": 1
           },
           {
             "type": "turn",
             "playerId": 5,
-            "sequence": 147
+            "sequence": 174
           },
           {
             "type": "healing",
             "playerId": 5,
             "result": "prevent",
             "amount": 0,
-            "sequence": 148
+            "sequence": 175
+          },
+          {
+            "type": "morale",
+            "team": "blue",
+            "amount": -1,
+            "count": 5,
+            "sequence": 176
           },
           {
             "type": "damage",
@@ -8210,13 +8410,13 @@
             "targetId": 5,
             "result": "spell",
             "amount": 1,
-            "sequence": 149
+            "sequence": 177
           },
           {
             "type": "effect",
             "playerId": 5,
             "result": "removed",
-            "sequence": 150,
+            "sequence": 178,
             "effectId": "poison"
           },
           {
@@ -8231,7 +8431,7 @@
               "Y"
             ],
             "uniqueSkills": [],
-            "sequence": 151
+            "sequence": 179
           },
           {
             "type": "attack",
@@ -8242,7 +8442,7 @@
               "dark"
             ],
             "counter": false,
-            "sequence": 152
+            "sequence": 180
           },
           {
             "type": "attackResult",
@@ -8250,14 +8450,21 @@
             "targetId": 0,
             "card": "darkStrike",
             "result": "hit",
-            "sequence": 153
+            "sequence": 181
           },
           {
             "type": "healing",
             "playerId": 0,
             "result": "prevent",
             "amount": 0,
-            "sequence": 154
+            "sequence": 182
+          },
+          {
+            "type": "morale",
+            "team": "red",
+            "amount": -1,
+            "count": 6,
+            "sequence": 183
           },
           {
             "type": "damage",
@@ -8265,12 +8472,19 @@
             "targetId": 0,
             "result": "attack",
             "amount": 2,
-            "sequence": 155
+            "sequence": 184
+          },
+          {
+            "type": "stones",
+            "team": "blue",
+            "sequence": 185,
+            "gem": 1,
+            "crystal": 0
           },
           {
             "type": "turn",
             "playerId": 0,
-            "sequence": 156
+            "sequence": 186
           },
           {
             "type": "play",
@@ -8284,7 +8498,7 @@
               "S"
             ],
             "uniqueSkills": [],
-            "sequence": 157
+            "sequence": 187
           },
           {
             "type": "attack",
@@ -8295,13 +8509,13 @@
               "dark"
             ],
             "counter": false,
-            "sequence": 158
+            "sequence": 188
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 0,
             "skillId": "rage",
-            "sequence": 159
+            "sequence": 189
           },
           {
             "type": "attackResult",
@@ -8309,20 +8523,27 @@
             "targetId": 5,
             "card": "darkStrike",
             "result": "hit",
-            "sequence": 160
+            "sequence": 190
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 0,
             "skillId": "rage",
-            "sequence": 161
+            "sequence": 191
           },
           {
             "type": "healing",
             "playerId": 5,
             "result": "prevent",
             "amount": 0,
-            "sequence": 162
+            "sequence": 192
+          },
+          {
+            "type": "morale",
+            "team": "blue",
+            "amount": -3,
+            "count": 2,
+            "sequence": 193
           },
           {
             "type": "damage",
@@ -8330,12 +8551,19 @@
             "targetId": 5,
             "result": "attack",
             "amount": 4,
-            "sequence": 163
+            "sequence": 194
+          },
+          {
+            "type": "stones",
+            "team": "red",
+            "sequence": 195,
+            "gem": 1,
+            "crystal": 0
           },
           {
             "type": "turn",
             "playerId": 1,
-            "sequence": 164
+            "sequence": 196
           }
         ],
         "events": [
@@ -9328,7 +9556,7 @@
         "counter": false
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 1,
         "skillId": "rage"
       },
@@ -9471,6 +9699,12 @@
         "result": "attack"
       },
       {
+        "type": "stones",
+        "team": "red",
+        "gem": 1,
+        "crystal": 0
+      },
+      {
         "type": "turn",
         "playerId": 5
       },
@@ -9535,7 +9769,7 @@
         "counter": true
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 0,
         "skillId": "rage"
       },
@@ -9553,11 +9787,23 @@
         "result": "prevent"
       },
       {
+        "type": "morale",
+        "team": "blue",
+        "amount": -2,
+        "count": 13
+      },
+      {
         "type": "damage",
         "sourceId": 0,
         "targetId": 2,
         "amount": 3,
         "result": "attack"
+      },
+      {
+        "type": "stones",
+        "team": "red",
+        "gem": 0,
+        "crystal": 1
       },
       {
         "type": "turn",
@@ -9596,7 +9842,7 @@
         "counter": false
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 0,
         "skillId": "rage"
       },
@@ -9608,7 +9854,7 @@
         "result": "hit"
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 0,
         "skillId": "rage"
       },
@@ -9619,11 +9865,23 @@
         "result": "prevent"
       },
       {
+        "type": "morale",
+        "team": "blue",
+        "amount": -1,
+        "count": 12
+      },
+      {
         "type": "damage",
         "sourceId": 0,
         "targetId": 5,
         "amount": 4,
         "result": "attack"
+      },
+      {
+        "type": "stones",
+        "team": "red",
+        "gem": 1,
+        "crystal": 0
       },
       {
         "type": "turn",
@@ -9695,12 +9953,12 @@
         "targetId": 4
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 2,
         "skillId": "galeArt"
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 2,
         "skillId": "galeArt"
       },
@@ -9725,18 +9983,24 @@
         "result": "attack"
       },
       {
+        "type": "stones",
+        "team": "blue",
+        "gem": 1,
+        "crystal": 0
+      },
+      {
         "type": "skillResponse",
         "playerId": 2,
         "skillId": "windFury",
         "accepted": true
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 2,
         "skillId": "windFury"
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 2,
         "skillId": "windFury"
       },
@@ -9806,7 +10070,7 @@
         "counter": false
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 2,
         "skillId": "holySword"
       },
@@ -9824,6 +10088,12 @@
         "result": "prevent"
       },
       {
+        "type": "morale",
+        "team": "red",
+        "amount": -1,
+        "count": 14
+      },
+      {
         "type": "damage",
         "sourceId": 2,
         "targetId": 0,
@@ -9831,7 +10101,13 @@
         "result": "attack"
       },
       {
-        "type": "skill",
+        "type": "stones",
+        "team": "blue",
+        "gem": 1,
+        "crystal": 0
+      },
+      {
+        "type": "skillNote",
         "playerId": 2,
         "skillId": "holySword"
       },
@@ -9843,6 +10119,20 @@
       {
         "type": "turn",
         "playerId": 3
+      },
+      {
+        "type": "synthesize",
+        "playerId": 3,
+        "team": "red",
+        "gem": 2,
+        "crystal": 1,
+        "count": 1
+      },
+      {
+        "type": "morale",
+        "team": "blue",
+        "amount": -1,
+        "count": 11
       },
       {
         "type": "turn",
@@ -9896,7 +10186,7 @@
         "result": "cancel"
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 4,
         "skillId": "piercingShot"
       },
@@ -9913,6 +10203,12 @@
         "playerId": 5,
         "amount": 0,
         "result": "prevent"
+      },
+      {
+        "type": "morale",
+        "team": "blue",
+        "amount": -1,
+        "count": 10
       },
       {
         "type": "damage",
@@ -9952,7 +10248,7 @@
         "counter": false
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 5,
         "skillId": "lightningArrow"
       },
@@ -9983,7 +10279,7 @@
         "result": "cancel"
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 5,
         "skillId": "piercingShot"
       },
@@ -10000,6 +10296,12 @@
         "playerId": 0,
         "amount": 0,
         "result": "prevent"
+      },
+      {
+        "type": "morale",
+        "team": "red",
+        "amount": -1,
+        "count": 13
       },
       {
         "type": "damage",
@@ -10053,6 +10355,12 @@
         "playerId": 3,
         "amount": 0,
         "result": "prevent"
+      },
+      {
+        "type": "morale",
+        "team": "red",
+        "amount": -1,
+        "count": 12
       },
       {
         "type": "damage",
@@ -10144,6 +10452,12 @@
         "result": "attack"
       },
       {
+        "type": "stones",
+        "team": "red",
+        "gem": 1,
+        "crystal": 0
+      },
+      {
         "type": "turn",
         "playerId": 4
       },
@@ -10201,7 +10515,7 @@
         "result": "redirect"
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 4,
         "skillId": "piercingShot"
       },
@@ -10218,6 +10532,12 @@
         "playerId": 5,
         "amount": 0,
         "result": "prevent"
+      },
+      {
+        "type": "morale",
+        "team": "blue",
+        "amount": -1,
+        "count": 9
       },
       {
         "type": "damage",
@@ -10244,12 +10564,12 @@
         "targetId": 0
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 5,
         "skillId": "precisionShot"
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 5,
         "skillId": "precisionShot"
       },
@@ -10267,11 +10587,23 @@
         "result": "prevent"
       },
       {
+        "type": "morale",
+        "team": "red",
+        "amount": -1,
+        "count": 11
+      },
+      {
         "type": "damage",
         "sourceId": 5,
         "targetId": 0,
         "amount": 1,
         "result": "attack"
+      },
+      {
+        "type": "stones",
+        "team": "blue",
+        "gem": 0,
+        "crystal": 1
       },
       {
         "type": "turn",
@@ -10284,12 +10616,12 @@
         "targetId": 0
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 5,
         "skillId": "flashTrap"
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 5,
         "skillId": "flashTrap"
       },
@@ -10315,6 +10647,12 @@
         "result": "prevent"
       },
       {
+        "type": "morale",
+        "team": "red",
+        "amount": -2,
+        "count": 9
+      },
+      {
         "type": "damage",
         "sourceId": 5,
         "targetId": 0,
@@ -10330,6 +10668,12 @@
         "playerId": 0,
         "amount": 0,
         "result": "prevent"
+      },
+      {
+        "type": "morale",
+        "team": "red",
+        "amount": -1,
+        "count": 8
       },
       {
         "type": "damage",
@@ -10368,7 +10712,7 @@
         "counter": false
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 0,
         "skillId": "rage"
       },
@@ -10380,7 +10724,7 @@
         "result": "hit"
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 0,
         "skillId": "rage"
       },
@@ -10391,6 +10735,12 @@
         "result": "prevent"
       },
       {
+        "type": "morale",
+        "team": "blue",
+        "amount": -3,
+        "count": 6
+      },
+      {
         "type": "damage",
         "sourceId": 0,
         "targetId": 5,
@@ -10398,12 +10748,44 @@
         "result": "attack"
       },
       {
+        "type": "stones",
+        "team": "red",
+        "gem": 1,
+        "crystal": 0
+      },
+      {
         "type": "turn",
         "playerId": 1
       },
       {
+        "type": "synthesize",
+        "playerId": 1,
+        "team": "blue",
+        "gem": 2,
+        "crystal": 1,
+        "count": 1
+      },
+      {
+        "type": "morale",
+        "team": "red",
+        "amount": -1,
+        "count": 7
+      },
+      {
         "type": "turn",
         "playerId": 2
+      },
+      {
+        "type": "stones",
+        "team": "blue",
+        "gem": 1,
+        "crystal": 0
+      },
+      {
+        "type": "stones",
+        "team": "blue",
+        "gem": 0,
+        "crystal": 1
       },
       {
         "type": "turn",
@@ -10442,6 +10824,18 @@
         "playerId": 4
       },
       {
+        "type": "stones",
+        "team": "red",
+        "gem": 1,
+        "crystal": 0
+      },
+      {
+        "type": "stones",
+        "team": "red",
+        "gem": 0,
+        "crystal": 1
+      },
+      {
         "type": "turn",
         "playerId": 5
       },
@@ -10450,6 +10844,12 @@
         "playerId": 5,
         "amount": 0,
         "result": "prevent"
+      },
+      {
+        "type": "morale",
+        "team": "blue",
+        "amount": -1,
+        "count": 5
       },
       {
         "type": "damage",
@@ -10501,11 +10901,23 @@
         "result": "prevent"
       },
       {
+        "type": "morale",
+        "team": "red",
+        "amount": -1,
+        "count": 6
+      },
+      {
         "type": "damage",
         "sourceId": 5,
         "targetId": 0,
         "amount": 2,
         "result": "attack"
+      },
+      {
+        "type": "stones",
+        "team": "blue",
+        "gem": 1,
+        "crystal": 0
       },
       {
         "type": "turn",
@@ -10535,7 +10947,7 @@
         "counter": false
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 0,
         "skillId": "rage"
       },
@@ -10547,7 +10959,7 @@
         "result": "hit"
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 0,
         "skillId": "rage"
       },
@@ -10558,11 +10970,23 @@
         "result": "prevent"
       },
       {
+        "type": "morale",
+        "team": "blue",
+        "amount": -3,
+        "count": 2
+      },
+      {
         "type": "damage",
         "sourceId": 0,
         "targetId": 5,
         "amount": 4,
         "result": "attack"
+      },
+      {
+        "type": "stones",
+        "team": "red",
+        "gem": 1,
+        "crystal": 0
       },
       {
         "type": "turn",
@@ -10578,14 +11002,14 @@
             "crystal": 0
           }
         },
-        "score": 1.6037318660408744,
+        "score": 1.1237318660408562,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": 0,
             "cups": 0,
             "stones": -10,
-            "allocation": -1.5200000000000014,
+            "allocation": -2.000000000000001,
             "conversion": -6.4,
             "ownHand": 0,
             "otherHands": 0,
@@ -10618,7 +11042,7 @@
             "morale": 0,
             "cups": 0,
             "stones": -10,
-            "allocation": -1.5200000000000014,
+            "allocation": -2.000000000000001,
             "conversion": -6.4,
             "ownHand": 0,
             "otherHands": 0,
@@ -10714,14 +11138,14 @@
             "crystal": 1
           }
         },
-        "score": -10.400000000000006,
+        "score": -9.599999999999994,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": 0,
             "cups": 0,
             "stones": -5,
-            "allocation": -1.4000000000000004,
+            "allocation": -0.6000000000000005,
             "conversion": -4,
             "ownHand": 0,
             "otherHands": 0,
@@ -10754,7 +11178,7 @@
             "morale": 0,
             "cups": 0,
             "stones": -5,
-            "allocation": -1.4000000000000004,
+            "allocation": -0.6000000000000005,
             "conversion": -4,
             "ownHand": 0,
             "otherHands": 0,
@@ -10776,18 +11200,86 @@
       },
       {
         "action": {
+          "type": "refine",
+          "stones": {
+            "gem": 1,
+            "crystal": 1
+          }
+        },
+        "score": -10.27626813395915,
+        "reason": "expected-state-difference",
+        "explanation": {
+          "parts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": -10,
+            "allocation": -2.000000000000001,
+            "conversion": -6.4,
+            "ownHand": 0,
+            "otherHands": 0,
+            "healing": 0,
+            "energy": 8,
+            "effects": 0,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0,
+            "futureTerminal": 0.12373186604085618,
+            "cupWindow": 0,
+            "terminal": 0
+          },
+          "branches": [
+            {
+              "probability": 1,
+              "path": [
+                "refine"
+              ],
+              "steps": [
+                {
+                  "type": "refine",
+                  "actorId": 1,
+                  "result": "refine",
+                  "gifts": []
+                }
+              ]
+            }
+          ],
+          "primaryParts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": -10,
+            "allocation": -2.000000000000001,
+            "conversion": -6.4,
+            "ownHand": 0,
+            "otherHands": 0,
+            "healing": 0,
+            "energy": 8,
+            "effects": 0,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0,
+            "futureTerminal": 0.12373186604085618,
+            "cupWindow": 0,
+            "terminal": 0
+          },
+          "precision": null,
+          "search": {
+            "limit": 64,
+            "used": 0
+          }
+        }
+      },
+      {
+        "action": {
           "type": "play",
           "index": 0,
           "targetId": 3
         },
-        "score": -10.900634048510852,
+        "score": -11.541496391376427,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": 1.0752260569372591,
             "cups": 0,
             "stones": 1.664741794199022,
-            "allocation": 1.6146884435505566,
+            "allocation": 0.973826100685051,
             "conversion": 2.397228183646592,
             "ownHand": -0.7000000000000002,
             "otherHands": 4.08508890089694,
@@ -10894,86 +11386,18 @@
       },
       {
         "action": {
-          "type": "refine",
-          "stones": {
-            "gem": 1,
-            "crystal": 1
-          }
-        },
-        "score": -11.076268133959132,
-        "reason": "expected-state-difference",
-        "explanation": {
-          "parts": {
-            "morale": 0,
-            "cups": 0,
-            "stones": -10,
-            "allocation": -2.8000000000000007,
-            "conversion": -6.4,
-            "ownHand": 0,
-            "otherHands": 0,
-            "healing": 0,
-            "energy": 8,
-            "effects": 0,
-            "nextTurnRisk": 0,
-            "otherTurnRisk": 0,
-            "futureTerminal": 0.12373186604085618,
-            "cupWindow": 0,
-            "terminal": 0
-          },
-          "branches": [
-            {
-              "probability": 1,
-              "path": [
-                "refine"
-              ],
-              "steps": [
-                {
-                  "type": "refine",
-                  "actorId": 1,
-                  "result": "refine",
-                  "gifts": []
-                }
-              ]
-            }
-          ],
-          "primaryParts": {
-            "morale": 0,
-            "cups": 0,
-            "stones": -10,
-            "allocation": -2.8000000000000007,
-            "conversion": -6.4,
-            "ownHand": 0,
-            "otherHands": 0,
-            "healing": 0,
-            "energy": 8,
-            "effects": 0,
-            "nextTurnRisk": 0,
-            "otherTurnRisk": 0,
-            "futureTerminal": 0.12373186604085618,
-            "cupWindow": 0,
-            "terminal": 0
-          },
-          "precision": null,
-          "search": {
-            "limit": 64,
-            "used": 0
-          }
-        }
-      },
-      {
-        "action": {
           "type": "play",
           "index": 3,
           "targetId": 3
         },
-        "score": -12.55143875579941,
+        "score": -13.215642065943513,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": 0.5264930260301792,
             "cups": 0,
             "stones": 1.6126414208093438,
-            "allocation": 1.65136710641689,
+            "allocation": 0.9871637962728086,
             "conversion": 2.322203645965455,
             "ownHand": -0.7000000000000002,
             "otherHands": 4.083833633711809,
@@ -11084,14 +11508,14 @@
           "index": 1,
           "targetId": 3
         },
-        "score": -13.695325614991049,
+        "score": -14.385555372126618,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": -0.0860058049658079,
             "cups": 0,
             "stones": 1.5545466730606172,
-            "allocation": 1.6922658088319933,
+            "allocation": 1.0020360516964826,
             "conversion": 2.238547209207289,
             "ownHand": 0,
             "otherHands": 4.082539297261234,
@@ -11202,14 +11626,14 @@
           "index": 2,
           "targetId": 3
         },
-        "score": -13.695325614991049,
+        "score": -14.385555372126618,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": -0.0860058049658079,
             "cups": 0,
             "stones": 1.5545466730606172,
-            "allocation": 1.6922658088319933,
+            "allocation": 1.0020360516964826,
             "conversion": 2.238547209207289,
             "ownHand": 0,
             "otherHands": 4.082539297261234,
@@ -11320,14 +11744,14 @@
           "index": 1,
           "targetId": 4
         },
-        "score": -15.610066521511243,
+        "score": -15.344797621984384,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": -0.0870163231050558,
             "cups": 0,
             "stones": 1.5543099581651245,
-            "allocation": -0.22796546053088523,
+            "allocation": 0.0373034389959633,
             "conversion": 2.2382063397577796,
             "ownHand": 0,
             "otherHands": 4.082286316034037,
@@ -11438,14 +11862,14 @@
           "index": 2,
           "targetId": 4
         },
-        "score": -15.610066521511243,
+        "score": -15.344797621984384,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": -0.0870163231050558,
             "cups": 0,
             "stones": 1.5543099581651245,
-            "allocation": -0.22796546053088523,
+            "allocation": 0.0373034389959633,
             "conversion": 2.2382063397577796,
             "ownHand": 0,
             "otherHands": 4.082286316034037,
@@ -11556,14 +11980,14 @@
           "index": 0,
           "targetId": 4
         },
-        "score": -16.215771482814176,
+        "score": -15.950005368861326,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": -0.05628305389280186,
             "cups": 0,
             "stones": 1.5572233239425737,
-            "allocation": -0.22839275417824442,
+            "allocation": 0.03737335977462208,
             "conversion": 2.2424015864773064,
             "ownHand": -0.7000000000000002,
             "otherHands": 4.082348330099702,
@@ -11674,14 +12098,14 @@
           "index": 3,
           "targetId": 4
         },
-        "score": -16.31006652151129,
+        "score": -16.04479762198443,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": -0.0870163231050558,
             "cups": 0,
             "stones": 1.5543099581651245,
-            "allocation": -0.22796546053088523,
+            "allocation": 0.0373034389959633,
             "conversion": 2.2382063397577796,
             "ownHand": -0.7000000000000002,
             "otherHands": 4.082286316034037,
@@ -11792,14 +12216,14 @@
           "index": 1,
           "targetId": 0
         },
-        "score": -46.457784863115904,
+        "score": -46.25970982980593,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": -7.5176893749662295,
             "cups": 0,
             "stones": 1.1605958983007267,
-            "allocation": -0.17022073175077349,
+            "allocation": 0.027854301559217674,
             "conversion": 7.199999999999999,
             "ownHand": 0,
             "otherHands": -0.05696012368161063,
@@ -11910,14 +12334,14 @@
           "index": 2,
           "targetId": 0
         },
-        "score": -46.457784863115904,
+        "score": -46.25970982980593,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": -7.5176893749662295,
             "cups": 0,
             "stones": 1.1605958983007267,
-            "allocation": -0.17022073175077349,
+            "allocation": 0.027854301559217674,
             "conversion": 7.199999999999999,
             "ownHand": 0,
             "otherHands": -0.05696012368161063,
@@ -12028,14 +12452,14 @@
           "index": 0,
           "targetId": 0
         },
-        "score": -47.16155841568278,
+        "score": -46.96349482780872,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": -7.519228350090437,
             "cups": 0,
             "stones": 1.1605288351994358,
-            "allocation": -0.1702108958292508,
+            "allocation": 0.02785269204478669,
             "conversion": 7.199999999999999,
             "ownHand": -0.7000000000000002,
             "otherHands": -0.05702874031383043,
@@ -12146,14 +12570,14 @@
           "index": 3,
           "targetId": 0
         },
-        "score": -47.16155841568278,
+        "score": -46.96349482780872,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": -7.519228350090437,
             "cups": 0,
             "stones": 1.1605288351994358,
-            "allocation": -0.1702108958292508,
+            "allocation": 0.02785269204478669,
             "conversion": 7.199999999999999,
             "ownHand": -0.7000000000000002,
             "otherHands": -0.05702874031383043,
@@ -15420,7 +15844,7 @@
             "sequence": 3
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 1,
             "skillId": "rage",
             "sequence": 4
@@ -15580,9 +16004,16 @@
             "sequence": 20
           },
           {
+            "type": "stones",
+            "team": "red",
+            "sequence": 21,
+            "gem": 1,
+            "crystal": 0
+          },
+          {
             "type": "turn",
             "playerId": 5,
-            "sequence": 21
+            "sequence": 22
           },
           {
             "type": "play",
@@ -15599,7 +16030,7 @@
               "speedBlessing",
               "windBlade"
             ],
-            "sequence": 22
+            "sequence": 23
           },
           {
             "type": "attack",
@@ -15610,7 +16041,7 @@
               "wind"
             ],
             "counter": false,
-            "sequence": 23
+            "sequence": 24
           },
           {
             "type": "play",
@@ -15624,7 +16055,7 @@
               "S"
             ],
             "uniqueSkills": [],
-            "sequence": 24
+            "sequence": 25
           },
           {
             "type": "response",
@@ -15636,7 +16067,7 @@
               "dark"
             ],
             "result": "redirect",
-            "sequence": 25
+            "sequence": 26
           },
           {
             "type": "attack",
@@ -15647,13 +16078,13 @@
               "dark"
             ],
             "counter": true,
-            "sequence": 26
+            "sequence": 27
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 0,
             "skillId": "rage",
-            "sequence": 27
+            "sequence": 28
           },
           {
             "type": "attackResult",
@@ -15661,14 +16092,21 @@
             "targetId": 2,
             "card": "darkStrike",
             "result": "hit",
-            "sequence": 28
+            "sequence": 29
           },
           {
             "type": "healing",
             "playerId": 2,
             "result": "prevent",
             "amount": 0,
-            "sequence": 29
+            "sequence": 30
+          },
+          {
+            "type": "morale",
+            "team": "blue",
+            "amount": -2,
+            "count": 13,
+            "sequence": 31
           },
           {
             "type": "damage",
@@ -15676,18 +16114,25 @@
             "targetId": 2,
             "result": "attack",
             "amount": 3,
-            "sequence": 30
+            "sequence": 32
+          },
+          {
+            "type": "stones",
+            "team": "red",
+            "sequence": 33,
+            "gem": 0,
+            "crystal": 1
           },
           {
             "type": "turn",
             "playerId": 0,
-            "sequence": 31
+            "sequence": 34
           },
           {
             "type": "effect",
             "playerId": 0,
             "result": "removed",
-            "sequence": 32,
+            "sequence": 35,
             "effectId": "weakness"
           },
           {
@@ -15705,7 +16150,7 @@
               "earthSeal",
               "soulTreasure"
             ],
-            "sequence": 33
+            "sequence": 36
           },
           {
             "type": "attack",
@@ -15716,13 +16161,13 @@
               "earth"
             ],
             "counter": false,
-            "sequence": 34
+            "sequence": 37
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 0,
             "skillId": "rage",
-            "sequence": 35
+            "sequence": 38
           },
           {
             "type": "attackResult",
@@ -15730,20 +16175,27 @@
             "targetId": 5,
             "card": "earthStrike",
             "result": "hit",
-            "sequence": 36
+            "sequence": 39
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 0,
             "skillId": "rage",
-            "sequence": 37
+            "sequence": 40
           },
           {
             "type": "healing",
             "playerId": 5,
             "result": "prevent",
             "amount": 0,
-            "sequence": 38
+            "sequence": 41
+          },
+          {
+            "type": "morale",
+            "team": "blue",
+            "amount": -1,
+            "count": 12,
+            "sequence": 42
           },
           {
             "type": "damage",
@@ -15751,12 +16203,19 @@
             "targetId": 5,
             "result": "attack",
             "amount": 4,
-            "sequence": 39
+            "sequence": 43
+          },
+          {
+            "type": "stones",
+            "team": "red",
+            "sequence": 44,
+            "gem": 1,
+            "crystal": 0
           },
           {
             "type": "turn",
             "playerId": 1,
-            "sequence": 40
+            "sequence": 45
           },
           {
             "type": "spell",
@@ -15766,7 +16225,7 @@
             "elements": [
               "earth"
             ],
-            "sequence": 41
+            "sequence": 46
           },
           {
             "type": "play",
@@ -15779,20 +16238,20 @@
               "J"
             ],
             "uniqueSkills": [],
-            "sequence": 42
+            "sequence": 47
           },
           {
             "type": "effect",
             "sourceId": 1,
             "targetId": 0,
             "result": "attached",
-            "sequence": 43,
+            "sequence": 48,
             "effectId": "weakness"
           },
           {
             "type": "turn",
             "playerId": 2,
-            "sequence": 44
+            "sequence": 49
           },
           {
             "type": "play",
@@ -15809,7 +16268,7 @@
               "galeArt",
               "flashTrap"
             ],
-            "sequence": 45
+            "sequence": 50
           },
           {
             "type": "attack",
@@ -15820,7 +16279,7 @@
               "water"
             ],
             "counter": false,
-            "sequence": 46
+            "sequence": 51
           },
           {
             "type": "skillResponse",
@@ -15828,19 +16287,19 @@
             "targetId": 4,
             "skillId": "galeArt",
             "accepted": true,
-            "sequence": 47
+            "sequence": 52
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 2,
             "skillId": "galeArt",
-            "sequence": 48
+            "sequence": 53
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 2,
             "skillId": "galeArt",
-            "sequence": 49
+            "sequence": 54
           },
           {
             "type": "attackResult",
@@ -15848,14 +16307,14 @@
             "targetId": 4,
             "card": "waterStrike",
             "result": "hit",
-            "sequence": 50
+            "sequence": 55
           },
           {
             "type": "healing",
             "playerId": 4,
             "result": "prevent",
             "amount": 0,
-            "sequence": 51
+            "sequence": 56
           },
           {
             "type": "damage",
@@ -15863,26 +16322,33 @@
             "targetId": 4,
             "result": "attack",
             "amount": 2,
-            "sequence": 52
+            "sequence": 57
+          },
+          {
+            "type": "stones",
+            "team": "blue",
+            "sequence": 58,
+            "gem": 1,
+            "crystal": 0
           },
           {
             "type": "skillResponse",
             "playerId": 2,
             "skillId": "windFury",
             "accepted": true,
-            "sequence": 53
+            "sequence": 59
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 2,
             "skillId": "windFury",
-            "sequence": 54
+            "sequence": 60
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 2,
             "skillId": "windFury",
-            "sequence": 55
+            "sequence": 61
           },
           {
             "type": "play",
@@ -15899,7 +16365,7 @@
               "speedBlessing",
               "windBlade"
             ],
-            "sequence": 56
+            "sequence": 62
           },
           {
             "type": "attack",
@@ -15910,13 +16376,13 @@
               "wind"
             ],
             "counter": false,
-            "sequence": 57
+            "sequence": 63
           },
           {
             "type": "effect",
             "playerId": 0,
             "result": "removed",
-            "sequence": 58,
+            "sequence": 64,
             "effectId": "holyShield"
           },
           {
@@ -15925,7 +16391,7 @@
             "targetId": 0,
             "card": "windStrike",
             "result": "holyShield",
-            "sequence": 59
+            "sequence": 65
           },
           {
             "type": "play",
@@ -15942,7 +16408,7 @@
               "fireSeal",
               "soulTreasure"
             ],
-            "sequence": 60
+            "sequence": 66
           },
           {
             "type": "attack",
@@ -15953,13 +16419,13 @@
               "fire"
             ],
             "counter": false,
-            "sequence": 61
+            "sequence": 67
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 2,
             "skillId": "holySword",
-            "sequence": 62
+            "sequence": 68
           },
           {
             "type": "attackResult",
@@ -15967,14 +16433,21 @@
             "targetId": 0,
             "card": "fireStrike",
             "result": "hit",
-            "sequence": 63
+            "sequence": 69
           },
           {
             "type": "healing",
             "playerId": 0,
             "result": "prevent",
             "amount": 0,
-            "sequence": 64
+            "sequence": 70
+          },
+          {
+            "type": "morale",
+            "team": "red",
+            "amount": -1,
+            "count": 14,
+            "sequence": 71
           },
           {
             "type": "damage",
@@ -15982,29 +16455,52 @@
             "targetId": 0,
             "result": "attack",
             "amount": 2,
-            "sequence": 65
+            "sequence": 72
           },
           {
-            "type": "skill",
+            "type": "stones",
+            "team": "blue",
+            "sequence": 73,
+            "gem": 1,
+            "crystal": 0
+          },
+          {
+            "type": "skillNote",
             "playerId": 2,
             "skillId": "holySword",
-            "sequence": 66
+            "sequence": 74
           },
           {
             "type": "discard",
             "playerId": 2,
             "count": 1,
-            "sequence": 67
+            "sequence": 75
           },
           {
             "type": "turn",
             "playerId": 3,
-            "sequence": 68
+            "sequence": 76
+          },
+          {
+            "type": "synthesize",
+            "team": "red",
+            "playerId": 3,
+            "count": 1,
+            "sequence": 77,
+            "gem": 2,
+            "crystal": 1
+          },
+          {
+            "type": "morale",
+            "team": "blue",
+            "amount": -1,
+            "count": 11,
+            "sequence": 78
           },
           {
             "type": "turn",
             "playerId": 4,
-            "sequence": 69
+            "sequence": 79
           },
           {
             "type": "play",
@@ -16018,7 +16514,7 @@
               "S"
             ],
             "uniqueSkills": [],
-            "sequence": 70
+            "sequence": 80
           },
           {
             "type": "attack",
@@ -16029,7 +16525,7 @@
               "dark"
             ],
             "counter": false,
-            "sequence": 71
+            "sequence": 81
           },
           {
             "type": "play",
@@ -16043,7 +16539,7 @@
               "X"
             ],
             "uniqueSkills": [],
-            "sequence": 72
+            "sequence": 82
           },
           {
             "type": "response",
@@ -16055,13 +16551,13 @@
               "light"
             ],
             "result": "cancel",
-            "sequence": 73
+            "sequence": 83
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 4,
             "skillId": "piercingShot",
-            "sequence": 74
+            "sequence": 84
           },
           {
             "type": "discard",
@@ -16070,14 +16566,21 @@
             "elements": [
               "thunder"
             ],
-            "sequence": 75
+            "sequence": 85
           },
           {
             "type": "healing",
             "playerId": 5,
             "result": "prevent",
             "amount": 0,
-            "sequence": 76
+            "sequence": 86
+          },
+          {
+            "type": "morale",
+            "team": "blue",
+            "amount": -1,
+            "count": 10,
+            "sequence": 87
           },
           {
             "type": "damage",
@@ -16085,12 +16588,12 @@
             "targetId": 5,
             "result": "spell",
             "amount": 2,
-            "sequence": 77
+            "sequence": 88
           },
           {
             "type": "turn",
             "playerId": 5,
-            "sequence": 78
+            "sequence": 89
           },
           {
             "type": "play",
@@ -16107,7 +16610,7 @@
               "speedBlessing",
               "lightning"
             ],
-            "sequence": 79
+            "sequence": 90
           },
           {
             "type": "attack",
@@ -16118,13 +16621,13 @@
               "thunder"
             ],
             "counter": false,
-            "sequence": 80
+            "sequence": 91
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 5,
             "skillId": "lightningArrow",
-            "sequence": 81
+            "sequence": 92
           },
           {
             "type": "play",
@@ -16140,7 +16643,7 @@
             "uniqueSkills": [
               "healingArt"
             ],
-            "sequence": 82
+            "sequence": 93
           },
           {
             "type": "response",
@@ -16152,13 +16655,13 @@
               "light"
             ],
             "result": "cancel",
-            "sequence": 83
+            "sequence": 94
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 5,
             "skillId": "piercingShot",
-            "sequence": 84
+            "sequence": 95
           },
           {
             "type": "discard",
@@ -16167,14 +16670,21 @@
             "elements": [
               "wind"
             ],
-            "sequence": 85
+            "sequence": 96
           },
           {
             "type": "healing",
             "playerId": 0,
             "result": "prevent",
             "amount": 0,
-            "sequence": 86
+            "sequence": 97
+          },
+          {
+            "type": "morale",
+            "team": "red",
+            "amount": -1,
+            "count": 13,
+            "sequence": 98
           },
           {
             "type": "damage",
@@ -16182,24 +16692,24 @@
             "targetId": 0,
             "result": "spell",
             "amount": 2,
-            "sequence": 87
+            "sequence": 99
           },
           {
             "type": "turn",
             "playerId": 0,
-            "sequence": 88
+            "sequence": 100
           },
           {
             "type": "effect",
             "playerId": 0,
             "result": "removed",
-            "sequence": 89,
+            "sequence": 101,
             "effectId": "weakness"
           },
           {
             "type": "turn",
             "playerId": 1,
-            "sequence": 90
+            "sequence": 102
           },
           {
             "type": "play",
@@ -16212,7 +16722,7 @@
               "Y"
             ],
             "uniqueSkills": [],
-            "sequence": 91
+            "sequence": 103
           },
           {
             "type": "magic",
@@ -16220,7 +16730,7 @@
             "targetId": 3,
             "card": "magicBullet",
             "amount": 2,
-            "sequence": 92
+            "sequence": 104
           },
           {
             "type": "magicResult",
@@ -16228,14 +16738,21 @@
             "targetId": 3,
             "result": "hit",
             "amount": 2,
-            "sequence": 93
+            "sequence": 105
           },
           {
             "type": "healing",
             "playerId": 3,
             "result": "prevent",
             "amount": 0,
-            "sequence": 94
+            "sequence": 106
+          },
+          {
+            "type": "morale",
+            "team": "red",
+            "amount": -1,
+            "count": 12,
+            "sequence": 107
           },
           {
             "type": "damage",
@@ -16243,12 +16760,12 @@
             "targetId": 3,
             "result": "spell",
             "amount": 2,
-            "sequence": 95
+            "sequence": 108
           },
           {
             "type": "turn",
             "playerId": 2,
-            "sequence": 96
+            "sequence": 109
           },
           {
             "type": "spell",
@@ -16258,7 +16775,7 @@
             "elements": [
               "water"
             ],
-            "sequence": 97
+            "sequence": 110
           },
           {
             "type": "play",
@@ -16271,20 +16788,20 @@
               "H"
             ],
             "uniqueSkills": [],
-            "sequence": 98
+            "sequence": 111
           },
           {
             "type": "effect",
             "sourceId": 2,
             "targetId": 0,
             "result": "attached",
-            "sequence": 99,
+            "sequence": 112,
             "effectId": "poison"
           },
           {
             "type": "turn",
             "playerId": 3,
-            "sequence": 100
+            "sequence": 113
           },
           {
             "type": "play",
@@ -16301,7 +16818,7 @@
               "powerBlessing",
               "fireball"
             ],
-            "sequence": 101
+            "sequence": 114
           },
           {
             "type": "attack",
@@ -16312,7 +16829,7 @@
               "fire"
             ],
             "counter": false,
-            "sequence": 102
+            "sequence": 115
           },
           {
             "type": "attackResult",
@@ -16320,14 +16837,14 @@
             "targetId": 5,
             "card": "fireStrike",
             "result": "hit",
-            "sequence": 103
+            "sequence": 116
           },
           {
             "type": "healing",
             "playerId": 5,
             "result": "prevent",
             "amount": 0,
-            "sequence": 104
+            "sequence": 117
           },
           {
             "type": "damage",
@@ -16335,12 +16852,19 @@
             "targetId": 5,
             "result": "attack",
             "amount": 2,
-            "sequence": 105
+            "sequence": 118
+          },
+          {
+            "type": "stones",
+            "team": "red",
+            "sequence": 119,
+            "gem": 1,
+            "crystal": 0
           },
           {
             "type": "turn",
             "playerId": 4,
-            "sequence": 106
+            "sequence": 120
           },
           {
             "type": "play",
@@ -16357,7 +16881,7 @@
               "speedBlessing",
               "windBlade"
             ],
-            "sequence": 107
+            "sequence": 121
           },
           {
             "type": "attack",
@@ -16368,7 +16892,7 @@
               "wind"
             ],
             "counter": false,
-            "sequence": 108
+            "sequence": 122
           },
           {
             "type": "play",
@@ -16385,7 +16909,7 @@
               "galeArt",
               "precisionShot"
             ],
-            "sequence": 109
+            "sequence": 123
           },
           {
             "type": "response",
@@ -16397,13 +16921,13 @@
               "wind"
             ],
             "result": "redirect",
-            "sequence": 110
+            "sequence": 124
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 4,
             "skillId": "piercingShot",
-            "sequence": 111
+            "sequence": 125
           },
           {
             "type": "discard",
@@ -16412,14 +16936,21 @@
             "elements": [
               "wind"
             ],
-            "sequence": 112
+            "sequence": 126
           },
           {
             "type": "healing",
             "playerId": 5,
             "result": "prevent",
             "amount": 0,
-            "sequence": 113
+            "sequence": 127
+          },
+          {
+            "type": "morale",
+            "team": "blue",
+            "amount": -1,
+            "count": 9,
+            "sequence": 128
           },
           {
             "type": "damage",
@@ -16427,7 +16958,7 @@
             "targetId": 5,
             "result": "spell",
             "amount": 2,
-            "sequence": 114
+            "sequence": 129
           },
           {
             "type": "attack",
@@ -16438,7 +16969,7 @@
               "wind"
             ],
             "counter": true,
-            "sequence": 115
+            "sequence": 130
           },
           {
             "type": "skillResponse",
@@ -16446,19 +16977,19 @@
             "targetId": 0,
             "skillId": "precisionShot",
             "accepted": true,
-            "sequence": 116
+            "sequence": 131
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 5,
             "skillId": "precisionShot",
-            "sequence": 117
+            "sequence": 132
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 5,
             "skillId": "precisionShot",
-            "sequence": 118
+            "sequence": 133
           },
           {
             "type": "attackResult",
@@ -16466,14 +16997,21 @@
             "targetId": 0,
             "card": "windStrike",
             "result": "hit",
-            "sequence": 119
+            "sequence": 134
           },
           {
             "type": "healing",
             "playerId": 0,
             "result": "prevent",
             "amount": 0,
-            "sequence": 120
+            "sequence": 135
+          },
+          {
+            "type": "morale",
+            "team": "red",
+            "amount": -1,
+            "count": 11,
+            "sequence": 136
           },
           {
             "type": "damage",
@@ -16481,31 +17019,38 @@
             "targetId": 0,
             "result": "attack",
             "amount": 1,
-            "sequence": 121
+            "sequence": 137
+          },
+          {
+            "type": "stones",
+            "team": "blue",
+            "sequence": 138,
+            "gem": 0,
+            "crystal": 1
           },
           {
             "type": "turn",
             "playerId": 5,
-            "sequence": 122
+            "sequence": 139
           },
           {
             "type": "skillAction",
             "playerId": 5,
             "targetId": 0,
             "skillId": "flashTrap",
-            "sequence": 123
+            "sequence": 140
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 5,
             "skillId": "flashTrap",
-            "sequence": 124
+            "sequence": 141
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 5,
             "skillId": "flashTrap",
-            "sequence": 125
+            "sequence": 142
           },
           {
             "type": "play",
@@ -16521,14 +17066,21 @@
               "galeArt",
               "flashTrap"
             ],
-            "sequence": 126
+            "sequence": 143
           },
           {
             "type": "healing",
             "playerId": 0,
             "result": "prevent",
             "amount": 0,
-            "sequence": 127
+            "sequence": 144
+          },
+          {
+            "type": "morale",
+            "team": "red",
+            "amount": -2,
+            "count": 9,
+            "sequence": 145
           },
           {
             "type": "damage",
@@ -16536,19 +17088,26 @@
             "targetId": 0,
             "result": "spell",
             "amount": 2,
-            "sequence": 128
+            "sequence": 146
           },
           {
             "type": "turn",
             "playerId": 0,
-            "sequence": 129
+            "sequence": 147
           },
           {
             "type": "healing",
             "playerId": 0,
             "result": "prevent",
             "amount": 0,
-            "sequence": 130
+            "sequence": 148
+          },
+          {
+            "type": "morale",
+            "team": "red",
+            "amount": -1,
+            "count": 8,
+            "sequence": 149
           },
           {
             "type": "damage",
@@ -16556,13 +17115,13 @@
             "targetId": 0,
             "result": "spell",
             "amount": 1,
-            "sequence": 131
+            "sequence": 150
           },
           {
             "type": "effect",
             "playerId": 0,
             "result": "removed",
-            "sequence": 132,
+            "sequence": 151,
             "effectId": "poison"
           },
           {
@@ -16577,7 +17136,7 @@
               "S"
             ],
             "uniqueSkills": [],
-            "sequence": 133
+            "sequence": 152
           },
           {
             "type": "attack",
@@ -16588,13 +17147,13 @@
               "dark"
             ],
             "counter": false,
-            "sequence": 134
+            "sequence": 153
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 0,
             "skillId": "rage",
-            "sequence": 135
+            "sequence": 154
           },
           {
             "type": "attackResult",
@@ -16602,20 +17161,27 @@
             "targetId": 5,
             "card": "darkStrike",
             "result": "hit",
-            "sequence": 136
+            "sequence": 155
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 0,
             "skillId": "rage",
-            "sequence": 137
+            "sequence": 156
           },
           {
             "type": "healing",
             "playerId": 5,
             "result": "prevent",
             "amount": 0,
-            "sequence": 138
+            "sequence": 157
+          },
+          {
+            "type": "morale",
+            "team": "blue",
+            "amount": -3,
+            "count": 6,
+            "sequence": 158
           },
           {
             "type": "damage",
@@ -16623,22 +17189,59 @@
             "targetId": 5,
             "result": "attack",
             "amount": 4,
-            "sequence": 139
+            "sequence": 159
+          },
+          {
+            "type": "stones",
+            "team": "red",
+            "sequence": 160,
+            "gem": 1,
+            "crystal": 0
           },
           {
             "type": "turn",
             "playerId": 1,
-            "sequence": 140
+            "sequence": 161
+          },
+          {
+            "type": "synthesize",
+            "team": "blue",
+            "playerId": 1,
+            "count": 1,
+            "sequence": 162,
+            "gem": 2,
+            "crystal": 1
+          },
+          {
+            "type": "morale",
+            "team": "red",
+            "amount": -1,
+            "count": 7,
+            "sequence": 163
           },
           {
             "type": "turn",
             "playerId": 2,
-            "sequence": 141
+            "sequence": 164
+          },
+          {
+            "type": "stones",
+            "team": "blue",
+            "sequence": 165,
+            "gem": 1,
+            "crystal": 0
+          },
+          {
+            "type": "stones",
+            "team": "blue",
+            "sequence": 166,
+            "gem": 0,
+            "crystal": 1
           },
           {
             "type": "turn",
             "playerId": 3,
-            "sequence": 142
+            "sequence": 167
           },
           {
             "type": "spell",
@@ -16648,7 +17251,7 @@
             "elements": [
               "water"
             ],
-            "sequence": 143
+            "sequence": 168
           },
           {
             "type": "play",
@@ -16661,32 +17264,53 @@
               "J"
             ],
             "uniqueSkills": [],
-            "sequence": 144
+            "sequence": 169
           },
           {
             "type": "effect",
             "sourceId": 3,
             "targetId": 5,
             "result": "attached",
-            "sequence": 145,
+            "sequence": 170,
             "effectId": "poison"
           },
           {
             "type": "turn",
             "playerId": 4,
-            "sequence": 146
+            "sequence": 171
+          },
+          {
+            "type": "stones",
+            "team": "red",
+            "sequence": 172,
+            "gem": 1,
+            "crystal": 0
+          },
+          {
+            "type": "stones",
+            "team": "red",
+            "sequence": 173,
+            "gem": 0,
+            "crystal": 1
           },
           {
             "type": "turn",
             "playerId": 5,
-            "sequence": 147
+            "sequence": 174
           },
           {
             "type": "healing",
             "playerId": 5,
             "result": "prevent",
             "amount": 0,
-            "sequence": 148
+            "sequence": 175
+          },
+          {
+            "type": "morale",
+            "team": "blue",
+            "amount": -1,
+            "count": 5,
+            "sequence": 176
           },
           {
             "type": "damage",
@@ -16694,13 +17318,13 @@
             "targetId": 5,
             "result": "spell",
             "amount": 1,
-            "sequence": 149
+            "sequence": 177
           },
           {
             "type": "effect",
             "playerId": 5,
             "result": "removed",
-            "sequence": 150,
+            "sequence": 178,
             "effectId": "poison"
           },
           {
@@ -16715,7 +17339,7 @@
               "Y"
             ],
             "uniqueSkills": [],
-            "sequence": 151
+            "sequence": 179
           },
           {
             "type": "attack",
@@ -16726,7 +17350,7 @@
               "dark"
             ],
             "counter": false,
-            "sequence": 152
+            "sequence": 180
           },
           {
             "type": "attackResult",
@@ -16734,14 +17358,21 @@
             "targetId": 0,
             "card": "darkStrike",
             "result": "hit",
-            "sequence": 153
+            "sequence": 181
           },
           {
             "type": "healing",
             "playerId": 0,
             "result": "prevent",
             "amount": 0,
-            "sequence": 154
+            "sequence": 182
+          },
+          {
+            "type": "morale",
+            "team": "red",
+            "amount": -1,
+            "count": 6,
+            "sequence": 183
           },
           {
             "type": "damage",
@@ -16749,12 +17380,19 @@
             "targetId": 0,
             "result": "attack",
             "amount": 2,
-            "sequence": 155
+            "sequence": 184
+          },
+          {
+            "type": "stones",
+            "team": "blue",
+            "sequence": 185,
+            "gem": 1,
+            "crystal": 0
           },
           {
             "type": "turn",
             "playerId": 0,
-            "sequence": 156
+            "sequence": 186
           },
           {
             "type": "play",
@@ -16768,7 +17406,7 @@
               "S"
             ],
             "uniqueSkills": [],
-            "sequence": 157
+            "sequence": 187
           },
           {
             "type": "attack",
@@ -16779,13 +17417,13 @@
               "dark"
             ],
             "counter": false,
-            "sequence": 158
+            "sequence": 188
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 0,
             "skillId": "rage",
-            "sequence": 159
+            "sequence": 189
           },
           {
             "type": "attackResult",
@@ -16793,20 +17431,27 @@
             "targetId": 5,
             "card": "darkStrike",
             "result": "hit",
-            "sequence": 160
+            "sequence": 190
           },
           {
-            "type": "skill",
+            "type": "skillNote",
             "playerId": 0,
             "skillId": "rage",
-            "sequence": 161
+            "sequence": 191
           },
           {
             "type": "healing",
             "playerId": 5,
             "result": "prevent",
             "amount": 0,
-            "sequence": 162
+            "sequence": 192
+          },
+          {
+            "type": "morale",
+            "team": "blue",
+            "amount": -3,
+            "count": 2,
+            "sequence": 193
           },
           {
             "type": "damage",
@@ -16814,24 +17459,31 @@
             "targetId": 5,
             "result": "attack",
             "amount": 4,
-            "sequence": 163
+            "sequence": 194
+          },
+          {
+            "type": "stones",
+            "team": "red",
+            "sequence": 195,
+            "gem": 1,
+            "crystal": 0
           },
           {
             "type": "turn",
             "playerId": 1,
-            "sequence": 164
+            "sequence": 196
           },
           {
             "type": "refine",
             "playerId": 1,
-            "sequence": 165,
+            "sequence": 197,
             "gem": 1,
             "crystal": 0
           },
           {
             "type": "turn",
             "playerId": 2,
-            "sequence": 166
+            "sequence": 198
           }
         ],
         "events": [
@@ -17823,7 +18475,7 @@
         "counter": false
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 1,
         "skillId": "rage"
       },
@@ -17966,6 +18618,12 @@
         "result": "attack"
       },
       {
+        "type": "stones",
+        "team": "red",
+        "gem": 1,
+        "crystal": 0
+      },
+      {
         "type": "turn",
         "playerId": 5
       },
@@ -18030,7 +18688,7 @@
         "counter": true
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 0,
         "skillId": "rage"
       },
@@ -18048,11 +18706,23 @@
         "result": "prevent"
       },
       {
+        "type": "morale",
+        "team": "blue",
+        "amount": -2,
+        "count": 13
+      },
+      {
         "type": "damage",
         "sourceId": 0,
         "targetId": 2,
         "amount": 3,
         "result": "attack"
+      },
+      {
+        "type": "stones",
+        "team": "red",
+        "gem": 0,
+        "crystal": 1
       },
       {
         "type": "turn",
@@ -18091,7 +18761,7 @@
         "counter": false
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 0,
         "skillId": "rage"
       },
@@ -18103,7 +18773,7 @@
         "result": "hit"
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 0,
         "skillId": "rage"
       },
@@ -18114,11 +18784,23 @@
         "result": "prevent"
       },
       {
+        "type": "morale",
+        "team": "blue",
+        "amount": -1,
+        "count": 12
+      },
+      {
         "type": "damage",
         "sourceId": 0,
         "targetId": 5,
         "amount": 4,
         "result": "attack"
+      },
+      {
+        "type": "stones",
+        "team": "red",
+        "gem": 1,
+        "crystal": 0
       },
       {
         "type": "turn",
@@ -18190,12 +18872,12 @@
         "targetId": 4
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 2,
         "skillId": "galeArt"
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 2,
         "skillId": "galeArt"
       },
@@ -18220,18 +18902,24 @@
         "result": "attack"
       },
       {
+        "type": "stones",
+        "team": "blue",
+        "gem": 1,
+        "crystal": 0
+      },
+      {
         "type": "skillResponse",
         "playerId": 2,
         "skillId": "windFury",
         "accepted": true
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 2,
         "skillId": "windFury"
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 2,
         "skillId": "windFury"
       },
@@ -18301,7 +18989,7 @@
         "counter": false
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 2,
         "skillId": "holySword"
       },
@@ -18319,6 +19007,12 @@
         "result": "prevent"
       },
       {
+        "type": "morale",
+        "team": "red",
+        "amount": -1,
+        "count": 14
+      },
+      {
         "type": "damage",
         "sourceId": 2,
         "targetId": 0,
@@ -18326,7 +19020,13 @@
         "result": "attack"
       },
       {
-        "type": "skill",
+        "type": "stones",
+        "team": "blue",
+        "gem": 1,
+        "crystal": 0
+      },
+      {
+        "type": "skillNote",
         "playerId": 2,
         "skillId": "holySword"
       },
@@ -18338,6 +19038,20 @@
       {
         "type": "turn",
         "playerId": 3
+      },
+      {
+        "type": "synthesize",
+        "playerId": 3,
+        "team": "red",
+        "gem": 2,
+        "crystal": 1,
+        "count": 1
+      },
+      {
+        "type": "morale",
+        "team": "blue",
+        "amount": -1,
+        "count": 11
       },
       {
         "type": "turn",
@@ -18391,7 +19105,7 @@
         "result": "cancel"
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 4,
         "skillId": "piercingShot"
       },
@@ -18408,6 +19122,12 @@
         "playerId": 5,
         "amount": 0,
         "result": "prevent"
+      },
+      {
+        "type": "morale",
+        "team": "blue",
+        "amount": -1,
+        "count": 10
       },
       {
         "type": "damage",
@@ -18447,7 +19167,7 @@
         "counter": false
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 5,
         "skillId": "lightningArrow"
       },
@@ -18478,7 +19198,7 @@
         "result": "cancel"
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 5,
         "skillId": "piercingShot"
       },
@@ -18495,6 +19215,12 @@
         "playerId": 0,
         "amount": 0,
         "result": "prevent"
+      },
+      {
+        "type": "morale",
+        "team": "red",
+        "amount": -1,
+        "count": 13
       },
       {
         "type": "damage",
@@ -18548,6 +19274,12 @@
         "playerId": 3,
         "amount": 0,
         "result": "prevent"
+      },
+      {
+        "type": "morale",
+        "team": "red",
+        "amount": -1,
+        "count": 12
       },
       {
         "type": "damage",
@@ -18639,6 +19371,12 @@
         "result": "attack"
       },
       {
+        "type": "stones",
+        "team": "red",
+        "gem": 1,
+        "crystal": 0
+      },
+      {
         "type": "turn",
         "playerId": 4
       },
@@ -18696,7 +19434,7 @@
         "result": "redirect"
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 4,
         "skillId": "piercingShot"
       },
@@ -18713,6 +19451,12 @@
         "playerId": 5,
         "amount": 0,
         "result": "prevent"
+      },
+      {
+        "type": "morale",
+        "team": "blue",
+        "amount": -1,
+        "count": 9
       },
       {
         "type": "damage",
@@ -18739,12 +19483,12 @@
         "targetId": 0
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 5,
         "skillId": "precisionShot"
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 5,
         "skillId": "precisionShot"
       },
@@ -18762,11 +19506,23 @@
         "result": "prevent"
       },
       {
+        "type": "morale",
+        "team": "red",
+        "amount": -1,
+        "count": 11
+      },
+      {
         "type": "damage",
         "sourceId": 5,
         "targetId": 0,
         "amount": 1,
         "result": "attack"
+      },
+      {
+        "type": "stones",
+        "team": "blue",
+        "gem": 0,
+        "crystal": 1
       },
       {
         "type": "turn",
@@ -18779,12 +19535,12 @@
         "targetId": 0
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 5,
         "skillId": "flashTrap"
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 5,
         "skillId": "flashTrap"
       },
@@ -18810,6 +19566,12 @@
         "result": "prevent"
       },
       {
+        "type": "morale",
+        "team": "red",
+        "amount": -2,
+        "count": 9
+      },
+      {
         "type": "damage",
         "sourceId": 5,
         "targetId": 0,
@@ -18825,6 +19587,12 @@
         "playerId": 0,
         "amount": 0,
         "result": "prevent"
+      },
+      {
+        "type": "morale",
+        "team": "red",
+        "amount": -1,
+        "count": 8
       },
       {
         "type": "damage",
@@ -18863,7 +19631,7 @@
         "counter": false
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 0,
         "skillId": "rage"
       },
@@ -18875,7 +19643,7 @@
         "result": "hit"
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 0,
         "skillId": "rage"
       },
@@ -18886,6 +19654,12 @@
         "result": "prevent"
       },
       {
+        "type": "morale",
+        "team": "blue",
+        "amount": -3,
+        "count": 6
+      },
+      {
         "type": "damage",
         "sourceId": 0,
         "targetId": 5,
@@ -18893,12 +19667,44 @@
         "result": "attack"
       },
       {
+        "type": "stones",
+        "team": "red",
+        "gem": 1,
+        "crystal": 0
+      },
+      {
         "type": "turn",
         "playerId": 1
       },
       {
+        "type": "synthesize",
+        "playerId": 1,
+        "team": "blue",
+        "gem": 2,
+        "crystal": 1,
+        "count": 1
+      },
+      {
+        "type": "morale",
+        "team": "red",
+        "amount": -1,
+        "count": 7
+      },
+      {
         "type": "turn",
         "playerId": 2
+      },
+      {
+        "type": "stones",
+        "team": "blue",
+        "gem": 1,
+        "crystal": 0
+      },
+      {
+        "type": "stones",
+        "team": "blue",
+        "gem": 0,
+        "crystal": 1
       },
       {
         "type": "turn",
@@ -18937,6 +19743,18 @@
         "playerId": 4
       },
       {
+        "type": "stones",
+        "team": "red",
+        "gem": 1,
+        "crystal": 0
+      },
+      {
+        "type": "stones",
+        "team": "red",
+        "gem": 0,
+        "crystal": 1
+      },
+      {
         "type": "turn",
         "playerId": 5
       },
@@ -18945,6 +19763,12 @@
         "playerId": 5,
         "amount": 0,
         "result": "prevent"
+      },
+      {
+        "type": "morale",
+        "team": "blue",
+        "amount": -1,
+        "count": 5
       },
       {
         "type": "damage",
@@ -18996,11 +19820,23 @@
         "result": "prevent"
       },
       {
+        "type": "morale",
+        "team": "red",
+        "amount": -1,
+        "count": 6
+      },
+      {
         "type": "damage",
         "sourceId": 5,
         "targetId": 0,
         "amount": 2,
         "result": "attack"
+      },
+      {
+        "type": "stones",
+        "team": "blue",
+        "gem": 1,
+        "crystal": 0
       },
       {
         "type": "turn",
@@ -19030,7 +19866,7 @@
         "counter": false
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 0,
         "skillId": "rage"
       },
@@ -19042,7 +19878,7 @@
         "result": "hit"
       },
       {
-        "type": "skill",
+        "type": "skillNote",
         "playerId": 0,
         "skillId": "rage"
       },
@@ -19053,11 +19889,23 @@
         "result": "prevent"
       },
       {
+        "type": "morale",
+        "team": "blue",
+        "amount": -3,
+        "count": 2
+      },
+      {
         "type": "damage",
         "sourceId": 0,
         "targetId": 5,
         "amount": 4,
         "result": "attack"
+      },
+      {
+        "type": "stones",
+        "team": "red",
+        "gem": 1,
+        "crystal": 0
       },
       {
         "type": "turn",
@@ -19079,79 +19927,79 @@
         "action": {
           "type": "refine",
           "stones": {
-            "gem": 1,
-            "crystal": 0
-          }
-        },
-        "score": -0.3199999999999932,
-        "reason": "expected-state-difference",
-        "explanation": {
-          "parts": {
-            "morale": 0,
-            "cups": 0,
-            "stones": -5,
-            "allocation": -0.9200000000000008,
-            "conversion": -2.4000000000000004,
-            "ownHand": 0,
-            "otherHands": 0,
-            "healing": 0,
-            "energy": 8,
-            "effects": 0,
-            "nextTurnRisk": 0,
-            "otherTurnRisk": 0,
-            "futureTerminal": 0,
-            "cupWindow": 0,
-            "terminal": 0
-          },
-          "branches": [
-            {
-              "probability": 1,
-              "path": [
-                "refine"
-              ],
-              "steps": [
-                {
-                  "type": "refine",
-                  "actorId": 2,
-                  "result": "refine",
-                  "gifts": []
-                }
-              ]
-            }
-          ],
-          "primaryParts": {
-            "morale": 0,
-            "cups": 0,
-            "stones": -5,
-            "allocation": -0.9200000000000008,
-            "conversion": -2.4000000000000004,
-            "ownHand": 0,
-            "otherHands": 0,
-            "healing": 0,
-            "energy": 8,
-            "effects": 0,
-            "nextTurnRisk": 0,
-            "otherTurnRisk": 0,
-            "futureTerminal": 0,
-            "cupWindow": 0,
-            "terminal": 0
-          },
-          "precision": null,
-          "search": {
-            "limit": 64,
-            "used": 0
-          }
-        }
-      },
-      {
-        "action": {
-          "type": "refine",
-          "stones": {
             "gem": 0,
             "crystal": 1
           }
         },
-        "score": -0.799999999999983,
+        "score": -0.8000000000000114,
+        "reason": "expected-state-difference",
+        "explanation": {
+          "parts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": -5,
+            "allocation": -1.4000000000000004,
+            "conversion": -2.4000000000000004,
+            "ownHand": 0,
+            "otherHands": 0,
+            "healing": 0,
+            "energy": 8,
+            "effects": 0,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0,
+            "futureTerminal": 0,
+            "cupWindow": 0,
+            "terminal": 0
+          },
+          "branches": [
+            {
+              "probability": 1,
+              "path": [
+                "refine"
+              ],
+              "steps": [
+                {
+                  "type": "refine",
+                  "actorId": 2,
+                  "result": "refine",
+                  "gifts": []
+                }
+              ]
+            }
+          ],
+          "primaryParts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": -5,
+            "allocation": -1.4000000000000004,
+            "conversion": -2.4000000000000004,
+            "ownHand": 0,
+            "otherHands": 0,
+            "healing": 0,
+            "energy": 8,
+            "effects": 0,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0,
+            "futureTerminal": 0,
+            "cupWindow": 0,
+            "terminal": 0
+          },
+          "precision": null,
+          "search": {
+            "limit": 64,
+            "used": 0
+          }
+        }
+      },
+      {
+        "action": {
+          "type": "refine",
+          "stones": {
+            "gem": 1,
+            "crystal": 0
+          }
+        },
+        "score": -0.8000000000000114,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
@@ -19219,14 +20067,14 @@
             "crystal": 1
           }
         },
-        "score": -6.71999999999997,
+        "score": -7.199999999999989,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": 0,
             "cups": 0,
             "stones": -10,
-            "allocation": -1.5200000000000014,
+            "allocation": -2.000000000000001,
             "conversion": -3.2,
             "ownHand": 0,
             "otherHands": 0,
@@ -19259,7 +20107,7 @@
             "morale": 0,
             "cups": 0,
             "stones": -10,
-            "allocation": -1.5200000000000014,
+            "allocation": -2.000000000000001,
             "conversion": -3.2,
             "ownHand": 0,
             "otherHands": 0,
@@ -19285,14 +20133,14 @@
           "index": 3,
           "targetId": 3
         },
-        "score": -29.58670874170008,
+        "score": -30.116310717430167,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": -11.200521694297265,
             "cups": 0,
             "stones": 0,
-            "allocation": 1.0642962781497949,
+            "allocation": 0.5346943024197531,
             "conversion": -2.749856412444444,
             "ownHand": 3.73685779531721,
             "otherHands": 3.980751792032595,
@@ -19394,7 +20242,7 @@
             "morale": -11.200521694297265,
             "cups": 0,
             "stones": 0,
-            "allocation": 1.0642962781497949,
+            "allocation": 0.5346943024197531,
             "conversion": -2.749856412444444,
             "ownHand": 3.73685779531721,
             "otherHands": 3.980751792032595,
@@ -19420,14 +20268,14 @@
           "index": 0,
           "targetId": 3
         },
-        "score": -34.87900039016921,
+        "score": -35.389580442353235,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": -11.139355995672611,
             "cups": 0,
             "stones": 2.4243479303806046,
-            "allocation": 0.7683541729960813,
+            "allocation": 0.25777412081202833,
             "conversion": 0.13869459387434846,
             "ownHand": -2.0172234226923806,
             "otherHands": 4.689553304252977,
@@ -19655,14 +20503,14 @@
           "index": 2,
           "targetId": 3
         },
-        "score": -36.85942542160677,
+        "score": -37.54967143302969,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": -9.413223038515794,
             "cups": 0,
             "stones": 1.5545103911690485,
-            "allocation": 1.6922913512836577,
+            "allocation": 1.002045339860724,
             "conversion": -3.717896723781331,
             "ownHand": 2.198832477413198,
             "otherHands": 4.08250052249821,
@@ -19773,14 +20621,14 @@
           "index": 4,
           "targetId": 3
         },
-        "score": -36.85942542160677,
+        "score": -37.54967143302969,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": -9.413223038515794,
             "cups": 0,
             "stones": 1.5545103911690485,
-            "allocation": 1.6922913512836577,
+            "allocation": 1.002045339860724,
             "conversion": -3.717896723781331,
             "ownHand": 2.198832477413198,
             "otherHands": 4.08250052249821,
@@ -19891,14 +20739,14 @@
           "index": 0,
           "targetId": 4
         },
-        "score": -38.93585043277491,
+        "score": -38.74271954197633,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": -11.425568243523097,
             "cups": 0,
             "stones": 2.3951663496801223,
-            "allocation": -0.6710835124242803,
+            "allocation": -0.47795262162563035,
             "conversion": 0.126010721042637,
             "ownHand": -2.0153053935046574,
             "otherHands": 4.702605248610052,
@@ -20126,14 +20974,14 @@
           "index": 4,
           "targetId": 4
         },
-        "score": -39.46590912025209,
+        "score": -39.19939756988248,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": -9.379647895952692,
             "cups": 0,
             "stones": 1.5615911154470996,
-            "allocation": -0.22903336359890825,
+            "allocation": 0.0374781867707307,
             "conversion": -3.7020359013984967,
             "ownHand": 2.1977665998715126,
             "otherHands": 4.0824236643702765,
@@ -20244,14 +21092,14 @@
           "index": 2,
           "targetId": 4
         },
-        "score": -39.66208439506218,
+        "score": -39.396818455216646,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": -9.412846050868902,
             "cups": 0,
             "stones": 1.554292616282448,
-            "allocation": -0.22796291705475935,
+            "allocation": 0.03730302279077906,
             "conversion": -3.7183845395273165,
             "ownHand": 2.198820509551392,
             "otherHands": 4.082267782281555,
@@ -20362,14 +21210,14 @@
           "index": 2,
           "targetId": 0
         },
-        "score": -91.18414392638527,
+        "score": -90.98607171011503,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": -11.681738093733,
             "cups": 0,
             "stones": 1.1605793922085308,
-            "allocation": -0.1702183108572514,
+            "allocation": 0.02785390541300497,
             "conversion": 2.1220300535829133,
             "ownHand": 2.491911569745528,
             "otherHands": -1.4756163863508023,
@@ -20480,14 +21328,14 @@
           "index": 4,
           "targetId": 0
         },
-        "score": -91.18782540233525,
+        "score": -90.98976371576572,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": -11.682645928219523,
             "cups": 0,
             "stones": 1.1605176947432425,
-            "allocation": -0.1702092618956758,
+            "allocation": 0.027852424673838052,
             "conversion": 2.1220151130579947,
             "ownHand": 2.4919286379898073,
             "otherHands": -1.4757204206398291,
@@ -20598,14 +21446,14 @@
           "index": 0,
           "targetId": 0
         },
-        "score": -95.18782540233525,
+        "score": -94.98976371576572,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": -11.682645928219523,
             "cups": 0,
             "stones": 1.1605176947432425,
-            "allocation": -0.1702092618956758,
+            "allocation": 0.027852424673838052,
             "conversion": 2.1220151130579947,
             "ownHand": -1.5080713620101927,
             "otherHands": -1.4757204206398291,

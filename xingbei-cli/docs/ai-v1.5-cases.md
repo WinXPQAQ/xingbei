@@ -30,7 +30,7 @@
 - {"type":"turn","playerId":1}
 - {"type":"play","playerId":1,"targetId":3,"card":"雷光斩","elements":["thunder"],"fates":["Y"],"uniqueSkills":["speedBlessing","lightning"]}
 - {"type":"attack","actorId":1,"targetId":3,"card":"雷光斩","elements":["thunder"],"counter":false}
-- {"type":"skill","playerId":1,"skillId":"rage"}
+- {"type":"skillNote","playerId":1,"skillId":"rage"}
 - {"type":"play","playerId":3,"targetId":1,"card":"圣光","elements":["light"],"fates":["X"],"uniqueSkills":[]}
 - {"type":"response","actorId":3,"sourceId":1,"targetId":1,"card":"圣光","elements":["light"],"result":"cancel"}
 - {"type":"turn","playerId":2}
@@ -49,12 +49,12 @@
 
 |合法行动|完整计划分|首动作分|追加分|
 |---|---:|---:|---:|
-|提炼2宝石+0水晶|1.60|1.60|0.00|
+|提炼2宝石+0水晶|1.12|1.12|0.00|
 |提炼1宝石+0水晶|-2.28|-2.28|-0.00|
-|提炼0宝石+1水晶|-10.40|-10.40|-0.00|
-|水涟斩→3号|-10.90|-10.90|0.00|
-|提炼1宝石+1水晶|-11.08|-11.08|0.00|
-|火焰斩→3号|-12.55|-12.55|0.00|
+|提炼0宝石+1水晶|-9.60|-9.60|0.00|
+|提炼1宝石+1水晶|-10.28|-10.28|-0.00|
+|水涟斩→3号|-11.54|-11.54|0.00|
+|火焰斩→3号|-13.22|-13.22|0.00|
 
 最佳计划分支（推测，不是实际已发生）：
 
@@ -62,21 +62,21 @@
 
 最近公开完整事件（此前全部事件保留在JSON；暗牌不展示）：
 
-- {"type":"damage","sourceId":3,"targetId":5,"amount":1,"result":"spell"}
-- {"type":"effect","playerId":5,"effectId":"中毒","result":"removed"}
-- {"type":"play","playerId":5,"targetId":0,"card":"暗灭","elements":["dark"],"fates":["Y"],"uniqueSkills":[]}
-- {"type":"attack","actorId":5,"targetId":0,"card":"暗灭","elements":["dark"],"counter":false}
 - {"type":"attackResult","actorId":5,"targetId":0,"card":"暗灭","result":"hit"}
 - {"type":"healing","playerId":0,"amount":0,"result":"prevent"}
+- {"type":"morale","team":"red","amount":-1,"count":6}
 - {"type":"damage","sourceId":5,"targetId":0,"amount":2,"result":"attack"}
+- {"type":"stones","team":"blue","gem":1,"crystal":0}
 - {"type":"turn","playerId":0}
 - {"type":"play","playerId":0,"targetId":5,"card":"暗灭","elements":["dark"],"fates":["S"],"uniqueSkills":[]}
 - {"type":"attack","actorId":0,"targetId":5,"card":"暗灭","elements":["dark"],"counter":false}
-- {"type":"skill","playerId":0,"skillId":"rage"}
+- {"type":"skillNote","playerId":0,"skillId":"rage"}
 - {"type":"attackResult","actorId":0,"targetId":5,"card":"暗灭","result":"hit"}
-- {"type":"skill","playerId":0,"skillId":"rage"}
+- {"type":"skillNote","playerId":0,"skillId":"rage"}
 - {"type":"healing","playerId":5,"amount":0,"result":"prevent"}
+- {"type":"morale","team":"blue","amount":-3,"count":2}
 - {"type":"damage","sourceId":0,"targetId":5,"amount":4,"result":"attack"}
+- {"type":"stones","team":"red","gem":1,"crystal":0}
 - {"type":"turn","playerId":1}
 
 ## 例3：windSwordmaster
@@ -85,12 +85,12 @@
 
 |合法行动|完整计划分|首动作分|追加分|
 |---|---:|---:|---:|
-|提炼1宝石+0水晶|-0.32|-0.32|0.00|
-|提炼0宝石+1水晶|-0.80|-0.80|0.00|
-|提炼1宝石+1水晶|-6.72|-6.72|0.00|
-|魔弹→3号|-29.59|-29.59|0.00|
-|火焰斩→3号|-34.88|-34.88|0.00|
-|地裂斩→3号|-36.86|-36.86|0.00|
+|提炼0宝石+1水晶|-0.80|-0.80|-0.00|
+|提炼1宝石+0水晶|-0.80|-0.80|-0.00|
+|提炼1宝石+1水晶|-7.20|-7.20|0.00|
+|魔弹→3号|-30.12|-30.12|0.00|
+|火焰斩→3号|-35.39|-35.39|0.00|
+|地裂斩→3号|-37.55|-37.55|0.00|
 
 最佳计划分支（推测，不是实际已发生）：
 
@@ -98,19 +98,19 @@
 
 最近公开完整事件（此前全部事件保留在JSON；暗牌不展示）：
 
-- {"type":"play","playerId":5,"targetId":0,"card":"暗灭","elements":["dark"],"fates":["Y"],"uniqueSkills":[]}
-- {"type":"attack","actorId":5,"targetId":0,"card":"暗灭","elements":["dark"],"counter":false}
-- {"type":"attackResult","actorId":5,"targetId":0,"card":"暗灭","result":"hit"}
-- {"type":"healing","playerId":0,"amount":0,"result":"prevent"}
+- {"type":"morale","team":"red","amount":-1,"count":6}
 - {"type":"damage","sourceId":5,"targetId":0,"amount":2,"result":"attack"}
+- {"type":"stones","team":"blue","gem":1,"crystal":0}
 - {"type":"turn","playerId":0}
 - {"type":"play","playerId":0,"targetId":5,"card":"暗灭","elements":["dark"],"fates":["S"],"uniqueSkills":[]}
 - {"type":"attack","actorId":0,"targetId":5,"card":"暗灭","elements":["dark"],"counter":false}
-- {"type":"skill","playerId":0,"skillId":"rage"}
+- {"type":"skillNote","playerId":0,"skillId":"rage"}
 - {"type":"attackResult","actorId":0,"targetId":5,"card":"暗灭","result":"hit"}
-- {"type":"skill","playerId":0,"skillId":"rage"}
+- {"type":"skillNote","playerId":0,"skillId":"rage"}
 - {"type":"healing","playerId":5,"amount":0,"result":"prevent"}
+- {"type":"morale","team":"blue","amount":-3,"count":2}
 - {"type":"damage","sourceId":0,"targetId":5,"amount":4,"result":"attack"}
+- {"type":"stones","team":"red","gem":1,"crystal":0}
 - {"type":"turn","playerId":1}
 - {"type":"refine","playerId":1,"gem":1,"crystal":0}
 - {"type":"turn","playerId":2}

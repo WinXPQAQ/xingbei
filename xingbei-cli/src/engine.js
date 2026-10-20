@@ -73,7 +73,7 @@ export class Game {
   }
   recordPublicAction(event) { this.publicHistory.action?.(event); }
   logSkill(playerId, skillId, detail) {
-    this.recordPublicAction({type:'skill',playerId,skillId});
+    this.recordPublicAction({type:'skillNote',playerId,skillId});
     this.log.push(`${this.actorLabel(playerId)}发动【${skillLabel(this.player(playerId), skillId)}】${detail ? `：${detail}` : ""}`);
   }
   giveCards(playerId, targetId, cards) {
@@ -345,6 +345,7 @@ export class Game {
   changeMorale(team, amount) {
     const before = this.teams[team].morale;
     this.teams[team].morale = Math.min(15, before + amount);
+    this.recordPublicAction({type:'morale',team,amount:this.teams[team].morale-before,count:this.teams[team].morale});
     this.log.push(`${team === "red" ? "红" : "蓝"}方士气${this.teams[team].morale - before >= 0 ? "+" : ""}${this.teams[team].morale - before}（${before}→${this.teams[team].morale}）`);
     this.recordPresentation("morale", { team, amount });
     this.checkWinner();
@@ -407,6 +408,7 @@ export class Game {
     const stones = this.teams[team].achievements;
     const added = Math.max(0, Math.min(count, 5 - stones.length));
     for (let i = 0; i < added; i++) stones.push(type);
+    if(added)this.recordPublicAction({type:'stones',team,gem:type==='gem'?added:0,crystal:type==='crystal'?added:0});
     if (added) this.recordPresentation("stones", { team, kind: type, amount: added });
     return added;
   }
@@ -476,6 +478,7 @@ export class Game {
     this.removeStones(player.team, { gem: gemCount, crystal: crystalCount });
     this.draw(actorId, 3, options);
     this.teams[player.team].cups++;
+    this.recordPublicAction({type:'synthesize',playerId:actorId,team:player.team,gem:gemCount,crystal:crystalCount,count:this.teams[player.team].cups});
     this.recordPresentation("cup", { team: player.team, playerId: actorId, amount: 1 });
     const enemyTeam = player.team === "red" ? "blue" : "red";
     this.changeMorale(enemyTeam, -1);
@@ -680,6 +683,7 @@ export class Game {
     const actual = amount > 0 ? Math.max(0, Math.min(amount, limit - player.healing)) : -Math.min(-amount, player.healing);
     const before = player.healing;
     player.healing += actual;
+    if(actual)this.recordPublicAction({type:'healingChange',playerId,amount:actual,count:player.healing});
     if (amount) this.log.push(`${this.actorLabel(playerId)}治疗${actual >= 0 ? "+" : ""}${actual}（${before}→${player.healing}${amount > actual && amount > 0 ? `；上限${limit}，未增加${amount - actual}` : ""}）`);
     if (actual) this.recordPresentation("healing", { playerId, amount: actual });
     return actual;

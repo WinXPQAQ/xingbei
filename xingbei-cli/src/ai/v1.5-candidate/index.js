@@ -20,7 +20,7 @@ export function enumerate(g,id) {
 }
 export function createEconomyPolicy({sequence=true,economy=true,ownership=true,energy=true,healing=true,reuseBase=true}={}) {
  const disabled=Object.entries({ownership,energy,healing}).filter(([,v])=>!v).map(([k])=>k);
- const version='experimental/plans-1'+(disabled.length?'-no-'+disabled.join('-'):'');
+ const version='experimental/plans-2'+(disabled.length?'-no-'+disabled.join('-'):'');
  const state=(g,id)=>stateOf(g,id,{economy,ownership,energy,healing});
  const raw={...baseline,
   rankAiActions(g,id) {const s=state(g,id),base=reuseBase?components(s):undefined;return enumerate(g,id).map(action=>{const plan=actionPlan(s,id,action,{sequence});return {action,score:plan.score,reason:'expected-state-difference',explanation:explain(s,plan,base)};}).sort((a,b)=>b.score-a.score);},
