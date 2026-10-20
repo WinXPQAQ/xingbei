@@ -1,0 +1,32 @@
+file:///workspace/xingbei/xingbei-cli/src/ai/public-history.js:7
+    this.actions.push(Object.freeze({ ...event, ...Object.fromEntries(['elements','fates','uniqueSkills'].filter(k=>event[k]).map(k=>[k,Object.freeze([...event[k])])), sequence: ++this.actionSequence }));
+                                                                                                                                                                  ^
+
+SyntaxError: Unexpected token ')'
+    at compileSourceTextModule (node:internal/modules/esm/utils:318:16)
+    at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:89:18)
+    at #translate (node:internal/modules/esm/loader:434:20)
+    at afterLoad (node:internal/modules/esm/loader:502:29)
+    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:507:12)
+    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:560:36)
+    at afterResolve (node:internal/modules/esm/loader:607:52)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:613:12)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33)
+    at ModuleJob.link (node:internal/modules/esm/module_job:253:17)
+
+Node.js v24.19.0
+✖ test/ai-v15.test.js (57.519824ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 71.3781
+
+✖ failing tests:
+
+test at test/ai-v15.test.js:1:1
+✖ test/ai-v15.test.js (57.519824ms)
+  'test failed'

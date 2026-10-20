@@ -1,0 +1,17 @@
+[
+  { hero: 'marksman', actions: [ [Object] ], events: 5, winner: null },
+  { hero: 'berserker', actions: [ [Object] ], events: 1, winner: null },
+  {
+    hero: 'windSwordmaster',
+    actions: [ [Object] ],
+    events: 1,
+    winner: null
+  },
+  {
+    hero: 'sealer',
+    actions: [ [Object], [Object] ],
+    events: 12,
+    winner: null
+  },
+  { hero: 'priest', actions: [ [Object] ], events: 6, winner: null }
+]

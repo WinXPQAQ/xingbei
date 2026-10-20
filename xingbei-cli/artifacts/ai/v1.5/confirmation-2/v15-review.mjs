@@ -1,0 +1,18 @@
+import {Game} from '/workspace/xingbei/xingbei-cli/src/engine.js';
+import {captureObservation,observationView} from '/workspace/xingbei/xingbei-cli/src/ai/observation.js';
+import {stateOf,allocationValue,components} from '/workspace/xingbei/xingbei-cli/src/ai/v1.5-candidate/model.js';
+import {planAttack,explain} from '/workspace/xingbei/xingbei-cli/src/ai/v1.5-candidate/planner.js';
+const take=(g,id,pred)=>{const c=g.deck.find(pred);if(!c)throw Error('card');g.moveCard(c.id,{zone:'hand',playerId:id});return c;};
+const g=new Game({heroIds:['windSwordmaster',...Array(5).fill('none')]});
+take(g,0,c=>c.name==='fireStrike');take(g,0,c=>c.name==='fireStrike');
+take(g,1,c=>c.name==='fireStrike');for(let i=0;i<4;i++)take(g,1,c=>c.type==='attack');
+const shield=take(g,3,c=>c.name==='holyShield');g.attachCard(shield.id,1,{effectId:'holyShield',sourcePlayerId:3});
+g.player(0).energy.crystal=1;g.teams.blue.morale=1;g.startTurn(0);g.turn.state.attackCount=1;
+const s=stateOf(observationView(captureObservation(g,0)),0),p=planAttack(s,0,s.players[0].hand[0],1,{count:1,depth:2});
+console.log('shield sequence',p.score,explain(s,p).parts.terminal,p.branches.map(b=>({p:b.probability,uncertain:b.state.uncertain,path:b.path,morale:b.state.teams.blue.morale})));
+const r=new Game({heroIds:['none','none','none','berserker','none','none']});for(let i=0;i<4;i++)take(r,3,c=>c.type==='attack');r.player(3).energy.crystal=3;r.addStones('red','gem',2);r.startTurn(0);const rs=stateOf(observationView(captureObservation(r,0)),0);console.log('unusable shared demand',allocationValue(rs,'red'),'capacity',r.player(3).energy,'canrefine',r.canRefine(3));
+const options={choose:r=>r.type==='numberChoice'?0:r.skillId==='swordShadow',chooseResponse:r=>{const e=r.valid.find(e=>e.card.type==='attack');return r.target.id===1&&e?{index:e.index,targetId:3}:null;}};
+await g.executeAction(0,{type:'play',index:0,targetId:1},options);
+console.log('real after second',g.teams.blue.morale,g.player(1).hand.length,g.player(1).getStatus('holyShield').length,g.turn.hasExtraActions());
+await g.executeAction(0,{type:'play',index:0,targetId:1},options);
+console.log('real after third',g.teams.blue.morale,g.player(1).hand.length,g.winner,g.publicHistory.actions.filter(e=>['attack','response','attackResult'].includes(e.type)));

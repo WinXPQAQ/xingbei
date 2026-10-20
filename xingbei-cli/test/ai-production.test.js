@@ -6,9 +6,9 @@ import assert from 'node:assert/strict';
 import {Game} from '../src/engine.js';
 import * as production from '../src/ai.js';
 import {getPolicy} from '../src/ai/versions.js';
-test('CLI/Web shared default routes every exported decision to accepted v1.4 while old aliases remain explicit',()=>{
- const accepted=getPolicy('experimental/targeted-fixes-1'),stable=getPolicy('v1.4');
- assert.equal(production.AI_POLICY_VERSION,'v1.4');
+test('CLI/Web shared default routes every exported decision to accepted v1.5 while old aliases remain explicit',()=>{
+ const accepted=getPolicy('experimental/plans-4'),stable=getPolicy('v1.5');
+ assert.equal(production.AI_POLICY_VERSION,'v1.5');
  for(const method of ['chooseAiResponse','chooseAiRuleDecision','chooseAiDiscard','cardScore','keepCards','giftScore','planWindAttacks'])assert.equal(production[method],accepted[method]);
  for(const hero of ['berserker','windSwordmaster','marksman','sealer','guardianAngel','priest']) {
   const g=new Game({seed:123,playerHeroId:hero}).setup();
@@ -16,13 +16,13 @@ test('CLI/Web shared default routes every exported decision to accepted v1.4 whi
   assert.deepEqual(production.chooseAiAction(g,0),stable.chooseAiAction(g,0));
   assert.deepEqual(production.chooseAiDiscard(g,0,1),accepted.chooseAiDiscard(g,0,1));
  }
- for(const [stableId,frozenId] of [['v1.1','read-1'],['v1.2','fusion-1'],['v1.3','experimental/economy-4']])assert.equal(getPolicy(stableId).rankAiActions,getPolicy(frozenId).rankAiActions);
+ for(const [stableId,frozenId] of [['v1.1','read-1'],['v1.2','fusion-1'],['v1.3','experimental/economy-4'],['v1.4','experimental/targeted-fixes-1']])assert.equal(getPolicy(stableId).rankAiActions,getPolicy(frozenId).rankAiActions);
  assert.notEqual(stable.rankAiActions,getPolicy('v1.2').rankAiActions);
 });
 
-test('v1.4 default exactly matches frozen candidate on 180 fixed legal public observations',()=>{
+test('v1.5 default exactly matches frozen candidate on 180 fixed legal public observations',()=>{
  const {snapshots}=JSON.parse(fs.readFileSync(new URL('../artifacts/ai/targeted-fixes-1/confirmation/stress-snapshots.json',import.meta.url)));
- const frozen=getPolicy('experimental/targeted-fixes-1'),stable=getPolicy('v1.4');
+ const frozen=getPolicy('experimental/plans-4'),stable=getPolicy('v1.5');
  assert.equal(snapshots.length,180);
  for(const {observation,actorId} of snapshots){
   const view=observationView(observation);

@@ -1,0 +1,6 @@
+{
+  "candidate": "experimental/plans-3",
+  "sha": "2d7361b2282d4b27a35c4278e50e336b6cb13997",
+  "reason": "Fixed mixed teammate gates failed: flow29.2824%,reserve14.4213%,required45%. All17280games retained. Independent recalculation agrees. No release, no threshold change.",
+  "time": "2026-10-20T12:04:27.159269+00:00"
+}

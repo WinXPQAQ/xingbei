@@ -1,0 +1,18 @@
+{
+  "sha": "469e37f03a3a2d2679dae4c28f3e907e42e78163",
+  "passed": true,
+  "manifestGames": 17280,
+  "endpointCounts": {
+    "v1.4": 5760,
+    "v1.3": 960,
+    "v1.2": 960,
+    "v1.0": 960,
+    "flow": 4320,
+    "reserve": 4320
+  },
+  "sourceHashesVerified": 136,
+  "allSixStarts": true,
+  "allSixCandidateStyleSeats": true,
+  "originalConfirmationSeedsNotReused": true,
+  "scope": "Manifest and routing audit only, not independent human/source review or completed match acceptance."
+}

@@ -22,6 +22,7 @@ export function* magicRelaySteps(game, actorId, options = {}) {
     const target = game.magicTarget(sourceId, participants);
     if (!target) return;
     participants.add(target.id);
+    game.recordPublicAction({type:'magic',actorId:sourceId,targetId:target.id,card:'magicBullet',amount:damage});
     game.recordPresentation("relay", { sourceId, playerId: target.id, amount: damage });
     yield* game.flushRuleEvents(options);
     yield* game.present();
@@ -30,6 +31,7 @@ export function* magicRelaySteps(game, actorId, options = {}) {
       nextTarget: game.magicTarget(target.id, participants), participants: [...participants] };
     const picked = decision && valid.find(item => item.index === decision.index);
     if (decision && !picked) throw new RuleError("选择的牌不能响应魔弹");
+    if(picked)game.recordPublicAction({type:'response',actorId:target.id,sourceId,card:picked.card.name,result:picked.card.name==='holyLight'?'cancel':'relay'});
     if (picked?.card.name === "holyLight") {
       game.playCard(target, picked.index, options);
       yield* game.flushRuleEvents(options);
@@ -47,6 +49,7 @@ export function* magicRelaySteps(game, actorId, options = {}) {
     const context = { actorId: sourceId, targetId: target.id, hit: true, shieldable: true, damage };
     yield* game.trigger(Timing.MAGIC_HIT_CHECK, context, options);
     if (!context.hit) { game.recordPresentation("miss", { playerId: target.id, cause: context.cause }); yield* game.present(); }
+    game.recordPublicAction({type:'magicResult',actorId:sourceId,targetId:target.id,result:context.hit?'hit':context.cause??'blocked',amount:context.hit?context.damage:0});
     if (context.hit) yield* game.damageSteps(target.id, context.damage, { ...options, sourceId, damageType: "spell" });
     if (target.pendingOverflow) yield { type: "overflow", player: target };
     return;

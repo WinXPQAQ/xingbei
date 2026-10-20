@@ -1,0 +1,42 @@
+{
+  "records": 384,
+  "reusedControls": 96,
+  "newRecords": 288,
+  "hashesMatched": 5,
+  "summary": {
+    "flow": {
+      "candidateWins": 29,
+      "controlWins": 25,
+      "improved": 15,
+      "worsened": 11,
+      "delta": 0.041666666666666664,
+      "bySeed": {
+        "1501001": {
+          "candidateWins": 13,
+          "controlWins": 15
+        },
+        "1501002": {
+          "candidateWins": 16,
+          "controlWins": 10
+        }
+      }
+    },
+    "reserve": {
+      "candidateWins": 15,
+      "controlWins": 17,
+      "improved": 10,
+      "worsened": 12,
+      "delta": -0.020833333333333332,
+      "bySeed": {
+        "1501001": {
+          "candidateWins": 6,
+          "controlWins": 9
+        },
+        "1501002": {
+          "candidateWins": 9,
+          "controlWins": 8
+        }
+      }
+    }
+  }
+}

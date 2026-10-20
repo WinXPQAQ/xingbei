@@ -14,6 +14,7 @@ export function* attackSteps(game, actorId, handIndex, targetId, options = {}) {
     const context = { actorId: actor.id, sourceId: actor.id, targetId: target.id, card: attack, attackTraits,
       isCounter, amount: 2, damageType: "attack", hit: true, shieldable: true, canCounter: true, canHolyLight: true, point: 1 };
     game.log.push(`${actor.name}使用${isCounter ? "应战攻击" : "主动攻击"}${cardName(attack)}，目标是${target.name}`);
+    game.recordPublicAction({type:'attack',actorId:actor.id,targetId:target.id,card:attack.name,elements:[...attackTraits.elements],counter:isCounter});
     yield* game.trigger(Timing.ATTACK_DECLARED, context, options);
     context.point = 2;
     yield* game.trigger(Timing.ATTACK_DECISION, context, options);
@@ -27,6 +28,7 @@ export function* attackSteps(game, actorId, handIndex, targetId, options = {}) {
     if (!decision) {
       yield* game.trigger(Timing.ATTACK_HIT_CHECK, context, options);
       if (context.forcedHit) context.hit = true;
+      game.recordPublicAction({type:'attackResult',actorId:actor.id,targetId:target.id,card:attack.name,result:context.hit?'hit':context.cause??'blocked'});
       if (context.hit) {
         yield* game.trigger(Timing.ATTACK_HIT, context, options);
         game.log.push(`${actor.name}的${cardName(attack)}命中${target.name}`);
@@ -52,6 +54,7 @@ export function* attackSteps(game, actorId, handIndex, targetId, options = {}) {
     const response = game.playCard(target, picked.index, { ...options, targetId: nextTarget?.id ?? actor.id });
     yield* game.present();
     context.hit = false; context.cause = response.name;
+    game.recordPublicAction({type:'response',actorId:target.id,sourceId:actor.id,targetId:nextTarget?.id??actor.id,card:response.name,elements:[...nextTraits.elements],result:response.name==='holyLight'?'cancel':'redirect'});
     game.log.push(`${target.name}使用${response.name === "holyLight" ? cardName(response) + "抵消攻击" : "应战攻击" + cardName(response)}，原攻击未命中`);
     yield* game.trigger(Timing.ATTACK_MISS, context, options);
     if (response.name === "holyLight") {

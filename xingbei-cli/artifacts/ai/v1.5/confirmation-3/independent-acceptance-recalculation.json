@@ -1,0 +1,120 @@
+{
+  "sha": "2d7361b2282d4b27a35c4278e50e336b6cb13997",
+  "expected": 17280,
+  "read": 17280,
+  "completeMarkers": [
+    "complete-1.json",
+    "complete-3.json",
+    "complete-2.json",
+    "complete-0.json"
+  ],
+  "partialLines": [],
+  "errors": [],
+  "endpointExpected": {
+    "v1.4": 5760,
+    "v1.3": 960,
+    "v1.2": 960,
+    "v1.0": 960,
+    "flow": 4320,
+    "reserve": 4320
+  },
+  "routingErrors": [],
+  "performance": {
+    "groups": 18,
+    "records": 1800,
+    "p95": 29.777084000000286,
+    "max": 82.59428099999968,
+    "maxMedianRatio": 1.7949974074112918,
+    "maxP95Ratio": 1.9232974591123773
+  },
+  "endpoints": {
+    "v1.4": {
+      "games": 5760,
+      "wins": 3908,
+      "losses": 1852,
+      "truncated": 0,
+      "score": 0.6784722222222223,
+      "oneSided99Lower": 0.6633680555555553,
+      "gate": true
+    },
+    "v1.3": {
+      "games": 960,
+      "wins": 677,
+      "losses": 283,
+      "truncated": 0,
+      "score": 0.7052083333333333,
+      "gate": true
+    },
+    "v1.2": {
+      "games": 960,
+      "wins": 718,
+      "losses": 242,
+      "truncated": 0,
+      "score": 0.7479166666666667,
+      "gate": true
+    },
+    "v1.0": {
+      "games": 960,
+      "wins": 823,
+      "losses": 137,
+      "truncated": 0,
+      "score": 0.8572916666666667,
+      "gate": true
+    },
+    "flow": {
+      "games": 4320,
+      "wins": 1265,
+      "losses": 3055,
+      "truncated": 0,
+      "score": 0.29282407407407407,
+      "gate": false
+    },
+    "reserve": {
+      "games": 4320,
+      "wins": 623,
+      "losses": 3697,
+      "truncated": 0,
+      "score": 0.14421296296296296,
+      "gate": false
+    }
+  },
+  "lineups": {
+    "mirrorAssault": {
+      "games": 1440,
+      "wins": 808,
+      "losses": 632,
+      "truncated": 0,
+      "score": 0.5611111111111111,
+      "oneSided99Lower": 0.5305555555555556,
+      "gate": true
+    },
+    "mirrorMixed": {
+      "games": 1440,
+      "wins": 1167,
+      "losses": 273,
+      "truncated": 0,
+      "score": 0.8104166666666667,
+      "oneSided99Lower": 0.7875000000000002,
+      "gate": true
+    },
+    "asymmetric": {
+      "games": 1440,
+      "wins": 1013,
+      "losses": 427,
+      "truncated": 0,
+      "score": 0.7034722222222223,
+      "oneSided99Lower": 0.6756944444444446,
+      "gate": true
+    },
+    "asymmetricReverse": {
+      "games": 1440,
+      "wins": 920,
+      "losses": 520,
+      "truncated": 0,
+      "score": 0.6388888888888888,
+      "oneSided99Lower": 0.6090277777777778,
+      "gate": true
+    }
+  },
+  "passed": false
+}

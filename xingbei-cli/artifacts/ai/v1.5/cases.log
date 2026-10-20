@@ -1,0 +1,32 @@
+[
+  {
+    hero: 'marksman',
+    old: -0.8864734128272973,
+    current: 4.0071023560954,
+    events: 15
+  },
+  {
+    hero: 'berserker',
+    old: -0.5,
+    current: -5.51626813395913,
+    events: 164
+  },
+  {
+    hero: 'windSwordmaster',
+    old: -4.400000000000006,
+    current: -3.8400000000000034,
+    events: 166
+  },
+  {
+    hero: 'sealer',
+    old: -0.6669219759370968,
+    current: 7.45685078360764,
+    events: 1
+  },
+  {
+    hero: 'priest',
+    old: -1.0621215127855583,
+    current: 3.0609355817398587,
+    events: 11
+  }
+]

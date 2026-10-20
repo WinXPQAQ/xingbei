@@ -1,0 +1,9 @@
+{ id: 0, endpoint: 'v1.4' }
+{ id: 192, endpoint: 'v1.4' }
+{ id: 384, endpoint: 'v1.4' }
+{ id: 576, endpoint: 'v1.4' }
+{ id: 768, endpoint: 'v1.4' }
+{ id: 960, endpoint: 'v1.4' }
+{ id: 1152, endpoint: 'v1.4' }
+{ id: 1344, endpoint: 'v1.4' }
+{ id: 1536, endpoint: 'v1.4' }

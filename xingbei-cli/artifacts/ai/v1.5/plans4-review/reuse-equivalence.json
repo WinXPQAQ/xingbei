@@ -1,0 +1,1102 @@
+{
+  "stress": 180,
+  "oldCases": 5,
+  "targeted": 30,
+  "ranks": 215,
+  "candidates": 4761,
+  "tiePairs": 1720,
+  "requests": 54,
+  "failures": 0,
+  "inputsUnchanged": true,
+  "sourcesUnchanged": true,
+  "sourceHashes": {
+    "/workspace/xingbei/xingbei-cli/src/ai/v1.5-candidate/index.js": "a3bc7a1b58c8122c1259cdacf0840f9c80388ac333222435fe45ac42ac0ddd11",
+    "/workspace/xingbei/xingbei-cli/src/ai/v1.5-candidate/model.js": "4616e83363896bc43912ef740c2dc2a0267350166797b58a8dfba212b1dba22b",
+    "/workspace/xingbei/xingbei-cli/src/ai/v1.5-candidate/planner.js": "e1bf6ce288c82a59a16d7815f73ca71cd6b3d878f6b02c133976d751a1c2f6a0",
+    "/workspace/xingbei/xingbei-cli/src/ai/v1.5-candidate/horizon.js": "5dab8e49a81551e098164132e9992c890eb06dd2f853a5a3016ed1db121c3350",
+    "/workspace/xingbei/xingbei-cli/src/ai/v1.5-candidate/trace.js": "9d09a5b26a29d47f0c75337c26d7c2bdb1b49be8857410bc7e1233aba3c6476b",
+    "/workspace/xingbei/xingbei-cli/artifacts/ai/v1.5/plans4-before-reuse/index.js": "55ebba2fd6d5474296b8c3513725914259252a2ecbba9c3855c923e3184695c1",
+    "/workspace/xingbei/xingbei-cli/artifacts/ai/v1.5/plans4-before-reuse/model.js": "db59bce8e99d9cf5943380b5c841ceea3f2b657420fc690738a2b015f46fb9b3",
+    "/workspace/xingbei/xingbei-cli/artifacts/ai/v1.5/plans4-before-reuse/planner.js": "9eaeb33ca8c3eae0c44c59ae7d57b6b6d786aca90b7ef82e1446342eb37e2de8",
+    "/workspace/xingbei/xingbei-cli/artifacts/ai/v1.5/plans4-before-reuse/horizon.js": "5dab8e49a81551e098164132e9992c890eb06dd2f853a5a3016ed1db121c3350",
+    "/workspace/xingbei/xingbei-cli/artifacts/ai/v1.5/plans4-before-reuse/trace.js": "9d09a5b26a29d47f0c75337c26d7c2bdb1b49be8857410bc7e1233aba3c6476b",
+    "/workspace/xingbei/xingbei-cli/src/ai/observation.js": "8128768fda9d1d4b2588a7786c99a87385d12de39e8620ccd6cb038522d10e75"
+  },
+  "evidence": [
+    {
+      "label": "pressure-0",
+      "candidates": 14,
+      "digest": "b339ae4462bcc143b3c5753dc8b0932f2585ed8ad11e27fcb1910138942980dc"
+    },
+    {
+      "label": "pressure-1",
+      "candidates": 22,
+      "digest": "e28dc52cd1a5d6116665044835e7e762d1325b1c8b012b7ab34c7b6fa2b0d24b"
+    },
+    {
+      "label": "pressure-2",
+      "candidates": 11,
+      "digest": "eea09252f9a2f10c99d7a9a51e110c93ff59181aef038e3aa0c1c5b5afdd0a06"
+    },
+    {
+      "label": "pressure-3",
+      "candidates": 22,
+      "digest": "d5ddc517d804c736c029a83e95d2ea648028eaefa19244ee689693523776a49a"
+    },
+    {
+      "label": "pressure-4",
+      "candidates": 11,
+      "digest": "f49b02ac0c97bebaa8f2455a8b865790d2e50a4c7beff7a2bc8e3d0805d807ee"
+    },
+    {
+      "label": "pressure-5",
+      "candidates": 19,
+      "digest": "385b53a04171b68d24474af7f624d14f62f2e20ee885300826f5f193f894eb6e"
+    },
+    {
+      "label": "pressure-6",
+      "candidates": 11,
+      "digest": "eba494cc2ede9ff682c3b4b6ef79f9492908cf1ec7e610c44b983cea5aa9ac1d"
+    },
+    {
+      "label": "pressure-7",
+      "candidates": 16,
+      "digest": "39ce3079f86cb3611b583ce93a793da928fb10b59c4bf26816be2151ca438ae2"
+    },
+    {
+      "label": "pressure-8",
+      "candidates": 8,
+      "digest": "48d8a993fed2b9e0d751af6a638fea3b28323a23030f773190af5e92a1f2e53d"
+    },
+    {
+      "label": "pressure-9",
+      "candidates": 43,
+      "digest": "d1e9ca282c52bc2c1786edd7bd478d6642406fc9f35e3abc10656f4bb86b3c47"
+    },
+    {
+      "label": "pressure-10",
+      "candidates": 16,
+      "digest": "85d24fe3c253c75bea23f6da208072acf683ad9d24fbc5c00acdb35b9dd689cb"
+    },
+    {
+      "label": "pressure-11",
+      "candidates": 24,
+      "digest": "3d4941388286d8e710056b44c5e513c97cc6c3f5e5b3a48fb732065c63a74d14"
+    },
+    {
+      "label": "pressure-12",
+      "candidates": 10,
+      "digest": "2351e88a82aa756fe819dcafda4e17a0cc743b0890bba93068cd446923e22cef"
+    },
+    {
+      "label": "pressure-13",
+      "candidates": 12,
+      "digest": "43cb8cd718601c3a8b15e55aa080c710bdb7c8123959754d8741e2981b384787"
+    },
+    {
+      "label": "pressure-14",
+      "candidates": 37,
+      "digest": "86e0c109e26b2b6776bdfe9d53dd7d154cb59074994774a21cd2dce8f05b32ab"
+    },
+    {
+      "label": "pressure-15",
+      "candidates": 15,
+      "digest": "c557328f1913f0b746c0dc12e57aedcd7f1842d3272555f0630ba94acd678a3c"
+    },
+    {
+      "label": "pressure-16",
+      "candidates": 25,
+      "digest": "e0e0a9aed22926af4f3affd948cb55b760968427607d84124acd8e493141a81f"
+    },
+    {
+      "label": "pressure-17",
+      "candidates": 11,
+      "digest": "fff92bf0ff03b7590af2475a4a66dbc49f9aae1f5fb8e91ba089a6bd72ec6730"
+    },
+    {
+      "label": "pressure-18",
+      "candidates": 12,
+      "digest": "e0ac783b5fae135f9eaab5e80ef56576a09ce965767cbb40e734f662da361958"
+    },
+    {
+      "label": "pressure-19",
+      "candidates": 17,
+      "digest": "224792da4c07ac6a67de89aa1037b3d2f717a5148a9a1ca162650aee74af1f61"
+    },
+    {
+      "label": "pressure-20",
+      "candidates": 11,
+      "digest": "3c5fa15c47260a9c254d1cf4fd7069ee759cbbf670ca728915e5ee4c3d2a61b6"
+    },
+    {
+      "label": "pressure-21",
+      "candidates": 22,
+      "digest": "3fa90bc31ca54824ffd43869d4b940a1f636079ada9ec206bcb7290c3ee3bd09"
+    },
+    {
+      "label": "pressure-22",
+      "candidates": 14,
+      "digest": "b82dcc2cd9e74d9c615e4528197ac44ccd75c7e4fbc4fc6898bc1b98256d3451"
+    },
+    {
+      "label": "pressure-23",
+      "candidates": 22,
+      "digest": "43ff92fddf571eb45fe22911e68c5bbba2112a0fa124465b9cc449c1b4377b6b"
+    },
+    {
+      "label": "pressure-24",
+      "candidates": 17,
+      "digest": "74ad7522c35232e09f8bb540ad70c8153946f9b97cc605563f8c71c904b1c53c"
+    },
+    {
+      "label": "pressure-25",
+      "candidates": 25,
+      "digest": "9c598d725156c68f84fbbb5d5b70d604c23c7d9a9fae2bbd79ecd4cd9a04c44c"
+    },
+    {
+      "label": "pressure-26",
+      "candidates": 29,
+      "digest": "943fbc9760e23168f07c8871c0d20f78128a743a468afd620bad594016c6ede0"
+    },
+    {
+      "label": "pressure-27",
+      "candidates": 103,
+      "digest": "ec24ae68af4aa8d353c3efd863b060ddb96b94ae19c7c259dd4340f52cd500a8"
+    },
+    {
+      "label": "pressure-28",
+      "candidates": 8,
+      "digest": "f64958e62c0c6e71aa7a850fae885ac158380b9d8bdb16cbd8b1281915297ddd"
+    },
+    {
+      "label": "pressure-29",
+      "candidates": 20,
+      "digest": "210b374d5f37a78c8ef5660a8b0bc0604635dce92a3cda01f338d570d99926bc"
+    },
+    {
+      "label": "pressure-30",
+      "candidates": 24,
+      "digest": "4b82d2a5118ce6255b75f1275ca4f3414fbbb10dbfb5ccaa0613da88bc3b49fe"
+    },
+    {
+      "label": "pressure-31",
+      "candidates": 30,
+      "digest": "ec6a009bfacc5867dcf9d24923c267360736f6cd6389cfa348e3000afe4020d3"
+    },
+    {
+      "label": "pressure-32",
+      "candidates": 17,
+      "digest": "4a28138c1e3a416c10f39dc726d1d756b5b6ce5bce07e70c24c274bedef3169c"
+    },
+    {
+      "label": "pressure-33",
+      "candidates": 56,
+      "digest": "9f2044465bb16fdb4cf4dff3d7fb3adcd1bf0cdc43d5496c24c4917deeb9de9c"
+    },
+    {
+      "label": "pressure-34",
+      "candidates": 15,
+      "digest": "4e5e12dab20c30822f9dae180257805c71f4714c4f14aeefc3eabb506fb494f6"
+    },
+    {
+      "label": "pressure-35",
+      "candidates": 14,
+      "digest": "b21f6ec0ab77cadd15bf5357f5ee0ec33d65942823677e526a67e42800de3ce5"
+    },
+    {
+      "label": "pressure-36",
+      "candidates": 14,
+      "digest": "c49df4e952ab8e0e57e060de72df7d772e25bd098be3bb8a6255bdb2c280213c"
+    },
+    {
+      "label": "pressure-37",
+      "candidates": 19,
+      "digest": "d4202648c2879f340e6dc4f99bed6ed3df93dbc81dfce2e2254b4f792f9a5a75"
+    },
+    {
+      "label": "pressure-38",
+      "candidates": 11,
+      "digest": "7619431c18e0f7d01225b346c85f882b7bd79cb6d525034b4232fb3190226925"
+    },
+    {
+      "label": "pressure-39",
+      "candidates": 16,
+      "digest": "b2dd974332ad45bba90c4c2ded58d777956ef8c609cd411e0764942b93518ac6"
+    },
+    {
+      "label": "pressure-40",
+      "candidates": 15,
+      "digest": "07e5c514538395a562ea6d94d1c5be62ca6271de22fc6bd14a600773f2b83d45"
+    },
+    {
+      "label": "pressure-41",
+      "candidates": 26,
+      "digest": "c30a9e40529a7e917b172ff7029e986e3d220bb5a3d1e8ba49d7f2f62dda108a"
+    },
+    {
+      "label": "pressure-42",
+      "candidates": 17,
+      "digest": "ccedef2017d390fc75e6a8e7f9023c8893c2d4c20a007f9db0fa38019966aa69"
+    },
+    {
+      "label": "pressure-43",
+      "candidates": 25,
+      "digest": "e4c5001fa191e1a6c768a79aefbcbd5df34e3cdef504478e7c81e488bdbe9fd0"
+    },
+    {
+      "label": "pressure-44",
+      "candidates": 11,
+      "digest": "f116792f2d521b9432d8197a2480746051049909685b652f4fa694336b6ab3cd"
+    },
+    {
+      "label": "pressure-45",
+      "candidates": 16,
+      "digest": "b0f4ebcea623036430508e5da9cb0bda5c16ada38f7cf35a09ed4f796a87459b"
+    },
+    {
+      "label": "pressure-46",
+      "candidates": 9,
+      "digest": "b19e9154c1e14fa2b91b646193dfe05f5f5f1511d79b7ecccd3c8dbcb519ccc4"
+    },
+    {
+      "label": "pressure-47",
+      "candidates": 17,
+      "digest": "358d74804372c2d7d5d08f4334157b568c7ebe96b6d7fe2749137416110dd15c"
+    },
+    {
+      "label": "pressure-48",
+      "candidates": 25,
+      "digest": "3394625595dfda0b47fe782b02d3c1e48a32071c08f8544ca1835a8514314040"
+    },
+    {
+      "label": "pressure-49",
+      "candidates": 17,
+      "digest": "673c11d35dd53ef82a88910b2c40e430a80599981e7e5f3829f2a07fcfe0b168"
+    },
+    {
+      "label": "pressure-50",
+      "candidates": 21,
+      "digest": "bccfbe36d10fb98e9729292f96f9bd6b8f9770b11dbb9f2827e607acf8d92fdd"
+    },
+    {
+      "label": "pressure-51",
+      "candidates": 22,
+      "digest": "a6e80e49ed2801e52580ad730a149cfe181d923d67db35fdd30a2b766c9ccdae"
+    },
+    {
+      "label": "pressure-52",
+      "candidates": 17,
+      "digest": "7aeab2734ee456bcaeb30474036ac83900349f5ff29e2cb379987eb7011cac45"
+    },
+    {
+      "label": "pressure-53",
+      "candidates": 18,
+      "digest": "47d3deac43164124e18cd810312ce6adf17d3c9646bd52cd96bc39dd8747bc56"
+    },
+    {
+      "label": "pressure-54",
+      "candidates": 14,
+      "digest": "bf707cc132fc3df0efb363e4cc39da8fdae6d5c9156e4da9297acbf0b9e6f22b"
+    },
+    {
+      "label": "pressure-55",
+      "candidates": 25,
+      "digest": "6a1dd93c193f155d23a2f0be46b495d5855cdc1f81c1a2767a1f833f42703cb1"
+    },
+    {
+      "label": "pressure-56",
+      "candidates": 8,
+      "digest": "f4d722d5d410a129a9e6d226f9d302d37745b408b7192e4c5f62646942ddaf9b"
+    },
+    {
+      "label": "pressure-57",
+      "candidates": 16,
+      "digest": "53a93b6261c830def39f4f44e78eaaa0b3319e0488c6da81e1f0ea42f2abb1ee"
+    },
+    {
+      "label": "pressure-58",
+      "candidates": 14,
+      "digest": "ce1d632b73750302bba56f042fe24c234ca9e97d40de47edf0be17ffdf614bb3"
+    },
+    {
+      "label": "pressure-59",
+      "candidates": 22,
+      "digest": "10c054cb0c4152e2aeb0a6f3808be50e6705c754aafd440c60f22ebc01cf8807"
+    },
+    {
+      "label": "pressure-60",
+      "candidates": 12,
+      "digest": "baa2f3e8c9be2bfa96aa0df8c489954b7f07ede1ef4d83a7a4b616a67a8b34a9"
+    },
+    {
+      "label": "pressure-61",
+      "candidates": 23,
+      "digest": "8f4fe8cb1e47b384980a4ccfd4cc03598571b3a359342971049e244c6b9405b0"
+    },
+    {
+      "label": "pressure-62",
+      "candidates": 35,
+      "digest": "2f7e3a9adb69962c168af5a510fd979dccbab6d6dfcf7b8926db6949697abdd3"
+    },
+    {
+      "label": "pressure-63",
+      "candidates": 49,
+      "digest": "bbb7d82c53b5c2cc6412c127b37a8bb738f8f460c57dc1b3bb71add7b184408d"
+    },
+    {
+      "label": "pressure-64",
+      "candidates": 13,
+      "digest": "c4177b7a435de4bfd438985442a2ba6ff3045a357f0204470c590659a38ed9ba"
+    },
+    {
+      "label": "pressure-65",
+      "candidates": 21,
+      "digest": "778f0896dde1fadd27961d4816e36d4c75ef5eb8a50f7701f88391c641294999"
+    },
+    {
+      "label": "pressure-66",
+      "candidates": 44,
+      "digest": "af701d6faa2391f2743fdb32bb7840fc4425adb36738ae3e574056b6eedd0fe2"
+    },
+    {
+      "label": "pressure-67",
+      "candidates": 13,
+      "digest": "dedf21fd4de41a8cf1a77fa4c4198588a756f7b509ef5420445014fc13ccdc0d"
+    },
+    {
+      "label": "pressure-68",
+      "candidates": 24,
+      "digest": "a5d167160e58997b18085b4ddd6d231b837e35195e2151c2930c223f9d6c291e"
+    },
+    {
+      "label": "pressure-69",
+      "candidates": 22,
+      "digest": "f69c5fcce9d792d0aa286214b91016e8f840fc6887a0e5816b04735dd00fa27b"
+    },
+    {
+      "label": "pressure-70",
+      "candidates": 19,
+      "digest": "c1a740112fe6dc3239f546faaaef1a49247cf8f7b4ba78461643d1aed57179d8"
+    },
+    {
+      "label": "pressure-71",
+      "candidates": 25,
+      "digest": "755c066232db49b3b52121f4275ecfd7afafdd745f29942198d904e66ca1a5ac"
+    },
+    {
+      "label": "pressure-72",
+      "candidates": 14,
+      "digest": "5446d692cc15baaf3322f37cd4f53b62a54d2320c6b2faa0c6f323e0f0126bb3"
+    },
+    {
+      "label": "pressure-73",
+      "candidates": 25,
+      "digest": "a88f7b52fd5ced08e58d7c3775b835887997d28a5b62484f2ca344113b596e2b"
+    },
+    {
+      "label": "pressure-74",
+      "candidates": 11,
+      "digest": "7bb437aacd416d549def69346c4a3c08c67bcaffcac8676aa13ff650d4671dd7"
+    },
+    {
+      "label": "pressure-75",
+      "candidates": 19,
+      "digest": "543ad3c7c05512a62dcf45def3439c9f46de2a2dc19e00acf47ffe6fbfcd6d5e"
+    },
+    {
+      "label": "pressure-76",
+      "candidates": 11,
+      "digest": "637cc77f1dc8ac5af1955467aae9cd999ef7e08ed64ae1910acc413008093535"
+    },
+    {
+      "label": "pressure-77",
+      "candidates": 19,
+      "digest": "b17c0d1011e12aa8e73e0fa97152c1dcc7d236f45e5e6205b3cff50ef37e8384"
+    },
+    {
+      "label": "pressure-78",
+      "candidates": 5,
+      "digest": "fad0569f244c5dac1e9f973914bac13050dc2320567585c601c4f41ee8a6f8a0"
+    },
+    {
+      "label": "pressure-79",
+      "candidates": 13,
+      "digest": "03c85ff6e9ba6e5ad024e3d64bca9985c8c41d4f363c4efbd51cf3085ef0392b"
+    },
+    {
+      "label": "pressure-80",
+      "candidates": 56,
+      "digest": "2f8d921cd3b90fafc0833d84d00713bb531a5afcc5e7df49c92ca02cda7d753f"
+    },
+    {
+      "label": "pressure-81",
+      "candidates": 62,
+      "digest": "e5abf7cef1530e1a0bb096864ad0a0285576e71978a8a4c06a1280319cb4cac4"
+    },
+    {
+      "label": "pressure-82",
+      "candidates": 12,
+      "digest": "0e2bad110faa11e48cef552e6548af654d543212980a8adf8633aad173b0af4f"
+    },
+    {
+      "label": "pressure-83",
+      "candidates": 20,
+      "digest": "6d0e98188e79ec27943ac7628c7c9cd25c8adbb749d6c905b3d5874230dff06e"
+    },
+    {
+      "label": "pressure-84",
+      "candidates": 17,
+      "digest": "97a5f45e23bf9e201b72d8cd44570a6d6b38a15859926163aa995d82282b6a7e"
+    },
+    {
+      "label": "pressure-85",
+      "candidates": 24,
+      "digest": "01250073566299507f471bbc3ccf98a6389ad362ce312fa876842d14843d6e5e"
+    },
+    {
+      "label": "pressure-86",
+      "candidates": 25,
+      "digest": "b10d52f2d618389e3642509d70133b2f383cbb766001ff5c04063a6ed1d34cd9"
+    },
+    {
+      "label": "pressure-87",
+      "candidates": 38,
+      "digest": "569bc6a3c26ac8767a31a8b0ea9210abff6dc9e2b2cba1fa1445fc2aa2065556"
+    },
+    {
+      "label": "pressure-88",
+      "candidates": 21,
+      "digest": "5e18c0cd95e56b35ea70b141248ef7308fe8cf9740c2e73b24ed8775d3c21f5f"
+    },
+    {
+      "label": "pressure-89",
+      "candidates": 18,
+      "digest": "8449df02e387d448e9c8a84160f9a495f14b3f4402a3a1cd93328789bb0ea196"
+    },
+    {
+      "label": "pressure-90",
+      "candidates": 14,
+      "digest": "36ca6779353ef393f69bda66a5c926b909e9d60a134bfd9517a31df88e2ee449"
+    },
+    {
+      "label": "pressure-91",
+      "candidates": 22,
+      "digest": "0e214391b33af7ce3457d64987a517dc71d6300b0070526a35ddaf91616f389f"
+    },
+    {
+      "label": "pressure-92",
+      "candidates": 8,
+      "digest": "6cf1645a3a4304b9136d4fea392db08966c3b9bbc7159e7a19c1a3401b7d9bb9"
+    },
+    {
+      "label": "pressure-93",
+      "candidates": 13,
+      "digest": "71be889eed5b6d62b510859fc7b0db3f3f6b0165b572d1b21dbfca3ba20b2036"
+    },
+    {
+      "label": "pressure-94",
+      "candidates": 17,
+      "digest": "ab6dbdd76832fb897640e2755ea6a42d32b19d312401f1e88671be6ae1f1a701"
+    },
+    {
+      "label": "pressure-95",
+      "candidates": 22,
+      "digest": "2fcf60a4f99b2b704731c455982ab56296b80a5bb15c63d3495f658776cf47b4"
+    },
+    {
+      "label": "pressure-96",
+      "candidates": 17,
+      "digest": "1e623da7b16a161f10167f03545389c945e59741e7e5833cfa6833aafc35e5ee"
+    },
+    {
+      "label": "pressure-97",
+      "candidates": 22,
+      "digest": "fbd3a359795cf980afc4e33f35547682b259f168ff80bd40bc45d37354ea260b"
+    },
+    {
+      "label": "pressure-98",
+      "candidates": 14,
+      "digest": "842489c776353479a4ac751e7568ea035659af4dc2168e1973ac33f809dacfaa"
+    },
+    {
+      "label": "pressure-99",
+      "candidates": 19,
+      "digest": "8a5adadbd80cc01b3b57910c3dc679a68dde9db34e1cc8f371dafd7cffe1d36d"
+    },
+    {
+      "label": "pressure-100",
+      "candidates": 14,
+      "digest": "de962073edabe93d446a819fefefec7b7a5c433839a5c0e2d94a2cb87bb85476"
+    },
+    {
+      "label": "pressure-101",
+      "candidates": 20,
+      "digest": "0e4328e1ec2e9bb47155444b0e706d34e962384d569c535ce936e252c4241c3d"
+    },
+    {
+      "label": "pressure-102",
+      "candidates": 14,
+      "digest": "8fbf63a74919c8a881eec48281dfac1c7038d6a6f1ea7281e8f168a8199b5b25"
+    },
+    {
+      "label": "pressure-103",
+      "candidates": 12,
+      "digest": "787b8fc531abe460346aa288473714e8e717b7e79ae5c73e28c73c133e616f1d"
+    },
+    {
+      "label": "pressure-104",
+      "candidates": 16,
+      "digest": "df3335fa116cafe67d41bb6f5dc8091e69f0704f0b87cbdedbf2f63757652ff2"
+    },
+    {
+      "label": "pressure-105",
+      "candidates": 5,
+      "digest": "96dfe25273686a641ffba0bfff46a2ded03fc24977c8b77f777cb07ed14739f1"
+    },
+    {
+      "label": "pressure-106",
+      "candidates": 24,
+      "digest": "8ed5701fe87a43f8cd7bfcc7c18d044ae7ae1a3030e3c15420dad3a66870f0d9"
+    },
+    {
+      "label": "pressure-107",
+      "candidates": 12,
+      "digest": "91e79c8b67eb126912437e4ff7a5479af7cee91ea0850d4a5c49d0b4af9b1784"
+    },
+    {
+      "label": "pressure-108",
+      "candidates": 11,
+      "digest": "53b51b7692f8a42040e200d831da363e9908ed717a151cf7b528b7c318ffd8e3"
+    },
+    {
+      "label": "pressure-109",
+      "candidates": 25,
+      "digest": "d8cb8a26849c17ceccfc289382cfada6a2aa99b78726503cff810a2898c98269"
+    },
+    {
+      "label": "pressure-110",
+      "candidates": 11,
+      "digest": "1d37dcec7cac563da5d22655677a8306551b647c8ae40b3ad7ee92016d956fba"
+    },
+    {
+      "label": "pressure-111",
+      "candidates": 22,
+      "digest": "714c4a240da38a2e55edefa9471ad29a7db69d0a8abf970dd40d9760acd1ac45"
+    },
+    {
+      "label": "pressure-112",
+      "candidates": 14,
+      "digest": "f6fcdb2d284eeed0550fcac715890a46635798b78017e0c5c8315e158abeb023"
+    },
+    {
+      "label": "pressure-113",
+      "candidates": 25,
+      "digest": "c2b09da30cefa6d13918ec6b00dbbb6242a9f87609409cc2488e1a99d72effde"
+    },
+    {
+      "label": "pressure-114",
+      "candidates": 11,
+      "digest": "e52d19872c3680e2cb036f9c0f426eb18da1b730e8cdbf19d423b20ec68824c6"
+    },
+    {
+      "label": "pressure-115",
+      "candidates": 22,
+      "digest": "ea34db94c4d9266fe7bdf73c2d0d12b5a6f1f22a154775263120233b404324df"
+    },
+    {
+      "label": "pressure-116",
+      "candidates": 9,
+      "digest": "e43a0efedc16cd612e98a9b00d453702e90244b95e3c9cf66b23a8a832d2a958"
+    },
+    {
+      "label": "pressure-117",
+      "candidates": 26,
+      "digest": "1e9fac951bc59dbc3487a142f539e853875e8ed933224adf1d4fc3cb1ddc72da"
+    },
+    {
+      "label": "pressure-118",
+      "candidates": 13,
+      "digest": "09f7333d3b45fe0a1f5a68d32f95f7fa8925b6cec64c9ff33d01451cecca2472"
+    },
+    {
+      "label": "pressure-119",
+      "candidates": 24,
+      "digest": "84b619455fa9a612e94ade53670d849ae0fc6f1708922caa0906a166c91e2640"
+    },
+    {
+      "label": "pressure-120",
+      "candidates": 25,
+      "digest": "ecf0a72afeef292a03c085784a3f16cb200dec0aa2bcb97221308b5801c7e22d"
+    },
+    {
+      "label": "pressure-121",
+      "candidates": 9,
+      "digest": "152a24e6f6e15a3a7be539b47a74f0c013c572ba5965f02d414766705acfd2cb"
+    },
+    {
+      "label": "pressure-122",
+      "candidates": 9,
+      "digest": "b2965d8351daa7f992bfb3cae08248c8aaca4ddd605ff14b06dae05100c385fc"
+    },
+    {
+      "label": "pressure-123",
+      "candidates": 20,
+      "digest": "42d0891103c12e92ba74d77dbc7dc6c61731ccf0e2ea805a97521bef0dece505"
+    },
+    {
+      "label": "pressure-124",
+      "candidates": 19,
+      "digest": "06a91593a4f3ea63c682974f9ab118c193774503caab0c05f8ed9436cb7b3258"
+    },
+    {
+      "label": "pressure-125",
+      "candidates": 73,
+      "digest": "951615f901e6daadd4d68326edc7fff9e5d701beb8de13a2f27376b837ade7a1"
+    },
+    {
+      "label": "pressure-126",
+      "candidates": 17,
+      "digest": "f959858eb58c7aaf939083bdbfb9f870091d63ff4a68e3363043e5a02140b841"
+    },
+    {
+      "label": "pressure-127",
+      "candidates": 23,
+      "digest": "a8e6a14bae8c4436fe572eb43c1fbfea97df590172e339a4ce433e8626a755e5"
+    },
+    {
+      "label": "pressure-128",
+      "candidates": 11,
+      "digest": "b5936d51c34fdd0dba8ac93b3bbd1736bfa81aa9fe112aea1e4402ef7fca3fde"
+    },
+    {
+      "label": "pressure-129",
+      "candidates": 19,
+      "digest": "eada53f57ec3601cbb2166c3e8c668b89023905a7f0e7bc4f6d9220ccd326114"
+    },
+    {
+      "label": "pressure-130",
+      "candidates": 11,
+      "digest": "e1b219ac9a4b5acb869713b147a5c5d3892c98b303b9a62673ca1a69e32c1147"
+    },
+    {
+      "label": "pressure-131",
+      "candidates": 19,
+      "digest": "55a05b1773ab5a38e1e4a304f1d0c791103c7d564f48458bad68248194d4c918"
+    },
+    {
+      "label": "pressure-132",
+      "candidates": 14,
+      "digest": "79af6494a8a34813655c8b1e0bbb6900db5e28e9abfb7c0d214afe143557a529"
+    },
+    {
+      "label": "pressure-133",
+      "candidates": 22,
+      "digest": "c103bb2d1695d6e0a56f500c41009dcea8e1f6b9a744cf7508dcb39b84579cef"
+    },
+    {
+      "label": "pressure-134",
+      "candidates": 62,
+      "digest": "83d0401d70de3ba59e7b1a66ba4824ca07b5ccb08a1b01e355b67abecb85403a"
+    },
+    {
+      "label": "pressure-135",
+      "candidates": 70,
+      "digest": "b18cf22d35757e4aa871bda095eb452f7c3d9d13902a9c2bfc9c742782aa7616"
+    },
+    {
+      "label": "pressure-136",
+      "candidates": 16,
+      "digest": "62cc75a07a00b0a5d4eff87c5071f672e3a1a3704f6a593a7c401bf2171f4b64"
+    },
+    {
+      "label": "pressure-137",
+      "candidates": 22,
+      "digest": "1d5a1fd993acec6fb433f5286f6539375ed58d224098d92af78be62a82d51c07"
+    },
+    {
+      "label": "pressure-138",
+      "candidates": 25,
+      "digest": "f6153b9e3657293a8d895971f9532770b5c86d8e4d067b86a404cd6233b163b9"
+    },
+    {
+      "label": "pressure-139",
+      "candidates": 16,
+      "digest": "b90f4c1af10d97a63557a19cb8c986c09eed86fdff151a39a0b81113f27750d7"
+    },
+    {
+      "label": "pressure-140",
+      "candidates": 53,
+      "digest": "cde20aac3a81e06e55e7fd22e071e8bf73c7a7869e122276c459d70bc01d9fed"
+    },
+    {
+      "label": "pressure-141",
+      "candidates": 24,
+      "digest": "2f2de4ed5b10ebda10e97b48470ba01cd7331eb3139510b701b5da8e0d2dc255"
+    },
+    {
+      "label": "pressure-142",
+      "candidates": 16,
+      "digest": "0104155ee688992f9ff767540b5e1fc164b7731801601167288f2a3611bcbeea"
+    },
+    {
+      "label": "pressure-143",
+      "candidates": 16,
+      "digest": "c544b4f6f2067ec6f4573f8928cd1505a1c962e438093929c75c94870e043404"
+    },
+    {
+      "label": "pressure-144",
+      "candidates": 9,
+      "digest": "1e0436f2a67ecc124eb2deedcd62f9bbd6e87cd29e856bb87379b368210dd071"
+    },
+    {
+      "label": "pressure-145",
+      "candidates": 14,
+      "digest": "7754911360f8e59bac9f984777530d81d76eff39cb920793c9e34acc9bfc9232"
+    },
+    {
+      "label": "pressure-146",
+      "candidates": 12,
+      "digest": "26bf7864c1af770c432fec4e7ffdb4b532dca0e531148432707d5b719048b98d"
+    },
+    {
+      "label": "pressure-147",
+      "candidates": 17,
+      "digest": "2a5066633b9fcecaf51650a580e984d90390703b7d931b593f95d0633404a443"
+    },
+    {
+      "label": "pressure-148",
+      "candidates": 11,
+      "digest": "0fddf2e42685921a69840c94d6c00634fabed84de303338cd11922dde5e6ada2"
+    },
+    {
+      "label": "pressure-149",
+      "candidates": 22,
+      "digest": "1389c2a68914f471584c51a7198252e78731b3566db8a339ee770911358fcf2c"
+    },
+    {
+      "label": "pressure-150",
+      "candidates": 11,
+      "digest": "69442b650d94e68007d7ca13e031003188a4dd07a069d7800c2f9cc736b42d72"
+    },
+    {
+      "label": "pressure-151",
+      "candidates": 19,
+      "digest": "5c343f55b71821b776fe36f505990fe1efad7f6dc717ec584b12a2e0cbd93818"
+    },
+    {
+      "label": "pressure-152",
+      "candidates": 11,
+      "digest": "f1b91ce496535fe109fb61492c66d7401e47d5a2bf2641a334ecf87291878a49"
+    },
+    {
+      "label": "pressure-153",
+      "candidates": 16,
+      "digest": "a3dc5091b3aaaa64a6550ad8e79be97b96c886dce4e0bbe53bc047a8b4f4a87a"
+    },
+    {
+      "label": "pressure-154",
+      "candidates": 13,
+      "digest": "a0eeb51872f15c9d03b297e65aec63d299cc43ab9e0bccc6105d98324699ba57"
+    },
+    {
+      "label": "pressure-155",
+      "candidates": 24,
+      "digest": "bc83508899bb5ac04a5923e400f0c5855294b6e96ca06e89b7a5189791414ca4"
+    },
+    {
+      "label": "pressure-156",
+      "candidates": 25,
+      "digest": "806fba0f114b1d4d2b8b024a335ce8739ca8f3016145e9fac2eb659e14500ac6"
+    },
+    {
+      "label": "pressure-157",
+      "candidates": 12,
+      "digest": "fbf186f11fd6f9c3a649e256b0c636b0dddee382c91e7b2600d6aee584ab13ee"
+    },
+    {
+      "label": "pressure-158",
+      "candidates": 15,
+      "digest": "1700757399ebb5374fc92c40bf267b59a1355e8b5c070425dd629b867bcbae95"
+    },
+    {
+      "label": "pressure-159",
+      "candidates": 34,
+      "digest": "1e7abf5fc8e18d972a181c69eaef6dedd13e081c7c0391ea0137a5b43bf5fee5"
+    },
+    {
+      "label": "pressure-160",
+      "candidates": 20,
+      "digest": "7fe73abb9bb88b4c9cf973d7fa5f4f635495192798f6ddc2d2bebd4d81d2c629"
+    },
+    {
+      "label": "pressure-161",
+      "candidates": 14,
+      "digest": "13c7fcfe7725b6f4f82b8bba82f63f3bdd58e200a07de55cbf99841fc904a019"
+    },
+    {
+      "label": "pressure-162",
+      "candidates": 14,
+      "digest": "cb2f16189d8004e1eec6bf049b7d29b94d054a71dc04e78c4a6fa6e9936b3ff9"
+    },
+    {
+      "label": "pressure-163",
+      "candidates": 22,
+      "digest": "07bd3eb4b2ede84a5e22c90757f6b256ff3f77e7f8810bdeb1c7aac5475d2fc7"
+    },
+    {
+      "label": "pressure-164",
+      "candidates": 11,
+      "digest": "e2c88afcec0f6dafe383f4f4c94f6117e476c7890e73f31debf8675140b2cfd7"
+    },
+    {
+      "label": "pressure-165",
+      "candidates": 19,
+      "digest": "1eb97adb7d241b64bbd4221496dbaa22865c18ded07ef6bb7a46021451c99036"
+    },
+    {
+      "label": "pressure-166",
+      "candidates": 23,
+      "digest": "ed13bde99a09def2fc47cfbf3c66b83549b4e15a4545a6615f0c23359608b3b2"
+    },
+    {
+      "label": "pressure-167",
+      "candidates": 31,
+      "digest": "30f66d1e115638df3379bc0c421550815070d2e1c11caad5361888748919cf62"
+    },
+    {
+      "label": "pressure-168",
+      "candidates": 14,
+      "digest": "c0b98bea9367fdb17630c90da68024b9bce08ba428568b0260925bbc7707ac4c"
+    },
+    {
+      "label": "pressure-169",
+      "candidates": 22,
+      "digest": "cfe659b2588fb3185e27f05e88f8c3e1d6fee3b773f28dd0c4db22a6ba16aef1"
+    },
+    {
+      "label": "pressure-170",
+      "candidates": 11,
+      "digest": "17b615642f4388a901ae3f37f187ee24bcde0fea0197e302023a5fcdb28e4ddb"
+    },
+    {
+      "label": "pressure-171",
+      "candidates": 67,
+      "digest": "d3608af1b4b384eec0a4cf905e5b2da35eefbbdff68307275f29dcec21332bf1"
+    },
+    {
+      "label": "pressure-172",
+      "candidates": 13,
+      "digest": "1a807b394b45c8ed578214c470a0c65275aeaaa49b3bd3b4b55db5bb263dc29e"
+    },
+    {
+      "label": "pressure-173",
+      "candidates": 21,
+      "digest": "b5b09cadcdaea3a7b65ceaa3e055a01266f6198c2559ffe6a94b069ddace52de"
+    },
+    {
+      "label": "pressure-174",
+      "candidates": 21,
+      "digest": "31fe3098a23689e5890ab9a4f9bb3e7731b10036701b0755dfc8784d79688a90"
+    },
+    {
+      "label": "pressure-175",
+      "candidates": 20,
+      "digest": "e655bde29b1fbb0e5136580f2004669c0a228303ab274842b03ae9305f5ed3c5"
+    },
+    {
+      "label": "pressure-176",
+      "candidates": 9,
+      "digest": "b6e8462541beb7493a1281d5c24108dbbf40d44764a593ca9ad726745a2c9081"
+    },
+    {
+      "label": "pressure-177",
+      "candidates": 58,
+      "digest": "b3fe81d93b75e3dc80575ac44ad9b1cae56607c39090bc2f11a7ea31fdcc965f"
+    },
+    {
+      "label": "pressure-178",
+      "candidates": 96,
+      "digest": "6565272a99c07e8e037bbd06d829b48d96da45e5de2dad0a832d163337eedde2"
+    },
+    {
+      "label": "pressure-179",
+      "candidates": 8,
+      "digest": "3a07757cc4d7f78003d128bed324710b3b0c3c89e996a9e9f013cb842cfa9c86"
+    },
+    {
+      "label": "old-case-0",
+      "candidates": 11,
+      "digest": "dd40782f6020c9a8555399831670c1faa646e7f9710aa4242f71fd1fe1a20051"
+    },
+    {
+      "label": "old-case-1",
+      "candidates": 17,
+      "digest": "a39678faccf0cde2ac68a6670aa3df6ee29a8a4db827f8390bc6538ea56abe1b"
+    },
+    {
+      "label": "old-case-2",
+      "candidates": 14,
+      "digest": "3d87d09c814d0ff670b181c0cc87e2f17b49d4acd0be12f79cd4aaaad9b791b3"
+    },
+    {
+      "label": "old-case-3",
+      "candidates": 19,
+      "digest": "7593c546cc0a12b3f43a06522cec69041974bb615ff86593b89c8d59ef2ea7eb"
+    },
+    {
+      "label": "old-case-4",
+      "candidates": 13,
+      "digest": "d0d7db38e3e0c32c97f8e20b0cf869e771a37502c00247782280f6dcf7386095"
+    },
+    {
+      "label": "contract-1-1-false",
+      "candidates": 40,
+      "digest": "f4767de01c881a27b0424a0778119f799121e02b3cfe99cf920842467dd11972"
+    },
+    {
+      "label": "contract-1-1-true",
+      "candidates": 39,
+      "digest": "d1c11ec8f023cf3b5d602a8bf5db29abb0a7e9c904ad84bae01f6868da9f4c40"
+    },
+    {
+      "label": "contract-1-2-false",
+      "candidates": 40,
+      "digest": "27d77a0d14d96525f95447468ac9585f1ab54694f2e1a9054d46e5835e433bd1"
+    },
+    {
+      "label": "contract-1-2-true",
+      "candidates": 39,
+      "digest": "845550a6eb64fdc0d05864446e7283f90f6e3ffc53b96ae9ca39f819601004b4"
+    },
+    {
+      "label": "contract-1-4-false",
+      "candidates": 40,
+      "digest": "39ef641af9b3901d60e062c577a98b6db8fa3f61d3583de8b5a27d8d97da21a2"
+    },
+    {
+      "label": "contract-1-4-true",
+      "candidates": 39,
+      "digest": "845550a6eb64fdc0d05864446e7283f90f6e3ffc53b96ae9ca39f819601004b4"
+    },
+    {
+      "label": "contract-2-1-false",
+      "candidates": 40,
+      "digest": "0b48119ba59993a9760c01b2f3b13e01b56c7b4a60138b8b1466ba479675a1b7"
+    },
+    {
+      "label": "contract-2-1-true",
+      "candidates": 39,
+      "digest": "4277b221366b1e337b7b435ea8905a1d457faa0e36c7e7023c5a28b050be09f5"
+    },
+    {
+      "label": "contract-2-2-false",
+      "candidates": 40,
+      "digest": "be8990fcf913a857424584cb5179cdbd0c233edd0798f6a41818b255f25d0633"
+    },
+    {
+      "label": "contract-2-2-true",
+      "candidates": 39,
+      "digest": "a4afb751828551e03269cd6c65c73e8a3a868b29066718c8fd92ffe3c46481d8"
+    },
+    {
+      "label": "contract-2-4-false",
+      "candidates": 40,
+      "digest": "834dd1fd3c87f05a1107ab22fdfbdcd17254c719de6b53c5cea3d0582af53da2"
+    },
+    {
+      "label": "contract-2-4-true",
+      "candidates": 39,
+      "digest": "a4afb751828551e03269cd6c65c73e8a3a868b29066718c8fd92ffe3c46481d8"
+    },
+    {
+      "label": "contract-3-1-false",
+      "candidates": 40,
+      "digest": "0b48119ba59993a9760c01b2f3b13e01b56c7b4a60138b8b1466ba479675a1b7"
+    },
+    {
+      "label": "contract-3-1-true",
+      "candidates": 39,
+      "digest": "4277b221366b1e337b7b435ea8905a1d457faa0e36c7e7023c5a28b050be09f5"
+    },
+    {
+      "label": "contract-3-2-false",
+      "candidates": 40,
+      "digest": "f1bd722fa7c33ec6dcd7665b84e32441b54f3b686cd6f647b2e86fa55cd0fade"
+    },
+    {
+      "label": "contract-3-2-true",
+      "candidates": 39,
+      "digest": "a4afb751828551e03269cd6c65c73e8a3a868b29066718c8fd92ffe3c46481d8"
+    },
+    {
+      "label": "contract-3-4-false",
+      "candidates": 40,
+      "digest": "1566dc40ac8c5b00a4b691ff658037f6d78e73268403f034d3dd07ba8b071555"
+    },
+    {
+      "label": "contract-3-4-true",
+      "candidates": 39,
+      "digest": "a4afb751828551e03269cd6c65c73e8a3a868b29066718c8fd92ffe3c46481d8"
+    },
+    {
+      "label": "hero-guardianAngel-1501001",
+      "candidates": 16,
+      "digest": "16314ec5cad9521c01c9bbcc68318d7d9885a7811f59947749356a7d236050bc"
+    },
+    {
+      "label": "hero-guardianAngel-1501002",
+      "candidates": 17,
+      "digest": "8e72ce504185d6f5f016e2c272a8b262c12a4440df5b4ce7b343ceb353f66701"
+    },
+    {
+      "label": "hero-sealer-1501001",
+      "candidates": 19,
+      "digest": "351035f7c4cae46ef4356a8f59ec488507cb9276dde284f9bc3ad71cf3256a47"
+    },
+    {
+      "label": "hero-sealer-1501002",
+      "candidates": 11,
+      "digest": "65cc96401e083da35d2bdfed1f73512dec1034e298bfa4528997038b2666832e"
+    },
+    {
+      "label": "hero-windSwordmaster-1501001",
+      "candidates": 16,
+      "digest": "b099175489dc0a4b1c11c2e3d8086525dd7c35a384582ea9e197485c99e52510"
+    },
+    {
+      "label": "hero-windSwordmaster-1501002",
+      "candidates": 11,
+      "digest": "a21bc11daecda1fca755966128b1ad2bb48ede357806af54722a5a20526651f2"
+    },
+    {
+      "label": "hero-marksman-1501001",
+      "candidates": 22,
+      "digest": "564afd4b6829e279d4588c11e3eab825f22385127aae5abc4dcc0eb25a75f35a"
+    },
+    {
+      "label": "hero-marksman-1501002",
+      "candidates": 11,
+      "digest": "fba2cf861981e3d41c77bb55dc347f79f6e77a7f8daed254b389ed92940a4236"
+    },
+    {
+      "label": "hero-berserker-1501001",
+      "candidates": 16,
+      "digest": "a44f690e3cf9f5920197954c3d9941e4267e58a7ed367bdefb457ff7669def6a"
+    },
+    {
+      "label": "hero-berserker-1501002",
+      "candidates": 11,
+      "digest": "a49ae653f980059a590b366c3ffbfc587e8d717241a34935d4d29ac629c3c286"
+    },
+    {
+      "label": "hero-priest-1501001",
+      "candidates": 16,
+      "digest": "16a12f8a5621b0b67bca8f354e9e02943d85d8443ffff53f303c760b78356b5a"
+    },
+    {
+      "label": "hero-priest-1501002",
+      "candidates": 14,
+      "digest": "5294485a1647e7d84f034e06875c1ff0da82494d9d3f93bb3f1a6a78b04dcf8e"
+    }
+  ]
+}

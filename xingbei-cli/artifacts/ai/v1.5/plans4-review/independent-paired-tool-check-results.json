@@ -1,0 +1,15 @@
+{
+  "valid": "ACCEPTED",
+  "wrong_hero": "REJECTED",
+  "wrong_opponent": "REJECTED",
+  "wrong_pair_id": "REJECTED",
+  "negative_delta": "REJECTED",
+  "duplicate_primary_cell": "REJECTED",
+  "wrong_secondary_seed_range": "REJECTED",
+  "missing_row": "REJECTED",
+  "duplicate_row": "REJECTED",
+  "wrong_arm": "REJECTED",
+  "wrong_teammate": "REJECTED",
+  "truncated": "REJECTED",
+  "null_loss": "REJECTED"
+}

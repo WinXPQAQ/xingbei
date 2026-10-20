@@ -2,7 +2,7 @@
 // whitelist of legal observations, never a proxy, live entity, or engine callback.
 const pick = (value, keys) => Object.fromEntries(keys.filter(k => value?.[k] !== undefined).map(k => [k, value[k]]));
 const copy = value => value == null ? value : JSON.parse(JSON.stringify(value));
-export function captureObservation(game, observerId, { actions = false, history = true } = {}) {
+export function captureObservation(game, observerId, { actions = false, history = true, activation = false } = {}) {
   const visible = [...game.player(observerId).hand, ...game.players.flatMap(p => p.statuses), ...game.field];
   const cards = [...new Map(visible.map(c => [c.id, c])).values()].map(c => ({
     id: c.id, name: c.name, type: c.type, category: c.category, elements: [...c.elements], fates: [...c.fates],
@@ -19,9 +19,9 @@ export function captureObservation(game, observerId, { actions = false, history 
       skillIds: p.getSkills().map(({skill}) => typeof skill === 'string' ? skill : skill.id),
       handIds: p.id === observerId ? p.hand.map(c => c.id) : null, handCount: p.hand.length,
       statusIds: p.statuses.map(c => c.id), healingLimit: game.getHealingLimit(p.id) })),
-    teams: Object.fromEntries(Object.entries(game.teams).map(([id,t]) => [id,pick(t,['morale','cups','gem','crystal','achievements'])])), turn: game.turn.state ? pick(game.turn.state,['playerId','completed','attackCount','pendingActions','usedSkills']) : null, hasExtraActions: game.turn.hasExtraActions?.() ?? false,
+    teams: Object.fromEntries(Object.entries(game.teams).map(([id,t]) => [id,pick(t,['morale','cups','gem','crystal','achievements'])])), turn: game.turn.state ? pick(game.turn.state,['playerId','completed','attackCount','pendingActions','usedSkills',...(activation&&game.turn.state.playerId===observerId?['activationDone','reservedEnergy','reservedHealing']:[])]) : null, hasExtraActions: game.turn.hasExtraActions?.() ?? false,
     effects: [...game.effects].map(([id, effect]) => [id, { isSeal: !!effect.isSeal }]),
-    publicHistory: history && game.publicHistory ? { sequence: game.publicHistory.sequence, events: game.publicHistory.events.map(e => pick(e,['type','playerId','elements','sequence','acceptCost'])) } : null,
+    publicHistory: history && game.publicHistory ? { sequence: game.publicHistory.sequence, ...(game.publicHistory.actions ? {actions: game.publicHistory.actions.map(e=>pick(e,['type','team','playerId','actorId','sourceId','targetId','card','elements','fates','uniqueSkills','counter','result','amount','skillId','accepted','count','sequence','effectId','gem','crystal']))} : {}), events: game.publicHistory.events.map(e => pick(e,['type','playerId','elements','sequence','acceptCost'])) } : null,
     skills, legal: actions ? game.legalCards(observerId).map(e => ({ index: e.index, cardId: e.card.id, targets: e.targets })) : [],
     refresh: actions && game.canRefreshUnableHand(observerId), draw: actions && game.canDrawSpecial(observerId), refine: actions && game.canRefine(observerId),
     stones: Object.fromEntries(Object.keys(game.teams).map(team => [team, game.stoneCounts(team)])),
@@ -50,8 +50,8 @@ export function observationView(data) {
     canPayEnergy: (id, kind, count = 1) => (kind === 'gem' ? players[id].energy.gem : players[id].energy.gem + players[id].energy.crystal) >= count,
   };
 }
-export function isolatePolicy(raw, {history = true} = {}) {
-  const view = (game, id, actions = false) => observationView(captureObservation(game, id, {actions, history}));
+export function isolatePolicy(raw, {history = true, activation = false} = {}) {
+  const view = (game, id, actions = false) => observationView(captureObservation(game, id, {actions, history, activation}));
   const requestView = (request, v) => {
     const out = {};
     for (const key of ['type','playerId','skillId','purpose','recipientId','targetId','count','optional','defaultValue','shieldable','isCounter','damage','reservedEnergy','reservedHealing','energy','choices']) if (request[key] !== undefined) out[key] = copy(request[key]);

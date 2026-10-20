@@ -1,0 +1,151 @@
+{
+  groups: {
+    'berserker:hand3': {
+      medianRatio: 0.98293417385437,
+      p95Ratio: 0.9870707163085088,
+      median: 0.8594570000004751,
+      p95: 1.2952490000006947,
+      max: 1.473892999999407,
+      passed: true
+    },
+    'berserker:hand6': {
+      medianRatio: 1.031652296033661,
+      p95Ratio: 1.0324845377583494,
+      median: 1.6308050000006915,
+      p95: 2.444783999999345,
+      max: 2.8790140000000974,
+      passed: true
+    },
+    'windSwordmaster:hand3': {
+      medianRatio: 1.1354237943330068,
+      p95Ratio: 0.9196042970655044,
+      median: 23.021896000000197,
+      p95: 31.947983000000022,
+      max: 34.87141800000063,
+      passed: true
+    },
+    'windSwordmaster:hand6': {
+      medianRatio: 0.8440233990617604,
+      p95Ratio: 0.7497013067745065,
+      median: 46.884422000000086,
+      p95: 62.15671800000018,
+      max: 66.14469199999985,
+      passed: true
+    },
+    'marksman:hand3': {
+      medianRatio: 1.0476966851390428,
+      p95Ratio: 0.8390538241188559,
+      median: 1.336620000000039,
+      p95: 1.9103460000005725,
+      max: 3.05542400000013,
+      passed: true
+    },
+    'marksman:hand6': {
+      medianRatio: 1.04803330651458,
+      p95Ratio: 1.0286578921050618,
+      median: 3.005159000000276,
+      p95: 4.104129999999714,
+      max: 4.216074999999364,
+      passed: true
+    },
+    'sealer:hand3': {
+      medianRatio: 1.3147608056807896,
+      p95Ratio: 1.2674353031372698,
+      median: 3.6735850000004575,
+      p95: 6.41437600000063,
+      max: 6.609151999999995,
+      passed: true
+    },
+    'sealer:hand6': {
+      medianRatio: 1.2149994112656477,
+      p95Ratio: 1.2232471565146292,
+      median: 10.752129999998942,
+      p95: 16.371742999999697,
+      max: 19.12918300000092,
+      passed: true
+    },
+    'guardianAngel:hand3': {
+      medianRatio: 0.9988689276062269,
+      p95Ratio: 0.9876942301687391,
+      median: 1.1047789999993256,
+      p95: 1.945968999998513,
+      max: 3.049124999999549,
+      passed: true
+    },
+    'guardianAngel:hand6': {
+      medianRatio: 0.9939993830902423,
+      p95Ratio: 0.9143586762937065,
+      median: 2.300872000000709,
+      p95: 3.8730990000003658,
+      max: 4.152089999999589,
+      passed: true
+    },
+    'priest:hand3': {
+      medianRatio: 1.030689152497449,
+      p95Ratio: 1.0666733928166086,
+      median: 1.1213629999992918,
+      p95: 1.6281500000004598,
+      max: 1.6672279999997954,
+      passed: true
+    },
+    'priest:hand6': {
+      medianRatio: 0.9518843036022242,
+      p95Ratio: 1.0486150263876801,
+      median: 2.134195999999065,
+      p95: 3.319932999998855,
+      max: 3.6333459999996194,
+      passed: true
+    },
+    'marksman:history100': {
+      medianRatio: 1.4338207747942724,
+      p95Ratio: 1.4303295726896654,
+      median: 2.9240710000003673,
+      p95: 4.713447999998607,
+      max: 6.360505999999987,
+      passed: true
+    },
+    'sealer:history100': {
+      medianRatio: 1.9352182637992008,
+      p95Ratio: 1.8902737363117577,
+      median: 6.24905199999921,
+      p95: 14.625339000000167,
+      max: 17.921448000000055,
+      passed: true
+    },
+    'guardianAngel:history100': {
+      medianRatio: 1.5312777756245115,
+      p95Ratio: 1.5417287387932361,
+      median: 3.120028999999704,
+      p95: 4.974784,
+      max: 5.338870000000497,
+      passed: true
+    },
+    'priest:history100': {
+      medianRatio: 1.2175579109657069,
+      p95Ratio: 1.273067548746789,
+      median: 2.2775480000000243,
+      p95: 5.484375,
+      max: 6.64868000000024,
+      passed: true
+    },
+    'berserker:history100': {
+      medianRatio: 1.2489661788420021,
+      p95Ratio: 1.6034815163333407,
+      median: 1.5297649999993155,
+      p95: 3.4898300000004383,
+      max: 4.987322000000859,
+      passed: true
+    },
+    'windSwordmaster:history100': {
+      medianRatio: 1.5120567679049208,
+      p95Ratio: 1.8786032704615503,
+      median: 10.470414000000346,
+      p95: 81.35467299999982,
+      max: 87.0699169999998,
+      passed: true
+    }
+  },
+  p95: 31.35389699999905,
+  max: 87.0699169999998,
+  passed: true
+}

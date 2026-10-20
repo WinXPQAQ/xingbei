@@ -1,0 +1,21 @@
+✔ v15 five old cases retain legal complete rankings and finite decomposed scores; no prescribed ordering (127.662589ms)
+✔ v15 shield + free attack is a complete engine plan; shield consumed means prevention, no fixed consumption bonus (13.67042ms)
+✔ v15 energy has typed realizable uses and batching, not rewards for unusable crystals (3.667643ms)
+✔ v15 waterPower chooses applicable magic gift to sealer and resolves actual gift before overflow (6.538764ms)
+✔ v15 uncertainty terminal bounded across attack and magic; confirmed fifth cup retains priority (66.912954ms)
+✔ v15 fifth-cup windows respond to 4/4/5, 4/4/3, order, healing and direct win (3.480517ms)
+✔ v15 hidden information invariance covers all six observers including semantic history (230.259054ms)
+✔ v15 declined private skill offers and covered costs do not publish hidden traits (1.325974ms)
+✔ v15 refinement compares shared gem opportunity, two useful charges, capacity and unusable charge (30.1513ms)
+✔ v15 real magic relay records sources, cancellation and public settlement without hidden gifts (3.042132ms)
+✔ v15 exact shared assignment cannot prefer spending a gem to an equivalent crystal for a flexible user (1.217534ms)
+✔ v15 future unknown own draws have bounded comeback opportunity, not assumed useless cards (2.21999ms)
+✔ v15 exact resource assignment matches independent table DP across every legal shared pool (2.952109ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 729.608153

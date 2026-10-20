@@ -1,0 +1,17 @@
+{
+  "source": "0a3c5c1e2f3bce27483a2a97098e6105e78ee322",
+  "reason": "Greedy gem-only-first shared allocation can overvalue handing crystal to a flexible user while preserving a lower-valued gem-only use, reversing opportunity cost; replace with exact bounded assignment. Rejected on algorithmic counterexample, not interim win rates. Confirmation incomplete and cannot be promoted. All seeds in original manifest treated as used.",
+  "terminatedPids": [
+    2744,
+    2745,
+    2746,
+    2747
+  ],
+  "completedCounts": {
+    "games-2.jsonl": 391,
+    "games-3.jsonl": 389,
+    "games-0.jsonl": 394,
+    "games-1.jsonl": 386
+  },
+  "timestamp": 1792493404.602081
+}

@@ -1,0 +1,41 @@
+{
+  "realEngineCases": [
+    {
+      "change": "protect",
+      "chosen": 2,
+      "afterDamageHand": 3,
+      "finalHand": 6,
+      "winner": "blue"
+    },
+    {
+      "change": "threeCups",
+      "chosen": 0,
+      "afterDamageHand": 5,
+      "finalHand": 5,
+      "winner": null
+    },
+    {
+      "change": "twoStones",
+      "chosen": 0,
+      "afterDamageHand": 5,
+      "finalHand": 5,
+      "winner": null
+    },
+    {
+      "change": "oneHealing",
+      "chosen": 0,
+      "afterDamageHand": 5,
+      "finalHand": 5,
+      "winner": null
+    },
+    {
+      "change": "realPriest",
+      "chosen": 0,
+      "afterDamageHand": 5,
+      "finalHand": 5,
+      "winner": null
+    }
+  ],
+  "version": "v1.5",
+  "scope": "Five real default automatic healing and fifth-cup fixtures; not full-game strength evidence"
+}

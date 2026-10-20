@@ -1,7 +1,12 @@
 // Observation only: never stores hidden card identities, hidden traits, or deck order.
 // Kept separately from presentation snapshots (which contain private hands).
 export class PublicHistory {
-  constructor(limit = 256) { this.limit = limit; this.sequence = 0; this.events = []; }
+  constructor(limit = 256) { this.limit = limit; this.sequence = 0; this.events = []; this.actions = []; this.actionSequence = 0; }
+  // A separate bounded stream preserves frozen policies' legacy event window.
+  action(event) {
+    this.actions.push(Object.freeze({ ...event, ...Object.fromEntries(['elements','fates','uniqueSkills'].filter(k=>event[k]).map(k=>[k,Object.freeze([...event[k]])])), sequence: ++this.actionSequence }));
+    if(this.actions.length > this.limit) this.actions.shift();
+  }
   append(event) {
     this.events.push(Object.freeze({ ...event, sequence: ++this.sequence }));
     if (this.events.length > this.limit) this.events.shift();
