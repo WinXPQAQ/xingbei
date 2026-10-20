@@ -1,6 +1,6 @@
 // Shared production policy for CLI, browser and automatic engine decisions.
 import { getPolicy } from "./ai/versions.js";
-export const AI_POLICY_VERSION = "v1.4";
+export const AI_POLICY_VERSION = "v1.5";
 const policy = getPolicy(AI_POLICY_VERSION);
 export const rankAiActions = (game, actorId) => policy.rankAiActions(game, actorId);
 export const chooseAiAction = (game, actorId) => policy.chooseAiAction(game, actorId);

@@ -1,0 +1,6 @@
+{
+  "exitCode": 0,
+  "ordinaryEndKeepsActionPrompt": true,
+  "quitDoesNotEndTurn": true,
+  "scope": "PTY actual CLI initial human turn; no complete game or visual acceptance"
+}

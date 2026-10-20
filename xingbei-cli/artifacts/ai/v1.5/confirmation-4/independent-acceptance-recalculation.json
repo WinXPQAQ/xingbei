@@ -1,0 +1,207 @@
+{
+  "sha": "a0e9baaf622432935de4c01dbf996f738ff7801b",
+  "manifestGames": 25920,
+  "frozenFilesVerified": 155,
+  "exactFactorial": true,
+  "games": 25920,
+  "overall": {
+    "games": 5760,
+    "wins": 3914,
+    "losses": 1846,
+    "truncated": 0,
+    "score": 0.6795138888888889,
+    "mean": 0.679513888888889,
+    "oneSided993Lower": 0.6631944444444445,
+    "passed": true
+  },
+  "lineups": {
+    "mirrorAssault": {
+      "games": 1440,
+      "wins": 773,
+      "losses": 667,
+      "truncated": 0,
+      "score": 0.5368055555555555,
+      "mean": 0.5368055555555556,
+      "oneSided993Lower": 0.5055555555555555,
+      "passed": true
+    },
+    "mirrorMixed": {
+      "games": 1440,
+      "wins": 1188,
+      "losses": 252,
+      "truncated": 0,
+      "score": 0.825,
+      "mean": 0.825,
+      "oneSided993Lower": 0.8006944444444443,
+      "passed": true
+    },
+    "asymmetric": {
+      "games": 1440,
+      "wins": 1033,
+      "losses": 407,
+      "truncated": 0,
+      "score": 0.7173611111111111,
+      "mean": 0.7173611111111111,
+      "oneSided993Lower": 0.686111111111111,
+      "passed": true
+    },
+    "asymmetricReverse": {
+      "games": 1440,
+      "wins": 920,
+      "losses": 520,
+      "truncated": 0,
+      "score": 0.6388888888888888,
+      "mean": 0.638888888888889,
+      "oneSided993Lower": 0.60625,
+      "passed": true
+    }
+  },
+  "mixed": {
+    "flow": {
+      "candidate": {
+        "games": 4320,
+        "wins": 1374,
+        "losses": 2946,
+        "truncated": 0,
+        "score": 0.31805555555555554
+      },
+      "control": {
+        "games": 4320,
+        "wins": 1111,
+        "losses": 3209,
+        "truncated": 0,
+        "score": 0.2571759259259259
+      },
+      "mean": 0.06087962962962963,
+      "oneSided993Lower": 0.036111111111111115,
+      "passed": true
+    },
+    "reserve": {
+      "candidate": {
+        "games": 4320,
+        "wins": 561,
+        "losses": 3759,
+        "truncated": 0,
+        "score": 0.12986111111111112
+      },
+      "control": {
+        "games": 4320,
+        "wins": 502,
+        "losses": 3818,
+        "truncated": 0,
+        "score": 0.1162037037037037
+      },
+      "mean": 0.013657407407407406,
+      "oneSided993Lower": -0.002777777777777778,
+      "passed": true
+    }
+  },
+  "secondary": {
+    "v1.3": {
+      "games": 960,
+      "wins": 665,
+      "losses": 295,
+      "truncated": 0,
+      "score": 0.6927083333333334,
+      "passed": true
+    },
+    "v1.2": {
+      "games": 960,
+      "wins": 715,
+      "losses": 245,
+      "truncated": 0,
+      "score": 0.7447916666666666,
+      "passed": true
+    },
+    "v1.0": {
+      "games": 960,
+      "wins": 824,
+      "losses": 136,
+      "truncated": 0,
+      "score": 0.8583333333333333,
+      "passed": true
+    }
+  },
+  "matchPassed": true,
+  "performance": {
+    "p95": 27.497182000000066,
+    "max": 86.81647599999997,
+    "groups": {
+      "berserker:hand3": {
+        "medianRatio": 0.9151956531338131,
+        "p95Ratio": 0.4421536217495105
+      },
+      "berserker:hand6": {
+        "medianRatio": 0.8974421787409818,
+        "p95Ratio": 1.1532068584483723
+      },
+      "windSwordmaster:hand3": {
+        "medianRatio": 0.9526880108558884,
+        "p95Ratio": 0.7466321579120306
+      },
+      "windSwordmaster:hand6": {
+        "medianRatio": 0.6359149935140792,
+        "p95Ratio": 0.7112062205109754
+      },
+      "marksman:hand3": {
+        "medianRatio": 1.0223796144706256,
+        "p95Ratio": 0.8358765964176855
+      },
+      "marksman:hand6": {
+        "medianRatio": 1.0287937560143061,
+        "p95Ratio": 1.0923249334138954
+      },
+      "sealer:hand3": {
+        "medianRatio": 1.0794051195859458,
+        "p95Ratio": 1.0358290750934829
+      },
+      "sealer:hand6": {
+        "medianRatio": 1.027956427387443,
+        "p95Ratio": 1.061587689180397
+      },
+      "guardianAngel:hand3": {
+        "medianRatio": 1.0154544159841685,
+        "p95Ratio": 0.7981455610553612
+      },
+      "guardianAngel:hand6": {
+        "medianRatio": 1.003184316177871,
+        "p95Ratio": 0.852484585415724
+      },
+      "priest:hand3": {
+        "medianRatio": 0.9073113568313266,
+        "p95Ratio": 0.9245773975188443
+      },
+      "priest:hand6": {
+        "medianRatio": 0.8673201360825961,
+        "p95Ratio": 0.8162917810497773
+      },
+      "marksman:history100": {
+        "medianRatio": 1.2845918013192443,
+        "p95Ratio": 1.2541676575575593
+      },
+      "sealer:history100": {
+        "medianRatio": 1.7604460244236266,
+        "p95Ratio": 1.7778635035027903
+      },
+      "guardianAngel:history100": {
+        "medianRatio": 1.352543008550251,
+        "p95Ratio": 1.2612793735677355
+      },
+      "priest:history100": {
+        "medianRatio": 1.3134212317726899,
+        "p95Ratio": 1.2342348904554605
+      },
+      "berserker:history100": {
+        "medianRatio": 1.0113327329192958,
+        "p95Ratio": 1.0825991019068082
+      },
+      "windSwordmaster:history100": {
+        "medianRatio": 1.5702231027692388,
+        "p95Ratio": 1.7669460691879788
+      }
+    },
+    "passed": true
+  },
+  "passed": true,
+  "scope": "Independent match and performance gates only; code/rules/privacy review and test gates require their separate evidence."
+}

@@ -1,0 +1,22 @@
+{
+  "checked": "2026-10-20T13:21:48.785412+00:00",
+  "connected": true,
+  "sha": "a0e9baaf622432935de4c01dbf996f738ff7801b",
+  "allFrozenHashesMatch": true,
+  "uniqueCompleteRows": 14756,
+  "shards": {
+    "games-0.jsonl": 3635,
+    "games-1.jsonl": 3770,
+    "games-2.jsonl": 3650,
+    "games-3.jsonl": 3701
+  },
+  "runnerPID": 11408,
+  "workerPIDs": [
+    11417,
+    11418,
+    11419,
+    11420
+  ],
+  "restarted": false,
+  "outcomesInspected": false
+}

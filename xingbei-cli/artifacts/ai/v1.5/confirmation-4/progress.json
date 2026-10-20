@@ -1,0 +1,33 @@
+{
+  "sha": "a0e9baaf622432935de4c01dbf996f738ff7801b",
+  "checked": "2026-10-20T13:54:07.244334+00:00",
+  "status": "complete-independent-acceptance-passed",
+  "expectedGames": 25920,
+  "endpointCounts": {
+    "v1.4": 5760,
+    "v1.3": 960,
+    "v1.2": 960,
+    "v1.0": 960,
+    "flow": 8640,
+    "reserve": 8640
+  },
+  "session": 56989,
+  "default": "v1.5",
+  "published": false,
+  "outcomesInspected": true,
+  "completedRows": 25920,
+  "shards": {
+    "games-0.jsonl": 6480,
+    "games-1.jsonl": 6480,
+    "games-2.jsonl": 6480,
+    "games-3.jsonl": 6480
+  },
+  "runnerPID": 11408,
+  "workerPIDs": [
+    11417,
+    11418,
+    11419,
+    11420
+  ],
+  "independentAcceptancePassed": true
+}

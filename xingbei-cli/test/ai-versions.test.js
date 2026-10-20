@@ -149,9 +149,10 @@ test('observation hooks never alter baseline rules, RNG or results',async()=>{
 });
 
 
-test('production v1.4 aliases accepted targeted-fixes-1 while historical stable aliases remain frozen',()=>{
-  assert.equal(production.AI_POLICY_VERSION,'v1.4');
+test('production v1.5 aliases accepted plans-4 while historical stable aliases remain frozen',()=>{
+  assert.equal(production.AI_POLICY_VERSION,'v1.5');
   for(const method of ['rankAiActions','chooseAiAction','chooseAiResponse','chooseAiRuleDecision','chooseAiDiscard','cardScore','keepCards','giftScore','planWindAttacks']) {
+    assert.equal(getPolicy('v1.5')[method],getPolicy('experimental/plans-4')[method]);
     assert.equal(getPolicy('v1.4')[method],getPolicy('experimental/targeted-fixes-1')[method]);
     assert.equal(getPolicy('v1.3')[method],getPolicy('experimental/economy-4')[method]);
     assert.equal(getPolicy('v1.2')[method],getPolicy('fusion-1')[method]);
@@ -159,7 +160,7 @@ test('production v1.4 aliases accepted targeted-fixes-1 while historical stable 
   }
   for(const hero of new Set(Object.values(lineups).flat())) {
     const g=new Game({seed:117,playerHeroId:hero}).setup();
-    assert.deepEqual(production.rankAiActions(g,0),getPolicy('experimental/targeted-fixes-1').rankAiActions(g,0));
+    assert.deepEqual(production.rankAiActions(g,0),getPolicy('experimental/plans-4').rankAiActions(g,0));
   }
 });
 test('stable v1.2 and frozen fusion-1 produce identical full games across six lineups',async()=>{

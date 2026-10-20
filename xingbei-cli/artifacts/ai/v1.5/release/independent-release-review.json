@@ -1,0 +1,985 @@
+{
+  "base": "a0e9baaf622432935de4c01dbf996f738ff7801b",
+  "hashes": {
+    "index.js": "a3bc7a1b58c8122c1259cdacf0840f9c80388ac333222435fe45ac42ac0ddd11",
+    "model.js": "4616e83363896bc43912ef740c2dc2a0267350166797b58a8dfba212b1dba22b",
+    "planner.js": "e1bf6ce288c82a59a16d7815f73ca71cd6b3d878f6b02c133976d751a1c2f6a0",
+    "horizon.js": "5dab8e49a81551e098164132e9992c890eb06dd2f853a5a3016ed1db121c3350",
+    "trace.js": "9d09a5b26a29d47f0c75337c26d7c2bdb1b49be8857410bc7e1233aba3c6476b"
+  },
+  "oldFilesChecked": 84,
+  "defaultVersion": "v1.5",
+  "snapshots": 180,
+  "candidates": 3616,
+  "fullRanksAndChoicesEqual": true,
+  "evidence": [
+    {
+      "i": 0,
+      "candidates": 13,
+      "digest": "b9e9d556cba47d33c3e97b10c64ed06f8025fbc4819ecdfadc933e546e5d5fcf"
+    },
+    {
+      "i": 1,
+      "candidates": 21,
+      "digest": "bdc8add0907fbb0062d902a409c7b04f67d28a7594abfdfb27f710b12e5f5b5f"
+    },
+    {
+      "i": 2,
+      "candidates": 10,
+      "digest": "9267f7ad03d40d9feef03fea18914dd2888c393a49521067638713abe65f4b61"
+    },
+    {
+      "i": 3,
+      "candidates": 21,
+      "digest": "e983becd8da1f2c561b0decf2d10d5a68adb56972eeedd2e9c328f23aba34868"
+    },
+    {
+      "i": 4,
+      "candidates": 10,
+      "digest": "f9c5e090c18dcbd686ce2405a641a43a5975606d97a828c69e1c1d61459b67a0"
+    },
+    {
+      "i": 5,
+      "candidates": 18,
+      "digest": "b74983c6efd6c4ae486c1e2e1a62e645310630681e74d29fe44cf2e67c139be2"
+    },
+    {
+      "i": 6,
+      "candidates": 10,
+      "digest": "13a978fbe3cf8ba962342d5b12c6730074ef5ae57984f49391616752f688059b"
+    },
+    {
+      "i": 7,
+      "candidates": 15,
+      "digest": "ce3d41980428c2c58a8c95c6356e30ae797d982f1e2c2f20f95d0cb0beb5068f"
+    },
+    {
+      "i": 8,
+      "candidates": 7,
+      "digest": "d685320b461710aa3f05d97f485f03b2ee3378edf6b6255c3906b3b12677a2f9"
+    },
+    {
+      "i": 9,
+      "candidates": 42,
+      "digest": "b2987f8d01037c6bd04e2d20a05198757541aa5f1209964a15ac5feeb9abd0ec"
+    },
+    {
+      "i": 10,
+      "candidates": 15,
+      "digest": "5033b889a10e6225e2e4f326e22c43212ace4850ac68629799823568a6500c68"
+    },
+    {
+      "i": 11,
+      "candidates": 23,
+      "digest": "cb4dc2d71aaaf2e9677ee89eb5c53ab1ed7c7b6d4996aba17b731d0ab97fb827"
+    },
+    {
+      "i": 12,
+      "candidates": 9,
+      "digest": "4bcec50b2fdb9a8cbac37d3b8982589e12b197f392e190f36d574b1360ba8430"
+    },
+    {
+      "i": 13,
+      "candidates": 11,
+      "digest": "37d570ad26ead5fbb0f230f36bfd3b1870c0c62643e98467dd1557c6382d77bf"
+    },
+    {
+      "i": 14,
+      "candidates": 36,
+      "digest": "8feb38812ea7faf99e9193f0f4ecf967514c8bb34684ba6e83dd89032902adee"
+    },
+    {
+      "i": 15,
+      "candidates": 14,
+      "digest": "93aff490a7e2a86aa1258bc963716d235c2e56be20c1f989cdc1e2f2902a5cb4"
+    },
+    {
+      "i": 16,
+      "candidates": 24,
+      "digest": "33441395a2723b7d5bd5979f06e2d65b69ae54116d219db65508cb17eb478832"
+    },
+    {
+      "i": 17,
+      "candidates": 10,
+      "digest": "e6168c01283dea9eb09e0a402d6b6a146b8681ea44755d7f83da2a5ebbb09e40"
+    },
+    {
+      "i": 18,
+      "candidates": 11,
+      "digest": "aa799173fb17ffd21c01148900f5277ad840e7509058d8daa4b9ddd326743a1a"
+    },
+    {
+      "i": 19,
+      "candidates": 16,
+      "digest": "dfc68e5138c73647ea1888d13d92d38f5862b6b49ff08565f4115c0266e0d441"
+    },
+    {
+      "i": 20,
+      "candidates": 10,
+      "digest": "72971238862318a9af48064ebc103455fdb4aa7eb6d4ddf5c55042a7968d5157"
+    },
+    {
+      "i": 21,
+      "candidates": 21,
+      "digest": "0f8a607ed48bd1cc650ed72bfa2055db726218bf0ee81bc4cac20d2ca938291e"
+    },
+    {
+      "i": 22,
+      "candidates": 13,
+      "digest": "1a881effab5e7b85825aaba5b87cc1aee0132561562de355b6e99f68e31f38fe"
+    },
+    {
+      "i": 23,
+      "candidates": 21,
+      "digest": "1134b057c949bbee5a9da598543db6d616565676fdfd35445bd09732d58bf96a"
+    },
+    {
+      "i": 24,
+      "candidates": 16,
+      "digest": "bd3cfa131fa19a9201275739dcc8184430c659e76779873e6d920b3de1bb7399"
+    },
+    {
+      "i": 25,
+      "candidates": 24,
+      "digest": "e63780d93de2eaf349b6885bd9c632596b7f56a41c3455b5ed646562e6491b99"
+    },
+    {
+      "i": 26,
+      "candidates": 28,
+      "digest": "e9a4bb31dadf40f4154a99021533116eb929669d3b5915fd2fbb1416230a8206"
+    },
+    {
+      "i": 27,
+      "candidates": 102,
+      "digest": "d8aec8f6a530befa03b3bff6a23f534aea7cef68ef9dc2ee48961a94f1373f06"
+    },
+    {
+      "i": 28,
+      "candidates": 7,
+      "digest": "fd059a3470deccf7d626b047cc63567929bd31a7c06bfceefd380f144e5e7a9c"
+    },
+    {
+      "i": 29,
+      "candidates": 19,
+      "digest": "fa398638cac69aecc4c176612fa81a7e7fa640876d4905d6cbb02a387ee129a9"
+    },
+    {
+      "i": 30,
+      "candidates": 23,
+      "digest": "e4a2837409c3ae573b2db51f3772ca625f8452e937f3e8280f3f944e28f7d188"
+    },
+    {
+      "i": 31,
+      "candidates": 29,
+      "digest": "f309c464b89e8d4c46611de4af7f8e30ef865428196298fe8cf581a8c1cd6968"
+    },
+    {
+      "i": 32,
+      "candidates": 16,
+      "digest": "aee4b8d46b4f999a2d7c353c321bfb5c1309e64c81d9e7cfe9eb6fbc9b05aa55"
+    },
+    {
+      "i": 33,
+      "candidates": 55,
+      "digest": "61b8997b09107756b528bcec2cc46c557a0e9b99bddc0039863a70ed1835e55c"
+    },
+    {
+      "i": 34,
+      "candidates": 14,
+      "digest": "e18e1606bbe24c987cb4b57fec64a9221a14697d8a07c62d146b5e9b69fd48d0"
+    },
+    {
+      "i": 35,
+      "candidates": 13,
+      "digest": "c4228492916247ca4bff9749722ce1dc2d0b05e7e0390c54a23e667cc70ab627"
+    },
+    {
+      "i": 36,
+      "candidates": 13,
+      "digest": "ca5170032353a1471bc3a0bd2d7b8ba501ce8df9cbc33d6af4211710a1bc0a7f"
+    },
+    {
+      "i": 37,
+      "candidates": 18,
+      "digest": "0b3c477c0d401d65b6029222966fd69a2a10a4ea2ec3d38101c941a28dc59dbd"
+    },
+    {
+      "i": 38,
+      "candidates": 10,
+      "digest": "4772151834fcc5ed7a3889b51112c0c14a76afe844415f135393625d97cbb826"
+    },
+    {
+      "i": 39,
+      "candidates": 15,
+      "digest": "e041177a54c9d2fa984e348b427ab90bb27905ea297808ee8d64c09e97f818b5"
+    },
+    {
+      "i": 40,
+      "candidates": 14,
+      "digest": "a9b4b85688608543fed38830e708b79b5ca4ed151a4dcb027f37641f639084b7"
+    },
+    {
+      "i": 41,
+      "candidates": 25,
+      "digest": "7e6c79ff73b587f4209a805adef82f1c44a42b223c518979965eb86c18807ffe"
+    },
+    {
+      "i": 42,
+      "candidates": 16,
+      "digest": "a59a576da5bc06f63d09cdec887d46204441470882e145e891581026dca092f6"
+    },
+    {
+      "i": 43,
+      "candidates": 24,
+      "digest": "7c87cd71abcbe4d34b99de4b051730fdf472648e2620e4d39e10bf7a0e800b49"
+    },
+    {
+      "i": 44,
+      "candidates": 10,
+      "digest": "eef0fc0dadb38d836dd16e634603d0d457eea1743324df3001521fd140a8557c"
+    },
+    {
+      "i": 45,
+      "candidates": 15,
+      "digest": "f8ea110e4ad61ac3d339db6f8a355d638b17844583a3b26ca74970392c8c0428"
+    },
+    {
+      "i": 46,
+      "candidates": 8,
+      "digest": "6ede65dd5010a7e54d5e96ae395333f7a3896f3199939cdbece4777d76d479f6"
+    },
+    {
+      "i": 47,
+      "candidates": 16,
+      "digest": "61fd9ad8f822642f46048d0f8b4156ce77656f135b9805e3d87618b79de89c6e"
+    },
+    {
+      "i": 48,
+      "candidates": 24,
+      "digest": "0b49d1a740656783dd8806482df493bc707e1547e76b708c9cd1287f99e23e34"
+    },
+    {
+      "i": 49,
+      "candidates": 16,
+      "digest": "b4819753865bf1c0c13ef17dd1ceda4f4c7de66fa32fd15095a0d8b25582f20a"
+    },
+    {
+      "i": 50,
+      "candidates": 20,
+      "digest": "f3dc2b12644777516162bfe1c7bb0cf591d14dbe6f9ea2081238828bb56c828c"
+    },
+    {
+      "i": 51,
+      "candidates": 21,
+      "digest": "e5b849f8315feb290dcaf638fe2eaa4e86d437ecf7e1e921bb676b0e88c99523"
+    },
+    {
+      "i": 52,
+      "candidates": 16,
+      "digest": "9aa46550bf0f5b423d44781021f73c8126e3ad2f52e4e63d892197e112a8abf8"
+    },
+    {
+      "i": 53,
+      "candidates": 17,
+      "digest": "b841df4c5d7f6abba1622251d2b598c8c3e62495516f90c36a42fcadeaf7ac1e"
+    },
+    {
+      "i": 54,
+      "candidates": 13,
+      "digest": "160dfb2745f62631a0638d8f69f60affc5ae38636fa9a6f6d64fa5d6840e7b1c"
+    },
+    {
+      "i": 55,
+      "candidates": 24,
+      "digest": "67f5440a8ba3883e99e953d9bfa08275cbad179f9e045bdaca05a5d002683e50"
+    },
+    {
+      "i": 56,
+      "candidates": 7,
+      "digest": "a2f220501067c1b95e0618d6501418c1a52c19e8d87ac2e16a86bad20267b612"
+    },
+    {
+      "i": 57,
+      "candidates": 15,
+      "digest": "cfef9e26e9cbf5e8a083df974d9da351574329b8e789fd2292376e821028b66b"
+    },
+    {
+      "i": 58,
+      "candidates": 13,
+      "digest": "1db370d011f3ceee7ed1742ca6341e07812eab49cb401fa908df17c8a3d9c632"
+    },
+    {
+      "i": 59,
+      "candidates": 21,
+      "digest": "7a4de253c17c3ef83773eaa9f622c7865fe2d25d2d8105a3740447eb1025f4ff"
+    },
+    {
+      "i": 60,
+      "candidates": 11,
+      "digest": "01f38904a778c7956559c74c1d607c27308bbaea77f1bb0f18847c300690f290"
+    },
+    {
+      "i": 61,
+      "candidates": 22,
+      "digest": "8af689c83944495701417d5b79dafa78822361449c5e8cf4b8e252fe8a212a88"
+    },
+    {
+      "i": 62,
+      "candidates": 34,
+      "digest": "0fac971daf4a025332e17829492e77e6e44da9da933cfc400396583961729094"
+    },
+    {
+      "i": 63,
+      "candidates": 48,
+      "digest": "42798e2c3423881b4a23738420c641c6393d6fa7cd820f1a4e30238974b6ac0e"
+    },
+    {
+      "i": 64,
+      "candidates": 12,
+      "digest": "28c1b90e2ea966abbd9ab0680f66793745c08007ed786f863d4135abfc4a869a"
+    },
+    {
+      "i": 65,
+      "candidates": 20,
+      "digest": "ffc8fc21000798f83ae2067759933c8bf753ed43b8fcf98776903496363ad6c8"
+    },
+    {
+      "i": 66,
+      "candidates": 43,
+      "digest": "d1d0d8ee5e11394aecfa2c200b89852665528c39d9c1bab956600be02190a275"
+    },
+    {
+      "i": 67,
+      "candidates": 12,
+      "digest": "5035d3239db9f17415a232d440d031844b9148328f74e502560f3d7f3cdd3677"
+    },
+    {
+      "i": 68,
+      "candidates": 23,
+      "digest": "df6dae6d7e6e2d7bde7845781b519845126fdca4ea67304fef1f2bbd7c0c2b00"
+    },
+    {
+      "i": 69,
+      "candidates": 21,
+      "digest": "4fae093a85ab1300f2574972792b26b913be1d6cdc67b30bd5a8fae6ef2bb70a"
+    },
+    {
+      "i": 70,
+      "candidates": 18,
+      "digest": "f9b3403d1a5fb213bcbd866faf886002f36fc05f333c1852ba68bc77ad43c2ef"
+    },
+    {
+      "i": 71,
+      "candidates": 24,
+      "digest": "9242cd266d5aa8c45a369268b37f103752f65b7fba15cb321a5bc9c7e8291d1f"
+    },
+    {
+      "i": 72,
+      "candidates": 13,
+      "digest": "23347a7b84170d8f7d640ca48ccbe62d2c6145b7e711f2226ee23fb3b8d8a011"
+    },
+    {
+      "i": 73,
+      "candidates": 24,
+      "digest": "42042da0e7db4570cb8b66405af267569ef47bafa17835d657bae5f016357bd9"
+    },
+    {
+      "i": 74,
+      "candidates": 10,
+      "digest": "e7aeca1707b2b58211c575b9b0928717e9e8c1864da421b6c49a64dfe1ebcfd1"
+    },
+    {
+      "i": 75,
+      "candidates": 18,
+      "digest": "10f9438bfe518cfff3c6561b148f9720eb31399e12e3789896388b45b9db28f8"
+    },
+    {
+      "i": 76,
+      "candidates": 10,
+      "digest": "6a22c00eed95023c580d8443e5140f364f1d4150af458d23e7a95db737aa2abb"
+    },
+    {
+      "i": 77,
+      "candidates": 18,
+      "digest": "a3f29087dfb54d9de0d1fec82841942139b439606c96b7211b6493086071c459"
+    },
+    {
+      "i": 78,
+      "candidates": 4,
+      "digest": "ab7db13805bdab7fb54cebd74d7f4ccd0422e852d7fc2fde6305a3c66a91d061"
+    },
+    {
+      "i": 79,
+      "candidates": 12,
+      "digest": "b7d9ad33d032e2c336482c5960eeb13860bcf2ac5ea66f3c158a41d8b37f3e3f"
+    },
+    {
+      "i": 80,
+      "candidates": 55,
+      "digest": "ba23437f852f523b646f7a968457c021d9bac3a3b2fcb623b6b9696fd1d97eba"
+    },
+    {
+      "i": 81,
+      "candidates": 61,
+      "digest": "ea145067054e2cf2d78731e07db1986d0b218c97138322dfdd3d0855ca4d47c6"
+    },
+    {
+      "i": 82,
+      "candidates": 11,
+      "digest": "0beb803e35ec1a15ba35b2b327b3261a3168776f1cb72026c3b3d6aa37b987c1"
+    },
+    {
+      "i": 83,
+      "candidates": 19,
+      "digest": "babf6ca0fad0f53f3fef108b9646b95c7bb3326fe546c772d277577e4fa18b44"
+    },
+    {
+      "i": 84,
+      "candidates": 16,
+      "digest": "e841dac2dbf08d2d1a793539f37ead04bb2d8fed1024759891b240b06ddf18c9"
+    },
+    {
+      "i": 85,
+      "candidates": 23,
+      "digest": "03b9ccd5dd7786c8d1ce076680fe7a051c4478c93389a22819dc7d2b61a7d0f8"
+    },
+    {
+      "i": 86,
+      "candidates": 24,
+      "digest": "196dfc8370c42f2fa0a51e4555a276da1ed4f10c0ccbabeb7738cb516dd6d26a"
+    },
+    {
+      "i": 87,
+      "candidates": 37,
+      "digest": "d13d233103c557990ef4fba516ad938dc854cb23a0b5c733a51478c8667e9579"
+    },
+    {
+      "i": 88,
+      "candidates": 20,
+      "digest": "2e7affeb78d594ad0d841077d011cf5877ab3ba233af3220766d443bb4667c85"
+    },
+    {
+      "i": 89,
+      "candidates": 17,
+      "digest": "b64cc88ebf19a2486e69a78f07385d3ff207ffb16a79b449ba3dc25705d01b76"
+    },
+    {
+      "i": 90,
+      "candidates": 13,
+      "digest": "1b40b1b0366f92ecb93788302b8b7787bfbc84c3f9f1e20520adeef7c8462861"
+    },
+    {
+      "i": 91,
+      "candidates": 21,
+      "digest": "c72f3393f61889b1c1c618a7b7dc5610f2d894ded50ae3336b1466815982fff8"
+    },
+    {
+      "i": 92,
+      "candidates": 7,
+      "digest": "f941d31843c35d2b70c4b7e162fa81f46700b43568340ee809ee730d87fb223c"
+    },
+    {
+      "i": 93,
+      "candidates": 12,
+      "digest": "27ed104e52210e0327aa0267145cb462f5db26c5233ecda114a1eb93857e68dd"
+    },
+    {
+      "i": 94,
+      "candidates": 16,
+      "digest": "1ecb522710d131bb35e57a63ec028554c73855de43f8bef2db40699aa5c65c69"
+    },
+    {
+      "i": 95,
+      "candidates": 21,
+      "digest": "f2ea440d7bb0f981e4b4b03117ff07d24d3a392b290e7aad5a23a7e0290f67d3"
+    },
+    {
+      "i": 96,
+      "candidates": 16,
+      "digest": "63419425cd3fcbdd1825c42c6be48efa9906b5c84acf1f81c7142aba6a45a919"
+    },
+    {
+      "i": 97,
+      "candidates": 21,
+      "digest": "a6e5c29ad34265b8a6ca5f3eca24150f79b0ba46cfe0db8b504083a2c8916589"
+    },
+    {
+      "i": 98,
+      "candidates": 13,
+      "digest": "6a62bdcac5008efdaa2d6e0c5be15764cde0c0f2d06f4d8e761b45bc4c73a7ee"
+    },
+    {
+      "i": 99,
+      "candidates": 18,
+      "digest": "323b570e55ce3b028f5a693f144525d34b4d8e32219cc2edce921724b739749b"
+    },
+    {
+      "i": 100,
+      "candidates": 13,
+      "digest": "994ec4f7e45efc4fe1c381557d6d50182d30f3e49a96ba0be7d6934cad6970f0"
+    },
+    {
+      "i": 101,
+      "candidates": 19,
+      "digest": "93154d6314ea6a9a02e04453e655ca49025113f813c826e0c69e16eb3dfb4633"
+    },
+    {
+      "i": 102,
+      "candidates": 13,
+      "digest": "27add01ee9e8594c72b79ca5f5cabac4239dfe0a90d28efadc1c9b790d2a4cd8"
+    },
+    {
+      "i": 103,
+      "candidates": 11,
+      "digest": "233e51e12902b5b923f29ff82b4a850246de40db4b95e2235a989952aab7923d"
+    },
+    {
+      "i": 104,
+      "candidates": 15,
+      "digest": "80083c7d323c2afddb9ef757f05894cd7d37bccba84f327694f9d1b50248985f"
+    },
+    {
+      "i": 105,
+      "candidates": 4,
+      "digest": "657ebc99e75d3ccbab5bb35542d75efd0c87f99de31b7f54fe9363c8cdda6909"
+    },
+    {
+      "i": 106,
+      "candidates": 23,
+      "digest": "e8dd9cf390d8065a411d9fb6cc3761eb3d51bd31958b6d4e1c9a7943d2141abc"
+    },
+    {
+      "i": 107,
+      "candidates": 11,
+      "digest": "7a508bd1410097626770b49457331183881072741d47d6bb10385c617c1b92d2"
+    },
+    {
+      "i": 108,
+      "candidates": 10,
+      "digest": "6981de1c3a64f964ab8ef1af1ed7ef3ec4090050fb9b8ab478d885961d87bc55"
+    },
+    {
+      "i": 109,
+      "candidates": 24,
+      "digest": "b3b38dce62bfec72fd2b16b7d869deffd93180ea5220c2b1d681c92c69124ec4"
+    },
+    {
+      "i": 110,
+      "candidates": 10,
+      "digest": "b817050ce2e31a27196ffc44f50574b2c902d9b2386200d89ac7828ac8d4aee8"
+    },
+    {
+      "i": 111,
+      "candidates": 21,
+      "digest": "3e6a15d908cfa9ce5bf819284087987358473f9ec3873ee238113ceaa9ab8fdd"
+    },
+    {
+      "i": 112,
+      "candidates": 13,
+      "digest": "9252dca19c813529d58a55c22c8640def7e7225ba2d25543af996e59654a1216"
+    },
+    {
+      "i": 113,
+      "candidates": 24,
+      "digest": "c31f13d9d04296e36a7e340ca24a31db98cc237ffbb3d77fe581dc08af8931bc"
+    },
+    {
+      "i": 114,
+      "candidates": 10,
+      "digest": "c3ad8cd2e1fa9d9a6a769426ed8fc156953b68e64052b7fc86c0eadffae8fce4"
+    },
+    {
+      "i": 115,
+      "candidates": 21,
+      "digest": "41fcee3b6ee465610b4bcdefb6e1d65eff215cbed5561951166a0fba5340d5eb"
+    },
+    {
+      "i": 116,
+      "candidates": 8,
+      "digest": "98a00aecb145feb799d90676772f3228a665907f90831ac6e34646ad730e69de"
+    },
+    {
+      "i": 117,
+      "candidates": 25,
+      "digest": "2531b52164a99b477b729c664af6e8a6b2bfb88ddd67b5827e23e4569229384c"
+    },
+    {
+      "i": 118,
+      "candidates": 12,
+      "digest": "3c4c028a163bfb82bece0fcaba6ae672f3e28ade9febe567c51b58ebc56088d5"
+    },
+    {
+      "i": 119,
+      "candidates": 23,
+      "digest": "04078f06f902eb8a5f5c1cbc031a0749f924a67aed7386b613ea20135fe247e7"
+    },
+    {
+      "i": 120,
+      "candidates": 24,
+      "digest": "0df6fbfd42c0094a15a94257bd547277e980098fb66784bfe511cecb51aa23e3"
+    },
+    {
+      "i": 121,
+      "candidates": 8,
+      "digest": "32cacaadd43d8de98768e2b5fdca6f0dc9eb7228bf988e83060a746a7abcbc43"
+    },
+    {
+      "i": 122,
+      "candidates": 8,
+      "digest": "9e1cc3f1709813d9deb11668e454d4f4d260a24f935d870bad72d2ca344a2a32"
+    },
+    {
+      "i": 123,
+      "candidates": 19,
+      "digest": "e5143c93d9ba64e8d9600b11499337ab3b98d1dd0ea6c9a5b0377b3da83635ea"
+    },
+    {
+      "i": 124,
+      "candidates": 18,
+      "digest": "efa563b68401511d385218f453145229056e9ea09c666fc5d5c76eda05a92069"
+    },
+    {
+      "i": 125,
+      "candidates": 72,
+      "digest": "b27ad4b0e1549e68b2b112090bbfa6036f30fb3d32eff548119662aa9a30e611"
+    },
+    {
+      "i": 126,
+      "candidates": 16,
+      "digest": "03a2be142489a50b0bae57bab6694bd7c92e334a5d70649e595ff7b3f216d6be"
+    },
+    {
+      "i": 127,
+      "candidates": 22,
+      "digest": "f1e18aff6b18dd1e6c028fecab1ce96759d77bc9774821beb20bf27694c1a816"
+    },
+    {
+      "i": 128,
+      "candidates": 10,
+      "digest": "1f4e1e4ceffbe743baa55416bfb4761e85fe97523024311f20de5fdbada019da"
+    },
+    {
+      "i": 129,
+      "candidates": 18,
+      "digest": "2c342aeb279332696ebe6e67996eeb3f63f45ca5b95495da1a8317a431c7daf2"
+    },
+    {
+      "i": 130,
+      "candidates": 10,
+      "digest": "81859fc65876d99a03675ae9c0d28795e93afd4dba50e48d4f684289bccb7071"
+    },
+    {
+      "i": 131,
+      "candidates": 18,
+      "digest": "adf0c1ba69b5eeba2e683013e272176ba4743860d31dd6f1b870d62c52245912"
+    },
+    {
+      "i": 132,
+      "candidates": 13,
+      "digest": "a294fd0c9fbf3f7f835ce04a4fdffe48b515efd682f1c0d441690f788939c444"
+    },
+    {
+      "i": 133,
+      "candidates": 21,
+      "digest": "995315715fa67086292bbe3d7d08093c05131fd2cb98c005f0fe9c1262b6f133"
+    },
+    {
+      "i": 134,
+      "candidates": 61,
+      "digest": "506caab80e929bb6437f1b45c635546c2fefb746065b91b522d6ae4283701900"
+    },
+    {
+      "i": 135,
+      "candidates": 69,
+      "digest": "8c502e39248863999ce0ead4b2bac2467d71f942819d883e69d193dea2456515"
+    },
+    {
+      "i": 136,
+      "candidates": 15,
+      "digest": "45bff3cbb47b37824a099f58e3a8fd03870ab88aac389ff40b81d1933b1a103d"
+    },
+    {
+      "i": 137,
+      "candidates": 21,
+      "digest": "5145508a891556f2b34cab098c4deb1dfd6e613519c5995df2ccbb9c1c39496f"
+    },
+    {
+      "i": 138,
+      "candidates": 24,
+      "digest": "d415223ae82f1f19999324a0edee37df0a25e18a9dadd1832fcbc42bfb78ac97"
+    },
+    {
+      "i": 139,
+      "candidates": 15,
+      "digest": "60270fb8c47ff9fa88292eff19ace25da3a99f4321a4748a411768ca07a343b9"
+    },
+    {
+      "i": 140,
+      "candidates": 52,
+      "digest": "d1786c1664f0a59d313c0f4730fc23e4565513b10e4d3230387a7a1749e712fd"
+    },
+    {
+      "i": 141,
+      "candidates": 23,
+      "digest": "7e1e2dc15d00013d85a0276a30b0a867cc2fbe995e7eb1616cdcb5c2a5344aae"
+    },
+    {
+      "i": 142,
+      "candidates": 15,
+      "digest": "863140b715020e0fec0665dcc3a81843cfe71dd4e693c99a9b1c2e05a00fd5f0"
+    },
+    {
+      "i": 143,
+      "candidates": 15,
+      "digest": "ce77df7eb35e46270d9505e30067d2be62e410e6754426e603232f2179dff921"
+    },
+    {
+      "i": 144,
+      "candidates": 8,
+      "digest": "88b4ca39ef93da438dea49467f608b8d5e666a944676c222cba46c48948b1d06"
+    },
+    {
+      "i": 145,
+      "candidates": 13,
+      "digest": "382c4dbe820eb73540696945aa37a92f8ddfde92cecd4bccc41678e1b2d08f64"
+    },
+    {
+      "i": 146,
+      "candidates": 11,
+      "digest": "f4e0ef4a4820ea8cafb4a8b69644e81b2da06678ed43b181df0399e24b9b75ed"
+    },
+    {
+      "i": 147,
+      "candidates": 16,
+      "digest": "9436feb1743f3894a2486058205cfce4c9d9c0d3b0a4a1d8cb0e806b27b917c9"
+    },
+    {
+      "i": 148,
+      "candidates": 10,
+      "digest": "80fab2241804d3051f24f4f91e3753920ba59bc45e2e383009808a35c83dd87b"
+    },
+    {
+      "i": 149,
+      "candidates": 21,
+      "digest": "2c74fe636f62a8c6b9e8c7fb14b7593921ed5657f55a6a239e623282fe67ee31"
+    },
+    {
+      "i": 150,
+      "candidates": 10,
+      "digest": "34f973f951a7932f034c09f9f912a7190baa9d59f3911d91d9f10fd3383e09af"
+    },
+    {
+      "i": 151,
+      "candidates": 18,
+      "digest": "ff987f701d2ca1506822b62f241dae47de4a2ec6c5cc1a3db891f4a400a05050"
+    },
+    {
+      "i": 152,
+      "candidates": 10,
+      "digest": "fd6f6e51dbd7282c57ab802fc4119cc5857dc868b2582456cd10bcff1f81a5f8"
+    },
+    {
+      "i": 153,
+      "candidates": 15,
+      "digest": "20cad36b5ad7940e9dbd90b55fa3a6129d59c91b99815e540910c7288192a4a6"
+    },
+    {
+      "i": 154,
+      "candidates": 12,
+      "digest": "4ac0bbbdf72ce54db3ce51468d719712eeba85ea1fe80c90b7a5c47547d57db1"
+    },
+    {
+      "i": 155,
+      "candidates": 23,
+      "digest": "87bf7ae629749c739b6880a713b497e52099f8c870b780040ed42d03246734a6"
+    },
+    {
+      "i": 156,
+      "candidates": 24,
+      "digest": "d312349731580167af3bf44f0d8af3c90f4407220cf6f06e972a29bb2b6c4468"
+    },
+    {
+      "i": 157,
+      "candidates": 11,
+      "digest": "2dba4957cfe149284a9ad2d744d27efe2337b551d0f435d6f58504215be9b1ed"
+    },
+    {
+      "i": 158,
+      "candidates": 14,
+      "digest": "98542c417547784816600d90fb9184de29ed2f0eea3d13639a79b9808c1e6787"
+    },
+    {
+      "i": 159,
+      "candidates": 33,
+      "digest": "0e49d6d7b80f25e4331976fff08a60f9ccc0165194612c4960fe93979a9d8cc9"
+    },
+    {
+      "i": 160,
+      "candidates": 19,
+      "digest": "232339a2cf445b26345e93c60b7ab489cc184f5f3fac4c2484dec6f7e6b6a449"
+    },
+    {
+      "i": 161,
+      "candidates": 13,
+      "digest": "7ff8dda34168e7df6e4cb21ebbbdecf4797e40cbad9aeb4f84ac9f2d1d173598"
+    },
+    {
+      "i": 162,
+      "candidates": 13,
+      "digest": "e87d380ddfac7fca8c31cf1cb79582e9b3e6f7edda9838d34c54a44e507e1e69"
+    },
+    {
+      "i": 163,
+      "candidates": 21,
+      "digest": "9b29e02fb27bf2aa4e513b9ad3b47701b6dc4b0c09282ae4589f31ea54a45a85"
+    },
+    {
+      "i": 164,
+      "candidates": 10,
+      "digest": "d387a5d3c6a6e7f63633dd2cc3a8968f5ea3e17ff4981b99dfe842927fceddea"
+    },
+    {
+      "i": 165,
+      "candidates": 18,
+      "digest": "eff7fe3ef6243caad91f6992bc5291bd1c1283f9eb80208773033ca002fbe096"
+    },
+    {
+      "i": 166,
+      "candidates": 22,
+      "digest": "fec5f8b4c0f316e7bc11dc40e55c75cf58b0dc3623b12708c64bc6c4f9e04123"
+    },
+    {
+      "i": 167,
+      "candidates": 30,
+      "digest": "8fdb9188623d1dcb5cce5eb28be661b60bd90ee2ce7bca4eee595e64e0edf07a"
+    },
+    {
+      "i": 168,
+      "candidates": 13,
+      "digest": "53fcfe45b12509a4954b1800e2ddc08ecc822498d3ca3017a199bdceb3852f36"
+    },
+    {
+      "i": 169,
+      "candidates": 21,
+      "digest": "456d46f41ff7082c377baf3b2a9116cd522ea744034e765413dc4a0471223c34"
+    },
+    {
+      "i": 170,
+      "candidates": 10,
+      "digest": "5e6b9e80f6767344091e8125ec5cdaca611f6420ae89d2dd832191088ea5845f"
+    },
+    {
+      "i": 171,
+      "candidates": 66,
+      "digest": "6d19a6d412b1ed5b0f9edf911f7fc5d3344253799fe52a6b9cd30c5fa19e17c3"
+    },
+    {
+      "i": 172,
+      "candidates": 12,
+      "digest": "2f708115580cf37b324f227f493642e78e557c50163e4edc5c7b583ed9b39a2b"
+    },
+    {
+      "i": 173,
+      "candidates": 20,
+      "digest": "1982378e1864f21204ed64f178eb47f572a9e74ec983f1490ecae13059cef131"
+    },
+    {
+      "i": 174,
+      "candidates": 20,
+      "digest": "4e3d98ca247d94b52dad25108b78154069cd418dee64ed029c83504270f90922"
+    },
+    {
+      "i": 175,
+      "candidates": 19,
+      "digest": "f500baf0d49e592011804748419b0190e5663556bb989622d3a97aba2bc6e3ad"
+    },
+    {
+      "i": 176,
+      "candidates": 8,
+      "digest": "6c197414abf32a3e2c47808cb1f9eb4b8be164dc815291c237eacb381f51869f"
+    },
+    {
+      "i": 177,
+      "candidates": 57,
+      "digest": "f0fcc3507241874dd7f581b2d8435d876ec58af08e2594c01843753c37644754"
+    },
+    {
+      "i": 178,
+      "candidates": 95,
+      "digest": "be41504211464e7fde181cc8aeca69a2b9628ee920fcb0004a8c986f37e84ee5"
+    },
+    {
+      "i": 179,
+      "candidates": 7,
+      "digest": "729169150d92d0b5eae455c1c0def0a2184b1ce1fcf081512752a44b9ac88067"
+    }
+  ],
+  "cli": {
+    "exitCode": 0,
+    "ordinaryEndKeepsActionPrompt": true,
+    "quitDoesNotEndTurn": true,
+    "scope": "PTY actual CLI initial human turn; no complete game or visual acceptance"
+  },
+  "web": {
+    "versionSmoke": {
+      "version": "v1.5",
+      "actionEqual": true,
+      "oldAliases": true
+    },
+    "state": {
+      "current": 0,
+      "completed": false,
+      "endRejected": true,
+      "legalCards": 4,
+      "hand": 4
+    },
+    "errors": [],
+    "scope": "Actual human Web refresh button twice in an injected reachable-shape fixture; first remains unable, second regains attacks; ordinary end rejected. Not natural match or visual acceptance."
+  },
+  "automaticEngine": {
+    "realEngineCases": [
+      {
+        "change": "protect",
+        "chosen": 2,
+        "afterDamageHand": 3,
+        "finalHand": 6,
+        "winner": "blue"
+      },
+      {
+        "change": "threeCups",
+        "chosen": 0,
+        "afterDamageHand": 5,
+        "finalHand": 5,
+        "winner": null
+      },
+      {
+        "change": "twoStones",
+        "chosen": 0,
+        "afterDamageHand": 5,
+        "finalHand": 5,
+        "winner": null
+      },
+      {
+        "change": "oneHealing",
+        "chosen": 0,
+        "afterDamageHand": 5,
+        "finalHand": 5,
+        "winner": null
+      },
+      {
+        "change": "realPriest",
+        "chosen": 0,
+        "afterDamageHand": 5,
+        "finalHand": 5,
+        "winner": null
+      }
+    ],
+    "version": "v1.5",
+    "scope": "Five real default automatic healing and fifth-cup fixtures; not full-game strength evidence"
+  },
+  "testMigrationReview": "Only version/default expected aliases updated in ai-production, ai-economy, ai-versions; old v1.4 alias still asserted; no behavioral threshold weakened.",
+  "trackedProductionDiff": [
+    "xingbei-cli/src/ai.js",
+    "xingbei-cli/src/ai/versions.js"
+  ]
+}
