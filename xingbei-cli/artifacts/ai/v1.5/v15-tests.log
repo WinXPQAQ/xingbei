@@ -1,0 +1,320 @@
+✔ v15 five old cases retain legal complete rankings and finite decomposed scores; no prescribed ordering (104.097218ms)
+✔ v15 shield + free attack is a complete engine plan; shield consumed means prevention, no fixed consumption bonus (11.064077ms)
+✔ v15 energy has typed realizable uses and batching, not rewards for unusable crystals (3.85106ms)
+✔ v15 waterPower chooses applicable magic gift to sealer and resolves actual gift before overflow (6.539655ms)
+✔ v15 uncertainty terminal bounded across attack and magic; confirmed fifth cup retains priority (17.109693ms)
+✔ v15 fifth-cup windows respond to 4/4/5, 4/4/3, order, healing and direct win (2.753571ms)
+✖ v15 hidden information invariance covers all six observers including semantic history (14.020177ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 6
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 272.810862
+
+✖ failing tests:
+
+test at test/ai-v15.test.js:42:1
+✖ v15 hidden information invariance covers all six observers including semantic history (14.020177ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+    {
+      cards: [
+        {
+          attachment: null,
+          category: 'basic',
+  ...
+          },
+  +       {
+  +         elements: null,
+  +         playerId: 1,
+  +         sequence: 26,
+  +         type: 'leave'
+  +       },
+  +       {
+  +         elements: null,
+  +         playerId: 1,
+  +         sequence: 27,
+  +         type: 'leave'
+  +       },
+  +       {
+  +         elements: null,
+  +         playerId: 1,
+  +         sequence: 28,
+  +         type: 'leave'
+  +       },
+  +       {
+  +         elements: null,
+  +         playerId: 1,
+  +         sequence: 29,
+  +         type: 'leave'
+  +       },
+  +       {
+  +         playerId: 1,
+  +         sequence: 30,
+  +         type: 'gain'
+  +       },
+  +       {
+  +         playerId: 1,
+  +         sequence: 31,
+  +         type: 'gain'
+  +       },
+  +       {
+  +         playerId: 1,
+  +         sequence: 32,
+  +         type: 'gain'
+  +       },
+  +       {
+  +         playerId: 1,
+  +         sequence: 33,
+  +         type: 'gain'
+  +       },
+  +       {
+  +         elements: null,
+  +         playerId: 2,
+  +         sequence: 34,
+  +         type: 'leave'
+  +       },
+  +       {
+  +         elements: null,
+  +         playerId: 2,
+  +         sequence: 35,
+  +         type: 'leave'
+  +       },
+  +       {
+  +         elements: null,
+  +         playerId: 2,
+  +         sequence: 36,
+  +         type: 'leave'
+  +       },
+  +       {
+  +         elements: null,
+  +         playerId: 2,
+  +         sequence: 37,
+  +         type: 'leave'
+  +       },
+  +       {
+  +         playerId: 2,
+  +         sequence: 38,
+  +         type: 'gain'
+  +       },
+  +       {
+  +         playerId: 2,
+  +         sequence: 39,
+  +         type: 'gain'
+  +       },
+  +       {
+  +         playerId: 2,
+  +         sequence: 40,
+  +         type: 'gain'
+  +       },
+  +       {
+  +         playerId: 2,
+  +         sequence: 41,
+  +         type: 'gain'
+  +       },
+  +       {
+  +         elements: null,
+  +         playerId: 3,
+  +         sequence: 42,
+  +         type: 'leave'
+  +       },
+  +       {
+  +         elements: null,
+  +         playerId: 3,
+  +         sequence: 43,
+  +         type: 'leave'
+  +       },
+  +       {
+  +         elements: null,
+  +         playerId: 3,
+  +         sequence: 44,
+  +         type: 'leave'
+  +       },
+  +       {
+  +         elements: null,
+  +         playerId: 3,
+  +         sequence: 45,
+  +         type: 'leave'
+  +       },
+  +       {
+  +         playerId: 3,
+  +         sequence: 46,
+  +         type: 'gain'
+  +       },
+  +       {
+  +         playerId: 3,
+  +         sequence: 47,
+  +         type: 'gain'
+  +       },
+  +       {
+  +         playerId: 3,
+  +         sequence: 48,
+  +         type: 'gain'
+  +       },
+  +       {
+  +         playerId: 3,
+  +         sequence: 49,
+  +         type: 'gain'
+  +       },
+  +       {
+  +         elements: null,
+  +         playerId: 4,
+  +         sequence: 50,
+  +         type: 'leave'
+  +       },
+  +       {
+  +         elements: null,
+  +         playerId: 4,
+  +         sequence: 51,
+  +         type: 'leave'
+  +       },
+  +       {
+  +         elements: null,
+  +         playerId: 4,
+  +         sequence: 52,
+  +         type: 'leave'
+  +       },
+  +       {
+  +         elements: null,
+  +         playerId: 4,
+  +         sequence: 53,
+  +         type: 'leave'
+  +       },
+  +       {
+  +         playerId: 4,
+  +         sequence: 54,
+  +         type: 'gain'
+  +       },
+  +       {
+  +         playerId: 4,
+  +         sequence: 55,
+  +         type: 'gain'
+  +       },
+  +       {
+  +         playerId: 4,
+  +         sequence: 56,
+  +         type: 'gain'
+  +       },
+  +       {
+  +         playerId: 4,
+  +         sequence: 57,
+  +         type: 'gain'
+  +       },
+  +       {
+  +         elements: null,
+  +         playerId: 5,
+  +         sequence: 58,
+  +         type: 'leave'
+  +       },
+  +       {
+  +         elements: null,
+  +         playerId: 5,
+  +         sequence: 59,
+  +         type: 'leave'
+  +       },
+  +       {
+  +         elements: null,
+  +         playerId: 5,
+  +         sequence: 60,
+  +         type: 'leave'
+  +       },
+  +       {
+  +         elements: null,
+  +         playerId: 5,
+  +         sequence: 61,
+  +         type: 'leave'
+  +       },
+  +       {
+  +         playerId: 5,
+  +         sequence: 62,
+  +         type: 'gain'
+  +       },
+  +       {
+  +         playerId: 5,
+  +         sequence: 63,
+  +         type: 'gain'
+  +       },
+  +       {
+  +         playerId: 5,
+  +         sequence: 64,
+  +         type: 'gain'
+  +       },
+  +       {
+  +         playerId: 5,
+  +         sequence: 65,
+  +         type: 'gain'
+  +       }
+        ],
+  +     sequence: 65
+  -     sequence: 25
+      },
+      refine: false,
+      refresh: false,
+      skills: [],
+      stones: {
+  
+      at TestContext.<anonymous> (file:///workspace/xingbei/xingbei-cli/test/ai-v15.test.js:43:546)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: {
+      observerId: 0,
+      current: 0,
+      cards: [ [Object], [Object], [Object], [Object] ],
+      players: [ [Object], [Object], [Object], [Object], [Object], [Object] ],
+      teams: { red: [Object], blue: [Object] },
+      turn: { playerId: 0, completed: false, attackCount: 0, pendingActions: [], usedSkills: {} },
+      hasExtraActions: false,
+      effects: [
+        [Array], [Array],
+        [Array], [Array],
+        [Array], [Array],
+        [Array], [Array],
+        [Array]
+      ],
+      publicHistory: { sequence: 65, actions: [Array], events: [Array] },
+      skills: [],
+      legal: [ [Object], [Object], [Object], [Object] ],
+      refresh: false,
+      draw: false,
+      refine: false,
+      stones: { red: [Object], blue: [Object] },
+      synthesis: { red: [Object], blue: [Object] }
+    },
+    expected: {
+      observerId: 0,
+      current: 0,
+      cards: [ [Object], [Object], [Object], [Object] ],
+      players: [ [Object], [Object], [Object], [Object], [Object], [Object] ],
+      teams: { red: [Object], blue: [Object] },
+      turn: { playerId: 0, completed: false, attackCount: 0, pendingActions: [], usedSkills: {} },
+      hasExtraActions: false,
+      effects: [
+        [Array], [Array],
+        [Array], [Array],
+        [Array], [Array],
+        [Array], [Array],
+        [Array]
+      ],
+      publicHistory: { sequence: 25, actions: [Array], events: [Array] },
+      skills: [],
+      legal: [ [Object], [Object], [Object], [Object] ],
+      refresh: false,
+      draw: false,
+      refine: false,
+      stones: { red: [Object], blue: [Object] },
+      synthesis: { red: [Object], blue: [Object] }
+    },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

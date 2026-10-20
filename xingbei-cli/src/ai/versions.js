@@ -1,3 +1,4 @@
+import {createEconomyPolicy as createPlansPolicy} from './v1.5-candidate/index.js';
 import {createEconomyPolicy as createTargetedFixesPolicy} from './targeted-fixes1/index.js';
 import { createEconomyPolicy as createActionValue2Policy } from './action-value2/index.js';
 import { createEconomyPolicy as createActionValuePolicy } from './action-value1/index.js';
@@ -16,6 +17,7 @@ import * as baseline from './v1.0/index.js';
 import { createPolicy } from './v1.1/index.js';
 // Explicit matchups remain possible; no assumption that version ordering implies strength.
 const choices = {
+  'experimental/plans-1': createPlansPolicy(),
   'experimental/targeted-fixes-1': createTargetedFixesPolicy(),
   'experimental/targeted-fixes-1-no-ownership': createTargetedFixesPolicy({ownership:false}),
   'experimental/targeted-fixes-1-no-energy': createTargetedFixesPolicy({energy:false}),

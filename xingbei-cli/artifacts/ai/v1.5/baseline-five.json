@@ -1,0 +1,66 @@
+[
+  {
+    "hero": "marksman",
+    "turn": 4,
+    "choices": 10,
+    "action": {
+      "type": "play",
+      "index": 1,
+      "targetId": 2
+    },
+    "score": -0.8864734128272973,
+    "exact": true
+  },
+  {
+    "hero": "berserker",
+    "turn": 25,
+    "choices": 16,
+    "action": {
+      "type": "refine",
+      "stones": {
+        "gem": 1,
+        "crystal": 0
+      }
+    },
+    "score": -0.5,
+    "exact": true
+  },
+  {
+    "hero": "windSwordmaster",
+    "turn": 26,
+    "choices": 13,
+    "action": {
+      "type": "refine",
+      "stones": {
+        "gem": 0,
+        "crystal": 1
+      }
+    },
+    "score": -4.400000000000006,
+    "exact": true
+  },
+  {
+    "hero": "sealer",
+    "turn": 1,
+    "choices": 18,
+    "action": {
+      "type": "play",
+      "index": 0,
+      "targetId": 5
+    },
+    "score": -0.6669219759370968,
+    "exact": true
+  },
+  {
+    "hero": "priest",
+    "turn": 4,
+    "choices": 12,
+    "action": {
+      "type": "play",
+      "index": 0,
+      "targetId": 1
+    },
+    "score": -1.0621215127855583,
+    "exact": true
+  }
+]
