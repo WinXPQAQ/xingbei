@@ -1,0 +1,22 @@
+{
+  "time": "2026-10-20T12:02:49.101147+00:00",
+  "completed": 17280,
+  "planned": 17280,
+  "shards": {
+    "games-0.jsonl": 4320,
+    "games-1.jsonl": 4320,
+    "games-2.jsonl": 4320,
+    "games-3.jsonl": 4320
+  },
+  "completeMarkers": 4,
+  "logErrors": false,
+  "candidate": "2d7361b2282d4b27a35c4278e50e336b6cb13997",
+  "codeReview": "plans-2 rejected; plans-3 original blockers fixed; independent70 engine checks and1440 cache equality checks passed; no outstanding code blocker; full acceptance pending",
+  "errorCounts": {
+    "run-0.log": 0,
+    "run-1.log": 0,
+    "run-2.log": 0,
+    "run-3.log": 0
+  },
+  "status": "REJECTED: mixed teammate fixed gates failed; independent recomputation agrees; diagnostic work ongoing"
+}

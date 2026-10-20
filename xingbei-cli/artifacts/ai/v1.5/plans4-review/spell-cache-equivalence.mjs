@@ -1,0 +1,12 @@
+import fs from 'node:fs';import assert from 'node:assert/strict';import {createHash} from 'node:crypto';
+const root='/workspace/xingbei/xingbei-cli/',oldPath=root+'artifacts/ai/v1.5/plans4-performance-initial/model.js',newPath=root+'src/ai/v1.5-candidate/model.js';
+const load=async path=>{let source=fs.readFileSync(path,'utf8');for(const[a,b]of [['../../cards.js','src/cards.js'],['./horizon.js','src/ai/v1.5-candidate/horizon.js'],['../v1.1/fusion.js','src/ai/v1.1/fusion.js']])source=source.replace(`'${a}'`,`'file://${root+b}'`);return import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));};
+const old=await load(oldPath),opt=await load(newPath);const {Game}=await import('file://'+root+'src/engine.js');const {captureObservation,observationView}=await import('file://'+root+'src/ai/observation.js');
+const g=new Game({heroIds:['guardianAngel','priest','guardianAngel','priest','none','berserker']});g.startTurn(0);const s=opt.stateOf(observationView(captureObservation(g,0,{activation:true})),0);let comparisons=0,componentComparisons=0;const keys=new Set();
+function check(){for(const team of ['red','blue']){assert.equal(opt.spellExposure(s,team),old.spellExposure(s,team));comparisons++;}if(comparisons%100===0){assert.deepEqual(opt.components(s),old.components(s));componentComparisons++;}}
+// Reuse one beliefs identity across >4096 distinct nontrivial keys to cover a full memo.
+for(let a=0;a<3;a++)for(let b=0;b<3;b++)for(let c=0;c<3;c++)for(let x=0;x<7;x++)for(let y=0;y<7;y++)for(let z=0;z<7;z++){
+ [s.players[0].count,s.players[3].count,s.players[4].count]=[a+4,b+4,c+4];[s.players[1].count,s.players[2].count,s.players[5].count]=[x,y,z];s.players[0].energy={gem:0,crystal:0};check();if(a||b||c)keys.add(JSON.stringify([a,b,c,x,y,z]));}
+// Shelter early exit, shield/priests/hand limits, and repeat hits with mutable state statistics.
+for(let n=0;n<1200;n++){for(const p of s.players){p.count=(n+p.id*3)%7;p.healing=(n+p.id)%3;p.limit=4+(n+p.id)%3;p.effects=(n+p.id)%4===0?[{name:'holyShield'}]:[];p.energy={gem:n%2,crystal:(n+p.id)%3};}check();check();}
+const hashes=Object.fromEntries([oldPath,newPath].map(p=>[p,createHash('sha256').update(fs.readFileSync(p)).digest('hex')]));const result={comparisons,componentComparisons,distinctNonzeroRedKeys:keys.size,failures:0,hashes};fs.writeFileSync(new URL('./spell-cache-equivalence.json',import.meta.url),JSON.stringify(result,null,2));console.log(result);

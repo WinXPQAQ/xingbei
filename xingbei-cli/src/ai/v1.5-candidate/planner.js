@@ -90,12 +90,13 @@ export function magicBranches(s,sourceId,targetId,amount=2,participants=[sourceI
  return branches.filter(b=>b.probability>0);
 }
 export function bestAttack(s,id,{count=0,depth=1,restriction=null,sequence=true,budget=searchBudget()}={}) {
- let best={score:0,total:value(s),branches:[{probability:1,state:s,path:['pass']}],card:null,targetId:null};
+ const baseTotal=value(s);
+ let best={score:0,total:baseTotal,branches:[{probability:1,state:s,path:['pass']}],card:null,targetId:null};
  if(terminal(s)||depth<1)return best;
  const immediate=[];
  for(const c of s.players[id].hand.filter(c=>c.type==='attack'&&(!restriction||traits(c,id).includes(restriction)))) for(const t of enemy(s,id)) {
   if(!budget.left)break;
-  const candidate=planAttack(s,id,c,t.id,{count,depth:1,sequence,budget});
+  const candidate=planAttack(s,id,c,t.id,{count,depth:1,sequence,budget,baseTotal});
   immediate.push({...candidate,card:c.id,targetId:t.id});
   if(candidate.score>best.score)best={...candidate,card:c.id,targetId:t.id};
  }
@@ -103,12 +104,12 @@ export function bestAttack(s,id,{count=0,depth=1,restriction=null,sequence=true,
  // candidates remain eligible: a costly second attack can enable the third.
  if(depth>1)for(const entry of immediate.sort((a,b)=>b.score-a.score).slice(0,2)) {
   if(!budget.left)break;
-  const c=s.players[id].hand.find(c=>c.id===entry.card),candidate=planAttack(s,id,c,entry.targetId,{count,depth,sequence,budget});
+  const c=s.players[id].hand.find(c=>c.id===entry.card),candidate=planAttack(s,id,c,entry.targetId,{count,depth,sequence,budget,baseTotal});
   if(candidate.score>best.score)best={...candidate,card:c.id,targetId:entry.targetId};
  }
  return best;
 }
-export function planAttack(s,id,c,targetId,{count=0,depth=1,sequence=true,budget=searchBudget()}={}) {
+export function planAttack(s,id,c,targetId,{count=0,depth=1,sequence=true,budget=searchBudget(),baseTotal=value(s)}={}) {
  budget.left--;budget.used++;
  let best=null;
  const precision=s.players[id].hero==='marksman'&&special(c,'precisionShot')?[false,true]:[false];
@@ -132,33 +133,59 @@ export function planAttack(s,id,c,targetId,{count=0,depth=1,sequence=true,budget
     return follow.branches.map(f=>({probability:b.probability*f.probability,state:f.state,path:[...b.path,...f.path],steps:[...(b.steps??[]),...(f.steps??[])]}));
    });
   }
-  const evaluated=evaluatedBranches(branches),score=evaluated.total-value(s);if(!best||score>best.score)best={score,branches,...evaluated,precision:usePrecision};
+  const evaluated=evaluatedBranches(branches),score=evaluated.total-baseTotal;if(!best||score>best.score)best={score,branches,...evaluated,precision:usePrecision};
  }
  return best;
 }
 function effect(s,id,name,c) {const p=s.players[id];if(name!=='poison')p.effects=p.effects.filter(e=>e.name!==name);p.effects.push({id:c?.id??name,name,card:c});}
+function angelBond(s,id) {
+ if(s.players[id].hero!=='guardianAngel')return s;
+ let best=s,bestTotal=value(s);for(const target of s.players){const next=clone(s);heal(next,target.id,1);const total=value(next);if(total>bestTotal){best=next;bestTotal=total;}}
+ return best;
+}
 export function removeEffectOptions(s,id,targets,{take=false}={}) {
  const result=[];for(const target of targets)for(const e of s.players[target].effects) {
   if(e.name==='fivefoldBinding')continue;
   const next=clone(s);next.players[target].effects=next.players[target].effects.filter(x=>x.id!==e.id);
   if(take&&e.card){next.players[id].hand.push(e.card);next.players[id].count++;overflow(next,id);}
   if(s.players[id].hero==='guardianAngel') {
-   let best=next;for(const t of next.players){const healed=clone(next);heal(healed,t.id,1);if(value(healed)>value(best))best=healed;}result.push({id:e.id,state:best});
+   let best=next,bestTotal=value(next);for(const t of next.players){const healed=clone(next);heal(healed,t.id,1);const total=value(healed);if(total>bestTotal){best=healed;bestTotal=total;}}result.push({id:e.id,state:best});
   }else result.push({id:e.id,state:next});
  }
- return result.sort((a,b)=>value(b.state)-value(a.state));
+ return result.map(entry=>({entry,total:value(entry.state)})).sort((a,b)=>b.total-a.total).map(x=>x.entry);
 }
-export function actionPlan(s,id,action,{sequence=true}={}) {
+export function contractOption(s,id,{reservedEnergy=0,reservedHealing=0,targetId=null}={}) {
+ const p=s.players[id];let best={state:s,targetId:null,count:0,total:value(s)};
+ if(p.hero!=='priest'||p.energy.gem+p.energy.crystal<=reservedEnergy)return best;
+ for(const target of s.players.filter(t=>t.team===p.team&&t.id!==id&&(targetId===null||t.id===targetId)))for(let n=1;n<=Math.min(p.healing-reservedHealing,Math.max(0,4-target.healing));n++){
+  const next=clone(s);payEnergy(next,id);next.players[id].healing-=n;next.players[target.id].healing+=n;
+  const total=value(next);if(total>best.total)best={state:next,targetId:target.id,count:n,total};
+ }
+ return best;
+}
+export function actionPlan(s,id,action,{sequence=true,baseTotal=value(s),contracts=null}={}) {
+ if(!s.turn?.activationDone&&s.players[id].hero==='priest'&&['play','skill'].includes(action.type)){
+  const reservedEnergy=action.skillId==='sacredDomain'?1:0,reservedHealing=action.skillId==='sacredDomain'&&action.mode==='damage'?1:0,key=`${reservedEnergy}:${reservedHealing}`;
+  let option=contracts?.get(key);
+  if(!option){option=contractOption(s,id,{reservedEnergy,reservedHealing});contracts?.set(key,option);}
+  if(option.count){
+   const next=clone(option.state);next.turn??={};next.turn.activationDone=true;const plan=actionPlan(next,id,action,{sequence});
+   const step={type:'skillResponse',actorId:id,targetId:option.targetId,skillId:'holyContract',count:option.count,result:`transfer ${option.count} healing`};
+   const prefix=branches=>branches?.map(b=>({...b,path:['holyContract',...b.path],steps:[step,...(b.steps??[])]}));
+   return {...plan,score:plan.total-baseTotal,branches:prefix(plan.branches),primaryBranches:prefix(plan.primaryBranches)};
+  }
+ }
  const budget=searchBudget();
  const p=s.players[id],card=action.type==='play'?p.hand[action.index]:null;
- if(card?.type==='attack'){const plan=planAttack(s,id,card,action.targetId,{count:s.turn?.attackCount??0,depth:sequence?Math.max(1,3-(s.turn?.attackCount??0)):1,sequence,budget});return {...plan,search:{limit:SEARCH_LIMIT,used:budget.used}};}
+ if(card?.type==='attack'){const plan=planAttack(s,id,card,action.targetId,{count:s.turn?.attackCount??0,depth:sequence?Math.max(1,3-(s.turn?.attackCount??0)):1,sequence,budget,baseTotal});return {...plan,search:{limit:SEARCH_LIMIT,used:budget.used}};}
  let next=clone(s),actor=next.players[id],target=action.targetId??action.targetIds?.[0],spell=false,magic=null;
  const costs=(action.cardIds??[]).map(cid=>p.hand.find(c=>c.id===cid));
+ const selectedEffect=['windCleansing','sealBreaking'].includes(action.skillId)?removeEffectOptions(s,id,[target],{take:action.skillId==='sealBreaking'})[0]?.id:null;
  if(action.type==='pass')return {score:0,branches:[{probability:1,state:next,path:['pass']}]};
  if(card) {
   spend(next,id,[card]);spell=true;
   if(!terminal(next)) {
-   if(['holyShield','weakness','poison'].includes(card.name))effect(next,target,card.name,card);
+   if(['holyShield','weakness','poison'].includes(card.name)){effect(next,target,card.name,card);if(card.name==='holyShield')next=angelBond(next,id);}
    else if(card.name==='magicBullet')magic=magicBranches(next,id,target,2);
   }
  }else if(action.type==='skill') {
@@ -172,14 +199,14 @@ export function actionPlan(s,id,action,{sequence=true}={}) {
     const candidates=actor.hand.map(c=>{const t=clone(next);transfer(t,id,target,c);heal(t,id,1);heal(t,target,1);overflow(t,target);return t;});
     if(actor.count>actor.hand.length){const t=clone(next);t.players[id].count--;t.players[target].count++;heal(t,id,1);heal(t,target,1);overflow(t,target);candidates.push(t);}
     if(!actor.count){heal(next,id,1);heal(next,target,1);candidates.push(next);}
-    next=candidates.sort((a,b)=>value(b)-value(a))[0];break;
+    next=candidates.map(state=>({state,total:value(state)})).sort((a,b)=>b.total-a.total)[0].state;break;
    }
    case 'prayer':heal(next,id,2);break;
    case 'sacredDomain':if(action.mode==='damage'){next.players[id].healing--;damage(next,target,2);}else{heal(next,id,2);heal(next,target,1);}break;
    case 'flashTrap':damage(next,target,2);break;
    case 'snipe':draw(next,target,Math.max(0,5-next.players[target].count));break;
-   case 'angelWall':effect(next,target,'holyShield',costs[0]);heal(next,target,1);break;
-   case 'windCleansing':case 'sealBreaking':next=removeEffectOptions(next,id,[target],{take:action.skillId==='sealBreaking'})[0]?.state??next;break;
+   case 'angelWall':effect(next,target,'holyShield',costs[0]);next=angelBond(next,id);break;
+   case 'windCleansing':case 'sealBreaking':next=removeEffectOptions(next,id,[target],{take:action.skillId==='sealBreaking'}).find(e=>e.id===selectedEffect)?.state??next;break;
    case 'angelBlessing':for(const t of action.targetIds){const n=Math.min(next.players[t].count,action.targetIds.length===1?2:1);next.players[t].count-=n;next.players[id].count+=n;}overflow(next,id);break;
    default:if(action.skillId.endsWith('Seal')||action.skillId==='fivefoldBinding')effect(next,target,action.skillId,costs[0]);
   }
@@ -195,7 +222,7 @@ export function actionPlan(s,id,action,{sequence=true}={}) {
   branches=branches.flatMap(branch=>{const follow=bestAttack(branch.state,id,{depth:1,sequence,budget});return follow.score>0?follow.branches.map(b=>({...b,probability:b.probability*branch.probability,path:[...branch.path,...b.path],steps:[...branch.steps,...(b.steps??[])]})):[branch];});
  }
  const evaluated=evaluatedBranches(branches);
- return {score:evaluated.total-value(s),branches,...evaluated,primaryBranches,search:{limit:SEARCH_LIMIT,used:budget.used}};
+ return {score:evaluated.total-baseTotal,branches,...evaluated,primaryBranches,search:{limit:SEARCH_LIMIT,used:budget.used}};
 }
 export function explain(s,plan,base=components(s)) {
  const parts=Object.fromEntries(Object.keys(base).map(k=>[k,0]));

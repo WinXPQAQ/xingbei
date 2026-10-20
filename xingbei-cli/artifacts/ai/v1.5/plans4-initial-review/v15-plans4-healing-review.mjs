@@ -1,0 +1,14 @@
+import {Game} from '/workspace/xingbei/xingbei-cli/src/engine.js';
+import {getPolicy} from '/workspace/xingbei/xingbei-cli/src/ai/versions.js';
+import {captureObservation,observationView} from '/workspace/xingbei/xingbei-cli/src/ai/observation.js';
+import {stateOf,clone,heal,components,energyPlan} from '/workspace/xingbei/xingbei-cli/src/ai/v1.5-candidate/model.js';
+const g=new Game({heroIds:['guardianAngel',...Array(5).fill('none')]});
+const take=(id)=>{const c=g.deck.find(c=>c.type==='attack');g.moveCard(c.id,{zone:'hand',playerId:id});};
+for(let i=0;i<5;i++)take(0);take(1);g.player(0).energy.crystal=1;g.player(3).healing=2;g.player(4).healing=2;g.startTurn(0);
+const s=stateOf(observationView(captureObservation(g,0)),0),h=clone(s);heal(h,0,1);
+const diff=Object.fromEntries(Object.entries(components(h)).map(([k,v])=>[k,v-components(s)[k]]));
+const request={type:'playerChoice',skillId:'angelBond',playerId:0,choices:g.players.map(p=>({value:p.id,label:p.name})),defaultValue:0};
+console.log(JSON.stringify({energyBefore:energyPlan(s,s.players[0]),energyAfter:energyPlan(h,h.players[0]),healDifference:diff,chosen:getPolicy('experimental/plans-4').chooseAiRuleDecision(request,g)}));
+const shield=g.deck.find(c=>c.name==='holyShield');g.moveCard(shield.id,{zone:'hand',playerId:0});
+await g.executeAction(0,{type:'play',index:g.player(0).hand.indexOf(shield),targetId:3},{choose:r=>getPolicy('experimental/plans-4').chooseAiRuleDecision(r,g)});
+console.log(JSON.stringify({actualAfterShield:g.players.map(p=>({id:p.id,healing:p.healing})),energy:g.player(0).energy,events:g.publicHistory.actions.filter(e=>e.type==='skillNote'&&e.skillId==='angelBond'||e.type==='healingChange')}));

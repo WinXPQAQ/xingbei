@@ -4,3 +4,4 @@ for(const file of fs.readdirSync('src/ai/v1.5-plans1'))assert.equal(fs.readFileS
 assert.match(fs.readFileSync('src/ai.js','utf8'),/AI_POLICY_VERSION = "v1.4"/);console.log('Frozen stable directories and rejected plans-1 unchanged; production remains v1.4.');
 
 for(const file of fs.readdirSync('src/ai/v1.5-plans2'))assert.equal(fs.readFileSync(`src/ai/v1.5-plans2/${file}`,'utf8'),execFileSync('git',['show',`469e37f:xingbei-cli/src/ai/v1.5-candidate/${file}`],{encoding:'utf8'}));
+for(const file of fs.readdirSync('src/ai/v1.5-plans3'))assert.equal(fs.readFileSync(`src/ai/v1.5-plans3/${file}`,'utf8'),execFileSync('git',['show',`2d7361b:xingbei-cli/src/ai/v1.5-candidate/${file}`],{encoding:'utf8'}));

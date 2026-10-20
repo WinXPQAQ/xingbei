@@ -1,0 +1,17 @@
+{
+  "checked": "2026-10-20T12:34:33.722419+00:00",
+  "workspace": "/workspace/xingbei",
+  "oldToolSession": 97310,
+  "sessionStatus": "lost after environment reconnect",
+  "runnerPID": 10920,
+  "workerPIDs": [
+    10936,
+    10937,
+    10938,
+    10939
+  ],
+  "processStatus": "all live",
+  "newGameRowsObserved": 131,
+  "reusedControlRows": 96,
+  "restarted": false
+}

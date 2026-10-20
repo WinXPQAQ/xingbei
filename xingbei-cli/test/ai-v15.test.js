@@ -1,11 +1,11 @@
 import {terminalForecast} from '../src/ai/v1.5-candidate/horizon.js';
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {Game} from '../src/engine.js';import {getPolicy} from '../src/ai/versions.js';import {captureObservation,observationView} from '../src/ai/observation.js';
-import {stateOf,clone,value,components,energyPlan,energyUses,allocationValue,transfer,damage} from '../src/ai/v1.5-candidate/model.js';
+import {stateOf,clone,value,components,energyPlan,energyUses,allocationValue,transfer,damage,heal,spellExposure} from '../src/ai/v1.5-candidate/model.js';
 import {actionPlan,attackBranches,planAttack,explain} from '../src/ai/v1.5-candidate/planner.js';
-const policy=getPolicy('experimental/plans-3');
+const policy=getPolicy('experimental/plans-4');
 const take=(g,id,pred)=>{const c=g.deck.find(pred);assert(c);g.moveCard(c.id,{zone:'hand',playerId:id});return c;};
-const model=(g,id=0)=>stateOf(observationView(captureObservation(g,id)),id);
+const model=(g,id=0)=>stateOf(observationView(captureObservation(g,id,{activation:true})),id);
 const cases=JSON.parse(fs.readFileSync(new URL('../artifacts/ai/targeted-fixes-1/negative-cases.json',import.meta.url))).cases;
 test('v15 five old cases retain legal complete rankings and finite decomposed scores; no prescribed ordering',()=>{
  for(const c of cases){const s=stateOf(observationView(c.observation),c.actorId);for(const {action}of c.ranked){const plan=actionPlan(s,c.actorId,action),e=explain(s,plan);assert(Number.isFinite(plan.score));assert(Math.abs(plan.score-Object.values(e.parts).reduce((a,b)=>a+b,0))<1e-7);assert((plan.search?.used??0)<=128);}}
@@ -97,5 +97,57 @@ test('v15 shield response preserves uncertainty through third attack, verified a
 test('v15 unusable crystals constrain gem-only shared demand',()=>{
  const g=new Game({heroIds:['none','none','none','berserker','none','none']});for(let i=0;i<4;i++)take(g,3,c=>c.type==='attack');g.addStones('red','gem',2);g.startTurn(0);const s=model(g),p=s.players[3];
  p.energy.crystal=3;assert.equal(allocationValue(s,'red'),0);p.energy.crystal=2;const one=allocationValue(s,'red');assert(one>0);p.energy.crystal=0;assert(allocationValue(s,'red')>one);
- p.hero='guardianAngel';p.energy.crystal=3;assert(energyPlan(s,p)>0);assert.equal(allocationValue(s,'red'),0);
+ p.hero='guardianAngel';p.energy.crystal=3;p.effects.push({id:'weakness-test',name:'weakness'});assert(energyPlan(s,p)>0);assert.equal(allocationValue(s,'red'),0);
+});
+
+test('v15 angel shield and wall both resolve real bond to a freely chosen healing target',async()=>{
+ for(const wall of [false,true]){
+  const g=new Game({heroIds:['guardianAngel',...Array(5).fill('none')]});const c=take(g,0,c=>wall?c.uniqueSkills.includes('angelWall'):c.name==='holyShield');g.player(3).healing=2;g.startTurn(0);
+  const action=wall?{type:'skill',skillId:'angelWall',cardIds:[c.id],targetIds:[3]}:{type:'play',index:0,targetId:3};
+  const s=model(g),plan=actionPlan(s,0,action);assert(plan.branches[0].state.players.filter(p=>p.team==='red').reduce((n,p)=>n+p.healing,0)===3);
+  await g.executeAction(0,action,{choose:r=>r.skillId==='angelBond'?0:false});assert.equal(g.player(0).healing,1);assert.equal(g.player(3).healing,2);assert.equal(g.player(3).getStatus('holyShield').length,1);
+ }
+});
+test('v15 angel stored energy retains residual value while shelter reduces the same spell loss',()=>{
+ const g=new Game({heroIds:['guardianAngel',...Array(5).fill('none')]});take(g,1,c=>c.type==='attack');g.startTurn(0);const s=model(g),p=s.players[0];p.energy.crystal=2;assert.equal(energyPlan(s,p),10);assert.equal(spellExposure(s,'red'),0);
+ p.energy.crystal=0;s.players[3].count=6;assert(spellExposure(s,'red')>0);p.energy.crystal=1;assert(spellExposure(s,'red')>0,'rare two-point loss cannot be erased by one energy');p.energy.crystal=2;assert.equal(spellExposure(s,'red'),0);
+});
+test('v15 free angel healing never destroys stored shelter value or selects a saturated target',async()=>{
+ const g=new Game({heroIds:['guardianAngel',...Array(5).fill('none')]});take(g,0,c=>c.name==='holyShield');for(let i=0;i<4;i++)take(g,0,c=>c.type==='attack');take(g,1,c=>c.type==='attack');g.player(0).energy.crystal=1;g.player(3).healing=2;g.player(4).healing=2;g.startTurn(0);
+ const s=model(g),healed=clone(s);heal(healed,0,1);assert(value(healed)>value(s));
+ await g.executeAction(0,{type:'play',index:0,targetId:3},{choose:r=>policy.chooseAiRuleDecision(r,g)});assert.equal(g.player(0).healing,1);
+});
+
+test('v15 allied free healing is monotone across public pressure and shelter holdings',()=>{
+ const g=new Game({heroIds:['guardianAngel','berserker','priest','priest','none','windSwordmaster']});g.startTurn(0);const base=model(g);
+ for(let count=0;count<=6;count++)for(let energy=0;energy<=3;energy++)for(const morale of [1,5,15]){
+  const s=clone(base);s.players[0].energy.crystal=energy;for(const p of s.players)p.count=count;s.teams.red.morale=morale;
+  for(const id of [0,3,4]){const healed=clone(s);heal(healed,id,1);assert(value(healed)>=value(s)-1e-8,`count=${count} energy=${energy} morale=${morale} target=${id}`);}
+ }
+});
+
+test('v15 wind cleansing keeps its pre-payment effect choice when exposure consumes that effect',async()=>{
+ const g=new Game({heroIds:['guardianAngel',...Array(5).fill('none')]});const costs=Array.from({length:4},()=>take(g,0,c=>c.name==='windStrike'));
+ for(const name of ['windSeal','holyShield']){const c=take(g,0,c=>c.name===(name==='windSeal'?'windStrike':'holyShield'));g.attachCard(c.id,0,{effectId:name,sourcePlayerId:1});}g.startTurn(0);
+ const action={type:'skill',skillId:'windCleansing',cardIds:[costs[0].id],targetIds:[0]},plan=actionPlan(model(g),0,action,{sequence:false});
+ await g.executeAction(0,action,{choose:r=>policy.chooseAiRuleDecision(r,g)});const actual=model(g);
+ for(const key of ['count','healing'])assert.equal(plan.branches[0].state.players[0][key],actual.players[0][key]);assert.deepEqual(plan.branches[0].state.players[0].effects.map(e=>e.name),['holyShield']);assert.equal(g.player(0).getStatus('holyShield').length,1);
+});
+test('v15 holyContract planned activation matches actual choice and preserves reserved action costs',async()=>{
+ let activated=0;
+ for(const mode of ['prayer','heal','damage'])for(const energy of [1,2])for(const healing of [1,2]){
+  const g=new Game({heroIds:['priest','berserker','none','none','none','none']});const costs=[take(g,0,c=>c.type==='spell'),take(g,0,c=>c.type==='spell')];for(const id of [1,3])for(let i=0;i<6;i++)take(g,id,c=>c.type==='attack');g.player(0).energy.crystal=energy;g.player(0).healing=healing;g.startTurn(0);
+  const action=mode==='prayer'?{type:'skill',skillId:'prayer',cardIds:costs.map(c=>c.id),targetIds:[]}:{type:'skill',skillId:'sacredDomain',mode,cardIds:costs.map(c=>c.id),targetIds:[mode==='heal'?3:1]};
+  const plan=actionPlan(model(g),0,action,{sequence:false});await g.executeAction(0,action,{choose:r=>policy.chooseAiRuleDecision(r,g)});const actual=model(g);
+  const fields=s=>s.players.map(p=>({count:p.count,healing:p.healing,energy:p.energy}));assert.deepEqual(fields(plan.branches[0].state),fields(actual),`${mode} energy${energy} healing${healing}`);
+  activated+=Number(g.publicHistory.actions.some(e=>e.type==='skillResponse'&&e.skillId==='holyContract'));
+ }assert(activated>0,'also cover an actual useful transfer');
+});
+test('v15 contract reservation survives isolated requests and trace replay without changing old observations',async()=>{
+ const g=new Game({heroIds:['priest','berserker',...Array(4).fill('none')]});const costs=[take(g,0,c=>c.type==='spell'),take(g,0,c=>c.type==='spell')];for(const [id,n]of [[3,4],[4,4],[1,6]])for(let i=0;i<n;i++)take(g,id,c=>c.type==='attack');g.player(4).healing=1;g.teams.red.morale=1;g.player(0).energy.crystal=2;g.player(0).healing=2;g.startTurn(0);
+ const legacy=captureObservation(g,0);assert(!('activationDone'in legacy.turn));assert.equal(captureObservation(g,0,{activation:true}).turn.activationDone,false);assert(!('activationDone'in captureObservation(g,1,{activation:true}).turn));
+ const action={type:'skill',skillId:'sacredDomain',mode:'damage',cardIds:costs.map(c=>c.id),targetIds:[1]},plan=actionPlan(model(g),0,action,{sequence:false});let requests=0;
+ await g.executeAction(0,action,{choose:r=>{const decision=policy.chooseAiRuleDecision(r,g);if(r.skillId==='holyContract'){requests++;if(r.type==='skillChoice'){const running=model(g);assert.equal(running.turn.activationDone,true);assert(!actionPlan(running,0,action,{sequence:false}).branches.some(b=>b.steps.some(step=>step.skillId==='holyContract')));}const trace=policy.traceDecision(g,0,r);assert.deepEqual(policy.replayTrace(trace),decision);assert.equal(trace.observation.turn.reservedHealing,1);}return decision;}});
+ assert.equal(requests,3);assert.equal(g.player(3).healing,0);assert.equal(g.player(4).healing,2);assert.equal(plan.branches[0].state.players[4].healing,2);
+ assert.equal(model(g).turn.activationDone,true);
 });

@@ -1,0 +1,10 @@
+{
+  "comparisons": 23322,
+  "componentComparisons": 233,
+  "distinctNonzeroRedKeys": 8918,
+  "failures": 0,
+  "hashes": {
+    "/workspace/xingbei/xingbei-cli/artifacts/ai/v1.5/plans4-performance-initial/model.js": "11d4a55935d706e75874c31954ce09cc3fa46964c793b64d5887d059ec683a56",
+    "/workspace/xingbei/xingbei-cli/src/ai/v1.5-candidate/model.js": "db59bce8e99d9cf5943380b5c841ceea3f2b657420fc690738a2b015f46fb9b3"
+  }
+}

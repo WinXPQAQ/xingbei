@@ -1,0 +1,14 @@
+{
+  "checkedAt": "2026-10-20T12:18:31.327703+00:00",
+  "shellAndFilesAvailable": true,
+  "confirmation3Rows": 17280,
+  "confirmation3ExitCodes": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "confirmation3Processes": "completed, not restarted",
+  "plans4DiagnosticRows": 96,
+  "candidateSourceAndProposalPresent": true
+}

@@ -1,0 +1,11 @@
+{
+  "valid": "ACCEPTED",
+  "duplicate_primary_cell": "ACCEPTED",
+  "wrong_secondary_seed_range": "ACCEPTED",
+  "missing_row": "REJECTED",
+  "duplicate_row": "REJECTED",
+  "wrong_arm": "REJECTED",
+  "wrong_teammate": "REJECTED",
+  "truncated": "REJECTED",
+  "null_loss": "REJECTED"
+}

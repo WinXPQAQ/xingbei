@@ -1,0 +1,27 @@
+import {Game} from '/workspace/xingbei/xingbei-cli/src/engine.js';
+import {getPolicy} from '/workspace/xingbei/xingbei-cli/src/ai/versions.js';
+import {captureObservation,observationView} from '/workspace/xingbei/xingbei-cli/src/ai/observation.js';
+import {stateOf} from '/workspace/xingbei/xingbei-cli/src/ai/v1.5-candidate/model.js';
+import {actionPlan} from '/workspace/xingbei/xingbei-cli/src/ai/v1.5-candidate/planner.js';
+const policy=getPolicy('experimental/plans-4');
+const take=(g,id,pred=c=>c.type==='attack')=>{const c=g.deck.find(pred);if(!c)throw Error('card');g.moveCard(c.id,{zone:'hand',playerId:id});return c;};
+const effect=(g,id,name,cardName=name)=>{const c=take(g,id,c=>c.name===cardName);g.attachCard(c.id,id,{effectId:name,sourcePlayerId:1});};
+const names=p=>p.effects.map(e=>e.name).sort();
+const brief=s=>({players:s.players.map(p=>({n:p.count,e:p.energy,h:p.healing,status:names(p)})),teams:s.teams});
+const results=[];
+async function run(name,hero,setup){const g=new Game({heroIds:[hero,...Array(5).fill('none')]});const action=setup(g);g.startTurn(0);const s=stateOf(observationView(captureObservation(g,0)),0),plan=actionPlan(s,0,action,{sequence:false});
+const predicted=brief(plan.branches[0].state);
+const options={choose:r=>r.type==='skillChoice'?false:policy.chooseAiRuleDecision(r,g),chooseResponse:()=>null};
+try{await g.executeAction(0,action,options);const actual=brief(stateOf(observationView(captureObservation(g,0)),0));results.push({name,equal:JSON.stringify(predicted)===JSON.stringify(actual),predicted,actual});}catch(e){results.push({name,error:e.message});}}
+await run('prayer','priest',g=>{const a=take(g,0,c=>c.type==='spell'),b=take(g,0,c=>c.type==='spell');return {type:'skill',skillId:'prayer',cardIds:[a.id,b.id],targetIds:[]};});
+for(const mode of ['heal','damage'])await run('domain-'+mode,'priest',g=>{const a=take(g,0),b=take(g,0);g.player(0).energy.crystal=1;g.player(0).healing=1;return {type:'skill',skillId:'sacredDomain',mode,cardIds:[a.id,b.id],targetIds:[mode==='heal'?3:1]};});
+await run('water-gift','priest',g=>{const a=take(g,0,c=>c.elements.includes('water'));take(g,0);return {type:'skill',skillId:'waterPower',cardIds:[a.id],targetIds:[3]};});
+await run('earth-seal','sealer',g=>{const a=take(g,0,c=>c.uniqueSkills.includes('earthSeal'));return {type:'skill',skillId:'earthSeal',cardIds:[a.id],targetIds:[1]};});
+await run('binding','sealer',g=>{g.player(0).energy.crystal=1;return {type:'skill',skillId:'fivefoldBinding',cardIds:[],targetIds:[1]};});
+await run('seal-breaking','sealer',g=>{g.player(0).energy.crystal=1;effect(g,3,'poison');return {type:'skill',skillId:'sealBreaking',cardIds:[],targetIds:[3]};});
+await run('flash-trap','marksman',g=>{const a=take(g,0,c=>c.uniqueSkills.includes('flashTrap'));return {type:'skill',skillId:'flashTrap',cardIds:[a.id],targetIds:[1]};});
+await run('snipe','marksman',g=>{g.player(0).energy.crystal=1;take(g,1);return {type:'skill',skillId:'snipe',cardIds:[],targetIds:[1]};});
+await run('wind-cleanse','guardianAngel',g=>{const a=take(g,0,c=>c.elements.includes('wind'));effect(g,3,'poison');return {type:'skill',skillId:'windCleansing',cardIds:[a.id],targetIds:[3]};});
+await run('angel-blessing','guardianAngel',g=>{const a=take(g,0,c=>c.elements.includes('water'));take(g,1);take(g,1);return {type:'skill',skillId:'angelBlessing',cardIds:[a.id],targetIds:[1]};});
+await run('exposed-water','priest',g=>{const a=take(g,0,c=>c.elements.includes('water'));take(g,0);effect(g,0,'waterSeal','waterStrike');return {type:'skill',skillId:'waterPower',cardIds:[a.id],targetIds:[3]};});
+console.log(JSON.stringify(results,null,2));

@@ -1,0 +1,29 @@
+✔ v15 five old cases retain legal complete rankings and finite decomposed scores; no prescribed ordering (89.182759ms)
+✔ v15 shield + free attack is a complete engine plan; shield consumed means prevention, no fixed consumption bonus (14.709691ms)
+✔ v15 energy has typed realizable uses and batching, not rewards for unusable crystals (4.074946ms)
+✔ v15 waterPower chooses applicable magic gift to sealer and resolves actual gift before overflow (5.940746ms)
+✔ v15 uncertainty terminal bounded across attack and magic; confirmed fifth cup retains priority (16.951155ms)
+✔ v15 fifth-cup windows respond to 4/4/5, 4/4/3, order, healing and direct win (3.916943ms)
+✔ v15 hidden information invariance covers all six observers including semantic history (175.266973ms)
+✔ v15 declined private skill offers and covered costs do not publish hidden traits (0.952915ms)
+✔ v15 refinement compares shared gem opportunity, two useful charges, capacity and unusable charge (60.809098ms)
+✔ v15 real magic relay records sources, cancellation and public settlement without hidden gifts (2.463081ms)
+✔ v15 exact shared assignment cannot prefer spending a gem to an equivalent crystal for a flexible user (1.442436ms)
+✔ v15 future unknown own draws have bounded comeback opportunity, not assumed useless cards (1.210845ms)
+✔ v15 exact resource assignment matches independent table DP across every legal shared pool (1.927642ms)
+✔ v15 shield response preserves uncertainty through third attack, verified against real engine (5.479637ms)
+✔ v15 unusable crystals constrain gem-only shared demand (0.995448ms)
+✔ v15 angel shield and wall both resolve real bond to a freely chosen healing target (3.597152ms)
+✔ v15 angel stored energy retains residual value while shelter reduces the same spell loss (0.942319ms)
+✔ v15 free angel healing never destroys stored shelter value or selects a saturated target (3.203622ms)
+✔ v15 allied free healing is monotone across public pressure and shelter holdings (12.044843ms)
+✔ v15 wind cleansing keeps its pre-payment effect choice when exposure consumes that effect (4.90561ms)
+✔ v15 holyContract planned activation matches actual choice and preserves reserved action costs (31.837868ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 587.554241

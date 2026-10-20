@@ -1,7 +1,7 @@
 import * as baseline from '../v1.0/index.js';
 import {captureObservation,observationView,isolatePolicy} from '../observation.js';
 import {stateOf,clone,value,cardData,spend,remove,draw,damage,heal,payEnergy,transfer,overflow,components,synthesisHealing} from './model.js';
-import {actionPlan,explain,piercingOptions,giftOptions,bestAttack,attackBranches,magicBranches,expected,removeEffectOptions} from './planner.js';
+import {actionPlan,contractOption,explain,piercingOptions,giftOptions,bestAttack,attackBranches,magicBranches,expected,removeEffectOptions} from './planner.js';
 import {requestData,requestFromData} from './trace.js';
 
 const combinations=(items,n)=>n===0?[[]]:items.flatMap((item,i)=>combinations(items.slice(i+1),n-1).map(rest=>[item,...rest]));
@@ -20,10 +20,10 @@ export function enumerate(g,id) {
 }
 export function createEconomyPolicy({sequence=true,economy=true,ownership=true,energy=true,healing=true,reuseBase=true}={}) {
  const disabled=Object.entries({ownership,energy,healing}).filter(([,v])=>!v).map(([k])=>k);
- const version='experimental/plans-3'+(disabled.length?'-no-'+disabled.join('-'):'');
+ const version='experimental/plans-4'+(disabled.length?'-no-'+disabled.join('-'):'');
  const state=(g,id)=>stateOf(g,id,{economy,ownership,energy,healing});
  const raw={...baseline,
-  rankAiActions(g,id) {const s=state(g,id),base=reuseBase?components(s):undefined;return enumerate(g,id).map(action=>{const plan=actionPlan(s,id,action,{sequence});return {action,score:plan.score,reason:'expected-state-difference',explanation:explain(s,plan,base)};}).sort((a,b)=>b.score-a.score);},
+  rankAiActions(g,id) {const s=state(g,id),base=reuseBase?components(s):undefined,baseTotal=base?Object.values(base).reduce((a,b)=>a+b,0):value(s),contracts=new Map();return enumerate(g,id).map(action=>{const plan=actionPlan(s,id,action,{sequence,baseTotal,contracts});return {action,score:plan.score,reason:'expected-state-difference',explanation:explain(s,plan,base)};}).sort((a,b)=>b.score-a.score);},
   chooseAiDiscard(g,id,count,valid=null) {
    const s=state(g,id),hand=g.player(id).hand,allowed=valid??hand.map((_,i)=>i);let best=null;
    for(const indexes of combinations(allowed,count)){const next=clone(s);remove(next,id,indexes.map(i=>s.players[id].hand[i]));const score=value(next);if(!best||score>best.score)best={indexes,score};}
@@ -51,6 +51,12 @@ export function createEconomyPolicy({sequence=true,economy=true,ownership=true,e
   chooseAiRuleDecision(r,g) {
    if(!g)return r.defaultValue??null;
    const id=r.playerId??r.player?.id,s=state(g,id),p=s.players[id],context=r.context??{};
+   if(r.skillId==='holyContract') {
+    const option=contractOption(s,id,{reservedEnergy:r.reservedEnergy??s.turn?.reservedEnergy??0,reservedHealing:r.reservedHealing??s.turn?.reservedHealing??0,targetId:r.type==='numberChoice'?r.targetId:null});
+    if(r.type==='skillChoice')return option.count>0;
+    if(r.type==='playerChoice')return option.targetId??r.defaultValue;
+    if(r.type==='numberChoice')return option.count||r.choices[0]?.value;
+   }
    if(r.type==='cardChoice') {
     if(r.skillId==='piercingShot') {const best=piercingOptions(s,id,context.targetId,r.valid.map(i=>p.hand[i].id))[0];return best.card?[p.hand.findIndex(c=>c.id===best.card)]:null;}
     if(r.purpose==='give') {
@@ -104,10 +110,10 @@ export function createEconomyPolicy({sequence=true,economy=true,ownership=true,e
    return baseline.chooseAiRuleDecision(r,g);
   },
  };
- const policy=isolatePolicy(raw);
+ const policy=isolatePolicy(raw,{activation:true});
  return {...policy,
   traceDecision(g,id,request=null) {
-   const observation=captureObservation(g,id,{actions:!request}),v=observationView(observation);
+   const observation=captureObservation(g,id,{actions:!request,activation:true}),v=observationView(observation);
    if(request&&(request.playerId??request.player?.id??request.target?.id)!==id)throw Error('Trace observer must own the decision');
    if(!request)return {version,configuration:{sequence,economy,ownership,energy,healing},observation,candidates:raw.rankAiActions(v,id)};
    const type=request.type,decision=type==='overflow'?raw.chooseAiDiscard(v,id,v.player(id).hand.length-v.player(id).handLimit):type==='response'?policy.chooseAiResponse(g,request):policy.chooseAiRuleDecision(request,g);

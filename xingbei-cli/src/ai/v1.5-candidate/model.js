@@ -1,3 +1,5 @@
+import {createDeck} from '../../cards.js';
+const publicDeck=createDeck(),magicRate=publicDeck.filter(c=>c.name==='magicBullet').length/publicDeck.length;
 import {terminalForecast} from './horizon.js';
 // Pure approximate evaluator over a detached public observation. Never a Game.
 // Units are heuristic team utility, NOT damage or a calibrated win probability.
@@ -10,7 +12,10 @@ import {costBeliefs} from '../v1.1/fusion.js';
 const freezeTree=x=>{if(x&&typeof x==='object'){for(const v of Object.values(x))freezeTree(v);Object.freeze(x);}return x;};
 const immutableTraits=c=>freezeTree(structuredClone(c.traits));
 const copyCard=c=>c?{...c,elements:[...c.elements],uniqueSkills:[...c.uniqueSkills]}:c;
-export const clone=s=>({...s,turn:structuredClone(s.turn),
+// Detached turn data contains only plain scalar/array/object records. Recursing
+// over those few fields avoids structuredClone's transfer machinery per leaf.
+const copyTurn=x=>Array.isArray(x)?x.map(copyTurn):x&&typeof x==='object'?Object.fromEntries(Object.entries(x).map(([k,v])=>[k,copyTurn(v)])):x;
+export const clone=s=>({...s,turn:copyTurn(s.turn),
  players:s.players.map(p=>({...p,energy:{...p.energy},hand:p.hand.map(copyCard),known:p.known.map(copyCard),effects:p.effects.map(e=>({...e,card:copyCard(e.card)}))})),
  teams:Object.fromEntries(Object.entries(s.teams).map(([id,t])=>[id,{...t}]))});
 export const traits = (c, id) => c?.traits?.[id]?.elements ?? c?.elements ?? [];
@@ -72,11 +77,18 @@ export function energyUses(s,p) {
   if(!s.players.some(t=>t.effects.some(e=>e.name==='fivefoldBinding'&&e.id===`fivefoldBinding-${p.id}`)))uses.push({kind:'either',value:7});
   if(s.players.some(t=>t.effects.length))uses.push({kind:'either',value:6});
  }
- if(p.hero==='guardianAngel')for(let i=0;i<2;i++)uses.push({kind:'either',value:7/(1+i*.25)});
+ if(p.hero==='guardianAngel') {
+  const removable=s.players.flatMap(t=>t.effects.filter(e=>e.name!=='fivefoldBinding'&&effectValue(s,t,e)*(t.team===p.team?1:-1)<0));
+  for(let i=0;i<Math.min(2,removable.length);i++)uses.push({kind:'either',value:7/(1+i*.25)});
+ }
+
  return uses;
 }
 export function energyPlan(s,p) {
  if(!p.energy.gem&&!p.energy.crystal)return 0;
+ // Stored shelter energy remains usable after a free heal. Protection is valued
+ // against the same residual loss below, never as an asset that healing destroys.
+ if(p.hero==='guardianAngel')return (p.energy.gem+p.energy.crystal)*weights.stone;
  let gem=p.energy.gem,crystal=p.energy.crystal,result=0,uses=0;
  for(const use of energyUses(s,p)) {
   if(use.kind==='gem'){if(!gem)continue;gem--;}
@@ -108,6 +120,7 @@ export function allocationValue(s,team) {
 export function nextTurnRisk(s,playerId=s.observer) {
  const p=s.players[playerId];let risk=0,pressure=0,defenses=p.hand.filter(c=>['darkStrike','holyLight'].includes(c.name)).length;
  const coverage=new Set(p.hand.filter(c=>c.type==='attack').flatMap(c=>traits(c,p.id)));
+ const aim=1/Math.max(1,s.players.filter(x=>x.team===p.team).length),shield=p.effects.some(e=>e.name==='holyShield')?.4:0;
  // Residual value to our next effective action. Public seats and resources only.
  // This is a threat estimate, not a simulation with actual hidden cards.
  for(let step=1;step<=s.players.length;step++) {
@@ -117,13 +130,12 @@ export function nextTurnRisk(s,playerId=s.observer) {
    continue;
   }
   if(!t.count)continue;
-  const activity=Math.min(.8,.2+t.count*.1),aim=1/Math.max(1,s.players.filter(x=>x.team===p.team).length);
+  const activity=Math.min(.8,.2+t.count*.1);
   let block=p.id!==s.observer?1-.75**p.count:defenses>0?.75:Math.min(.5,coverage.size*.09);
   if(defenses>0)defenses-=activity*aim;
   const force=t.hero==='marksman'?.15:t.hero==='windSwordmaster'&&t.count>=3?.2:0;
   block*=1-force;
   const amount=t.hero==='berserker'?3+(t.energy.gem?1:0):t.hero==='windSwordmaster'&&t.count>=3?3:2;
-  const shield=p.effects.some(e=>e.name==='holyShield')?.4:0;
   pressure+=activity*aim*(1-block)*(1-shield)*amount;
   const overflow=Math.max(0,p.count+pressure-Math.min(p.healing,p.hero==='priest'?1:pressure)-p.limit);
   risk=Math.max(risk,overflow*weights.morale);
@@ -144,8 +156,37 @@ function effectValue(s,p,e) {
  }
  return 0;
 }
+const spellCache=new WeakMap();
+export function spellExposure(s,team) {
+ const allies=s.players.filter(p=>p.team===team),enemies=s.players.filter(p=>p.team!==team);
+ // Bounded distribution over at most three public enemy opportunities. Apply
+ // shelter inside each loss outcome; subtracting it after expectation erases
+ // low-probability losses that exceed the available energy.
+ const exposures=allies.map(target=>target.effects.some(e=>e.name==='holyShield')?0:Math.max(0,target.count+2-Math.min(target.healing,target.hero==='priest'?1:2)-target.limit));
+ const width=Math.max(0,...exposures);
+ if(!width)return 0;
+ const shelter=allies.filter(p=>p.hero==='guardianAngel').reduce((n,p)=>n+p.energy.gem+p.energy.crystal,0);
+ if(shelter>=width*enemies.length)return 0;
+ // Only these sufficient statistics enter the finite distribution. Keep the
+ // bounded memo local to this detached decision's immutable beliefs object.
+ const key=JSON.stringify([exposures,enemies.map(p=>p.count),shelter]);
+ let memo=spellCache.get(s.beliefs);if(!memo){memo=new Map();spellCache.set(s.beliefs,memo);}
+ if(memo.has(key))return memo.get(key);
+ let distribution=[1];
+ for(const enemy of enemies){
+  const chance=1-(1-magicRate)**enemy.count,next=Array(distribution.length+width).fill(0);
+  for(let loss=0;loss<distribution.length;loss++){
+   next[loss]+=distribution[loss]*(1-chance);
+   for(const excess of exposures)next[loss+excess]+=distribution[loss]*chance/Math.max(1,allies.length);
+  }
+  distribution=next;
+ }
+ const result=distribution.reduce((n,p,loss)=>n+p*Math.max(0,loss-shelter),0)*weights.morale;
+ if(memo.size<4096)memo.set(key,result);
+ return result;
+}
 export function components(s) {
- const team=s.players[s.observer].team, out={morale:0,cups:0,stones:0,allocation:0,conversion:0,ownHand:0,otherHands:0,healing:0,energy:0,effects:0,nextTurnRisk:s.economy?nextTurnRisk(s):0,otherTurnRisk:0,futureTerminal:terminalForecast(s),cupWindow:0,terminal:0};
+ const team=s.players[s.observer].team, out={morale:0,cups:0,stones:0,allocation:0,conversion:0,ownHand:0,otherHands:0,healing:0,energy:0,effects:0,nextTurnRisk:s.economy?nextTurnRisk(s):0,otherTurnRisk:0,spellRisk:-spellExposure(s,team)+spellExposure(s,team==='red'?'blue':'red'),futureTerminal:terminalForecast(s),cupWindow:0,terminal:0};
  for(const [id,t] of Object.entries(s.teams)) {
   const sign=id===team?1:-1;
   out.morale+=sign*(t.morale*weights.morale-3*Math.max(0,5-t.morale)**2);

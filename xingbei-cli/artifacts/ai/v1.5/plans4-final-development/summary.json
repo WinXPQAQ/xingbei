@@ -1,0 +1,48 @@
+{
+  "records": 384,
+  "newGames": 288,
+  "reusedControls": 96,
+  "summary": {
+    "flow": {
+      "pairs": 96,
+      "wins": {
+        "v1.4": 25,
+        "experimental/plans-4": 29
+      },
+      "delta": 0.041666666666666664,
+      "improved": 15,
+      "worsened": 11,
+      "bySeed": {
+        "1501001": {
+          "v1.4": 15,
+          "experimental/plans-4": 13
+        },
+        "1501002": {
+          "v1.4": 10,
+          "experimental/plans-4": 16
+        }
+      }
+    },
+    "reserve": {
+      "pairs": 96,
+      "wins": {
+        "v1.4": 17,
+        "experimental/plans-4": 15
+      },
+      "delta": -0.020833333333333332,
+      "improved": 10,
+      "worsened": 12,
+      "bySeed": {
+        "1501001": {
+          "v1.4": 9,
+          "experimental/plans-4": 6
+        },
+        "1501002": {
+          "v1.4": 8,
+          "experimental/plans-4": 9
+        }
+      }
+    }
+  },
+  "scope": "Two development seeds; descriptive paired diagnostics only. No release or inferential pass."
+}
