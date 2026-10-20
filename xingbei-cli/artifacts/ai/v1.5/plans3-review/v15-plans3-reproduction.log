@@ -1,0 +1,83 @@
+shield sequence 116.1883248509788 34.81168756938273 [
+  {
+    p: 0.2222932345152263,
+    uncertain: true,
+    path: [ 'light', 'hit' ],
+    morale: 1
+  },
+  {
+    p: 0.5456288483555555,
+    uncertain: true,
+    path: [ 'counter', 'counter-hit', 'hit' ],
+    morale: 1
+  },
+  {
+    p: 0,
+    uncertain: true,
+    path: [ 'counter', 'counter-answered', 'hit' ],
+    morale: 1
+  },
+  {
+    p: 0.23207791712921816,
+    uncertain: true,
+    path: [ 'shield', 'hit' ],
+    morale: 0
+  }
+]
+unusable shared demand 0 capacity { gem: 0, crystal: 3 } canrefine false
+real after second 1 4 1 true
+real after third 1 6 null [
+  {
+    type: 'attack',
+    actorId: 0,
+    targetId: 1,
+    card: 'fireStrike',
+    elements: [ 'fire' ],
+    counter: false,
+    sequence: 4
+  },
+  {
+    type: 'response',
+    actorId: 1,
+    sourceId: 0,
+    targetId: 3,
+    card: 'fireStrike',
+    elements: [ 'fire' ],
+    result: 'redirect',
+    sequence: 6
+  },
+  {
+    type: 'attack',
+    actorId: 1,
+    targetId: 3,
+    card: 'fireStrike',
+    elements: [ 'fire' ],
+    counter: true,
+    sequence: 7
+  },
+  {
+    type: 'attackResult',
+    actorId: 1,
+    targetId: 3,
+    card: 'fireStrike',
+    result: 'hit',
+    sequence: 8
+  },
+  {
+    type: 'attack',
+    actorId: 0,
+    targetId: 1,
+    card: 'fireStrike',
+    elements: [ 'fire' ],
+    counter: false,
+    sequence: 17
+  },
+  {
+    type: 'attackResult',
+    actorId: 0,
+    targetId: 1,
+    card: 'fireStrike',
+    result: 'hit',
+    sequence: 19
+  }
+]

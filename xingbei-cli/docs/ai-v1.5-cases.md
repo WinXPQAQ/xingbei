@@ -11,11 +11,11 @@
 |合法行动|完整计划分|首动作分|追加分|
 |---|---:|---:|---:|
 |魔弹→5号|4.01|4.01|-0.00|
-|水涟斩→2号|2.33|2.33|0.00|
-|地裂斩→1号|2.05|2.05|0.00|
-|地裂斩→2号|2.05|2.05|0.00|
-|水涟斩→1号|2.05|2.05|0.00|
-|风神斩→1号|2.05|2.05|0.00|
+|水涟斩→2号|3.13|3.13|0.00|
+|地裂斩→2号|2.91|2.91|0.00|
+|风神斩→2号|2.91|2.91|0.00|
+|地裂斩→5号|2.83|2.83|0.00|
+|水涟斩→5号|2.83|2.83|0.00|
 
 最佳计划分支（推测，不是实际已发生）：
 
@@ -27,21 +27,21 @@
 
 最近公开完整事件（此前全部事件保留在JSON；暗牌不展示）：
 
-- {"type":"turn","playerId":1}
-- {"type":"play","playerId":1,"targetId":3,"card":"雷光斩","elements":["thunder"],"fates":["Y"],"uniqueSkills":["speedBlessing","lightning"]}
-- {"type":"attack","actorId":1,"targetId":3,"card":"雷光斩","elements":["thunder"],"counter":false}
-- {"type":"skillNote","playerId":1,"skillId":"rage"}
-- {"type":"play","playerId":3,"targetId":1,"card":"圣光","elements":["light"],"fates":["X"],"uniqueSkills":[]}
-- {"type":"response","actorId":3,"sourceId":1,"targetId":1,"card":"圣光","elements":["light"],"result":"cancel"}
-- {"type":"turn","playerId":2}
-- {"type":"spell","actorId":2,"targetId":0,"card":"虚弱","elements":["water"]}
-- {"type":"play","playerId":2,"card":"虚弱","elements":["water"],"fates":["X"],"uniqueSkills":[]}
-- {"type":"effect","sourceId":2,"targetId":0,"effectId":"虚弱","result":"attached"}
-- {"type":"turn","playerId":3}
-- {"type":"spell","actorId":3,"targetId":0,"card":"圣盾","elements":["wind"]}
-- {"type":"play","playerId":3,"card":"圣盾","elements":["wind"],"fates":["Y"],"uniqueSkills":[]}
-- {"type":"effect","sourceId":3,"targetId":0,"effectId":"圣盾","result":"attached"}
-- {"type":"turn","playerId":4}
+- 1号开始回合
+- 1号公开打出雷光斩（thunder）
+- 1号使用雷光斩→3号
+- 1号的rage结算记录
+- 3号公开打出圣光（light）
+- 3号以圣光响应1号，圣光抵消→1号
+- 2号开始回合
+- 2号使用虚弱→0号
+- 2号公开打出虚弱（water）
+- 2号施加，→0号虚弱附着
+- 3号开始回合
+- 3号使用圣盾→0号
+- 3号公开打出圣盾（wind）
+- 3号施加，→0号圣盾附着
+- 4号开始回合
 
 ## 例2：berserker
 
@@ -62,22 +62,22 @@
 
 最近公开完整事件（此前全部事件保留在JSON；暗牌不展示）：
 
-- {"type":"attackResult","actorId":5,"targetId":0,"card":"暗灭","result":"hit"}
-- {"type":"healing","playerId":0,"amount":0,"result":"prevent"}
-- {"type":"morale","team":"red","amount":-1,"count":6}
-- {"type":"damage","sourceId":5,"targetId":0,"amount":2,"result":"attack"}
-- {"type":"stones","team":"blue","gem":1,"crystal":0}
-- {"type":"turn","playerId":0}
-- {"type":"play","playerId":0,"targetId":5,"card":"暗灭","elements":["dark"],"fates":["S"],"uniqueSkills":[]}
-- {"type":"attack","actorId":0,"targetId":5,"card":"暗灭","elements":["dark"],"counter":false}
-- {"type":"skillNote","playerId":0,"skillId":"rage"}
-- {"type":"attackResult","actorId":0,"targetId":5,"card":"暗灭","result":"hit"}
-- {"type":"skillNote","playerId":0,"skillId":"rage"}
-- {"type":"healing","playerId":5,"amount":0,"result":"prevent"}
-- {"type":"morale","team":"blue","amount":-3,"count":2}
-- {"type":"damage","sourceId":0,"targetId":5,"amount":4,"result":"attack"}
-- {"type":"stones","team":"red","gem":1,"crystal":0}
-- {"type":"turn","playerId":1}
+- 5号暗灭→0号：命中
+- 0号使用治疗抵消0
+- 红方士气-1，剩余6
+- 5号造成，→0号承受2伤害
+- 蓝方获得1宝石、0水晶
+- 0号开始回合
+- 0号公开打出暗灭（dark）
+- 0号使用暗灭→5号
+- 0号的rage结算记录
+- 0号暗灭→5号：命中
+- 0号的rage结算记录
+- 5号使用治疗抵消0
+- 蓝方士气-3，剩余2
+- 0号造成，→5号承受4伤害
+- 红方获得1宝石、0水晶
+- 1号开始回合
 
 ## 例3：windSwordmaster
 
@@ -98,22 +98,22 @@
 
 最近公开完整事件（此前全部事件保留在JSON；暗牌不展示）：
 
-- {"type":"morale","team":"red","amount":-1,"count":6}
-- {"type":"damage","sourceId":5,"targetId":0,"amount":2,"result":"attack"}
-- {"type":"stones","team":"blue","gem":1,"crystal":0}
-- {"type":"turn","playerId":0}
-- {"type":"play","playerId":0,"targetId":5,"card":"暗灭","elements":["dark"],"fates":["S"],"uniqueSkills":[]}
-- {"type":"attack","actorId":0,"targetId":5,"card":"暗灭","elements":["dark"],"counter":false}
-- {"type":"skillNote","playerId":0,"skillId":"rage"}
-- {"type":"attackResult","actorId":0,"targetId":5,"card":"暗灭","result":"hit"}
-- {"type":"skillNote","playerId":0,"skillId":"rage"}
-- {"type":"healing","playerId":5,"amount":0,"result":"prevent"}
-- {"type":"morale","team":"blue","amount":-3,"count":2}
-- {"type":"damage","sourceId":0,"targetId":5,"amount":4,"result":"attack"}
-- {"type":"stones","team":"red","gem":1,"crystal":0}
-- {"type":"turn","playerId":1}
-- {"type":"refine","playerId":1,"gem":1,"crystal":0}
-- {"type":"turn","playerId":2}
+- 红方士气-1，剩余6
+- 5号造成，→0号承受2伤害
+- 蓝方获得1宝石、0水晶
+- 0号开始回合
+- 0号公开打出暗灭（dark）
+- 0号使用暗灭→5号
+- 0号的rage结算记录
+- 0号暗灭→5号：命中
+- 0号的rage结算记录
+- 5号使用治疗抵消0
+- 蓝方士气-3，剩余2
+- 0号造成，→5号承受4伤害
+- 红方获得1宝石、0水晶
+- 1号开始回合
+- 1号提炼：1宝石、0水晶
+- 2号开始回合
 
 ## 例4：sealer
 
@@ -137,7 +137,7 @@
 
 最近公开完整事件（此前全部事件保留在JSON；暗牌不展示）：
 
-- {"type":"turn","playerId":0}
+- 0号开始回合
 
 ## 例5：priest
 
@@ -158,17 +158,17 @@
 
 最近公开完整事件（此前全部事件保留在JSON；暗牌不展示）：
 
-- {"type":"turn","playerId":1}
-- {"type":"spell","actorId":1,"targetId":0,"card":"虚弱","elements":["earth"]}
-- {"type":"play","playerId":1,"card":"虚弱","elements":["earth"],"fates":["J"],"uniqueSkills":[]}
-- {"type":"effect","sourceId":1,"targetId":0,"effectId":"虚弱","result":"attached"}
-- {"type":"turn","playerId":2}
-- {"type":"spell","actorId":2,"targetId":3,"card":"虚弱","elements":["water"]}
-- {"type":"play","playerId":2,"card":"虚弱","elements":["water"],"fates":["X"],"uniqueSkills":[]}
-- {"type":"effect","sourceId":2,"targetId":3,"effectId":"虚弱","result":"attached"}
-- {"type":"turn","playerId":3}
-- {"type":"effect","playerId":3,"effectId":"虚弱","result":"removed"}
-- {"type":"turn","playerId":4}
+- 1号开始回合
+- 1号使用虚弱→0号
+- 1号公开打出虚弱（earth）
+- 1号施加，→0号虚弱附着
+- 2号开始回合
+- 2号使用虚弱→3号
+- 2号公开打出虚弱（water）
+- 2号施加，→3号虚弱附着
+- 3号开始回合
+- 3号虚弱移除
+- 4号开始回合
 
 ## 边界
 

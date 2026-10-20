@@ -20,12 +20,12 @@ export function giftOptions(s,id,targetId,cards=s.players[id].hand) {
 }
 export function probability(s,id,c,targetId,{forced=false,storm=false}={}) {
  const target=s.players[targetId];if(forced)return {hit:1,light:0,counter:0};
- if(target.effects.some(e=>e.name==='holyShield')&&!storm)return {hit:0,light:0,counter:0,shield:true};
+ const shield=target.effects.some(e=>e.name==='holyShield')&&!storm;
  const gaps=s.beliefs[targetId]??{},elements=traits(c,id);
  const canCounter=c.name!=='darkStrike'&&!storm&&!(s.players[id].hero==='marksman'&&elements.includes('thunder'));
  const counter=canCounter?printed.filter(x=>x.type==='attack'&&(x.name==='darkStrike'||x.elements.some(e=>elements.includes(e)))).length/printed.length*(1-Math.min(...elements.map(e=>gaps[e]??0))):0;
  const light=lightRate*(1-(gaps.light??0)),r=counter+light,hit=(1-r)**target.count;
- return {hit,light:r?(1-hit)*light/r:0,counter:r?(1-hit)*counter/r:0};
+ return {hit:shield?0:hit,shield:shield?hit:0,light:r?(1-hit)*light/r:0,counter:r?(1-hit)*counter/r:0};
 }
 function reflect(s,id,sourceId,amount) {
  // Engine excludes the previous attacker from counter targets. Estimate one
@@ -33,11 +33,12 @@ function reflect(s,id,sourceId,amount) {
  s=clone(s);s.uncertain=true;
  const targets=s.players.filter(t=>t.team===s.players[id].team&&t.id!==id);
  const outcomes=targets.map(t=>{
-  if(t.effects.some(e=>e.name==='holyShield')){const next=clone(s);next.players[t.id].effects=next.players[t.id].effects.filter(e=>e.name!=='holyShield');return [{probability:1,state:next,path:['counter-shield']}];}
   const chance=.75**t.count,hit=clone(s),response=clone(s);
-  damage(hit,t.id,amount,'attack');stones(hit,s.players[sourceId].team,'crystal',1);
+  const shield=t.effects.some(e=>e.name==='holyShield');
+  if(shield)hit.players[t.id].effects=hit.players[t.id].effects.filter(e=>e.name!=='holyShield');
+  else {damage(hit,t.id,amount,'attack');stones(hit,s.players[sourceId].team,'crystal',1);}
   response.players[t.id].count=Math.max(0,t.count-1);
-  return [{probability:chance,state:hit,path:['counter-hit']},{probability:1-chance,state:response,path:['counter-answered']}];
+  return [{probability:chance,state:hit,path:[shield?'counter-shield':'counter-hit']},{probability:1-chance,state:response,path:['counter-answered']}];
  });
  return outcomes.sort((a,b)=>expected(a)-expected(b))[0]??[{probability:1,state:s,path:[]}];
 }
@@ -48,7 +49,7 @@ export function attackBranches(input,id,c,targetId,{precision=null,active=true,c
  const usePrecision=precision===true;
  const forced=usePrecision||(active&&p.hero==='windSwordmaster'&&count===2)||(active&&p.hero==='berserker'&&special(c,'bloodyRoar')&&t.healing===2);
  const probabilities=probability(s,id,c,targetId,{forced,storm});
- if(!forced&&!probabilities.shield)s.uncertain=true;
+ if(!forced&&(probabilities.light>0||probabilities.counter>0))s.uncertain=true;
  let amount=p.hero==='berserker'?3+Number(p.count>3):2;
  if(active&&p.hero==='berserker'&&special(c,'bloodBlade'))amount+=t.count===2?2:t.count===3?1:0;
  if(usePrecision)amount--;
@@ -61,7 +62,7 @@ export function attackBranches(input,id,c,targetId,{precision=null,active=true,c
   stones(hit,p.team,active?'gem':'crystal',1);branches.push({probability:probabilities.hit,state:hit,path:[usePrecision?'precision-hit':'hit']});
  }
  for(const kind of ['light','counter','shield']) {
-  const chance=kind==='shield'?Number(probabilities.shield):probabilities[kind];if(!chance)continue;
+  const chance=kind==='shield'?(probabilities.shield??0):probabilities[kind];if(!chance)continue;
   let miss=clone(s);
   if(kind==='shield')miss.players[targetId].effects=miss.players[targetId].effects.filter(e=>e.name!=='holyShield');
   else miss.players[targetId].count=Math.max(0,miss.players[targetId].count-1);

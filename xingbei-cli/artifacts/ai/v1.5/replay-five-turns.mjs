@@ -3,7 +3,7 @@ const cases=JSON.parse(fs.readFileSync('artifacts/ai/targeted-fixes-1/negative-c
 for(const old of cases){
  const g=new Game({seed:old.config.seed,heroIds:old.config.heroIds}).setup();g.current=old.config.start;
  const events=[],record=g.recordPublicAction;g.recordPublicAction=function(e){record.call(this,e);events.push(structuredClone(e));};let candidateTurn=false;
- const policy=id=>getPolicy(candidateTurn&&id===old.actorId?'experimental/plans-2':g.player(id).team===old.config.team?'v1.4':'v1.3');
+ const policy=id=>getPolicy(candidateTurn&&id===old.actorId?'experimental/plans-3':g.player(id).team===old.config.team?'v1.4':'v1.3');
  const discard=(id,n)=>policy(id).chooseAiDiscard(g,id,n);
  const options={choose:r=>decide(r),chooseResponse:r=>policy(r.target.id).chooseAiResponse(g,r),overflow:(p,n)=>discard(p.id,n),resolveOverflow:r=>g.resolveOverflowWithDecisions(r.player.id,discard(r.player.id,r.player.hand.length-r.player.handLimit),options)};
  function decide(r){if(r.type==='response')return options.chooseResponse(r);if(r.type==='overflow')return options.resolveOverflow(r);return policy(r.playerId??r.player.id).chooseAiRuleDecision(r,g);}
@@ -20,4 +20,4 @@ for(const old of cases){
  }
  const r=results.at(-1);r.events=events.slice(r.eventStart);delete r.eventStart;r.after=captureObservation(g,old.actorId);r.winner=g.winner;
 }
-fs.writeFileSync('artifacts/ai/v1.5/five-real-engine-turns.json',JSON.stringify({source:process.argv[2]??'plans-2-pre-freeze',scope:'Original engine replay reaches exact old observation, then candidate controls the selected actor for one complete real turn; other seats retain old policies. Full public event chain only; not a claim of optimality or subsequent match strength.',results},null,2));console.log(results.map(r=>({hero:r.hero,actions:r.actions,events:r.events.length,winner:r.winner})));
+fs.writeFileSync('artifacts/ai/v1.5/five-real-engine-turns.json',JSON.stringify({source:process.argv[2]??'plans-3-pre-freeze',scope:'Original engine replay reaches exact old observation, then candidate controls the selected actor for one complete real turn; other seats retain old policies. Full public event chain only; not a claim of optimality or subsequent match strength.',results},null,2));console.log(results.map(r=>({hero:r.hero,actions:r.actions,events:r.events.length,winner:r.winner})));

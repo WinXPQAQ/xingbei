@@ -1,5 +1,5 @@
 {
-  "source": "plans-2-pre-freeze",
+  "source": "plans-3-pre-freeze",
   "scope": "Original engine replay reaches exact old observation, then candidate controls the selected actor for one complete real turn; other seats retain old policies. Full public event chain only; not a claim of optimality or subsequent match strength.",
   "results": [
     {

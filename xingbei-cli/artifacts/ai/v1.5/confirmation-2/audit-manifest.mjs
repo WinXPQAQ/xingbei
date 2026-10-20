@@ -1,0 +1,9 @@
+import fs from 'node:fs';import assert from 'node:assert/strict';import {createHash} from 'node:crypto';import {execFileSync} from 'node:child_process';
+const root='artifacts/ai/v1.5/confirmation-2',m=JSON.parse(fs.readFileSync(`${root}/manifest.json`));assert.equal(m.sha,'469e37f03a3a2d2679dae4c28f3e907e42e78163');assert.equal(execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),m.sha);
+for(const[file,hash]of Object.entries(m.hashes))assert.equal(createHash('sha256').update(fs.readFileSync(file)).digest('hex'),hash,file);
+const expected={'v1.4':5760,'v1.3':960,'v1.2':960,'v1.0':960,flow:4320,reserve:4320};assert.equal(m.games.length,17280);assert.equal(new Set(m.games.map(g=>g.id)).size,17280);
+for(const [endpoint,total]of Object.entries(expected)){
+ const games=m.games.filter(g=>g.endpoint===endpoint);assert.equal(games.length,total);assert.equal(new Set(games.map(g=>g.config.start)).size,6);assert.equal(new Set(games.map(g=>g.config.lineup)).size,4);assert.equal(new Set(games.map(g=>g.config.team)).size,2);
+ for(const row of games){const c=row.config;assert(c.seed>=1520001&&c.seed<=1520120);assert.equal(c.heroIds.length,6);if(['flow','reserve'].includes(endpoint)){const owner=[0,3,4].includes(row.seat)?'red':'blue';assert.equal(owner,c.team);assert.equal(c.seatPolicies.filter(p=>p==='experimental/plans-2').length,1);assert.equal(c.seatPolicies.filter(p=>p===`experimental/style-${endpoint}`).length,2);assert.equal(c.seatPolicies.filter(p=>p==='v1.4').length,3);}}
+}
+const result={sha:m.sha,passed:true,manifestGames:17280,endpointCounts:expected,sourceHashesVerified:Object.keys(m.hashes).length,allSixStarts:true,allSixCandidateStyleSeats:true,originalConfirmationSeedsNotReused:true,scope:'Manifest and routing audit only, not independent human/source review or completed match acceptance.'};fs.writeFileSync(`${root}/manifest-audit.json`,JSON.stringify(result,null,2));console.log(result);

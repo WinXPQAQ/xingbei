@@ -2,8 +2,8 @@ import {terminalForecast} from '../src/ai/v1.5-candidate/horizon.js';
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {Game} from '../src/engine.js';import {getPolicy} from '../src/ai/versions.js';import {captureObservation,observationView} from '../src/ai/observation.js';
 import {stateOf,clone,value,components,energyPlan,energyUses,allocationValue,transfer,damage} from '../src/ai/v1.5-candidate/model.js';
-import {actionPlan,attackBranches,explain} from '../src/ai/v1.5-candidate/planner.js';
-const policy=getPolicy('experimental/plans-2');
+import {actionPlan,attackBranches,planAttack,explain} from '../src/ai/v1.5-candidate/planner.js';
+const policy=getPolicy('experimental/plans-3');
 const take=(g,id,pred)=>{const c=g.deck.find(pred);assert(c);g.moveCard(c.id,{zone:'hand',playerId:id});return c;};
 const model=(g,id=0)=>stateOf(observationView(captureObservation(g,id)),id);
 const cases=JSON.parse(fs.readFileSync(new URL('../artifacts/ai/targeted-fixes-1/negative-cases.json',import.meta.url))).cases;
@@ -78,4 +78,24 @@ test('v15 exact resource assignment matches independent table DP across every le
    assert(Math.abs(allocationValue(s,team)-Math.max(...table.values()))<1e-8);
   }
  }
+});
+
+
+test('v15 shield response preserves uncertainty through third attack, verified against real engine',async()=>{
+ const g=new Game({heroIds:['windSwordmaster',...Array(5).fill('none')]});
+ take(g,0,c=>c.name==='fireStrike');take(g,0,c=>c.name==='fireStrike');take(g,1,c=>c.name==='fireStrike');for(let i=0;i<4;i++)take(g,1,c=>c.type==='attack');
+ const shield=take(g,3,c=>c.name==='holyShield');g.attachCard(shield.id,1,{effectId:'holyShield',sourcePlayerId:3});g.player(0).energy.crystal=1;g.teams.blue.morale=1;g.startTurn(0);g.turn.state.attackCount=1;
+ const s=model(g),card=s.players[0].hand[0],branches=attackBranches(s,0,card,1,{count:1});
+ assert(branches.some(b=>b.path[0]==='shield'));assert(branches.some(b=>b.path[0]==='counter'));assert(branches.every(b=>b.state.uncertain));assert(Math.abs(branches.reduce((a,b)=>a+b.probability,0)-1)<1e-9);
+ const plan=planAttack(s,0,card,1,{count:1,depth:2});assert(Math.abs(explain(s,plan).parts.terminal)<=150);
+ const forced=attackBranches(s,0,card,1,{count:2});assert.equal(forced.length,1);assert.equal(forced[0].path[0],'hit');
+ const noCards=clone(s);noCards.players[1].count=0;assert.equal(attackBranches(noCards,0,card,1,{count:1})[0].path[0],'shield');
+ const options={choose:r=>r.type==='numberChoice'?0:r.skillId==='swordShadow',chooseResponse:r=>{const e=r.valid.find(e=>e.card.type==='attack');return r.target.id===1&&e?{index:e.index,targetId:3}:null;}};
+ await g.executeAction(0,{type:'play',index:0,targetId:1},options);assert.equal(g.player(1).hand.length,4);assert.equal(g.player(1).getStatus('holyShield').length,1);
+ await g.executeAction(0,{type:'play',index:0,targetId:1},options);assert.equal(g.player(1).hand.length,6);assert.equal(g.teams.blue.morale,1);assert.equal(g.winner,null);
+});
+test('v15 unusable crystals constrain gem-only shared demand',()=>{
+ const g=new Game({heroIds:['none','none','none','berserker','none','none']});for(let i=0;i<4;i++)take(g,3,c=>c.type==='attack');g.addStones('red','gem',2);g.startTurn(0);const s=model(g),p=s.players[3];
+ p.energy.crystal=3;assert.equal(allocationValue(s,'red'),0);p.energy.crystal=2;const one=allocationValue(s,'red');assert(one>0);p.energy.crystal=0;assert(allocationValue(s,'red')>one);
+ p.hero='guardianAngel';p.energy.crystal=3;assert(energyPlan(s,p)>0);assert.equal(allocationValue(s,'red'),0);
 });

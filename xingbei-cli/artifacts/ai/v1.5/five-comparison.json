@@ -2941,22 +2941,22 @@
           "index": 1,
           "targetId": 2
         },
-        "score": 2.3327183189606755,
+        "score": 3.132889734252677,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": 0,
             "cups": 0,
-            "stones": 2.2113990420999023,
-            "allocation": 0.6191917317879728,
-            "conversion": 0.7076476934719689,
+            "stones": 1.125930244507316,
+            "allocation": 0.4889354760768624,
+            "conversion": 0.36029767824234127,
             "ownHand": -0.7000000000000002,
-            "otherHands": 1.4500724981080522,
+            "otherHands": 1.8577263354261566,
             "healing": 0,
             "energy": 0,
-            "effects": -1.9297223068312643,
+            "effects": 0,
             "nextTurnRisk": 0,
-            "otherTurnRisk": -0.025870339675956644,
+            "otherTurnRisk": 0,
             "futureTerminal": 0,
             "cupWindow": 0,
             "terminal": 0
@@ -3003,10 +3003,10 @@
               ]
             },
             {
-              "probability": 0.3859444613662529,
+              "probability": 0.21709375951851725,
               "path": [
                 "counter",
-                "counter-shield"
+                "counter-hit"
               ],
               "steps": [
                 {
@@ -3019,104 +3019,28 @@
                   ],
                   "active": true,
                   "precision": false,
-                  "result": "counter → counter-shield"
-                }
-              ]
-            }
-          ],
-          "primaryParts": null,
-          "precision": false,
-          "search": {
-            "limit": 64,
-            "used": 1
-          }
-        }
-      },
-      {
-        "action": {
-          "type": "play",
-          "index": 0,
-          "targetId": 1
-        },
-        "score": 2.0463234550000013,
-        "reason": "expected-state-difference",
-        "explanation": {
-          "parts": {
-            "morale": 0,
-            "cups": 0,
-            "stones": 2.081374814814815,
-            "allocation": 0.5827849481481484,
-            "conversion": 0.6660399407407409,
-            "ownHand": -0.7000000000000003,
-            "otherHands": 1.5176850962962978,
-            "healing": 0,
-            "energy": 0,
-            "effects": -2.07376,
-            "nextTurnRisk": 0,
-            "otherTurnRisk": -0.027801345000000005,
-            "futureTerminal": 0,
-            "cupWindow": 0,
-            "terminal": 0
-          },
-          "branches": [
-            {
-              "probability": 0.416274962962963,
-              "path": [
-                "hit"
-              ],
-              "steps": [
-                {
-                  "type": "attack",
-                  "actorId": 4,
-                  "targetId": 1,
-                  "card": "earthStrike",
-                  "elements": [
-                    "earth"
-                  ],
-                  "active": true,
-                  "precision": false,
-                  "result": "hit"
+                  "result": "counter → counter-hit"
                 }
               ]
             },
             {
-              "probability": 0.16897303703703706,
-              "path": [
-                "light"
-              ],
-              "steps": [
-                {
-                  "type": "attack",
-                  "actorId": 4,
-                  "targetId": 1,
-                  "card": "earthStrike",
-                  "elements": [
-                    "earth"
-                  ],
-                  "active": true,
-                  "precision": false,
-                  "result": "light"
-                }
-              ]
-            },
-            {
-              "probability": 0.414752,
+              "probability": 0.16885070184773562,
               "path": [
                 "counter",
-                "counter-shield"
+                "counter-answered"
               ],
               "steps": [
                 {
                   "type": "attack",
                   "actorId": 4,
-                  "targetId": 1,
-                  "card": "earthStrike",
+                  "targetId": 2,
+                  "card": "waterStrike",
                   "elements": [
-                    "earth"
+                    "water"
                   ],
                   "active": true,
                   "precision": false,
-                  "result": "counter → counter-shield"
+                  "result": "counter → counter-answered"
                 }
               ]
             }
@@ -3135,22 +3059,22 @@
           "index": 0,
           "targetId": 2
         },
-        "score": 2.0463234550000013,
+        "score": 2.906221000000002,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": 0,
             "cups": 0,
-            "stones": 2.081374814814815,
-            "allocation": 0.5827849481481484,
-            "conversion": 0.6660399407407409,
+            "stones": 0.914884814814815,
+            "allocation": 0.4428061481481483,
+            "conversion": 0.2927631407407409,
             "ownHand": -0.7000000000000003,
-            "otherHands": 1.5176850962962978,
+            "otherHands": 1.9557668962962977,
             "healing": 0,
             "energy": 0,
-            "effects": -2.07376,
+            "effects": 0,
             "nextTurnRisk": 0,
-            "otherTurnRisk": -0.027801345000000005,
+            "otherTurnRisk": 0,
             "futureTerminal": 0,
             "cupWindow": 0,
             "terminal": 0
@@ -3197,10 +3121,10 @@
               ]
             },
             {
-              "probability": 0.414752,
+              "probability": 0.233298,
               "path": [
                 "counter",
-                "counter-shield"
+                "counter-hit"
               ],
               "steps": [
                 {
@@ -3213,201 +3137,28 @@
                   ],
                   "active": true,
                   "precision": false,
-                  "result": "counter → counter-shield"
-                }
-              ]
-            }
-          ],
-          "primaryParts": null,
-          "precision": false,
-          "search": {
-            "limit": 64,
-            "used": 1
-          }
-        }
-      },
-      {
-        "action": {
-          "type": "play",
-          "index": 1,
-          "targetId": 1
-        },
-        "score": 2.0463234550000013,
-        "reason": "expected-state-difference",
-        "explanation": {
-          "parts": {
-            "morale": 0,
-            "cups": 0,
-            "stones": 2.081374814814815,
-            "allocation": 0.5827849481481484,
-            "conversion": 0.6660399407407409,
-            "ownHand": -0.7000000000000003,
-            "otherHands": 1.5176850962962978,
-            "healing": 0,
-            "energy": 0,
-            "effects": -2.07376,
-            "nextTurnRisk": 0,
-            "otherTurnRisk": -0.027801345000000005,
-            "futureTerminal": 0,
-            "cupWindow": 0,
-            "terminal": 0
-          },
-          "branches": [
-            {
-              "probability": 0.416274962962963,
-              "path": [
-                "hit"
-              ],
-              "steps": [
-                {
-                  "type": "attack",
-                  "actorId": 4,
-                  "targetId": 1,
-                  "card": "waterStrike",
-                  "elements": [
-                    "water"
-                  ],
-                  "active": true,
-                  "precision": false,
-                  "result": "hit"
+                  "result": "counter → counter-hit"
                 }
               ]
             },
             {
-              "probability": 0.16897303703703706,
-              "path": [
-                "light"
-              ],
-              "steps": [
-                {
-                  "type": "attack",
-                  "actorId": 4,
-                  "targetId": 1,
-                  "card": "waterStrike",
-                  "elements": [
-                    "water"
-                  ],
-                  "active": true,
-                  "precision": false,
-                  "result": "light"
-                }
-              ]
-            },
-            {
-              "probability": 0.414752,
+              "probability": 0.181454,
               "path": [
                 "counter",
-                "counter-shield"
+                "counter-answered"
               ],
               "steps": [
                 {
                   "type": "attack",
                   "actorId": 4,
-                  "targetId": 1,
-                  "card": "waterStrike",
+                  "targetId": 2,
+                  "card": "earthStrike",
                   "elements": [
-                    "water"
+                    "earth"
                   ],
                   "active": true,
                   "precision": false,
-                  "result": "counter → counter-shield"
-                }
-              ]
-            }
-          ],
-          "primaryParts": null,
-          "precision": false,
-          "search": {
-            "limit": 64,
-            "used": 1
-          }
-        }
-      },
-      {
-        "action": {
-          "type": "play",
-          "index": 2,
-          "targetId": 1
-        },
-        "score": 2.0463234550000013,
-        "reason": "expected-state-difference",
-        "explanation": {
-          "parts": {
-            "morale": 0,
-            "cups": 0,
-            "stones": 2.081374814814815,
-            "allocation": 0.5827849481481484,
-            "conversion": 0.6660399407407409,
-            "ownHand": -0.7000000000000003,
-            "otherHands": 1.5176850962962978,
-            "healing": 0,
-            "energy": 0,
-            "effects": -2.07376,
-            "nextTurnRisk": 0,
-            "otherTurnRisk": -0.027801345000000005,
-            "futureTerminal": 0,
-            "cupWindow": 0,
-            "terminal": 0
-          },
-          "branches": [
-            {
-              "probability": 0.416274962962963,
-              "path": [
-                "hit"
-              ],
-              "steps": [
-                {
-                  "type": "attack",
-                  "actorId": 4,
-                  "targetId": 1,
-                  "card": "windStrike",
-                  "elements": [
-                    "wind"
-                  ],
-                  "active": true,
-                  "precision": false,
-                  "result": "hit"
-                }
-              ]
-            },
-            {
-              "probability": 0.16897303703703706,
-              "path": [
-                "light"
-              ],
-              "steps": [
-                {
-                  "type": "attack",
-                  "actorId": 4,
-                  "targetId": 1,
-                  "card": "windStrike",
-                  "elements": [
-                    "wind"
-                  ],
-                  "active": true,
-                  "precision": false,
-                  "result": "light"
-                }
-              ]
-            },
-            {
-              "probability": 0.414752,
-              "path": [
-                "counter",
-                "counter-shield"
-              ],
-              "steps": [
-                {
-                  "type": "attack",
-                  "actorId": 4,
-                  "targetId": 1,
-                  "card": "windStrike",
-                  "elements": [
-                    "wind"
-                  ],
-                  "active": true,
-                  "precision": false,
-                  "result": "counter → counter-shield"
+                  "result": "counter → counter-answered"
                 }
               ]
             }
@@ -3426,22 +3177,22 @@
           "index": 2,
           "targetId": 2
         },
-        "score": 2.0463234550000013,
+        "score": 2.906221000000002,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": 0,
             "cups": 0,
-            "stones": 2.081374814814815,
-            "allocation": 0.5827849481481484,
-            "conversion": 0.6660399407407409,
+            "stones": 0.914884814814815,
+            "allocation": 0.4428061481481483,
+            "conversion": 0.2927631407407409,
             "ownHand": -0.7000000000000003,
-            "otherHands": 1.5176850962962978,
+            "otherHands": 1.9557668962962977,
             "healing": 0,
             "energy": 0,
-            "effects": -2.07376,
+            "effects": 0,
             "nextTurnRisk": 0,
-            "otherTurnRisk": -0.027801345000000005,
+            "otherTurnRisk": 0,
             "futureTerminal": 0,
             "cupWindow": 0,
             "terminal": 0
@@ -3488,10 +3239,10 @@
               ]
             },
             {
-              "probability": 0.414752,
+              "probability": 0.233298,
               "path": [
                 "counter",
-                "counter-shield"
+                "counter-hit"
               ],
               "steps": [
                 {
@@ -3504,7 +3255,28 @@
                   ],
                   "active": true,
                   "precision": false,
-                  "result": "counter → counter-shield"
+                  "result": "counter → counter-hit"
+                }
+              ]
+            },
+            {
+              "probability": 0.181454,
+              "path": [
+                "counter",
+                "counter-answered"
+              ],
+              "steps": [
+                {
+                  "type": "attack",
+                  "actorId": 4,
+                  "targetId": 2,
+                  "card": "windStrike",
+                  "elements": [
+                    "wind"
+                  ],
+                  "active": true,
+                  "precision": false,
+                  "result": "counter → counter-answered"
                 }
               ]
             }
@@ -3523,22 +3295,22 @@
           "index": 0,
           "targetId": 5
         },
-        "score": 1.8241129264913596,
+        "score": 2.8338897246580252,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": 0,
             "cups": 0,
-            "stones": 1.5540931950617287,
-            "allocation": 0.43514609461728415,
-            "conversion": 0.4973098224197532,
+            "stones": 0.17686399506172878,
+            "allocation": 0.26987859061728403,
+            "conversion": 0.05659647841975318,
             "ownHand": -0.7000000000000002,
-            "otherHands": 2.512192692148149,
+            "otherHands": 3.0294187694814814,
             "healing": 0,
             "energy": 0,
-            "effects": -2.4484074666666666,
+            "effects": 0,
             "nextTurnRisk": 0,
-            "otherTurnRisk": -0.026221411088888872,
+            "otherTurnRisk": 0.0011318910777777945,
             "futureTerminal": 0,
             "cupWindow": 0,
             "terminal": 0
@@ -3585,10 +3357,10 @@
               ]
             },
             {
-              "probability": 0.48968149333333333,
+              "probability": 0.27544584,
               "path": [
                 "counter",
-                "counter-shield"
+                "counter-hit"
               ],
               "steps": [
                 {
@@ -3601,7 +3373,28 @@
                   ],
                   "active": true,
                   "precision": false,
-                  "result": "counter → counter-shield"
+                  "result": "counter → counter-hit"
+                }
+              ]
+            },
+            {
+              "probability": 0.21423565333333333,
+              "path": [
+                "counter",
+                "counter-answered"
+              ],
+              "steps": [
+                {
+                  "type": "attack",
+                  "actorId": 4,
+                  "targetId": 5,
+                  "card": "earthStrike",
+                  "elements": [
+                    "earth"
+                  ],
+                  "active": true,
+                  "precision": false,
+                  "result": "counter → counter-answered"
                 }
               ]
             }
@@ -3620,22 +3413,22 @@
           "index": 1,
           "targetId": 5
         },
-        "score": 1.8241129264913596,
+        "score": 2.8338897246580252,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": 0,
             "cups": 0,
-            "stones": 1.5540931950617287,
-            "allocation": 0.43514609461728415,
-            "conversion": 0.4973098224197532,
+            "stones": 0.17686399506172878,
+            "allocation": 0.26987859061728403,
+            "conversion": 0.05659647841975318,
             "ownHand": -0.7000000000000002,
-            "otherHands": 2.512192692148149,
+            "otherHands": 3.0294187694814814,
             "healing": 0,
             "energy": 0,
-            "effects": -2.4484074666666666,
+            "effects": 0,
             "nextTurnRisk": 0,
-            "otherTurnRisk": -0.026221411088888872,
+            "otherTurnRisk": 0.0011318910777777945,
             "futureTerminal": 0,
             "cupWindow": 0,
             "terminal": 0
@@ -3682,10 +3475,10 @@
               ]
             },
             {
-              "probability": 0.48968149333333333,
+              "probability": 0.27544584,
               "path": [
                 "counter",
-                "counter-shield"
+                "counter-hit"
               ],
               "steps": [
                 {
@@ -3698,7 +3491,28 @@
                   ],
                   "active": true,
                   "precision": false,
-                  "result": "counter → counter-shield"
+                  "result": "counter → counter-hit"
+                }
+              ]
+            },
+            {
+              "probability": 0.21423565333333333,
+              "path": [
+                "counter",
+                "counter-answered"
+              ],
+              "steps": [
+                {
+                  "type": "attack",
+                  "actorId": 4,
+                  "targetId": 5,
+                  "card": "waterStrike",
+                  "elements": [
+                    "water"
+                  ],
+                  "active": true,
+                  "precision": false,
+                  "result": "counter → counter-answered"
                 }
               ]
             }
@@ -3717,22 +3531,22 @@
           "index": 2,
           "targetId": 5
         },
-        "score": 1.8241129264913596,
+        "score": 2.8338897246580252,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": 0,
             "cups": 0,
-            "stones": 1.5540931950617287,
-            "allocation": 0.43514609461728415,
-            "conversion": 0.4973098224197532,
+            "stones": 0.17686399506172878,
+            "allocation": 0.26987859061728403,
+            "conversion": 0.05659647841975318,
             "ownHand": -0.7000000000000002,
-            "otherHands": 2.512192692148149,
+            "otherHands": 3.0294187694814814,
             "healing": 0,
             "energy": 0,
-            "effects": -2.4484074666666666,
+            "effects": 0,
             "nextTurnRisk": 0,
-            "otherTurnRisk": -0.026221411088888872,
+            "otherTurnRisk": 0.0011318910777777945,
             "futureTerminal": 0,
             "cupWindow": 0,
             "terminal": 0
@@ -3779,10 +3593,10 @@
               ]
             },
             {
-              "probability": 0.48968149333333333,
+              "probability": 0.27544584,
               "path": [
                 "counter",
-                "counter-shield"
+                "counter-hit"
               ],
               "steps": [
                 {
@@ -3795,7 +3609,382 @@
                   ],
                   "active": true,
                   "precision": false,
-                  "result": "counter → counter-shield"
+                  "result": "counter → counter-hit"
+                }
+              ]
+            },
+            {
+              "probability": 0.21423565333333333,
+              "path": [
+                "counter",
+                "counter-answered"
+              ],
+              "steps": [
+                {
+                  "type": "attack",
+                  "actorId": 4,
+                  "targetId": 5,
+                  "card": "windStrike",
+                  "elements": [
+                    "wind"
+                  ],
+                  "active": true,
+                  "precision": false,
+                  "result": "counter → counter-answered"
+                }
+              ]
+            }
+          ],
+          "primaryParts": null,
+          "precision": false,
+          "search": {
+            "limit": 64,
+            "used": 1
+          }
+        }
+      },
+      {
+        "action": {
+          "type": "play",
+          "index": 0,
+          "targetId": 1
+        },
+        "score": 2.602933600000002,
+        "reason": "expected-state-difference",
+        "explanation": {
+          "parts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": 0.914884814814815,
+            "allocation": 0.4428061481481483,
+            "conversion": 0.2927631407407409,
+            "ownHand": -0.7000000000000003,
+            "otherHands": 1.6524794962962979,
+            "healing": 0,
+            "energy": 0,
+            "effects": 0,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0,
+            "futureTerminal": 0,
+            "cupWindow": 0,
+            "terminal": 0
+          },
+          "branches": [
+            {
+              "probability": 0.416274962962963,
+              "path": [
+                "hit"
+              ],
+              "steps": [
+                {
+                  "type": "attack",
+                  "actorId": 4,
+                  "targetId": 1,
+                  "card": "earthStrike",
+                  "elements": [
+                    "earth"
+                  ],
+                  "active": true,
+                  "precision": false,
+                  "result": "hit"
+                }
+              ]
+            },
+            {
+              "probability": 0.16897303703703706,
+              "path": [
+                "light"
+              ],
+              "steps": [
+                {
+                  "type": "attack",
+                  "actorId": 4,
+                  "targetId": 1,
+                  "card": "earthStrike",
+                  "elements": [
+                    "earth"
+                  ],
+                  "active": true,
+                  "precision": false,
+                  "result": "light"
+                }
+              ]
+            },
+            {
+              "probability": 0.233298,
+              "path": [
+                "counter",
+                "counter-hit"
+              ],
+              "steps": [
+                {
+                  "type": "attack",
+                  "actorId": 4,
+                  "targetId": 1,
+                  "card": "earthStrike",
+                  "elements": [
+                    "earth"
+                  ],
+                  "active": true,
+                  "precision": false,
+                  "result": "counter → counter-hit"
+                }
+              ]
+            },
+            {
+              "probability": 0.181454,
+              "path": [
+                "counter",
+                "counter-answered"
+              ],
+              "steps": [
+                {
+                  "type": "attack",
+                  "actorId": 4,
+                  "targetId": 1,
+                  "card": "earthStrike",
+                  "elements": [
+                    "earth"
+                  ],
+                  "active": true,
+                  "precision": false,
+                  "result": "counter → counter-answered"
+                }
+              ]
+            }
+          ],
+          "primaryParts": null,
+          "precision": false,
+          "search": {
+            "limit": 64,
+            "used": 1
+          }
+        }
+      },
+      {
+        "action": {
+          "type": "play",
+          "index": 1,
+          "targetId": 1
+        },
+        "score": 2.602933600000002,
+        "reason": "expected-state-difference",
+        "explanation": {
+          "parts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": 0.914884814814815,
+            "allocation": 0.4428061481481483,
+            "conversion": 0.2927631407407409,
+            "ownHand": -0.7000000000000003,
+            "otherHands": 1.6524794962962979,
+            "healing": 0,
+            "energy": 0,
+            "effects": 0,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0,
+            "futureTerminal": 0,
+            "cupWindow": 0,
+            "terminal": 0
+          },
+          "branches": [
+            {
+              "probability": 0.416274962962963,
+              "path": [
+                "hit"
+              ],
+              "steps": [
+                {
+                  "type": "attack",
+                  "actorId": 4,
+                  "targetId": 1,
+                  "card": "waterStrike",
+                  "elements": [
+                    "water"
+                  ],
+                  "active": true,
+                  "precision": false,
+                  "result": "hit"
+                }
+              ]
+            },
+            {
+              "probability": 0.16897303703703706,
+              "path": [
+                "light"
+              ],
+              "steps": [
+                {
+                  "type": "attack",
+                  "actorId": 4,
+                  "targetId": 1,
+                  "card": "waterStrike",
+                  "elements": [
+                    "water"
+                  ],
+                  "active": true,
+                  "precision": false,
+                  "result": "light"
+                }
+              ]
+            },
+            {
+              "probability": 0.233298,
+              "path": [
+                "counter",
+                "counter-hit"
+              ],
+              "steps": [
+                {
+                  "type": "attack",
+                  "actorId": 4,
+                  "targetId": 1,
+                  "card": "waterStrike",
+                  "elements": [
+                    "water"
+                  ],
+                  "active": true,
+                  "precision": false,
+                  "result": "counter → counter-hit"
+                }
+              ]
+            },
+            {
+              "probability": 0.181454,
+              "path": [
+                "counter",
+                "counter-answered"
+              ],
+              "steps": [
+                {
+                  "type": "attack",
+                  "actorId": 4,
+                  "targetId": 1,
+                  "card": "waterStrike",
+                  "elements": [
+                    "water"
+                  ],
+                  "active": true,
+                  "precision": false,
+                  "result": "counter → counter-answered"
+                }
+              ]
+            }
+          ],
+          "primaryParts": null,
+          "precision": false,
+          "search": {
+            "limit": 64,
+            "used": 1
+          }
+        }
+      },
+      {
+        "action": {
+          "type": "play",
+          "index": 2,
+          "targetId": 1
+        },
+        "score": 2.602933600000002,
+        "reason": "expected-state-difference",
+        "explanation": {
+          "parts": {
+            "morale": 0,
+            "cups": 0,
+            "stones": 0.914884814814815,
+            "allocation": 0.4428061481481483,
+            "conversion": 0.2927631407407409,
+            "ownHand": -0.7000000000000003,
+            "otherHands": 1.6524794962962979,
+            "healing": 0,
+            "energy": 0,
+            "effects": 0,
+            "nextTurnRisk": 0,
+            "otherTurnRisk": 0,
+            "futureTerminal": 0,
+            "cupWindow": 0,
+            "terminal": 0
+          },
+          "branches": [
+            {
+              "probability": 0.416274962962963,
+              "path": [
+                "hit"
+              ],
+              "steps": [
+                {
+                  "type": "attack",
+                  "actorId": 4,
+                  "targetId": 1,
+                  "card": "windStrike",
+                  "elements": [
+                    "wind"
+                  ],
+                  "active": true,
+                  "precision": false,
+                  "result": "hit"
+                }
+              ]
+            },
+            {
+              "probability": 0.16897303703703706,
+              "path": [
+                "light"
+              ],
+              "steps": [
+                {
+                  "type": "attack",
+                  "actorId": 4,
+                  "targetId": 1,
+                  "card": "windStrike",
+                  "elements": [
+                    "wind"
+                  ],
+                  "active": true,
+                  "precision": false,
+                  "result": "light"
+                }
+              ]
+            },
+            {
+              "probability": 0.233298,
+              "path": [
+                "counter",
+                "counter-hit"
+              ],
+              "steps": [
+                {
+                  "type": "attack",
+                  "actorId": 4,
+                  "targetId": 1,
+                  "card": "windStrike",
+                  "elements": [
+                    "wind"
+                  ],
+                  "active": true,
+                  "precision": false,
+                  "result": "counter → counter-hit"
+                }
+              ]
+            },
+            {
+              "probability": 0.181454,
+              "path": [
+                "counter",
+                "counter-answered"
+              ],
+              "steps": [
+                {
+                  "type": "attack",
+                  "actorId": 4,
+                  "targetId": 1,
+                  "card": "windStrike",
+                  "elements": [
+                    "wind"
+                  ],
+                  "active": true,
+                  "precision": false,
+                  "result": "counter → counter-answered"
                 }
               ]
             }
@@ -26138,32 +26327,32 @@
           "index": 1,
           "targetId": 1
         },
-        "score": -1.1999999999999993,
+        "score": -3.3486894803198153,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": 0,
             "cups": 0,
-            "stones": 0,
-            "allocation": 0,
-            "conversion": 0,
+            "stones": 0.7794017700617286,
+            "allocation": 0.21823249561728408,
+            "conversion": 0.24940856641975317,
             "ownHand": -1.1999999999999993,
-            "otherHands": 0,
+            "otherHands": 1.2713474393148145,
             "healing": 0,
             "energy": 0,
-            "effects": 0,
+            "effects": -5,
             "nextTurnRisk": 0,
-            "otherTurnRisk": 0,
+            "otherTurnRisk": 0.33292024826660205,
             "futureTerminal": 0,
             "cupWindow": 0,
             "terminal": 0
           },
           "branches": [
             {
-              "probability": 1,
+              "probability": 0.31081863901234574,
               "path": [
                 "holyShield",
-                "shield"
+                "hit"
               ],
               "steps": [
                 {
@@ -26177,14 +26366,103 @@
                 {
                   "type": "attack",
                   "actorId": 0,
-                  "targetId": 1,
+                  "targetId": 5,
                   "card": "fireStrike",
                   "elements": [
                     "fire"
                   ],
                   "active": true,
                   "precision": false,
-                  "result": "shield"
+                  "result": "hit"
+                }
+              ]
+            },
+            {
+              "probability": 0.19949986765432098,
+              "path": [
+                "holyShield",
+                "light"
+              ],
+              "steps": [
+                {
+                  "type": "play",
+                  "actorId": 0,
+                  "targetId": 1,
+                  "card": "holyShield",
+                  "result": "holyShield",
+                  "gifts": []
+                },
+                {
+                  "type": "attack",
+                  "actorId": 0,
+                  "targetId": 5,
+                  "card": "fireStrike",
+                  "elements": [
+                    "fire"
+                  ],
+                  "active": true,
+                  "precision": false,
+                  "result": "light"
+                }
+              ]
+            },
+            {
+              "probability": 0.154938285,
+              "path": [
+                "holyShield",
+                "counter",
+                "counter-hit"
+              ],
+              "steps": [
+                {
+                  "type": "play",
+                  "actorId": 0,
+                  "targetId": 1,
+                  "card": "holyShield",
+                  "result": "holyShield",
+                  "gifts": []
+                },
+                {
+                  "type": "attack",
+                  "actorId": 0,
+                  "targetId": 5,
+                  "card": "fireStrike",
+                  "elements": [
+                    "fire"
+                  ],
+                  "active": true,
+                  "precision": false,
+                  "result": "counter → counter-hit"
+                }
+              ]
+            },
+            {
+              "probability": 0.3347432083333333,
+              "path": [
+                "holyShield",
+                "counter",
+                "counter-answered"
+              ],
+              "steps": [
+                {
+                  "type": "play",
+                  "actorId": 0,
+                  "targetId": 1,
+                  "card": "holyShield",
+                  "result": "holyShield",
+                  "gifts": []
+                },
+                {
+                  "type": "attack",
+                  "actorId": 0,
+                  "targetId": 5,
+                  "card": "fireStrike",
+                  "elements": [
+                    "fire"
+                  ],
+                  "active": true,
+                  "precision": false,
+                  "result": "counter → counter-answered"
                 }
               ]
             }
@@ -26219,32 +26497,32 @@
           "index": 1,
           "targetId": 2
         },
-        "score": -1.1999999999999993,
+        "score": -3.3486894803198153,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": 0,
             "cups": 0,
-            "stones": 0,
-            "allocation": 0,
-            "conversion": 0,
+            "stones": 0.7794017700617286,
+            "allocation": 0.21823249561728408,
+            "conversion": 0.24940856641975317,
             "ownHand": -1.1999999999999993,
-            "otherHands": 0,
+            "otherHands": 1.2713474393148145,
             "healing": 0,
             "energy": 0,
-            "effects": 0,
+            "effects": -5,
             "nextTurnRisk": 0,
-            "otherTurnRisk": 0,
+            "otherTurnRisk": 0.33292024826660205,
             "futureTerminal": 0,
             "cupWindow": 0,
             "terminal": 0
           },
           "branches": [
             {
-              "probability": 1,
+              "probability": 0.31081863901234574,
               "path": [
                 "holyShield",
-                "shield"
+                "hit"
               ],
               "steps": [
                 {
@@ -26258,14 +26536,103 @@
                 {
                   "type": "attack",
                   "actorId": 0,
-                  "targetId": 2,
+                  "targetId": 5,
                   "card": "fireStrike",
                   "elements": [
                     "fire"
                   ],
                   "active": true,
                   "precision": false,
-                  "result": "shield"
+                  "result": "hit"
+                }
+              ]
+            },
+            {
+              "probability": 0.19949986765432098,
+              "path": [
+                "holyShield",
+                "light"
+              ],
+              "steps": [
+                {
+                  "type": "play",
+                  "actorId": 0,
+                  "targetId": 2,
+                  "card": "holyShield",
+                  "result": "holyShield",
+                  "gifts": []
+                },
+                {
+                  "type": "attack",
+                  "actorId": 0,
+                  "targetId": 5,
+                  "card": "fireStrike",
+                  "elements": [
+                    "fire"
+                  ],
+                  "active": true,
+                  "precision": false,
+                  "result": "light"
+                }
+              ]
+            },
+            {
+              "probability": 0.154938285,
+              "path": [
+                "holyShield",
+                "counter",
+                "counter-hit"
+              ],
+              "steps": [
+                {
+                  "type": "play",
+                  "actorId": 0,
+                  "targetId": 2,
+                  "card": "holyShield",
+                  "result": "holyShield",
+                  "gifts": []
+                },
+                {
+                  "type": "attack",
+                  "actorId": 0,
+                  "targetId": 5,
+                  "card": "fireStrike",
+                  "elements": [
+                    "fire"
+                  ],
+                  "active": true,
+                  "precision": false,
+                  "result": "counter → counter-hit"
+                }
+              ]
+            },
+            {
+              "probability": 0.3347432083333333,
+              "path": [
+                "holyShield",
+                "counter",
+                "counter-answered"
+              ],
+              "steps": [
+                {
+                  "type": "play",
+                  "actorId": 0,
+                  "targetId": 2,
+                  "card": "holyShield",
+                  "result": "holyShield",
+                  "gifts": []
+                },
+                {
+                  "type": "attack",
+                  "actorId": 0,
+                  "targetId": 5,
+                  "card": "fireStrike",
+                  "elements": [
+                    "fire"
+                  ],
+                  "active": true,
+                  "precision": false,
+                  "result": "counter → counter-answered"
                 }
               ]
             }
@@ -26300,32 +26667,32 @@
           "index": 1,
           "targetId": 5
         },
-        "score": -1.1999999999999993,
+        "score": -3.984942274342032,
         "reason": "expected-state-difference",
         "explanation": {
           "parts": {
             "morale": 0,
             "cups": 0,
-            "stones": 0,
-            "allocation": 0,
-            "conversion": 0,
+            "stones": 0.7794017700617286,
+            "allocation": 0.21823249561728408,
+            "conversion": 0.24940856641975317,
             "ownHand": -1.1999999999999993,
-            "otherHands": 0,
+            "otherHands": 1.2713474393148159,
             "healing": 0,
             "energy": 0,
-            "effects": 0,
+            "effects": -5,
             "nextTurnRisk": 0,
-            "otherTurnRisk": 0,
+            "otherTurnRisk": -0.3033325457556144,
             "futureTerminal": 0,
             "cupWindow": 0,
             "terminal": 0
           },
           "branches": [
             {
-              "probability": 1,
+              "probability": 0.31081863901234574,
               "path": [
                 "holyShield",
-                "shield"
+                "hit"
               ],
               "steps": [
                 {
@@ -26339,14 +26706,103 @@
                 {
                   "type": "attack",
                   "actorId": 0,
-                  "targetId": 5,
+                  "targetId": 1,
                   "card": "fireStrike",
                   "elements": [
                     "fire"
                   ],
                   "active": true,
                   "precision": false,
-                  "result": "shield"
+                  "result": "hit"
+                }
+              ]
+            },
+            {
+              "probability": 0.19949986765432098,
+              "path": [
+                "holyShield",
+                "light"
+              ],
+              "steps": [
+                {
+                  "type": "play",
+                  "actorId": 0,
+                  "targetId": 5,
+                  "card": "holyShield",
+                  "result": "holyShield",
+                  "gifts": []
+                },
+                {
+                  "type": "attack",
+                  "actorId": 0,
+                  "targetId": 1,
+                  "card": "fireStrike",
+                  "elements": [
+                    "fire"
+                  ],
+                  "active": true,
+                  "precision": false,
+                  "result": "light"
+                }
+              ]
+            },
+            {
+              "probability": 0.154938285,
+              "path": [
+                "holyShield",
+                "counter",
+                "counter-hit"
+              ],
+              "steps": [
+                {
+                  "type": "play",
+                  "actorId": 0,
+                  "targetId": 5,
+                  "card": "holyShield",
+                  "result": "holyShield",
+                  "gifts": []
+                },
+                {
+                  "type": "attack",
+                  "actorId": 0,
+                  "targetId": 1,
+                  "card": "fireStrike",
+                  "elements": [
+                    "fire"
+                  ],
+                  "active": true,
+                  "precision": false,
+                  "result": "counter → counter-hit"
+                }
+              ]
+            },
+            {
+              "probability": 0.3347432083333333,
+              "path": [
+                "holyShield",
+                "counter",
+                "counter-answered"
+              ],
+              "steps": [
+                {
+                  "type": "play",
+                  "actorId": 0,
+                  "targetId": 5,
+                  "card": "holyShield",
+                  "result": "holyShield",
+                  "gifts": []
+                },
+                {
+                  "type": "attack",
+                  "actorId": 0,
+                  "targetId": 1,
+                  "card": "fireStrike",
+                  "elements": [
+                    "fire"
+                  ],
+                  "active": true,
+                  "precision": false,
+                  "result": "counter → counter-answered"
                 }
               ]
             }

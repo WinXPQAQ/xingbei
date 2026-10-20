@@ -3,7 +3,13 @@
 // totals and stops at the first win, so survival and counter-win share units.
 import {createDeck} from '../../cards.js';
 const cards=createDeck(),attackRate=cards.filter(c=>c.type==='attack').length/cards.length;
-const cache=new WeakMap();
+const cache=new WeakMap(),aimCache=new WeakMap();
+function recentTargets(actions,actorId) {
+ if(!actions)return [];
+ let actors=aimCache.get(actions);if(!actors){actors=new Map();aimCache.set(actions,actors);}
+ if(!actors.has(actorId))actors.set(actorId,actions.filter(e=>e.type==='attack'&&e.actorId===actorId).slice(-6));
+ return actors.get(actorId);
+}
 export function terminalForecast(s) {
  if(Object.values(s.teams).some(t=>t.morale<=0||t.cups>=5))return 0;
  if(Object.values(s.teams).every(t=>t.morale>6))return 0;
@@ -20,7 +26,7 @@ export function terminalForecast(s) {
   const active=actor.id===s.observer?(attacks.length?1:1-(1-attackRate)**unknown):1-(1-attackRate)**counts[actor.id];
   counts[actor.id]=Math.max(0,counts[actor.id]-active);
   const targets=s.players.filter(p=>p.team!==actor.team),outcomes=new Map([[0,1-active]]);
-  const past=(s.actions??[]).filter(e=>e.type==='attack'&&e.actorId===actor.id).slice(-6);
+  const past=recentTargets(s.actions,actor.id);
   const aims=targets.map(t=>1+past.filter(e=>e.targetId===t.id).length),aimTotal=aims.reduce((a,b)=>a+b,0);
   for(const target of targets) {
    const damage=actor.hero==='berserker'?3+Number(counts[actor.id]>3)+2*Number(actor.energy.gem>0):2;

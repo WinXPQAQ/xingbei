@@ -92,7 +92,9 @@ export function allocationValue(s,team) {
  if(!s.teams[team].gem&&!s.teams[team].crystal)return 0;
  const needs=s.players.filter(p=>p.team===team).flatMap(p=>{
   let gem=p.energy.gem,crystal=p.energy.crystal;
-  return energyUses(s,p).filter(use=>{if(use.kind==='gem'&&gem){gem--;return false;}if(use.kind==='either'&&(gem||crystal)){if(crystal)crystal--;else gem--;return false;}return true;});
+  const unmet=energyUses(s,p).filter(use=>{if(use.kind==='gem'&&gem){gem--;return false;}if(use.kind==='either'&&(gem||crystal)){if(crystal)crystal--;else gem--;return false;}return true;});
+  // Crystals held by a gem-only role cannot be spent to free capacity.
+  return p.hero==='berserker'?unmet.slice(0,Math.max(0,3-p.energy.crystal)):unmet;
  });
  const {gem,crystal}=s.teams[team];
  // Exact assignment for the two permitted use classes. Enumerate the number of

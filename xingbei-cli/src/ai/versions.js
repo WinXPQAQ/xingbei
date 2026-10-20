@@ -1,5 +1,6 @@
+import {createEconomyPolicy as createPlans3Policy} from './v1.5-candidate/index.js';
 import {createEconomyPolicy as createPlansPolicy} from './v1.5-plans1/index.js';
-import {createEconomyPolicy as createPlans2Policy} from './v1.5-candidate/index.js';
+import {createEconomyPolicy as createPlans2Policy} from './v1.5-plans2/index.js';
 import {createEconomyPolicy as createTargetedFixesPolicy} from './targeted-fixes1/index.js';
 import { createEconomyPolicy as createActionValue2Policy } from './action-value2/index.js';
 import { createEconomyPolicy as createActionValuePolicy } from './action-value1/index.js';
@@ -20,6 +21,7 @@ import { createPolicy } from './v1.1/index.js';
 const choices = {
   'experimental/plans-1': createPlansPolicy(),
   'experimental/plans-2': createPlans2Policy(),
+  'experimental/plans-3': createPlans3Policy(),
   'experimental/targeted-fixes-1': createTargetedFixesPolicy(),
   'experimental/targeted-fixes-1-no-ownership': createTargetedFixesPolicy({ownership:false}),
   'experimental/targeted-fixes-1-no-energy': createTargetedFixesPolicy({energy:false}),
