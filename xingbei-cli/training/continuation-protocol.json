@@ -92,5 +92,23 @@
     "runtimeLimitSeconds": 1800,
     "hypothesis": "Pair raw public target information and acting hero with each candidate; test generalization, no hand-crafted utility or reward.",
     "comparison": "same first 36 training batches as categorical and ordinal; longer endpoints are reported with different budgets"
+  },
+  "jointCardExperiment": {
+    "name": "bc-v6-211",
+    "encoding": "contextual-joint-v5",
+    "modelSeed": 211,
+    "firstSeed": 221000000,
+    "updates": 64,
+    "warmup": 64,
+    "gamesPerUpdate": 48,
+    "epochs": 3,
+    "workers": 8,
+    "cpuQuota": "800%",
+    "memoryMax": "12G",
+    "runtimeLimitSeconds": 1800,
+    "hypothesis": "Preserve card-level element/fate/unique-skill association lost by marginal bag encoding; retain existing public target context.",
+    "evidence": "evidence/card-pair-current-hero-ambiguity.json and exact feature-equality regression",
+    "launch": "after current validation frees CPU budget; use frozen source launcher",
+    "validation": "same development partition; no final seeds"
   }
 }

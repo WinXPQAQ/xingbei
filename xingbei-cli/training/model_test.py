@@ -15,6 +15,17 @@ def observation():
 
 
 class ModelTests(unittest.TestCase):
+    def test_joint_cards_distinguish_actual_deck_attribute_skill_pairings(self):
+        def card(element, fate, skills):
+            return {'name': element + 'Strike', 'type': 'attack', 'category': 'basic',
+                    'elements': [element], 'fates': [fate], 'uniqueSkills': skills}
+        blood = ['bloodyRoar', 'bloodLament']
+        storm = ['stormArt', 'precisionShot']
+        first = {'hand': [card('wind', 'X', blood), card('earth', 'J', storm)]}
+        second = {'hand': [card('wind', 'J', storm), card('earth', 'X', blood)]}
+        self.assertTrue(torch.equal(features(first, STATE_DIM), features(second, STATE_DIM)))
+        self.assertFalse(torch.equal(features(first, STATE_DIM, joint_cards=True), features(second, STATE_DIM, joint_cards=True)))
+
     def test_fast_encoding_exactly_matches_reference(self):
         import json
         from model import action_features
@@ -82,8 +93,12 @@ class ModelTests(unittest.TestCase):
             row['logp'] = distribution.log_prob(torch.tensor([1, 0]))[index].item()
             row['value'] = values[index].item()
         original = [value.detach().clone() for value in model.parameters()]
-        loss = update(model, optimizer, rows, 'cpu', imitation=False, epochs=1)
+        diagnostics = {}
+        loss = update(model, optimizer, rows, 'cpu', imitation=False, epochs=1, diagnostics=diagnostics)
         self.assertTrue(torch.isfinite(torch.tensor(loss)))
+        self.assertGreaterEqual(diagnostics['approximateKL'], -1e-6)
+        self.assertTrue(0 <= diagnostics['clipFraction'] <= 1)
+        self.assertEqual(diagnostics['terminalReturnMean'], 0)
         self.assertTrue(any(not torch.equal(a, b) for a, b in zip(original, model.parameters())))
         with tempfile.TemporaryDirectory() as directory:
             path = pathlib.Path(directory) / 'model.pt'

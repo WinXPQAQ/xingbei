@@ -18,8 +18,8 @@ def categorical_seats(value, key=None):
 
 
 class CategoricalSeatMemory(SeatMemory):
-    def __init__(self):
-        super().__init__(categorical=True)
+    def __init__(self, joint_cards=False):
+        super().__init__(categorical=True, joint_cards=joint_cards)
 
 
 class ContextualSeatMemory(CategoricalSeatMemory):
@@ -45,4 +45,6 @@ def seat_memory(encoding):
         return CategoricalSeatMemory()
     if encoding == 'contextual-seats-v4':
         return ContextualSeatMemory()
+    if encoding == 'contextual-joint-v5':
+        return ContextualSeatMemory(joint_cards=True)
     raise ValueError('Unsupported feature encoding')

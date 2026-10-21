@@ -15,9 +15,11 @@ from rollout import collect
 from schedule import training_configs
 
 
-def update(model, optimizer, rows, device, imitation, epochs=3, batch_size=128):
+def update(model, optimizer, rows, device, imitation, epochs=3, batch_size=128, diagnostics=None):
     model.train()
     losses = []
+    totals = {key: 0.0 for key in ('policyLoss', 'valueLoss', 'entropy', 'approximateKL', 'clipFraction')}
+    samples = 0
     for _ in range(epochs):
         order = torch.randperm(len(rows)).tolist()
         for offset in range(0, len(order), batch_size):
@@ -40,11 +42,27 @@ def update(model, optimizer, rows, device, imitation, epochs=3, batch_size=128):
             value_loss = (values - returns).square().mean()
             # No entropy bonus: only terminal outcome defines the RL objective.
             loss = policy_loss + 0.5 * value_loss
+            if not torch.isfinite(loss):
+                raise RuntimeError('Non-finite optimization loss')
+            if diagnostics is not None:
+                count = len(selected)
+                samples += count
+                totals['policyLoss'] += float(policy_loss.detach()) * count
+                totals['valueLoss'] += float(value_loss.detach()) * count
+                totals['entropy'] += float(distribution.entropy().mean().detach()) * count
+                if not imitation:
+                    log_ratio = logp - old_logp
+                    totals['approximateKL'] += float((ratio - 1 - log_ratio).mean().detach()) * count
+                    totals['clipFraction'] += float(((ratio < 0.8) | (ratio > 1.2)).float().mean().detach()) * count
             optimizer.zero_grad()
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
             optimizer.step()
             losses.append(float(loss.detach()))
+    if diagnostics is not None:
+        diagnostics.update({key: value / max(1, samples) for key, value in totals.items()})
+        diagnostics['scope'] = 'minibatch-weighted observations during updates, not a final full-policy KL'
+        diagnostics['terminalReturnMean'] = sum(row['return'] for row in rows) / len(rows)
     return sum(losses) / max(1, len(losses))
 
 
@@ -97,15 +115,18 @@ async def run(args):
         rows, results, batches = await collect(model, configs, args.workers, device, teacher='v1.5' if imitation else None)
         if not rows:
             raise RuntimeError('No terminated trajectories; refusing an empty training update')
-        loss = update(model, optimizer, rows, device, imitation, epochs=args.epochs)
+        optimization = {}
+        loss = update(model, optimizer, rows, device, imitation, epochs=args.epochs, diagnostics=optimization)
         checkpoint(path, model, optimizer, iteration + 1, args)
         if iteration + 1 == args.warmup:
             shutil.copy2(path, args.output / 'imitation.pt')
+        if args.save_every and (iteration + 1) % args.save_every == 0:
+            shutil.copy2(path, args.output / f'checkpoint-{iteration + 1}.pt')
         report = {'iteration': iteration, 'phase': 'imitation' if imitation else 'terminal-ppo',
                   'rolloutPolicyVersion': iteration, 'decisionsUsed': len(rows),
                   'totalDecisions': sum(result['decisions'] for result in results),
                   'truncatedExcluded': sum(result['truncated'] for result in results),
-                  'loss': loss, 'seconds': time.perf_counter() - started,
+                  'loss': loss, 'optimization': optimization, 'seconds': time.perf_counter() - started,
                   'meanInferenceBatch': sum(batches) / max(1, len(batches)), 'games': results}
         with (args.output / 'metrics.jsonl').open('a') as stream:
             stream.write(json.dumps(report) + '\n')
@@ -117,7 +138,7 @@ if __name__ == '__main__':
     parser.add_argument('--output', type=pathlib.Path, required=True)
     parser.add_argument('--resume', type=pathlib.Path)
     parser.add_argument('--device', default='cpu')
-    parser.add_argument('--encoding', choices=['legacy-v2', 'categorical-seats-v3', 'contextual-seats-v4'], default='legacy-v2')
+    parser.add_argument('--encoding', choices=['legacy-v2', 'categorical-seats-v3', 'contextual-seats-v4', 'contextual-joint-v5'], default='legacy-v2')
     parser.add_argument('--seed', type=int, default=41)
     parser.add_argument('--first-seed', type=int, default=220000000)
     parser.add_argument('--updates', type=int, default=3)
@@ -126,4 +147,5 @@ if __name__ == '__main__':
     parser.add_argument('--workers', type=int, default=4)
     parser.add_argument('--threads', type=int, default=2)
     parser.add_argument('--epochs', type=int, default=3)
+    parser.add_argument('--save-every', type=int, default=0)
     asyncio.run(run(parser.parse_args()))
