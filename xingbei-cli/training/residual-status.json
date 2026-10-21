@@ -79,5 +79,11 @@
         "checkpoint": "/home/xp/.local/share/xingbei-ml/runs/residual-lr3-211/checkpoint.pt"
       }
     }
+  },
+  "target": {
+    "teamWinRate": 0.7,
+    "seedCluster95LowerBoundGreaterThan": 0.5,
+    "scope": "Frozen independent evaluation; supersedes old above-50-only target by explicit user request",
+    "achieved": false
   }
 }
