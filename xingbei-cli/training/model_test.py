@@ -27,6 +27,17 @@ class ModelTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             seat_memory('unknown')
 
+    def test_target_context_uses_public_counts_and_does_not_mutate_observation(self):
+        source = {'schema': SCHEMA, 'players': [
+            {'hero': 'sealer', 'handCount': 4, 'hand': []},
+            {'hero': 'berserker', 'handCount': 3, 'hand': None}],
+            'candidates': [{'type': 'target', 'target': 1}]}
+        _, before = seat_memory('contextual-seats-v4').encode(0, source)
+        self.assertNotIn('targetPlayers', source['candidates'][0])
+        source['players'][1]['handCount'] = 5
+        _, after = seat_memory('contextual-seats-v4').encode(0, source)
+        self.assertFalse(torch.equal(before, after))
+
     def test_seat_memory_isolated(self):
         memory = SeatMemory()
         before, _ = memory.encode(0, observation())

@@ -64,7 +64,7 @@ class SeatMemory:
 class Policy(nn.Module):
     def __init__(self, hidden=256, feature_encoding='legacy-v2'):
         super().__init__()
-        if feature_encoding not in ('legacy-v2', 'categorical-seats-v3'):
+        if feature_encoding not in ('legacy-v2', 'categorical-seats-v3', 'contextual-seats-v4'):
             raise ValueError('Unsupported feature encoding')
         self.feature_encoding = feature_encoding
         self.hidden = hidden

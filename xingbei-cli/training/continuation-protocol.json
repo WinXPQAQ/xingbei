@@ -37,7 +37,8 @@
     "memoryMax": "12G",
     "cpuQuota": "800%",
     "runtimeLimitSeconds": 1800,
-    "purpose": "measure learnability with larger demonstration budget; retain imitation endpoint"
+    "purpose": "measure learnability with larger demonstration budget; retain imitation endpoint",
+    "status": "Stopped early after categorical-seat capacity probe identified representation bottleneck; checkpoint and logs retained."
   },
   "developmentChoices": [
     "Compare argmax and sampled deployment on validation only; freeze choice before final.",
@@ -52,5 +53,44 @@
     "no sample selection or repeated final peeking",
     "zero known illegal actions or hidden-information leaks",
     "never deploy or push main automatically"
-  ]
+  ],
+  "nextExperiment": {
+    "name": "bc-v4-211",
+    "modelSeed": 211,
+    "games": 6144,
+    "updates": 128,
+    "gamesPerUpdate": 48,
+    "epochs": 3,
+    "device": "cuda",
+    "workers": 8,
+    "memoryMax": "12G",
+    "cpuQuota": "800%",
+    "runtimeLimitSeconds": 1800,
+    "purpose": "measure learnability with larger demonstration budget; retain imitation endpoint",
+    "status": "running; same initial seed and demonstration schedule as ordinal run",
+    "featureEncoding": "categorical-seats-v3"
+  },
+  "capacityDiagnostic": {
+    "games": 8,
+    "seed": 210010000,
+    "epochs": 160,
+    "ordinalActionAccuracy": 0.6278586278586279,
+    "categoricalActionAccuracy": 0.9792099792099792,
+    "meaning": "memorization diagnostic only, not independent playing strength"
+  },
+  "contextExperiment": {
+    "name": "bc-v5-211",
+    "encoding": "contextual-seats-v4",
+    "modelSeed": 211,
+    "firstSeed": 221000000,
+    "updates": 64,
+    "gamesPerUpdate": 48,
+    "epochs": 3,
+    "workers": 4,
+    "cpuQuota": "400%",
+    "memoryMax": "12G",
+    "runtimeLimitSeconds": 1800,
+    "hypothesis": "Pair raw public target information and acting hero with each candidate; test generalization, no hand-crafted utility or reward.",
+    "comparison": "same first 36 training batches as categorical and ordinal; longer endpoints are reported with different budgets"
+  }
 }

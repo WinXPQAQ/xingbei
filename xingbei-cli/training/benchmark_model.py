@@ -8,6 +8,7 @@ import time
 
 import torch
 from model import Policy, SeatMemory, batch
+from encoding_candidate import seat_memory
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--checkpoint', type=pathlib.Path, required=True)
@@ -25,10 +26,10 @@ game.draw(0,12-game.player(0).hand.length,{overflow:'defer'});
 const request={type:'overflow',player:game.player(0)};
 console.log(JSON.stringify(encodeDecision({game,playerId:0,request,candidates:decisionCandidates(game,request)})));
 '''], cwd=project))
-model = Policy()
+model = Policy(feature_encoding=saved.get('featureEncoding', 'legacy-v2'))
 model.load_state_dict(saved['model'])
 model.eval()
-state, actions = SeatMemory().encode(0, cases[0]['observation'])
+state, actions = seat_memory(model.feature_encoding).encode(0, cases[0]['observation'])
 row = {'state': state, 'actions': actions}
 with torch.inference_mode():
     cpu = model(*batch([row], 'cpu'))
@@ -38,7 +39,7 @@ for expected, actual in zip(cpu, gpu):
     torch.testing.assert_close(expected, actual.cpu(), rtol=1e-4, atol=1e-5)
 measurements = []
 for label, observation in [('response', cases[0]['observation']), ('overflow', overflow)]:
-    state, actions = SeatMemory().encode(0, observation)
+    state, actions = seat_memory(model.feature_encoding).encode(0, observation)
     for device in ('cpu', 'cuda'):
         model.to(device)
         for size in (1, 8, 32, 128):

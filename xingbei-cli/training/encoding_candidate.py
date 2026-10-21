@@ -25,9 +25,27 @@ class CategoricalSeatMemory(SeatMemory):
         return super().encode(seat, categorical_seats(observation))
 
 
+class ContextualSeatMemory(CategoricalSeatMemory):
+    def encode(self, seat, observation):
+        players = observation['players']
+        public = lambda index: {key: value for key, value in players[index].items() if key != 'hand'}
+        candidates = []
+        for candidate in observation['candidates']:
+            targets = candidate.get('targets', [])
+            if candidate.get('target') is not None:
+                targets = [candidate['target']]
+            candidates.append({**candidate, 'actingHero': players[0]['hero'],
+                               'targetPlayers': [public(index) for index in targets]})
+        # Explicitly pair candidate cards with their public targets. The model
+        # still learns the value: no hit estimates, scores or policy advice.
+        return super().encode(seat, {**observation, 'candidates': candidates})
+
+
 def seat_memory(encoding):
     if encoding == 'legacy-v2':
         return SeatMemory()
     if encoding == 'categorical-seats-v3':
         return CategoricalSeatMemory()
+    if encoding == 'contextual-seats-v4':
+        return ContextualSeatMemory()
     raise ValueError('Unsupported feature encoding')

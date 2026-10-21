@@ -117,7 +117,7 @@ if __name__ == '__main__':
     parser.add_argument('--output', type=pathlib.Path, required=True)
     parser.add_argument('--resume', type=pathlib.Path)
     parser.add_argument('--device', default='cpu')
-    parser.add_argument('--encoding', choices=['legacy-v2', 'categorical-seats-v3'], default='legacy-v2')
+    parser.add_argument('--encoding', choices=['legacy-v2', 'categorical-seats-v3', 'contextual-seats-v4'], default='legacy-v2')
     parser.add_argument('--seed', type=int, default=41)
     parser.add_argument('--first-seed', type=int, default=220000000)
     parser.add_argument('--updates', type=int, default=3)
