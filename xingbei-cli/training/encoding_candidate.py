@@ -2,10 +2,7 @@
 
 Uses only the existing detached observation. No strategic score or reward added.
 """
-from model import SeatMemory
-
-SEAT_FIELDS = {'current', 'player', 'actor', 'target', 'recipient', 'nextTarget',
-               'source', 'owner', 'targets'}
+from model import SeatMemory, SEAT_FIELDS
 
 
 def categorical_seats(value, key=None):
@@ -21,8 +18,8 @@ def categorical_seats(value, key=None):
 
 
 class CategoricalSeatMemory(SeatMemory):
-    def encode(self, seat, observation):
-        return super().encode(seat, categorical_seats(observation))
+    def __init__(self):
+        super().__init__(categorical=True)
 
 
 class ContextualSeatMemory(CategoricalSeatMemory):

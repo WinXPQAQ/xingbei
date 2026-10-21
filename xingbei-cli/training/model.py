@@ -7,6 +7,8 @@ can replay exactly without stale recurrent-network hidden states.
 """
 import math
 import zlib
+import json
+from functools import lru_cache
 from array import array
 
 import torch
@@ -15,9 +17,11 @@ from torch import nn
 STATE_DIM = 2048
 ACTION_DIM = 512
 SCHEMA = 2
+SEAT_FIELDS = {'current', 'player', 'actor', 'target', 'recipient', 'nextTarget',
+               'source', 'owner', 'targets'}
 
 
-def features(value, dimension):
+def features(value, dimension, categorical=False):
     vector = array('f', [0.0]) * dimension
 
     def add(key, amount):
@@ -40,7 +44,14 @@ def features(value, dimension):
         elif isinstance(item, bool):
             add(path + '=' + str(item), 1)
         elif isinstance(item, (int, float)):
-            add(path + '/number', math.copysign(math.log1p(abs(item)) / 4, item))
+            parts = path.rsplit('/', 2)
+            key = parts[-2] if parts[-1] == '*' else parts[-1]
+            if categorical and isinstance(item, int) and key in SEAT_FIELDS:
+                if not 0 <= item < 6:
+                    raise ValueError('Invalid relative seat')
+                add(path + '=seat:' + str(item), 1)
+            else:
+                add(path + '/number', math.copysign(math.log1p(abs(item)) / 4, item))
         else:
             add(path + '=' + str(item), 1)
 
@@ -48,16 +59,25 @@ def features(value, dimension):
     return torch.frombuffer(vector, dtype=torch.float32).clone().clamp_(-8, 8)
 
 
+@lru_cache(maxsize=8192)
+def action_features(serialized, categorical):
+    # Preserve insertion order: floating-point hash accumulation must remain
+    # identical to the reference encoder. stack() copies cached tensors.
+    return features(json.loads(serialized), ACTION_DIM, categorical)
+
+
 class SeatMemory:
-    def __init__(self):
+    def __init__(self, categorical=False):
         self.states = [torch.zeros(STATE_DIM) for _ in range(6)]
+        self.categorical = categorical
 
     def encode(self, seat, observation):
         assert observation['schema'] == SCHEMA
-        state = features({key: value for key, value in observation.items() if key != 'candidates'}, STATE_DIM)
+        state = features({key: value for key, value in observation.items() if key != 'candidates'}, STATE_DIM, self.categorical)
         combined = torch.cat((state, self.states[seat]))
         self.states[seat] = self.states[seat] * 0.8 + state * 0.2
-        actions = torch.stack([features(action, ACTION_DIM) for action in observation['candidates']])
+        actions = torch.stack([action_features(json.dumps(action, separators=(',', ':'), ensure_ascii=False), self.categorical)
+                               for action in observation['candidates']])
         return combined, actions
 
 

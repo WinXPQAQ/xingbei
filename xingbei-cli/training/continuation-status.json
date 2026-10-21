@@ -7,18 +7,18 @@
     "bc-v4-211": {
       "unit": "xingbei-ml-bc-v4-211.service",
       "validationUnit": "xingbei-ml-validate-bc-v4-211.service",
-      "completedUpdates": 59,
+      "completedUpdates": 84,
       "checkpoint": "/home/xp/.local/share/xingbei-ml/runs/bc-v4-211/checkpoint.pt",
       "validationReport": "/home/xp/.local/share/xingbei-ml/evidence/bc-v4-211-validation.json",
-      "lastLoss": 1.3317336161234226
+      "lastLoss": 1.2932988251858986
     },
     "bc-v5-211": {
       "unit": "xingbei-ml-bc-v5-211.service",
       "validationUnit": "xingbei-ml-validate-bc-v5-211.service",
-      "completedUpdates": 3,
+      "completedUpdates": 20,
       "checkpoint": "/home/xp/.local/share/xingbei-ml/runs/bc-v5-211/checkpoint.pt",
       "validationReport": "/home/xp/.local/share/xingbei-ml/evidence/bc-v5-211-validation.json",
-      "lastLoss": 1.6448400623741604
+      "lastLoss": 1.3011835231925502
     }
   },
   "findings": {
@@ -38,10 +38,17 @@
     "interpretation": "Improved tiny-data memorization has not yet improved held-out gameplay; no evidence of beating v1.5."
   },
   "nextActions": [
+    "Use training/launch_frozen.py for subsequent experiments so checkpoint source hashes reflect actually executed files. Current v4/v5 processes use older in-memory encoder; optimized encoder has proven identical outputs.",
     "Read both stage validation reports after completion; check training truncation, budgets, source/checkpoint encoding.",
     "Compare teacher agreement and greedy/sampled win rates on development seeds only.",
     "Retain BC-only checkpoint, branch PPO run with same encoding; do not overwrite BC or silently change resume schedule.",
     "If representation remains weak, diagnose on validation before adding RL compute.",
     "Freeze a candidate only after validation warrants final test; final reserved seeds 241000000..241000119 remain unused."
+  ],
+  "previousGoalTurnClassification": "progress: launched training, improved representation, added validation coverage",
+  "currentTurnProgress": [
+    "Optimized encoding without changing model inputs; exact 24-game teacher probability/accuracy parity.",
+    "Prepared immutable source launcher; isolated 2-game training smoke passed with all 151 source hashes verified.",
+    "Five model tests and three evaluation tests passed."
   ]
 }

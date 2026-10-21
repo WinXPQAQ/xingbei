@@ -4,7 +4,7 @@ import tempfile
 import unittest
 
 import torch
-from model import Policy, SeatMemory, SCHEMA, batch
+from model import Policy, SeatMemory, SCHEMA, batch, features, STATE_DIM, ACTION_DIM
 from train import checkpoint, update
 from encoding_candidate import categorical_seats, seat_memory
 
@@ -15,6 +15,22 @@ def observation():
 
 
 class ModelTests(unittest.TestCase):
+    def test_fast_encoding_exactly_matches_reference(self):
+        import json
+        from model import action_features
+        source = {'schema': SCHEMA, 'current': 0, 'players': [{'hero': 'priest', 'handCount': 6}],
+                  'history': [{'actor': i % 6, 'target': (i + 1) % 6, 'amount': i % 3} for i in range(100)],
+                  'candidates': [{'targets': [0, 5], 'count': 2, 'card': {'owner': 0, 'elements': ['water']}}]}
+        state = {key: value for key, value in source.items() if key != 'candidates'}
+        self.assertTrue(torch.equal(features(categorical_seats(state), STATE_DIM), features(state, STATE_DIM, True)))
+        action = source['candidates'][0]
+        expected = features(categorical_seats(action), ACTION_DIM)
+        actual = action_features(json.dumps(action, separators=(',', ':')), True)
+        self.assertTrue(torch.equal(expected, actual))
+        _, actions = seat_memory('categorical-seats-v3').encode(0, source)
+        actions.zero_()
+        self.assertTrue(torch.equal(actual, expected))
+
     def test_categorical_seats_preserve_counts_and_memory_isolation(self):
         source = {'current': 0, 'candidates': [{'targets': [0, 5], 'count': 2}]}
         converted = categorical_seats(source)
