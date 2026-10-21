@@ -14,6 +14,7 @@ import torch
 from model import Policy, SCHEMA, batch, load_policy_state
 from rollout import collect, SAMPLING_VERSION
 from schedule import training_configs
+from control import assert_training_start_allowed
 
 
 def update(model, optimizer, rows, device, imitation, epochs=3, batch_size=128, diagnostics=None):
@@ -99,6 +100,7 @@ def initialize_weights(path, model, device):
 
 
 async def run(args):
+    assert_training_start_allowed()
     if not math.isfinite(args.temperature) or args.temperature <= 0:
         raise ValueError("Sampling temperature must be finite and positive")
     torch.set_num_threads(args.threads)

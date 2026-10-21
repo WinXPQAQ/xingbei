@@ -345,3 +345,10 @@ Web 默认端口是 `4173`，可通过 `PORT` 修改；`server.js` 未指定 `HO
 ## 混合AI体验部署（2026-10-21）
 
 用户已明确授权把本轮模型部署供手动体验。使用独立4174端口和固定源码/模型快照，原4173/main更新不改。第192批是开发点估计最佳，未完成70%独立验收；不得宣称正式晋级。完整接入及本地服务说明见xingbei-cli/docs/ml-preview-service.md。训练继续，部署授权不等于push main授权。
+
+## 用户定时暂停约定（2026-10-22 北京时间）
+
+- 用户确认北京时间2026-10-22 00:53（2026-10-21 16:53 UTC）后不再启动训练轮次；已启动训练及预定评测自然完成，不强停。
+- 启动前必须检查`~/.local/share/xingbei-ml/training-control.json`，截止后禁止绕过检查启动旧冻结脚本；控制记录暂停后须用户明确恢复才能继续。
+- `xingbei-training-drain.timer`负责本机定时收尾。下次处理本线程先检查`evidence/training-pause-handoff.json`和实际运行任务；收尾完成后调用update_goal(paused)，不把本机JSON状态冒充会话goal状态。说明见xingbei-cli/docs/ml-training-pause.md。
+- 4173原版、4174体验版和模型推理保持运行，体验版模型不自动更换。

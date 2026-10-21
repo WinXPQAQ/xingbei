@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import shutil
 import subprocess
+from control import assert_training_start_allowed
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--name', required=True)
@@ -21,6 +22,8 @@ if not 1 <= args.minutes <= 120:
 training_args = args.training_args[1:] if args.training_args[:1] == ['--'] else args.training_args
 if any(value == '--output' or value.startswith('--output=') for value in training_args):
     raise ValueError('Output is controlled by the frozen experiment launcher')
+if not args.prepare_only:
+    assert_training_start_allowed()
 project = Path(__file__).resolve().parent.parent
 root = Path.home() / '.local/share/xingbei-ml'
 output = root / 'runs' / args.name
