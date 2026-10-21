@@ -1,5 +1,5 @@
 {
-  "stage": "First residual pilot complete; initial baseline preserved, no demonstrated strength gain; broader goal not achieved",
+  "stage": "Matched continuation trials running; first pilot result retained below; no acceptance or deployment",
   "accepted": false,
   "deployed": false,
   "sourceCommit": "610eb2c",
@@ -55,5 +55,29 @@
     "truncated": 0,
     "interpretation": "All paired win/loss outcomes unchanged in six development seed clusters; zero bootstrap difference interval is not proof of population equivalence."
   },
-  "nextStep": "Analyze sparse departures and exploration efficiency before increasing training budget; independent final seeds remain untouched."
+  "nextStep": "Complete 96-update trials and paired development screens; do not restart while units remain active.",
+  "continuation": {
+    "protocol": "residual-continuation-protocol.json",
+    "diagnostic": "/home/xp/.local/share/xingbei-ml/evidence/residual-v1-margin-diagnostic.json",
+    "arms": {
+      "residual-long-211": {
+        "unit": "xingbei-ml-residual-long-211.service",
+        "validationUnit": "xingbei-ml-validate-residual-long-211.service",
+        "completedAtSnapshot": 9,
+        "plannedUpdates": 96,
+        "plannedGames": 2304,
+        "truncatedAtSnapshot": 0,
+        "checkpoint": "/home/xp/.local/share/xingbei-ml/runs/residual-long-211/checkpoint.pt"
+      },
+      "residual-lr3-211": {
+        "unit": "xingbei-ml-residual-lr3-211.service",
+        "validationUnit": "xingbei-ml-validate-residual-lr3-211.service",
+        "completedAtSnapshot": 9,
+        "plannedUpdates": 96,
+        "plannedGames": 2304,
+        "truncatedAtSnapshot": 0,
+        "checkpoint": "/home/xp/.local/share/xingbei-ml/runs/residual-lr3-211/checkpoint.pt"
+      }
+    }
+  }
 }
