@@ -110,5 +110,26 @@
     "evidence": "evidence/card-pair-current-hero-ambiguity.json and exact feature-equality regression",
     "launch": "after current validation frees CPU budget; use frozen source launcher",
     "validation": "same development partition; no final seeds"
+  },
+  "ppoContextExperiment": {
+    "name": "ppo-v5-211",
+    "parent": "runs/bc-v5-211/imitation.pt",
+    "encoding": "contextual-seats-v4",
+    "modelSeed": 211,
+    "firstSeed": 221000000,
+    "warmup": 64,
+    "resumeCompleted": 64,
+    "updates": 192,
+    "additionalPpoUpdates": 128,
+    "gamesPerUpdate": 48,
+    "epochs": 3,
+    "workers": 4,
+    "cpuQuota": "400%",
+    "memoryMax": "12G",
+    "runtimeLimitSeconds": 1800,
+    "saveEvery": 32,
+    "reward": "terminal team +/-1 only; no imitation labels during PPO",
+    "purpose": "Matched initialization BC-only vs terminal PPO; retain parent and periodic snapshots; development validation only",
+    "launch": "after v5 validation releases its CPU quota; parallel with v6 training within total 1200% quota"
   }
 }

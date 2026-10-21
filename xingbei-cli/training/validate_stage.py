@@ -12,6 +12,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--unit', required=True)
 parser.add_argument('--name', required=True)
 parser.add_argument('--updates', type=int, required=True)
+parser.add_argument('--checkpoint-name', choices=['imitation.pt', 'checkpoint.pt'], default='imitation.pt')
 args = parser.parse_args()
 root = Path.home() / '.local/share/xingbei-ml'
 started = time.monotonic()
@@ -19,7 +20,7 @@ while subprocess.run(['systemctl', '--user', 'is-active', '--quiet', args.unit])
     if time.monotonic() - started > 1800:
         raise TimeoutError('Training wait exceeded stage budget')
     time.sleep(5)
-checkpoint = root / 'runs' / args.name / 'imitation.pt'
+checkpoint = root / 'runs' / args.name / args.checkpoint_name
 saved = torch.load(checkpoint, map_location='cpu', weights_only=False)
 if saved['completed'] != args.updates:
     raise ValueError('Incomplete training budget; refusing endpoint validation')
