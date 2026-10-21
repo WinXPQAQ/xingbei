@@ -272,7 +272,7 @@
     ],
     "rolloutResultsIdentical": true,
     "evidenceRoot": "/home/xp/.local/share/xingbei-ml/evidence",
-    "note": "Current training remains four workers; throughput measured under concurrent training.",
+    "note": "Original throughput benchmark ran under concurrent training; current resume uses eight workers as declared in resumeStage.",
     "processRestart": "CPU single-worker end-to-end two-batch uninterrupted versus restart: exact model, optimizer, torch/python RNG and completed count equality"
   },
   "resumeStage": {
@@ -290,6 +290,16 @@
     ],
     "seriesEvidence": "/home/xp/.local/share/xingbei-ml/evidence/residual-resume-211-series.json",
     "optimizer": "restored, not fresh",
-    "workers": 8
+    "workers": 8,
+    "runningAudit": {
+      "completedAtSnapshot": 143,
+      "newGames": 1128,
+      "duplicateSeeds": 0,
+      "parentOverlap": 0,
+      "finalReservedOverlap": 0,
+      "frozenSourceHashesChecked": 170,
+      "truncated": 0,
+      "evidence": "/home/xp/.local/share/xingbei-ml/evidence/residual-resume-211-running-audit.json"
+    }
   }
 }
