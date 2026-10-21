@@ -37,7 +37,7 @@
     "userspaceNVML": "595.99",
     "status": "driver/library mismatch; no global driver changes or reboot attempted",
     "onDiskKernelDriver": "595.99.02",
-    "rebootApproval": "asked; pending user reply; no reboot allowed yet"
+    "rebootApproval": "User authorized after other-task check. Foreign-user data/finance processes found; sudo requires interactive authentication and logind CanReboot=challenge. Asked user to coordinate and reboot manually. No service stopped."
   },
   "diagnosticSeeds": {
     "first": 210000000,
@@ -57,7 +57,7 @@
   ],
   "evidenceDirectory": "/home/xp/.local/share/xingbei-ml/evidence",
   "latestTests": {
-    "passed": 248,
+    "passed": 249,
     "failed": 0
   },
   "implementedNotYetRuntimeVerified": [
