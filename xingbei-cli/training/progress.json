@@ -3,13 +3,55 @@
   "baselineCommit": "d1560abd1be87b1aa5a56a33f550903508d23ac2",
   "baselinePolicy": "v1.5",
   "branch": "codex/ml-terminal-reward",
-  "reward": { "terminalTeamWin": 1, "terminalTeamLoss": -1, "intermediate": false, "truncated": null },
+  "reward": {
+    "terminalTeamWin": 1,
+    "terminalTeamLoss": -1,
+    "intermediate": false,
+    "truncated": null
+  },
   "deployment": "local-only; no main push or online AI change",
-  "completed": ["isolated worktree", "rule-only action and request candidate enumerator", "async six-hero simulator driver with fail-closed automatic fallback", "uniform-policy smoke across all twelve observed decision types"],
-  "incomplete": ["GPU/CUDA and VRAM verification", "CPU parallel and inference/IPC benchmarks", "detached privacy-safe model encoder and counterfactual tests", "PyTorch environment", "imitation and terminal PPO", "checkpoint resume", "multi-seed bounded pilot", "frozen historical teammates/opponents", "independent paired evaluation and report"],
-  "gpuIssue": { "loadedKernelDriver": "595.91.07", "userspaceNVML": "595.99", "status": "driver/library mismatch; no global driver changes or reboot attempted" },
-  "diagnosticSeeds": { "first": 210000000, "last": 210000100, "purpose": "adapter smoke/regression only; never held-out evaluation" },
+  "completed": [
+    "isolated worktree",
+    "rule-only action and request candidate enumerator",
+    "async six-hero simulator driver with fail-closed automatic fallback",
+    "uniform-policy smoke across all twelve observed decision types",
+    "semantic detached model observation without entity IDs",
+    "six-seat hidden-state counterfactual checks",
+    "persistent JSON worker and stale-request rejection",
+    "1/2/4/8 worker uniform-policy IPC benchmark; results invariant"
+  ],
+  "incomplete": [
+    "GPU/CUDA and VRAM verification",
+    "PyTorch environment",
+    "imitation and terminal PPO",
+    "checkpoint resume",
+    "multi-seed bounded pilot",
+    "frozen historical teammates/opponents",
+    "independent paired evaluation and report",
+    "neural batch inference benchmark",
+    "broader privacy and candidate-coverage audit during training"
+  ],
+  "gpuIssue": {
+    "loadedKernelDriver": "595.91.07",
+    "userspaceNVML": "595.99",
+    "status": "driver/library mismatch; no global driver changes or reboot attempted"
+  },
+  "diagnosticSeeds": {
+    "first": 210000000,
+    "last": 210000100,
+    "purpose": "adapter smoke/regression only; never held-out evaluation"
+  },
   "trainingSeeds": null,
   "finalEvaluationSeeds": null,
-  "limitations": ["Driver callback is trusted host code and currently receives raw Game; it must not be exposed to the learner.", "Candidate card IDs/indexes are engine commands, not network features.", "Smoke demonstrates execution, not complete privacy, legal-choice coverage, or model strength.", "Full overflow combinations are enumerated; measure and factorize if needed without heuristic pruning."]
+  "limitations": [
+    "Raw Game stays in trusted simulator callback; only encodeDecision output crosses the worker boundary.",
+    "Candidate card IDs/indexes are engine commands, not network features.",
+    "Smoke demonstrates execution, not complete privacy, legal-choice coverage, or model strength.",
+    "Full overflow combinations are enumerated; measure and factorize if needed without heuristic pruning."
+  ],
+  "evidenceDirectory": "/home/xp/.local/share/xingbei-ml/evidence",
+  "latestTests": {
+    "passed": 248,
+    "failed": 0
+  }
 }
