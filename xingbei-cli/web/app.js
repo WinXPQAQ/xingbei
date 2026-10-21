@@ -1,3 +1,4 @@
+import { modelEnabled, installModel, modelChoice } from "/web/model-ai.js";
 import { PlaybackGate, createModeControls } from "/web/play-mode.js";
 import { getAvailableHeroes } from "/src/hero.js";
 import { CARD_NAMES, ELEMENT_NAMES, FATE_NAMES } from "/src/cards.js";
@@ -49,7 +50,7 @@ let keyboardMode = false;
 document.addEventListener("keydown", () => { keyboardMode = true; });
 document.addEventListener("pointerdown", () => { keyboardMode = false; });
 const isDev = location.pathname === "/web/dev.html";
-const overflowPolicy = player => isHuman(player.id) ? "defer" : "ai";
+const overflowPolicy = player => modelEnabled || isHuman(player.id) ? "defer" : "ai";
 
 function launch(task) {
   void Promise.resolve().then(task).catch(error => {
@@ -69,6 +70,7 @@ function newGame(nextGame = null, nextSeed = Date.now(), id = null) {
   sceneId = id;
   game = nextGame || new Game({ seed });
   game.onDecision = chooseRuleDecision;
+  installModel(game, isHuman, session, () => playback.wait(session));
   acceptingAction = false;
   busy = false;
   selectedCard = null;
@@ -120,6 +122,7 @@ function newGame(nextGame = null, nextSeed = Date.now(), id = null) {
       active.assert();
       game = new Game({ seed, playerHeroId, playerSeat: humanId, revealHiddenLogs: playMode !== "normal" }).setup();
       game.onDecision = chooseRuleDecision;
+  installModel(game, isHuman, session, () => playback.wait(session));
       game.enablePresentation(onPresentation);
       modeReady = true;
       render();
@@ -552,10 +555,11 @@ async function waitForHumanAction() {
 async function executeAi(actorId, scriptedAction = null) {
   const active = session;
   await playback.wait(active);
-  const action = scriptedAction || chooseAiAction(game, actorId);
-  if (action.type === "refresh") await game.executeAction(actorId, action);
-  else if (action.type === "purchase") await game.executeAction(actorId, action, { overflow: "ai" });
-  else if (action.type === "synthesize") await game.executeAction(actorId, action, { overflow: "ai" });
+  const action = scriptedAction || (modelEnabled ? await modelChoice(game, actorId) : chooseAiAction(game, actorId));
+  active.assert();
+  if (action.type === "refresh") await game.executeAction(actorId, action, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
+  else if (action.type === "purchase") await game.executeAction(actorId, action, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
+  else if (action.type === "synthesize") await game.executeAction(actorId, action, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
   else if (action.type === "refine") await game.executeAction(actorId, action, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
   else if (action.type === "skill") await game.executeAction(actorId, action, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
   else if (action.type === "pass") {
@@ -636,7 +640,7 @@ async function runTurns(active) {
     const turn = await game.beginTurn(player.id, {
       chooseWeakness: () => isHuman(player.id)
         ? choose("【虚弱】触发", [{ value: "draw", label: "摸3张牌并继续" }, { value: "skip", label: "跳过本回合行动" }])
-        : chooseAiRuleDecision({ type: "weakness", playerId: player.id }, game),
+        : modelEnabled ? modelChoice(game, player.id, { type: "weakness", playerId: player.id }) : chooseAiRuleDecision({ type: "weakness", playerId: player.id }, game),
       resolveOverflow: resolveHumanOverflow,
     }, { overflow: overflowPolicy });
     active.assert();
@@ -648,7 +652,7 @@ async function runTurns(active) {
         await waitForHumanAction();
       } else { await delay(isDev ? 0 : 150); await executeAi(player.id, isDev && ["attack", "attack-switch", "attack-empty", "shield-hit", "magic", "magic-empty", "magic-linked"].includes(sceneId) && events.length === 1 ? { type: "play", index: 0, targetId: humanId } : null); active.assert(); flushLog(); }
     }
-    if (!isHuman(player.id) && game.turn.hasExtraActions() && !game.legalCards(player.id).length) game.skipExtraActions(player.id);
+    if (!modelEnabled && !isHuman(player.id) && game.turn.hasExtraActions() && !game.legalCards(player.id).length) game.skipExtraActions(player.id);
     } while (game.turn.needsAction());
     active.assert();
     events.push({ type: "turn-end", current: player.id });

@@ -7,10 +7,11 @@ const projectRoot = fileURLToPath(new URL(".", import.meta.url));
 const assetRoot = join(projectRoot, "assets");
 const port = Number(process.env.PORT || 4173);
 const host = process.env.HOST || "0.0.0.0";
+const modelPort = process.env.MODEL_PORT;
 const testMode = process.env.TEST_MODE === "1";
 const { version } = JSON.parse(await readFile(join(projectRoot, "package.json"), "utf8"));
 const legacyAssets = JSON.parse(await readFile(join(projectRoot, "legacy-assets.json"), "utf8"));
-const types = { ".webm": "video/webm", ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".png": "image/png", ".jpg": "image/jpeg", ".svg": "image/svg+xml", ".woff2": "font/woff2" };
+const types = { ".webm": "video/webm", ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".mjs": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".png": "image/png", ".jpg": "image/jpeg", ".svg": "image/svg+xml", ".woff2": "font/woff2" };
 
 function within(root, suffix) {
   const file = resolve(root, `.${suffix}`);
@@ -24,6 +25,7 @@ function resolveRequest(pathname) {
   if (pathname === "/theme/wood3.png") return join(assetRoot, "theme/music/wood3.png");
   if (pathname === "/theme/hp-xingBei1.png") return join(assetRoot, "theme/style/hp/image/xingBei1.png");
   if (pathname === "/theme/hp-xingBei4.png") return join(assetRoot, "theme/style/hp/image/xingBei4.png");
+  if (["/training/candidates.mjs", "/training/observation.mjs", "/training/preview.mjs", "/training/teacher.mjs"].includes(pathname)) return within(projectRoot, pathname);
   if (pathname.startsWith("/src/")) return within(projectRoot, pathname);
   if (pathname.startsWith("/web/")) return within(projectRoot, pathname);
   if (pathname.startsWith("/font/")) return within(join(assetRoot, "font"), pathname.slice(5));
@@ -35,6 +37,15 @@ function resolveRequest(pathname) {
 createServer(async (request, response) => {
   try {
     const pathname = decodeURIComponent(new URL(request.url, "http://localhost").pathname);
+    if (modelPort && pathname.startsWith('/api/model/')) {
+      const route = pathname.slice('/api/model'.length);
+      if (!['/health', '/choose'].includes(route)) throw Object.assign(new Error('Not found'), {status:404});
+      let body = '', size = 0;
+      for await (const chunk of request) { size += chunk.length; if (size > 8 * 1024 * 1024) throw new Error('Request too large'); body += chunk; }
+      const upstream = await fetch(`http://127.0.0.1:${modelPort}${route}`, {method:request.method, headers:{'Content-Type':'application/json'}, ...(request.method === 'POST' ? {body} : {}), signal:AbortSignal.timeout(30000)});
+      response.writeHead(upstream.status, {'Content-Type':'application/json', 'Cache-Control':'no-store'});
+      response.end(await upstream.text()); return;
+    }
     const filename = resolveRequest(pathname);
     if (!filename) throw Object.assign(new Error("Not found"), { status: 404 });
     const info = await stat(filename);
@@ -56,7 +67,7 @@ createServer(async (request, response) => {
     if (testMode && (filename === join(projectRoot, "web/index.html") || filename === join(projectRoot, "web/dev.html"))) {
       // Version comes from package.json, not browser state or the scene renderer.
       const label = version.replace(/[&<>"']/g, character => `&#${character.charCodeAt(0)};`);
-      response.end(content.toString("utf8").replace("</body>", `<div id="test-version" class="test-version" aria-label="测试版本">测试 v${label}</div>\n</body>`));
+      response.end(content.toString("utf8").replace("<head>", `<head>${modelPort ? "<script>window.XINGBEI_MODEL=true;</script>" : ""}`).replace("</body>", `<div id="test-version" class="test-version" aria-label="测试版本">测试 v${label}${modelPort ? " · 混合AI 第192批（实验）" : ""}</div>\n</body>`));
     } else response.end(content);
   } catch (error) {
     response.writeHead(error.status || 404, { "Content-Type": "text/plain; charset=utf-8" });
