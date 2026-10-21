@@ -8,6 +8,13 @@ from model import SeatMemory, batch
 from encoding_candidate import seat_memory
 
 WORKER = pathlib.Path(__file__).with_name('worker.mjs')
+SAMPLING_VERSION = 2
+
+
+def sample_legal(probabilities, count, generator):
+    # multinomial consumes RNG for every supplied category, including zero
+    # padding. Slice first so another game's candidate count cannot affect RNG.
+    return torch.multinomial(probabilities[:count].cpu(), 1, generator=generator).item()
 
 
 class Simulator:
@@ -111,8 +118,8 @@ async def collect(model, configs, workers, device, teacher=None, greedy=False, r
                 distribution = torch.distributions.Categorical(logits=logits)
                 # Per-game random streams do not depend on OS worker scheduling.
                 choices = logits.argmax(-1) if greedy else torch.tensor([
-                    torch.multinomial(distribution.probs[index].cpu(), 1, generator=generator).item()
-                    for index, (_, _, generator) in enumerate(pending)], device=device)
+                    sample_legal(distribution.probs[index], len(row['actions']), generator)
+                    for index, (row, _, generator) in enumerate(pending)], device=device)
                 probabilities = distribution.log_prob(choices)
             inference_batches.append(len(pending))
             for index, (_, future, _) in enumerate(pending):

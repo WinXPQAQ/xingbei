@@ -11,7 +11,7 @@ import time
 
 import torch
 from model import Policy, SCHEMA, batch, load_policy_state
-from rollout import collect
+from rollout import collect, SAMPLING_VERSION
 from schedule import training_configs
 
 
@@ -71,6 +71,7 @@ def checkpoint(path, model, optimizer, completed, args):
     torch.save({'schema': SCHEMA, 'model': model.state_dict(), 'optimizer': optimizer.state_dict(),
                 'featureEncoding': model.feature_encoding,
                 'separateCritic': model.separate_critic,
+                'samplingVersion': SAMPLING_VERSION,
                 'completed': completed, 'args': vars(args), 'torch_rng': torch.get_rng_state(),
                 'cuda_rng': torch.cuda.get_rng_state_all() if torch.cuda.is_available() else [],
                 'python_rng': random.getstate(), 'baseline': 'd1560abd1be87b1aa5a56a33f550903508d23ac2',
@@ -87,6 +88,7 @@ def initialize_weights(path, model, device):
     load_policy_state(model, saved)
     return {'checkpoint': str(path), 'sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
             'parentCompleted': saved['completed'], 'criticSeparated': model.separate_critic and not saved.get('separateCritic', False),
+            'parentSamplingVersion': saved.get('samplingVersion', 1),
             'optimizerAndRng': 'fresh; explicit new curriculum, not resume'}
 
 
@@ -109,6 +111,8 @@ async def run(args):
         saved = torch.load(args.resume, map_location=device, weights_only=False)
         if saved['schema'] != SCHEMA:
             raise ValueError('Checkpoint feature schema mismatch')
+        if saved.get('samplingVersion', 1) != SAMPLING_VERSION:
+            raise ValueError('Sampling version changed; use explicit --initialize for a new curriculum')
         if saved.get('featureEncoding', 'legacy-v2') != args.encoding:
             raise ValueError('Checkpoint feature encoding mismatch')
         if saved['args'].get('dagger', False) != args.dagger:

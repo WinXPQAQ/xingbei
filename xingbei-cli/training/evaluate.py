@@ -9,7 +9,7 @@ import time
 
 import torch
 from model import policy_from_checkpoint, Policy, SCHEMA, SeatMemory, batch
-from rollout import collect
+from rollout import collect, SAMPLING_VERSION
 from schedule import evaluation_configs, LINEUPS
 from evaluation_stats import summarize, paired_mixed
 from encoding_candidate import seat_memory
@@ -30,7 +30,8 @@ async def run(args):
                 'checkpoint': str(args.checkpoint), 'firstSeed': args.first_seed, 'seeds': args.seeds,
                 'games': len(configs), 'selection': 'greedy policy' if args.greedy else 'sampled policy', 'opponent': 'v1.5',
                 'checkpointUpdates': saved['completed'], 'featureSchema': SCHEMA,
-                'balancedMixedSchedule': args.balanced_mixed, 'featureEncoding': model.feature_encoding}
+                'balancedMixedSchedule': args.balanced_mixed, 'featureEncoding': model.feature_encoding,
+                'samplingVersion': SAMPLING_VERSION, 'checkpointSamplingVersion': saved.get('samplingVersion', 1)}
     (args.output / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
     started = time.perf_counter()
     with raw.open('x') as stream:
