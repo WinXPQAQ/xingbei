@@ -1,9 +1,28 @@
 import unittest
+import copy
+from evaluation_breakdown import audit_schedule, breakdown
 from schedule import evaluation_configs, training_configs, TEAMS, DEFAULT
 from evaluation_stats import summarize, paired_mixed
 
 
 class EvaluationTests(unittest.TestCase):
+    def test_breakdown_audits_actual_rosters_policies_and_complete_pairs(self):
+        configs = evaluation_configs(231000000, 1, 211, True)
+        games = [{**c, 'winner': 'red', 'terminated': True, 'truncated': False} for c in configs]
+        manifest = {'firstSeed': 231000000, 'seeds': 1, 'games': len(games), 'balancedMixedSchedule': True}
+        self.assertTrue(audit_schedule(games, manifest, 211))
+        for field, value in [('heroIds', ['berserker'] * 6), ('seatPolicies', ['model'] * 6), ('winner', None)]:
+            bad = copy.deepcopy(games); bad[0][field] = value
+            with self.assertRaises(ValueError):
+                audit_schedule(bad, manifest, 211)
+        with self.assertRaises(ValueError):
+            audit_schedule(games[:-1] + games[:1], manifest, 211)
+        report = breakdown(games)
+        self.assertEqual(report['team']['overall']['games'], 28)
+        self.assertEqual(report['mixed']['overall']['games'], 28)
+        self.assertEqual(sum(v['teamOutcomeWithThisSoleModelHero']['games'] for v in report['bySoleModelHero'].values()), 28)
+        self.assertEqual(report['mixedPaired']['pairs'], 28)
+
     def test_balanced_mixed_covers_every_hero_on_both_teams(self):
         configs = evaluation_configs(241000000, 18, 211, balanced_mixed=True)
         for team in ('red', 'blue'):

@@ -30,7 +30,7 @@ async def run(args):
                 'checkpoint': str(args.checkpoint), 'firstSeed': args.first_seed, 'seeds': args.seeds,
                 'games': len(configs), 'selection': 'greedy policy' if args.greedy else 'sampled policy', 'opponent': 'v1.5',
                 'baselineVersion': model.baseline_version, 'baselineProbability': model.baseline_probability,
-                'checkpointUpdates': saved['completed'], 'featureSchema': SCHEMA,
+                'samplingSeed': saved['args']['seed'], 'checkpointUpdates': saved['completed'], 'featureSchema': SCHEMA,
                 'balancedMixedSchedule': args.balanced_mixed, 'featureEncoding': model.feature_encoding,
                 'samplingVersion': SAMPLING_VERSION, 'checkpointSamplingVersion': saved.get('samplingVersion', 1)}
     (args.output / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
