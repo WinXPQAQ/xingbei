@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "name": "residual-exploration-211",
+  "hypothesis": "After 9216 extra games, four development checkpoints remain 57-59%; greedy changes concentrated in responses. Test broader on-policy sampling without new rewards or hand-coded action scores.",
+  "parent": "/home/xp/.local/share/xingbei-ml/runs/residual-resume-211/checkpoint-192.pt",
+  "parentSha256": "6da9db6c48d6c8280908019f1659756ce944029c0a34046687a32453bfde56ec",
+  "parentSelection": "Highest team development point estimate among all four declared checkpoints, not statistically proven best. Preserve every checkpoint.",
+  "initialization": "Both arms copy identical actor/critic weights and start fresh Adam/RNG. Explicit new curriculum, not optimizer-preserving resume.",
+  "shared": {
+    "updates": 192,
+    "gamesPerUpdate": 24,
+    "gamesPerArm": 4608,
+    "firstSeed": 251900000,
+    "lastSeed": 251904607,
+    "seed": 211,
+    "learningRate": 0.0001,
+    "epochs": 3,
+    "batchSize": 512,
+    "workers": 4,
+    "threads": 2,
+    "device": "cuda",
+    "warmup": 0,
+    "baseline": "v1.5",
+    "baselineProbability": 0.95,
+    "encoding": "decision-context-v6",
+    "separateCritic": true,
+    "maximumMinutes": 45,
+    "cpuQuota": "400%",
+    "memory": "12G"
+  },
+  "arms": [
+    {
+      "name": "residual-temp10-211",
+      "temperature": 1.0
+    },
+    {
+      "name": "residual-temp13-211",
+      "temperature": 1.3
+    }
+  ],
+  "development": {
+    "checkpoints": [
+      96,
+      192
+    ],
+    "firstSeed": 231000000,
+    "seeds": 18,
+    "recordsPerEvaluation": 1512,
+    "greedy": true,
+    "balancedMixed": true,
+    "workers": 4,
+    "compareAgainst": "residual-resume-211-192-greedy",
+    "report": "All four evaluations plus matched between-arm comparison; diagnostics for response/action/skill/overflow changes. Reused development seeds, not acceptance."
+  },
+  "reward": "Terminal team +/-1 only; temperature changes sampling and matching PPO likelihood, no entropy bonus.",
+  "finalSeedsUsed": false,
+  "decision": "Compare all endpoints, preserve regression and uncertainty. No automatic deployment. If no convincing gain, inspect representation/preview limitations rather than blindly scale same training."
+}
