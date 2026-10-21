@@ -1,0 +1,59 @@
+{
+  "stage": "First residual pilot complete; initial baseline preserved, no demonstrated strength gain; broader goal not achieved",
+  "accepted": false,
+  "deployed": false,
+  "sourceCommit": "610eb2c",
+  "finalSeedsUsed": false,
+  "tests": {
+    "node": 253,
+    "python": 17
+  },
+  "initialAudit": {
+    "games": 42,
+    "decisions": 6444,
+    "mismatches": 0,
+    "truncated": 0,
+    "evidence": "/home/xp/.local/share/xingbei-ml/evidence/residual-zero-audit-final.json"
+  },
+  "run": "/home/xp/.local/share/xingbei-ml/runs/residual-v1-211",
+  "route": "Explicit frozen v1.5 baseline plus learned correction; prior independent-policy experiments remain archived/paused.",
+  "training": {
+    "updates": 24,
+    "games": 576,
+    "decisions": 47855,
+    "seconds": 198.81059329500022,
+    "truncated": 0
+  },
+  "evaluation": {
+    "recordsPerCheckpoint": 504,
+    "paired": {
+      "team": {
+        "pairedGames": 168,
+        "seedClusters": 6,
+        "baselineWins": 84,
+        "candidateWins": 84,
+        "meanWinRateDifference": 0.0,
+        "seedCluster95": [
+          0.0,
+          0.0
+        ]
+      },
+      "mixed": {
+        "pairedGames": 168,
+        "seedClusters": 6,
+        "baselineWins": 84,
+        "candidateWins": 84,
+        "meanWinRateDifference": 0.0,
+        "seedCluster95": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "modelDecisions": 16899,
+    "departuresFromBaseline": 7,
+    "truncated": 0,
+    "interpretation": "All paired win/loss outcomes unchanged in six development seed clusters; zero bootstrap difference interval is not proof of population equivalence."
+  },
+  "nextStep": "Analyze sparse departures and exploration efficiency before increasing training budget; independent final seeds remain untouched."
+}

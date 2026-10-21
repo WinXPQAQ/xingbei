@@ -1,5 +1,5 @@
 {
-  "goalStatus": "active; not accepted or deployed",
+  "goalStatus": "Historical independent-policy snapshot; those jobs remain paused. User authorized residual baseline route; current status in residual-status.json.",
   "sourceCommit": "98d2e14",
   "finalSeedsUsed": false,
   "reward": "terminal team win/loss only",
@@ -693,5 +693,6 @@
     "Found padded multinomial RNG bug, corrected sampling version and withdrawn old scheduling-invariance assertions; probability distribution and legal masks were not wrong.",
     "Sampling-v2 tests passed, including twelve real GPU games with shared/separate critic and 1/4 workers yielding identical trajectories.",
     "Stopped and retained early ppo-separate-211; launched ppo-separate-v2-211 from original BC with explicit conservative settings."
-  ]
+  ],
+  "supersededBy": "residual-status.json"
 }
