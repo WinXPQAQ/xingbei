@@ -11,6 +11,7 @@ import time
 import torch
 from model import Policy, SCHEMA, batch
 from rollout import collect
+from schedule import training_configs
 
 
 def update(model, optimizer, rows, device, imitation, epochs=3, batch_size=128):
@@ -67,6 +68,8 @@ async def run(args):
     optimizer = torch.optim.Adam(model.parameters(), lr=3e-4)
     args.output.mkdir(parents=True, exist_ok=True)
     path = args.output / 'checkpoint.pt'
+    if path.exists() and not args.resume:
+        raise ValueError('Existing checkpoint: use --resume or a fresh output directory')
     completed = 0
     if args.resume:
         # Load only a trusted locally generated checkpoint, including RNG state.
@@ -86,15 +89,7 @@ async def run(args):
     for iteration in range(completed, args.updates):
         started = time.perf_counter()
         imitation = iteration < args.warmup
-        configs = []
-        for index in range(args.games):
-            seed = args.first_seed + iteration * args.games + index
-            # Mix self-play with fixed historical opponents. Seat teams RBBRRB.
-            opponent = ['v1.5', 'v1.4'][index % 2]
-            teams = ['red', 'blue', 'blue', 'red', 'red', 'blue']
-            own = ['red', 'blue'][(index // 2) % 2]
-            policies = ['model' if imitation or index % 3 == 0 or team == own else opponent for team in teams]
-            configs.append({'seed': seed, 'start': index % 6, 'seatPolicies': policies, 'samplingSeed': args.seed})
+        configs = training_configs(args.first_seed, iteration, args.games, args.seed, imitation)
         rows, results, batches = await collect(model, configs, args.workers, device, teacher='v1.5' if imitation else None)
         if not rows:
             raise RuntimeError('No terminated trajectories; refusing an empty training update')

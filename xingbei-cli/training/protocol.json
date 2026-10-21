@@ -1,0 +1,97 @@
+{
+  "status": "pilot budget frozen after CPU train/resume and development evaluation smoke; final seeds unused",
+  "baselineCommit": "d1560abd1be87b1aa5a56a33f550903508d23ac2",
+  "reward": "terminal team win +1 / loss -1 only; gamma=1; no intermediate or entropy bonus",
+  "truncation": "no fabricated draw or terminal reward; exclude incomplete episode updates and report rate; substantial truncation requires fixing the pilot before interpreting improvement",
+  "trainingModelSeeds": [
+    41,
+    73,
+    107
+  ],
+  "partitions": {
+    "diagnostic": [
+      210000000,
+      210000199
+    ],
+    "trainingDevelopment": [
+      220000000,
+      220999999
+    ],
+    "validation": [
+      230000000,
+      230000999
+    ],
+    "finalReserved": [
+      240000000,
+      240000011
+    ]
+  },
+  "evaluation": {
+    "lineups": [
+      "default",
+      "assault",
+      "spell",
+      "support",
+      "mixed",
+      "tempo",
+      "pressure"
+    ],
+    "candidateTeams": [
+      "red",
+      "blue"
+    ],
+    "startingSeats": [
+      0,
+      1
+    ],
+    "primarySelection": "sampled policy, per-game deterministic RNG streams",
+    "modes": [
+      "three model teammates vs v1.5",
+      "one model seat with two v1.5 teammates vs v1.5, paired with all-v1.5 control"
+    ],
+    "uncertainty": "bootstrap whole seed clusters across lineups/teams/starts, report each training seed separately",
+    "modelSelection": "freeze budget after throughput smoke; use each run's last checkpoint, no final-set checkpoint selection",
+    "knownDiagnostics": "ordinary-water vs waterSeal opportunity cost and only-waterSeal survival, with reversed hand order; not independent generalization evidence",
+    "limits": "twelve final seed clusters are a small pilot; no claim of human strength or universal superiority"
+  },
+  "reportRequirements": [
+    "raw wins/losses/truncations",
+    "paired mixed-team comparison",
+    "six-hero/lineup coverage",
+    "known diagnostic behavior",
+    "learning curves",
+    "simulation/inference/IPC throughput",
+    "peak memory and wall time",
+    "checkpoint and source hashes",
+    "save/resume verification",
+    "remaining GPU and algorithm limitations"
+  ],
+  "pilotBudget": {
+    "updatesPerRun": 32,
+    "warmupUpdates": 4,
+    "gamesPerUpdate": 24,
+    "ppoEpochs": 3,
+    "workers": 4,
+    "torchThreads": 2,
+    "runs": [
+      {
+        "modelSeed": 41,
+        "firstGameSeed": 220100000
+      },
+      {
+        "modelSeed": 73,
+        "firstGameSeed": 220200000
+      },
+      {
+        "modelSeed": 107,
+        "firstGameSeed": 220300000
+      }
+    ],
+    "gamesTotal": 2304,
+    "runtimeCapSecondsPerRun": 900,
+    "cgroupMemoryMax": "8G",
+    "cgroupCPUQuota": "800%",
+    "device": "cpu while GPU reboot pending",
+    "checkpointSelection": "last completed fixed-budget checkpoint; incomplete timeout is reported, not silently accepted as full budget"
+  }
+}

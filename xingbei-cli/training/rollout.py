@@ -35,7 +35,7 @@ class Simulator:
         await self.process.wait()
 
 
-async def collect(model, configs, workers, device, teacher=None, greedy=False):
+async def collect(model, configs, workers, device, teacher=None, greedy=False, retain=True, on_result=None):
     jobs, requests = asyncio.Queue(), asyncio.Queue()
     for config in configs:
         jobs.put_nowait(config)
@@ -56,8 +56,11 @@ async def collect(model, configs, workers, device, teacher=None, greedy=False):
                     message = await simulator.read()
                     if message['type'] == 'result':
                         result = message['result']
+                        result.update({key: config[key] for key in ('lineup', 'team', 'mode', 'arm', 'heroIds', 'samplingSeed') if key in config})
                         result['seatPolicies'] = config.get('seatPolicies', ['model'] * 6)
                         results.append(result)
+                        if on_result:
+                            on_result(result)
                         # Truncated episodes receive no invented reward or update.
                         # Report their exclusion explicitly; high truncation invalidates a pilot.
                         if result['terminated']:
@@ -78,7 +81,8 @@ async def collect(model, configs, workers, device, teacher=None, greedy=False):
                         index, logp, value = await future
                         row.update(logp=logp, value=value)
                     row['choice'] = index
-                    trajectory.append(row)
+                    if retain:
+                        trajectory.append(row)
                     await simulator.send({'type': 'select', 'id': message['id'], 'index': index})
         finally:
             await simulator.close()

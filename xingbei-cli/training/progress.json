@@ -19,17 +19,18 @@
     "six-seat hidden-state counterfactual checks",
     "persistent JSON worker and stale-request rejection",
     "1/2/4/8 worker uniform-policy IPC benchmark; results invariant",
-    "explicit v1.5/v1.4 teacher mapping verified by twelve complete games"
+    "explicit v1.5/v1.4 teacher mapping verified by twelve complete games",
+    "model mask, seat-memory isolation, optimizer and RNG checkpoint unit tests",
+    "six-game imitation plus six-game terminal PPO smoke",
+    "resume from checkpoint to next PPO update",
+    "84-game development evaluation including paired control, no truncations",
+    "CPU neural forward microbenchmark"
   ],
   "incomplete": [
     "GPU/CUDA and VRAM verification",
-    "PyTorch environment",
-    "imitation and terminal PPO",
-    "checkpoint resume",
     "multi-seed bounded pilot",
     "frozen historical teammates/opponents",
     "independent paired evaluation and report",
-    "neural batch inference benchmark",
     "broader privacy and candidate-coverage audit during training"
   ],
   "gpuIssue": {
@@ -60,13 +61,8 @@
     "passed": 249,
     "failed": 0
   },
-  "implementedNotYetRuntimeVerified": [
-    "shared semantic actor/critic with independent per-seat memory",
-    "batched learner inference and explicit frozen v1.5/v1.4 opponents",
-    "terminal-only undiscounted Monte Carlo PPO",
-    "imitation warmup without permanent teacher objective",
-    "atomic model/optimizer/RNG checkpoint and schedule-checked resume"
-  ],
+  "implementedNotYetRuntimeVerified": [],
   "pythonEnvironment": "/home/xp/.local/share/xingbei-ml/venv",
-  "pythonInstall": "torch 2.14.1+cpu download in progress; not yet import-verified"
+  "pythonInstall": "torch 2.14.1+cpu imported and tested; official wheel SHA256 verified",
+  "developmentSmoke": "18 games over 3 updates; eval 84 games one diagnostic seed cluster, team model 0/28 and mixed 6/28; not final evidence"
 }

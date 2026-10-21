@@ -51,6 +51,6 @@ export async function driveGame({ seed, heroIds, start = 0, turnLimit = 500, dec
     if (error !== limit) throw error;
     reason = 'decisionLimit';
   }
-  return { seed, turns, decisions, maxCandidates, kinds, winner: game.winner, terminated: !!game.winner, truncated: !game.winner, truncationReason: reason,
+  return { seed, start, turns, decisions, maxCandidates, kinds, winner: game.winner, terminated: !!game.winner, truncated: !game.winner, truncationReason: reason,
     rewards: game.winner ? Object.fromEntries(game.players.map(player => [player.id, player.team === game.winner ? 1 : -1])) : null };
 }
