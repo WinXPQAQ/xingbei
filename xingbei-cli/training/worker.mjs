@@ -1,6 +1,7 @@
 import { createInterface } from 'node:readline';
 import { driveGame } from './driver.mjs';
 import { encodeDecision } from './observation.mjs';
+import { enrichPreview } from './preview.mjs';
 import { teacherIndex } from './teacher.mjs';
 
 // Persistent JSON-lines transport. Each worker runs one game at a time; launch
@@ -23,11 +24,14 @@ createInterface({ input: process.stdin }).on('line', async line => {
         const policy = message.seatPolicies?.[input.playerId] ?? 'model';
         if (policy !== 'model') return teacherIndex(input, policy);
         const observation = encodeDecision(input);
+        if (message.baseline && message.baseline !== 'v1.5') throw new Error('Unsupported baseline');
+        const baseline = message.baseline ? teacherIndex(input, message.baseline) : null;
+        if (message.baseline) enrichPreview(observation);
         const teacher = message.teacher ? teacherIndex(input, message.teacher) : null;
         const id = ++sequence;
         return new Promise(resolve => {
           waiting = { id, resolve };
-          send({ type: 'decision', id, seat: input.playerId, observation, teacher });
+          send({ type: 'decision', id, seat: input.playerId, observation, teacher, baseline });
         });
       });
       send({ type: 'result', result });

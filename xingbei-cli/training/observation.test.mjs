@@ -4,6 +4,8 @@ import { spawn } from 'node:child_process';
 import { createInterface } from 'node:readline';
 import { Game } from '../src/engine.js';
 import { actionCandidates } from './candidates.mjs';
+import { enrichPreview } from './preview.mjs';
+import { teacherIndex } from './teacher.mjs';
 import { encodeDecision } from './observation.mjs';
 import { driveGame } from './driver.mjs';
 
@@ -15,6 +17,8 @@ test('all six seats ignore hidden faces, deck order, logs and injected request f
     const request = { type: 'action' };
     const encode = () => encodeDecision({ game, playerId, request, candidates: actionCandidates(game, playerId) });
     const before = encode();
+    const hybrid = () => ({ observation: enrichPreview(encode()), baseline: teacherIndex({ game, playerId, request, candidates: actionCandidates(game, playerId) }, "v1.5") });
+    const beforeHybrid = hybrid();
     const history = { ...game.publicHistory, actions: [...game.publicHistory.actions], events: [...game.publicHistory.events] };
     for (const player of game.players.filter(player => player.id !== playerId)) {
       for (const card of [...player.hand]) {
@@ -30,6 +34,7 @@ test('all six seats ignore hidden faces, deck order, logs and injected request f
     request.hidden = game.deck;
     request.title = 'PRIVATE_SENTINEL';
     assert.deepEqual(encode(), before);
+    assert.deepEqual(hybrid(), beforeHybrid);
     assert.ok(!JSON.stringify(before).includes('PRIVATE_SENTINEL'));
     for (const card of game.cards.values()) assert.ok(!JSON.stringify(before).includes(`"${card.id}"`));
     before.players[0].energy.gem = 100;

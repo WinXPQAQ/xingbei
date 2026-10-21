@@ -89,10 +89,14 @@ class SeatMemory:
 
 
 class Policy(nn.Module):
-    def __init__(self, hidden=256, feature_encoding='legacy-v2', separate_critic=False):
+    def __init__(self, hidden=256, feature_encoding='legacy-v2', separate_critic=False, baseline_version=None, baseline_probability=0.95):
         super().__init__()
         if feature_encoding not in ('legacy-v2', 'categorical-seats-v3', 'contextual-seats-v4', 'contextual-joint-v5', 'decision-context-v6'):
             raise ValueError('Unsupported feature encoding')
+        if baseline_version not in (None, "v1.5") or not 0.5 < baseline_probability < 1:
+            raise ValueError("Invalid residual baseline")
+        self.baseline_version = baseline_version
+        self.baseline_probability = baseline_probability
         self.feature_encoding = feature_encoding
         self.separate_critic = separate_critic
         self.hidden = hidden
@@ -100,18 +104,38 @@ class Policy(nn.Module):
         self.action = nn.Sequential(nn.Linear(ACTION_DIM, 128), nn.Tanh(), nn.Linear(128, hidden), nn.Tanh())
         self.value = nn.Linear(hidden, 1)
         self.bias = nn.Linear(hidden, 1)
+        if baseline_version:
+            # Zero actor output preserves the exact baseline argmax at initialization.
+            nn.init.zeros_(self.action[-2].weight)
+            nn.init.zeros_(self.action[-2].bias)
+            nn.init.zeros_(self.bias.weight)
+            nn.init.zeros_(self.bias.bias)
         if separate_critic:
             self.critic_state = copy.deepcopy(self.state)
 
-    def forward(self, states, actions, mask):
+    def forward(self, states, actions, mask, baseline=None):
         state = self.state(states)
         action = self.action(actions)
         logits = (state[:, None, :] * action).sum(-1) / math.sqrt(self.hidden) + self.bias(action).squeeze(-1)
+        if self.baseline_version:
+            if baseline is None or baseline.shape != mask.shape[:1]:
+                raise ValueError('Residual policy requires a baseline choice for every row')
+            if ((baseline < 0) | (baseline >= mask.shape[1])).any() or not mask.gather(1, baseline[:, None]).all():
+                raise ValueError('Baseline choice is not legal')
+            # Fixed total exploration mass, independent of candidate count.
+            # Greedy starts exactly at v1.5; sampled training intentionally explores.
+            count = mask.sum(-1).clamp_min(2).to(logits.dtype)
+            margin = torch.log((count - 1) * self.baseline_probability / (1 - self.baseline_probability))
+            logits = logits.scatter_add(1, baseline[:, None], margin[:, None])
+        elif baseline is not None:
+            raise ValueError('Unexpected baseline for independent policy')
         value_state = self.critic_state(states) if self.separate_critic else state
         return logits.masked_fill(~mask, -torch.inf), self.value(value_state).squeeze(-1)
 
 
 def load_policy_state(model, saved):
+    if saved.get('baselineVersion') != model.baseline_version or saved.get('baselineProbability', 0.95) != model.baseline_probability:
+        raise ValueError('Checkpoint baseline mismatch')
     if saved['schema'] != SCHEMA or saved.get('featureEncoding', 'legacy-v2') != model.feature_encoding:
         raise ValueError('Checkpoint feature encoding mismatch')
     if model.separate_critic and not saved.get('separateCritic', False):
@@ -126,7 +150,8 @@ def load_policy_state(model, saved):
 
 def policy_from_checkpoint(saved, device='cpu'):
     model = Policy(feature_encoding=saved.get('featureEncoding', 'legacy-v2'),
-                   separate_critic=saved.get('separateCritic', False)).to(device)
+                   separate_critic=saved.get('separateCritic', False), baseline_version=saved.get('baselineVersion'),
+                   baseline_probability=saved.get('baselineProbability', 0.95)).to(device)
     load_policy_state(model, saved)
     return model
 
@@ -140,4 +165,6 @@ def batch(records, device):
         count = len(row['actions'])
         actions[index, :count] = row['actions'].to(device)
         mask[index, :count] = True
+    if any("baselineChoice" in row for row in records):
+        return states, actions, mask, torch.tensor([row["baselineChoice"] for row in records], dtype=torch.long, device=device)
     return states, actions, mask

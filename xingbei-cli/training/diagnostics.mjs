@@ -1,9 +1,11 @@
 import { Game } from '../src/engine.js';
 import { decisionCandidates } from './candidates.mjs';
+import { teacherIndex } from './teacher.mjs';
+import { enrichPreview } from './preview.mjs';
 import { encodeDecision } from './observation.mjs';
 
 // Deliberately known diagnostic fixtures, NOT held-out evaluation.
-function prepare(ordinaryAvailable, reverse = false) {
+export function prepare(ordinaryAvailable, reverse = false) {
   const game = new Game({ seed: 210000101, playerHeroId: 'sealer' }).setup();
   const available = [...game.cards.values()].filter(card => card.category === 'basic');
   const used = new Set();
@@ -31,18 +33,20 @@ function prepare(ordinaryAvailable, reverse = false) {
   return { game, request: step.value, steps };
 }
 
-export function diagnosticCases() {
+export function diagnosticCases(baseline = false) {
   return [true, false].flatMap(ordinaryAvailable => [false, true].map(reverse => {
     const { game, request } = prepare(ordinaryAvailable, reverse);
     const candidates = decisionCandidates(game, request);
     const observation = encodeDecision({ game, playerId: 0, request, candidates });
+    const baselineChoice = baseline ? teacherIndex({ game, playerId: 0, request, candidates }, 'v1.5') : null;
+    if (baseline) enrichPreview(observation);
     const preferred = candidates.flatMap((candidate, index) => {
       if (candidate == null) return [];
       const unique = game.player(0).hand[candidate.index].uniqueSkills.includes('waterSeal');
       return unique !== ordinaryAvailable ? [index] : [];
     });
     return { name: ordinaryAvailable ? 'preserve-water-seal' : 'spend-only-water-seal-to-survive',
-      reversedHand: reverse, preferred, observation };
+      reversedHand: reverse, preferred, observation, ...(baseline ? { baselineChoice } : {}) };
   }));
 }
 
@@ -65,5 +69,5 @@ export function verifyDiagnosticDecline() {
 
 if (process.argv[1] === new URL(import.meta.url).pathname) {
   verifyDiagnosticDecline();
-  console.log(JSON.stringify(diagnosticCases()));
+  console.log(JSON.stringify(diagnosticCases(process.argv.includes('--baseline'))));
 }

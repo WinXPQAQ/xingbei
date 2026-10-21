@@ -29,6 +29,7 @@ async def run(args):
     manifest = {'checkpointSha256': hashlib.sha256(args.checkpoint.read_bytes()).hexdigest(),
                 'checkpoint': str(args.checkpoint), 'firstSeed': args.first_seed, 'seeds': args.seeds,
                 'games': len(configs), 'selection': 'greedy policy' if args.greedy else 'sampled policy', 'opponent': 'v1.5',
+                'baselineVersion': model.baseline_version, 'baselineProbability': model.baseline_probability,
                 'checkpointUpdates': saved['completed'], 'featureSchema': SCHEMA,
                 'balancedMixedSchedule': args.balanced_mixed, 'featureEncoding': model.feature_encoding,
                 'samplingVersion': SAMPLING_VERSION, 'checkpointSamplingVersion': saved.get('samplingVersion', 1)}
@@ -40,12 +41,12 @@ async def run(args):
             stream.flush()
         _, games, batches = await collect(model, configs, args.workers, args.device, greedy=args.greedy, retain=False, on_result=record)
     model_games = [game for game in games if game['arm'] == 'model']
-    fixtures = json.loads(subprocess.check_output(['node', str(pathlib.Path(__file__).with_name('diagnostics.mjs'))]))
+    fixtures = json.loads(subprocess.check_output(['node', str(pathlib.Path(__file__).with_name('diagnostics.mjs')), *(['--baseline'] if model.baseline_version else [])]))
     diagnostics = []
     for fixture in fixtures:
         state, actions = seat_memory(model.feature_encoding).encode(0, fixture['observation'])
         with torch.inference_mode():
-            logits, _ = model(*batch([{'state': state, 'actions': actions}], args.device))
+            logits, _ = model(*batch([{'state': state, 'actions': actions, **({'baselineChoice': fixture['baselineChoice']} if model.baseline_version else {})}], args.device))
             probabilities = logits.softmax(-1)[0]
         chosen = int(probabilities.argmax())
         diagnostics.append({'name': fixture['name'], 'reversedHand': fixture['reversedHand'],

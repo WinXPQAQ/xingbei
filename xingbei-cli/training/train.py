@@ -71,6 +71,8 @@ def checkpoint(path, model, optimizer, completed, args):
     torch.save({'schema': SCHEMA, 'model': model.state_dict(), 'optimizer': optimizer.state_dict(),
                 'featureEncoding': model.feature_encoding,
                 'separateCritic': model.separate_critic,
+                'baselineVersion': model.baseline_version, 'baselineProbability': model.baseline_probability,
+                'previewVersion': 1 if model.baseline_version else None,
                 'samplingVersion': SAMPLING_VERSION,
                 'completed': completed, 'args': vars(args), 'torch_rng': torch.get_rng_state(),
                 'cuda_rng': torch.cuda.get_rng_state_all() if torch.cuda.is_available() else [],
@@ -97,13 +99,15 @@ async def run(args):
     torch.manual_seed(args.seed)
     random.seed(args.seed)
     device = torch.device(args.device)
-    model = Policy(feature_encoding=args.encoding, separate_critic=args.separate_critic).to(device)
+    model = Policy(feature_encoding=args.encoding, separate_critic=args.separate_critic, baseline_version=args.baseline, baseline_probability=args.baseline_probability).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate if args.learning_rate is not None else 3e-4)
     args.output.mkdir(parents=True, exist_ok=True)
     path = args.output / 'checkpoint.pt'
     if path.exists() and not args.resume:
         raise ValueError('Existing checkpoint: use --resume or a fresh output directory')
     completed = 0
+    if args.baseline and (args.warmup or not args.separate_critic or args.encoding != 'decision-context-v6'):
+        raise ValueError('Residual trial requires warmup=0, separate critic and decision-context-v6')
     if args.initialize:
         args.initialization = initialize_weights(args.initialize, model, device)
     if args.resume:
@@ -136,6 +140,8 @@ async def run(args):
         # Resume still preserves rollout schedule and all optimizer moments.
         for group in optimizer.param_groups:
             group['lr'] = args.learning_rate
+    if completed == 0:
+        checkpoint(args.output / 'initial.pt', model, optimizer, 0, args)
     for iteration in range(completed, args.updates):
         started = time.perf_counter()
         imitation = iteration < args.warmup
@@ -173,6 +179,8 @@ if __name__ == '__main__':
     initialization.add_argument('--initialize', type=pathlib.Path, help='Copy only model weights; start an explicit fresh curriculum/optimizer/RNG')
     parser.add_argument('--device', default='cpu')
     parser.add_argument('--encoding', choices=['legacy-v2', 'categorical-seats-v3', 'contextual-seats-v4', 'contextual-joint-v5', 'decision-context-v6'], default='legacy-v2')
+    parser.add_argument('--baseline', choices=['v1.5'])
+    parser.add_argument('--baseline-probability', type=float, default=0.95)
     parser.add_argument('--separate-critic', action='store_true')
     parser.add_argument('--schedule-offset', type=int, default=0)
     parser.add_argument('--seed', type=int, default=41)

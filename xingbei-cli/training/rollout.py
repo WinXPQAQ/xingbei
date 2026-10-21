@@ -57,13 +57,18 @@ async def collect(model, configs, workers, device, teacher=None, greedy=False, r
             while not jobs.empty():
                 config = jobs.get_nowait()
                 memory, trajectory = seat_memory(model.feature_encoding), []
+                baseline_decisions = baseline_matches = baseline_nonforced = 0
                 generator = torch.Generator().manual_seed(config['seed'] ^ config.get('samplingSeed', 0))
                 await simulator.send({'type': 'start', 'config': config, 'teacher': teacher,
-                                      'seatPolicies': config.get('seatPolicies')})
+                                      'baseline': getattr(model, 'baseline_version', None), 'seatPolicies': config.get('seatPolicies')})
                 while True:
                     message = await simulator.read()
                     if message['type'] == 'result':
                         result = message['result']
+                        if getattr(model, 'baseline_version', None):
+                            result['baselineDecisions'] = baseline_decisions
+                            result['baselineMatches'] = baseline_matches
+                            result['baselineNonforced'] = baseline_nonforced
                         result.update({key: config[key] for key in ('lineup', 'team', 'mode', 'arm', 'heroIds', 'samplingSeed') if key in config})
                         result['seatPolicies'] = config.get('seatPolicies', ['model'] * 6)
                         results.append(result)
@@ -80,6 +85,10 @@ async def collect(model, configs, workers, device, teacher=None, greedy=False, r
                     state, actions = memory.encode(message['seat'], message['observation'])
                     row = {'state': state, 'actions': actions, 'seat': message['seat'], 'seed': config['seed'],
                            'kind': message['observation']['request']['type']}
+                    if getattr(model, 'baseline_version', None):
+                        row['baselineChoice'] = message['baseline']
+                        if not isinstance(row['baselineChoice'], int):
+                            raise RuntimeError('Missing required baseline choice')
                     if teacher:
                         row['teacherChoice'] = message['teacher']
                         if not isinstance(row['teacherChoice'], int):
@@ -91,6 +100,10 @@ async def collect(model, configs, workers, device, teacher=None, greedy=False, r
                         await requests.put((row, future, generator))
                         index, logp, value = await future
                         row.update(logp=logp, value=value)
+                    if 'baselineChoice' in row:
+                        baseline_decisions += 1
+                        baseline_matches += int(index == row['baselineChoice'])
+                        baseline_nonforced += int(len(actions) > 1)
                     row['choice'] = index
                     if retain:
                         trajectory.append(row)
