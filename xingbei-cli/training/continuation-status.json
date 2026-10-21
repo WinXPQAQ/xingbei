@@ -1,6 +1,6 @@
 {
   "goalStatus": "active; not accepted or deployed",
-  "sourceCommit": "64b6aec",
+  "sourceCommit": "b3996ae",
   "finalSeedsUsed": false,
   "reward": "terminal team win/loss only",
   "experiments": {
@@ -29,21 +29,31 @@
       "validationUnit": "xingbei-ml-validate-bc-v6-211.service",
       "checkpoint": "/home/xp/.local/share/xingbei-ml/runs/bc-v6-211/checkpoint.pt",
       "validationReport": "/home/xp/.local/share/xingbei-ml/evidence/bc-v6-211-validation.json",
-      "completedUpdates": 63,
-      "lastLoss": 1.1313314974656579,
+      "completedUpdates": 64,
+      "lastLoss": 1.1113989667458968,
       "truncated": 0,
-      "updatesInThisRun": 63
+      "updatesInThisRun": 64
     },
     "ppo-v5-211": {
       "unit": "xingbei-ml-ppo-v5-211.service",
       "validationUnit": "xingbei-ml-validate-ppo-v5-211.service",
       "checkpoint": "/home/xp/.local/share/xingbei-ml/runs/ppo-v5-211/checkpoint.pt",
       "validationReport": "/home/xp/.local/share/xingbei-ml/evidence/ppo-v5-211-validation.json",
-      "completedUpdates": 76,
-      "updatesInThisRun": 12,
-      "lastLoss": -0.10341473382831824,
+      "completedUpdates": 177,
+      "updatesInThisRun": 113,
+      "lastLoss": 0.2504920843574736,
       "truncated": 0,
       "parentCheckpointSha256": "7db70b778cf2d46e95c8e760618c098afab4d954a6fb471567fec52879c11a8f"
+    },
+    "bc-v7-211": {
+      "unit": "xingbei-ml-bc-v7-211.service",
+      "validationUnit": "xingbei-ml-validate-bc-v7-211.service",
+      "checkpoint": "/home/xp/.local/share/xingbei-ml/runs/bc-v7-211/checkpoint.pt",
+      "validationReport": "/home/xp/.local/share/xingbei-ml/evidence/bc-v7-211-validation.json",
+      "completedUpdates": 10,
+      "updatesInThisRun": 10,
+      "lastLoss": 1.3440400329503146,
+      "truncated": 0
     }
   },
   "findings": {
@@ -402,18 +412,144 @@
           "confirmatory": true
         }
       }
+    },
+    "ppo32PairedDevelopment": {
+      "baseline": "/home/xp/.local/share/xingbei-ml/evaluations/bc-v5-211-greedy",
+      "candidate": "/home/xp/.local/share/xingbei-ml/evaluations/ppo-v5-211-96-greedy",
+      "scope": "paired development comparison, not final acceptance",
+      "results": {
+        "team": {
+          "pairedGames": 168,
+          "seedClusters": 6,
+          "baselineWins": 59,
+          "candidateWins": 41,
+          "meanWinRateDifference": -0.10714285714285714,
+          "seedCluster95": [
+            -0.17857142857142858,
+            -0.023809523809523808
+          ]
+        },
+        "mixed": {
+          "pairedGames": 168,
+          "seedClusters": 6,
+          "baselineWins": 71,
+          "candidateWins": 70,
+          "meanWinRateDifference": -0.005952380952380955,
+          "seedCluster95": [
+            -0.125,
+            0.09523809523809523
+          ]
+        }
+      }
+    },
+    "bc-v6-211": {
+      "greedy": {
+        "team": {
+          "games": 504,
+          "seedClusters": 18,
+          "wins": 162,
+          "losses": 342,
+          "truncated": 0,
+          "resolvedWinRate": 0.32142857142857145,
+          "allGameWinRateBounds": [
+            0.32142857142857145,
+            0.32142857142857145
+          ],
+          "seedCluster95": [
+            0.28174603174603174,
+            0.3611111111111111
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "mixed": {
+          "games": 504,
+          "seedClusters": 18,
+          "wins": 231,
+          "losses": 273,
+          "truncated": 0,
+          "resolvedWinRate": 0.4583333333333333,
+          "allGameWinRateBounds": [
+            0.4583333333333333,
+            0.4583333333333333
+          ],
+          "seedCluster95": [
+            0.41865079365079366,
+            0.49801587301587297
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "mixedPaired": {
+          "pairs": 504,
+          "unresolvedPairs": 0,
+          "resolvedMeanWinRateDifference": -0.041666666666666664,
+          "resolvedSeedCluster95": [
+            -0.08134920634920634,
+            -0.001984126984126984
+          ],
+          "confirmatory": true
+        }
+      },
+      "sampled": {
+        "team": {
+          "games": 504,
+          "seedClusters": 18,
+          "wins": 123,
+          "losses": 381,
+          "truncated": 0,
+          "resolvedWinRate": 0.24404761904761904,
+          "allGameWinRateBounds": [
+            0.24404761904761904,
+            0.24404761904761904
+          ],
+          "seedCluster95": [
+            0.2123015873015873,
+            0.27380952380952384
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "mixed": {
+          "games": 504,
+          "seedClusters": 18,
+          "wins": 223,
+          "losses": 281,
+          "truncated": 0,
+          "resolvedWinRate": 0.44246031746031744,
+          "allGameWinRateBounds": [
+            0.44246031746031744,
+            0.44246031746031744
+          ],
+          "seedCluster95": [
+            0.4246031746031746,
+            0.4583333333333333
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "mixedPaired": {
+          "pairs": 504,
+          "unresolvedPairs": 0,
+          "resolvedMeanWinRateDifference": -0.05753968253968253,
+          "resolvedSeedCluster95": [
+            -0.07539682539682539,
+            -0.041666666666666664
+          ],
+          "confirmatory": true
+        }
+      }
     }
   },
   "nextActions": [
-    "Poll live v6 training/validation and PPO training units; no restarts based on stale logs.",
-    "Once v6 validation releases CPU, evaluate frozen PPO checkpoint-96.pt (32 PPO batches) on six development seeds, greedy mode, to detect improvement/collapse; keep final 192 budget unless evidence warrants explicit stop.",
-    "Compare v5 and v6 BC endpoints with identical 64x48 demonstration budget; v4 used twice as many games.",
-    "If PPO helps, continue with documented budgets; if not, inspect policy KL, return/value and teacher agreement before further changes.",
-    "All subsequent experiments use frozen source launcher. Final seeds 241000000..241000119 remain unused."
+    "Poll current bc-v7 training/validation and ppo-v5 training/validation; all are bounded and should not be restarted while live.",
+    "Evaluate full PPO endpoint before concluding sparse terminal reward cannot help. Midpoint evidence shows degradation, not improvement.",
+    "Compare bc-v7 factual decision-context representation to v5/v6 under same 64x48 demonstration budget.",
+    "If plain PPO fails, consider an explicitly logged smaller learning rate/larger minibatch trial from the retained BC parent; flags now supported but no such trial started.",
+    "Only use label-only imitation if diagnostics justify it; observed distribution shift was small. Final reserved seeds remain unused."
   ],
-  "previousGoalTurnClassification": "progress: completed BC comparison, implemented joint-card representation, GPU PPO smoke passed",
+  "previousGoalTurnClassification": "progress: contextual validation completed and matched PPO started",
   "currentTurnProgress": [
-    "Completed contextual BC development evaluation: greedy 161/504 wins; sampled 128/504 wins.",
-    "Started frozen matched PPO continuation from contextual BC; first updates terminal-only and finite, without truncations."
+    "Joint-card BC validation completed; greedy 162/504, no clear improvement over contextual 161/504.",
+    "Paired 32-update PPO checkpoint loses 18 wins over 168 same-seed team games; recorded failure, full finite trial continues.",
+    "Implemented and tested label-only teacher queries with identical actual model trajectories; diagnostic shift is small, not established as main failure.",
+    "Launched matched 64-batch decision-context experiment from frozen source.",
+    "Added explicit optimization controls for future conservative PPO trials; current live runs unchanged."
   ]
 }

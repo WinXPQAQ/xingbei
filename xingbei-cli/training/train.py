@@ -94,7 +94,7 @@ async def run(args):
     random.seed(args.seed)
     device = torch.device(args.device)
     model = Policy(feature_encoding=args.encoding).to(device)
-    optimizer = torch.optim.Adam(model.parameters(), lr=3e-4)
+    optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate if args.learning_rate is not None else 3e-4)
     args.output.mkdir(parents=True, exist_ok=True)
     path = args.output / 'checkpoint.pt'
     if path.exists() and not args.resume:
@@ -121,6 +121,11 @@ async def run(args):
         if saved['cuda_rng'] and device.type == 'cuda':
             torch.cuda.set_rng_state_all([state.cpu() for state in saved['cuda_rng']])
         random.setstate(saved['python_rng'])
+    if args.learning_rate is not None:
+        # An explicit optimization override, recorded in args and every metric.
+        # Resume still preserves rollout schedule and all optimizer moments.
+        for group in optimizer.param_groups:
+            group['lr'] = args.learning_rate
     for iteration in range(completed, args.updates):
         started = time.perf_counter()
         imitation = iteration < args.warmup
@@ -130,7 +135,10 @@ async def run(args):
         if not rows:
             raise RuntimeError('No terminated trajectories; refusing an empty training update')
         optimization = {}
-        loss = update(model, optimizer, rows, device, imitation, epochs=args.epochs, diagnostics=optimization)
+        loss = update(model, optimizer, rows, device, imitation, epochs=args.epochs,
+                      batch_size=args.batch_size, diagnostics=optimization)
+        optimization['learningRate'] = optimizer.param_groups[0]['lr']
+        optimization['batchSize'] = args.batch_size
         checkpoint(path, model, optimizer, iteration + 1, args)
         if iteration + 1 == args.warmup:
             shutil.copy2(path, args.output / 'imitation.pt')
@@ -164,5 +172,7 @@ if __name__ == '__main__':
     parser.add_argument('--workers', type=int, default=4)
     parser.add_argument('--threads', type=int, default=2)
     parser.add_argument('--epochs', type=int, default=3)
+    parser.add_argument('--learning-rate', type=float, help='Explicit optimizer learning rate, including when resuming')
+    parser.add_argument('--batch-size', type=int, default=128)
     parser.add_argument('--save-every', type=int, default=0)
     asyncio.run(run(parser.parse_args()))

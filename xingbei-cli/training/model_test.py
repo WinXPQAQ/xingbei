@@ -15,6 +15,18 @@ def observation():
 
 
 class ModelTests(unittest.TestCase):
+    def test_imitation_learns_teacher_label_not_executed_action(self):
+        torch.set_num_threads(1)
+        torch.manual_seed(11)
+        state, actions = SeatMemory().encode(0, observation())
+        rows = [{'state': state, 'actions': actions, 'choice': 0, 'teacherChoice': 1, 'return': 1.0}]
+        model = Policy()
+        optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+        before = model(*batch(rows, 'cpu'))[0].softmax(-1)[0, 1].item()
+        update(model, optimizer, rows, 'cpu', imitation=True, epochs=8)
+        after = model(*batch(rows, 'cpu'))[0].softmax(-1)[0, 1].item()
+        self.assertGreater(after, before)
+
     def test_candidate_context_preserves_hand_and_exposes_own_resource_changes(self):
         import copy
         card = {'name': 'waterStrike', 'elements': ['water'], 'fates': ['H'], 'uniqueSkills': ['waterSeal']}
