@@ -1,24 +1,35 @@
 {
   "goalStatus": "active; not accepted or deployed",
-  "sourceCommit": "6475ef1",
+  "sourceCommit": "eef1a50",
   "finalSeedsUsed": false,
   "reward": "terminal team win/loss only",
   "experiments": {
     "bc-v4-211": {
       "unit": "xingbei-ml-bc-v4-211.service",
       "validationUnit": "xingbei-ml-validate-bc-v4-211.service",
-      "completedUpdates": 84,
+      "completedUpdates": 128,
       "checkpoint": "/home/xp/.local/share/xingbei-ml/runs/bc-v4-211/checkpoint.pt",
       "validationReport": "/home/xp/.local/share/xingbei-ml/evidence/bc-v4-211-validation.json",
-      "lastLoss": 1.2932988251858986
+      "lastLoss": 1.2392360132340101,
+      "truncated": 0
     },
     "bc-v5-211": {
       "unit": "xingbei-ml-bc-v5-211.service",
       "validationUnit": "xingbei-ml-validate-bc-v5-211.service",
-      "completedUpdates": 20,
+      "completedUpdates": 64,
       "checkpoint": "/home/xp/.local/share/xingbei-ml/runs/bc-v5-211/checkpoint.pt",
       "validationReport": "/home/xp/.local/share/xingbei-ml/evidence/bc-v5-211-validation.json",
-      "lastLoss": 1.3011835231925502
+      "lastLoss": 1.1317285819487137,
+      "truncated": 0
+    },
+    "bc-v6-211": {
+      "unit": "xingbei-ml-bc-v6-211.service",
+      "validationUnit": "xingbei-ml-validate-bc-v6-211.service",
+      "checkpoint": "/home/xp/.local/share/xingbei-ml/runs/bc-v6-211/checkpoint.pt",
+      "validationReport": "/home/xp/.local/share/xingbei-ml/evidence/bc-v6-211-validation.json",
+      "completedUpdates": 13,
+      "lastLoss": 1.4006295591069942,
+      "truncated": 0
     }
   },
   "findings": {
@@ -35,20 +46,175 @@
       "ordinal": 0.6278586,
       "categorical": 0.97921
     },
-    "interpretation": "Improved tiny-data memorization has not yet improved held-out gameplay; no evidence of beating v1.5."
+    "interpretation": "Improved tiny-data memorization has not yet improved held-out gameplay; no evidence of beating v1.5.",
+    "categorical128Validation": {
+      "greedy": {
+        "team": {
+          "games": 504,
+          "seedClusters": 18,
+          "wins": 80,
+          "losses": 424,
+          "truncated": 0,
+          "resolvedWinRate": 0.15873015873015872,
+          "allGameWinRateBounds": [
+            0.15873015873015872,
+            0.15873015873015872
+          ],
+          "seedCluster95": [
+            0.13293650793650794,
+            0.1845238095238095
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "mixed": {
+          "games": 504,
+          "seedClusters": 18,
+          "wins": 184,
+          "losses": 320,
+          "truncated": 0,
+          "resolvedWinRate": 0.36507936507936506,
+          "allGameWinRateBounds": [
+            0.36507936507936506,
+            0.36507936507936506
+          ],
+          "seedCluster95": [
+            0.33134920634920634,
+            0.39880952380952384
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        }
+      },
+      "sampled": {
+        "team": {
+          "games": 504,
+          "seedClusters": 18,
+          "wins": 52,
+          "losses": 452,
+          "truncated": 0,
+          "resolvedWinRate": 0.10317460317460317,
+          "allGameWinRateBounds": [
+            0.10317460317460317,
+            0.10317460317460317
+          ],
+          "seedCluster95": [
+            0.07738095238095238,
+            0.13095238095238096
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "mixed": {
+          "games": 504,
+          "seedClusters": 18,
+          "wins": 176,
+          "losses": 328,
+          "truncated": 0,
+          "resolvedWinRate": 0.3492063492063492,
+          "allGameWinRateBounds": [
+            0.3492063492063492,
+            0.3492063492063492
+          ],
+          "seedCluster95": [
+            0.31547619047619047,
+            0.3869047619047619
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        }
+      }
+    },
+    "contextual64TeacherAgreement": {
+      "all": {
+        "count": 6330,
+        "correct": 3894,
+        "teacherProbability": 0.522841136031119,
+        "accuracy": 0.6151658767772512
+      },
+      "action": {
+        "count": 2868,
+        "correct": 1397,
+        "teacherProbability": 0.36924655531027645,
+        "accuracy": 0.4870990237099024
+      },
+      "response": {
+        "count": 1302,
+        "correct": 905,
+        "teacherProbability": 0.6043259851375786,
+        "accuracy": 0.695084485407066
+      },
+      "skillChoice": {
+        "count": 760,
+        "correct": 694,
+        "teacherProbability": 0.8746511672084268,
+        "accuracy": 0.9131578947368421
+      },
+      "overflow": {
+        "count": 461,
+        "correct": 198,
+        "teacherProbability": 0.3715837399774585,
+        "accuracy": 0.42950108459869846
+      },
+      "playerChoice": {
+        "count": 165,
+        "correct": 118,
+        "teacherProbability": 0.6301952977721212,
+        "accuracy": 0.7151515151515152
+      },
+      "healing": {
+        "count": 369,
+        "correct": 303,
+        "teacherProbability": 0.7293155364210144,
+        "accuracy": 0.8211382113821138
+      },
+      "cardChoice": {
+        "count": 234,
+        "correct": 135,
+        "teacherProbability": 0.5245467059360706,
+        "accuracy": 0.5769230769230769
+      },
+      "weakness": {
+        "count": 95,
+        "correct": 88,
+        "teacherProbability": 0.9012739222349697,
+        "accuracy": 0.9263157894736842
+      },
+      "numberChoice": {
+        "count": 39,
+        "correct": 23,
+        "teacherProbability": 0.3965757301984689,
+        "accuracy": 0.5897435897435898
+      },
+      "energyChoice": {
+        "count": 13,
+        "correct": 13,
+        "teacherProbability": 0.9998394938615652,
+        "accuracy": 1.0
+      },
+      "bindingChoice": {
+        "count": 11,
+        "correct": 10,
+        "teacherProbability": 0.7665619281205264,
+        "accuracy": 0.9090909090909091
+      },
+      "effectChoice": {
+        "count": 13,
+        "correct": 10,
+        "teacherProbability": 0.7197453545836302,
+        "accuracy": 0.7692307692307693
+      }
+    }
   },
   "nextActions": [
-    "Use training/launch_frozen.py for subsequent experiments so checkpoint source hashes reflect actually executed files. Current v4/v5 processes use older in-memory encoder; optimized encoder has proven identical outputs.",
-    "Read both stage validation reports after completion; check training truncation, budgets, source/checkpoint encoding.",
-    "Compare teacher agreement and greedy/sampled win rates on development seeds only.",
-    "Retain BC-only checkpoint, branch PPO run with same encoding; do not overwrite BC or silently change resume schedule.",
-    "If representation remains weak, diagnose on validation before adding RL compute.",
-    "Freeze a candidate only after validation warrants final test; final reserved seeds 241000000..241000119 remain unused."
+    "Check v5 and v6 validation units and reports; do not restart live jobs.",
+    "Compare contextual vs joint-card endpoints with identical 64x48 demonstration budget. Categorical endpoint has 128x48 budget; report this difference.",
+    "If representation is sufficient, resume selected BC into a separate frozen PPO experiment with identical seed/first-seed/games/warmup/encoding; preserve BC endpoint and periodic checkpoints.",
+    "Use optimization diagnostics to diagnose policy drift; entropy is recorded only, never a reward bonus.",
+    "Consider BC value-loss interference or structured actor architecture only with evidence from current endpoints.",
+    "Final reserved seeds 241000000..241000119 remain unused. Do not mark complete until independent acceptance gate is passed."
   ],
-  "previousGoalTurnClassification": "progress: launched training, improved representation, added validation coverage",
+  "previousGoalTurnClassification": "progress: exact encoder optimization, immutable source launch, tests",
   "currentTurnProgress": [
-    "Optimized encoding without changing model inputs; exact 24-game teacher probability/accuracy parity.",
-    "Prepared immutable source launcher; isolated 2-game training smoke passed with all 151 source hashes verified.",
-    "Five model tests and three evaluation tests passed."
+    "Completed categorical BC 6144 games and full development greedy/sampled evaluation; does not qualify.",
+    "Completed contextual BC 3072 games; teacher agreement improved; validation still live.",
+    "Verified real-card marginal ambiguity, added joint card identities and regression; launched frozen joint-card experiment.",
+    "Instrumented PPO loss/KL/entropy diagnostics; isolated GPU resume smoke passed with checkpoint-2.pt."
   ]
 }
