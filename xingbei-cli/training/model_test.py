@@ -4,7 +4,7 @@ import tempfile
 import unittest
 
 import torch
-from model import Policy, SeatMemory, SCHEMA, batch, features, STATE_DIM, ACTION_DIM
+from model import Policy, SeatMemory, SCHEMA, batch, features, STATE_DIM, ACTION_DIM, load_policy_state, policy_from_checkpoint
 from train import checkpoint, update, initialize_weights
 from encoding_candidate import categorical_seats, seat_memory
 
@@ -15,6 +15,29 @@ def observation():
 
 
 class ModelTests(unittest.TestCase):
+    def test_separate_critic_preserves_initial_policy_and_cannot_move_it(self):
+        torch.set_num_threads(1)
+        torch.manual_seed(17)
+        state, actions = SeatMemory().encode(0, observation())
+        inputs = batch([{'state': state, 'actions': actions}], 'cpu')
+        parent = Policy()
+        separate = Policy(separate_critic=True)
+        saved = {'schema': SCHEMA, 'model': parent.state_dict(), 'featureEncoding': 'legacy-v2'}
+        load_policy_state(separate, saved)
+        before_logits, before_value = parent(*inputs)
+        actual_logits, actual_value = separate(*inputs)
+        self.assertTrue(torch.equal(before_logits, actual_logits))
+        self.assertTrue(torch.equal(before_value, actual_value))
+        optimizer = torch.optim.Adam(separate.parameters(), lr=0.001)
+        (actual_value - 1).square().mean().backward()
+        self.assertTrue(all(parameter.grad is None for parameter in separate.state.parameters()))
+        optimizer.step()
+        after_logits, after_value = separate(*inputs)
+        self.assertTrue(torch.equal(before_logits, after_logits))
+        self.assertFalse(torch.equal(before_value, after_value))
+        restored = policy_from_checkpoint({**saved, 'model': separate.state_dict(), 'separateCritic': True})
+        self.assertTrue(torch.equal(after_logits, restored(*inputs)[0]))
+
     def test_imitation_learns_teacher_label_not_executed_action(self):
         torch.set_num_threads(1)
         torch.manual_seed(11)

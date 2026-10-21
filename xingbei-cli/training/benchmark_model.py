@@ -7,7 +7,7 @@ import subprocess
 import time
 
 import torch
-from model import Policy, SeatMemory, batch
+from model import policy_from_checkpoint, Policy, SeatMemory, batch
 from encoding_candidate import seat_memory
 
 parser = argparse.ArgumentParser()
@@ -26,8 +26,7 @@ game.draw(0,12-game.player(0).hand.length,{overflow:'defer'});
 const request={type:'overflow',player:game.player(0)};
 console.log(JSON.stringify(encodeDecision({game,playerId:0,request,candidates:decisionCandidates(game,request)})));
 '''], cwd=project))
-model = Policy(feature_encoding=saved.get('featureEncoding', 'legacy-v2'))
-model.load_state_dict(saved['model'])
+model = policy_from_checkpoint(saved)
 model.eval()
 state, actions = seat_memory(model.feature_encoding).encode(0, cases[0]['observation'])
 row = {'state': state, 'actions': actions}

@@ -8,6 +8,7 @@ can replay exactly without stale recurrent-network hidden states.
 import math
 import zlib
 import json
+import copy
 from functools import lru_cache
 from array import array
 
@@ -88,22 +89,46 @@ class SeatMemory:
 
 
 class Policy(nn.Module):
-    def __init__(self, hidden=256, feature_encoding='legacy-v2'):
+    def __init__(self, hidden=256, feature_encoding='legacy-v2', separate_critic=False):
         super().__init__()
         if feature_encoding not in ('legacy-v2', 'categorical-seats-v3', 'contextual-seats-v4', 'contextual-joint-v5', 'decision-context-v6'):
             raise ValueError('Unsupported feature encoding')
         self.feature_encoding = feature_encoding
+        self.separate_critic = separate_critic
         self.hidden = hidden
         self.state = nn.Sequential(nn.Linear(STATE_DIM * 2, hidden), nn.Tanh(), nn.Linear(hidden, hidden), nn.Tanh())
         self.action = nn.Sequential(nn.Linear(ACTION_DIM, 128), nn.Tanh(), nn.Linear(128, hidden), nn.Tanh())
         self.value = nn.Linear(hidden, 1)
         self.bias = nn.Linear(hidden, 1)
+        if separate_critic:
+            self.critic_state = copy.deepcopy(self.state)
 
     def forward(self, states, actions, mask):
         state = self.state(states)
         action = self.action(actions)
         logits = (state[:, None, :] * action).sum(-1) / math.sqrt(self.hidden) + self.bias(action).squeeze(-1)
-        return logits.masked_fill(~mask, -torch.inf), self.value(state).squeeze(-1)
+        value_state = self.critic_state(states) if self.separate_critic else state
+        return logits.masked_fill(~mask, -torch.inf), self.value(value_state).squeeze(-1)
+
+
+def load_policy_state(model, saved):
+    if saved['schema'] != SCHEMA or saved.get('featureEncoding', 'legacy-v2') != model.feature_encoding:
+        raise ValueError('Checkpoint feature encoding mismatch')
+    if model.separate_critic and not saved.get('separateCritic', False):
+        missing, unexpected = model.load_state_dict(saved['model'], strict=False)
+        expected = {'critic_state.' + key for key in model.critic_state.state_dict()}
+        if set(missing) != expected or unexpected:
+            raise ValueError('Unexpected architecture conversion')
+        model.critic_state.load_state_dict(model.state.state_dict())
+    else:
+        model.load_state_dict(saved['model'])
+
+
+def policy_from_checkpoint(saved, device='cpu'):
+    model = Policy(feature_encoding=saved.get('featureEncoding', 'legacy-v2'),
+                   separate_critic=saved.get('separateCritic', False)).to(device)
+    load_policy_state(model, saved)
+    return model
 
 
 def batch(records, device):

@@ -8,7 +8,7 @@ import subprocess
 import time
 
 import torch
-from model import Policy, SCHEMA, SeatMemory, batch
+from model import policy_from_checkpoint, Policy, SCHEMA, SeatMemory, batch
 from rollout import collect
 from schedule import evaluation_configs, LINEUPS
 from evaluation_stats import summarize, paired_mixed
@@ -20,8 +20,7 @@ async def run(args):
     saved = torch.load(args.checkpoint, map_location=args.device, weights_only=False)
     if saved['schema'] != SCHEMA:
         raise ValueError('Unsupported checkpoint schema')
-    model = Policy(feature_encoding=saved.get('featureEncoding', 'legacy-v2')).to(args.device)
-    model.load_state_dict(saved['model'])
+    model = policy_from_checkpoint(saved, args.device)
     configs = evaluation_configs(args.first_seed, args.seeds, saved['args']['seed'], args.balanced_mixed)
     args.output.mkdir(parents=True, exist_ok=True)
     raw = args.output / 'games.jsonl'

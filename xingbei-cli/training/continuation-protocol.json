@@ -150,5 +150,30 @@
     "comparison": "same 64x48 teacher trajectory budget as v5/v6; use identical development partitions",
     "dagger": false,
     "whyNotDaggerYet": "Small diagnostic agreement shift does not establish covariate shift as the main failure; retain label-only tool for future tests."
+  },
+  "conservativePpoExperiment": {
+    "name": "ppo-separate-211",
+    "parent": "runs/bc-v5-211/imitation.pt",
+    "encoding": "contextual-seats-v4",
+    "separateCritic": true,
+    "optimizer": "fresh Adam",
+    "learningRate": 0.0001,
+    "batchSize": 512,
+    "seed": 211,
+    "firstSeed": 221000000,
+    "scheduleOffset": 64,
+    "updates": 128,
+    "warmup": 0,
+    "gamesPerUpdate": 48,
+    "epochs": 3,
+    "workers": 4,
+    "cpuQuota": "400%",
+    "memoryMax": "12G",
+    "runtimeLimitSeconds": 2400,
+    "saveEvery": 32,
+    "hypothesis": "Reduce policy drift caused by shared critic gradients and noisy small-minibatch optimization; initial policy unchanged.",
+    "comparison": "same initial policy and game schedule as plain PPO; separate critic, fresh optimizer, LR and minibatch change together, so do not attribute gain to one component.",
+    "reward": "terminal team +/-1 only; no teacher calls or intermediate/entropy bonuses",
+    "evidence": "critic-interference.json found 7.75% argmax drift from critic-only updates; separate-critic unit test proves zero initial policy change and no actor gradients from critic loss"
   }
 }

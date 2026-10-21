@@ -10,7 +10,7 @@ import shutil
 import time
 
 import torch
-from model import Policy, SCHEMA, batch
+from model import Policy, SCHEMA, batch, load_policy_state
 from rollout import collect
 from schedule import training_configs
 
@@ -70,6 +70,7 @@ def checkpoint(path, model, optimizer, completed, args):
     temporary = path.with_suffix('.tmp')
     torch.save({'schema': SCHEMA, 'model': model.state_dict(), 'optimizer': optimizer.state_dict(),
                 'featureEncoding': model.feature_encoding,
+                'separateCritic': model.separate_critic,
                 'completed': completed, 'args': vars(args), 'torch_rng': torch.get_rng_state(),
                 'cuda_rng': torch.cuda.get_rng_state_all() if torch.cuda.is_available() else [],
                 'python_rng': random.getstate(), 'baseline': 'd1560abd1be87b1aa5a56a33f550903508d23ac2',
@@ -83,9 +84,10 @@ def initialize_weights(path, model, device):
     saved = torch.load(path, map_location=device, weights_only=False)
     if saved['schema'] != SCHEMA or saved.get('featureEncoding', 'legacy-v2') != model.feature_encoding:
         raise ValueError('Initialization feature encoding mismatch')
-    model.load_state_dict(saved['model'])
+    load_policy_state(model, saved)
     return {'checkpoint': str(path), 'sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
-            'parentCompleted': saved['completed'], 'optimizerAndRng': 'fresh; explicit new curriculum, not resume'}
+            'parentCompleted': saved['completed'], 'criticSeparated': model.separate_critic and not saved.get('separateCritic', False),
+            'optimizerAndRng': 'fresh; explicit new curriculum, not resume'}
 
 
 async def run(args):
@@ -93,7 +95,7 @@ async def run(args):
     torch.manual_seed(args.seed)
     random.seed(args.seed)
     device = torch.device(args.device)
-    model = Policy(feature_encoding=args.encoding).to(device)
+    model = Policy(feature_encoding=args.encoding, separate_critic=args.separate_critic).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate if args.learning_rate is not None else 3e-4)
     args.output.mkdir(parents=True, exist_ok=True)
     path = args.output / 'checkpoint.pt'
@@ -111,10 +113,14 @@ async def run(args):
             raise ValueError('Checkpoint feature encoding mismatch')
         if saved['args'].get('dagger', False) != args.dagger:
             raise ValueError('Resume changed imitation execution mode')
+        if saved.get('separateCritic', False) != args.separate_critic:
+            raise ValueError('Architecture change requires explicit --initialize, not --resume')
+        if saved['args'].get('schedule_offset', 0) != args.schedule_offset:
+            raise ValueError('Resume changed schedule offset')
         for key in ('seed', 'first_seed', 'games', 'warmup'):
             if saved['args'][key] != vars(args)[key]:
                 raise ValueError(f'Resume changed rollout schedule: {key}')
-        model.load_state_dict(saved['model'])
+        load_policy_state(model, saved)
         optimizer.load_state_dict(saved['optimizer'])
         completed = saved['completed']
         torch.set_rng_state(saved['torch_rng'].cpu())
@@ -129,7 +135,7 @@ async def run(args):
     for iteration in range(completed, args.updates):
         started = time.perf_counter()
         imitation = iteration < args.warmup
-        configs = training_configs(args.first_seed, iteration, args.games, args.seed, imitation and not args.dagger)
+        configs = training_configs(args.first_seed, iteration + args.schedule_offset, args.games, args.seed, imitation and not args.dagger)
         rows, results, batches = await collect(model, configs, args.workers, device, teacher='v1.5' if imitation else None,
                                               execute_teacher=not args.dagger)
         if not rows:
@@ -163,6 +169,8 @@ if __name__ == '__main__':
     initialization.add_argument('--initialize', type=pathlib.Path, help='Copy only model weights; start an explicit fresh curriculum/optimizer/RNG')
     parser.add_argument('--device', default='cpu')
     parser.add_argument('--encoding', choices=['legacy-v2', 'categorical-seats-v3', 'contextual-seats-v4', 'contextual-joint-v5', 'decision-context-v6'], default='legacy-v2')
+    parser.add_argument('--separate-critic', action='store_true')
+    parser.add_argument('--schedule-offset', type=int, default=0)
     parser.add_argument('--seed', type=int, default=41)
     parser.add_argument('--first-seed', type=int, default=220000000)
     parser.add_argument('--updates', type=int, default=3)
