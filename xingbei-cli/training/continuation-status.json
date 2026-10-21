@@ -1,6 +1,6 @@
 {
   "goalStatus": "active; not accepted or deployed",
-  "sourceCommit": "eef1a50",
+  "sourceCommit": "64b6aec",
   "finalSeedsUsed": false,
   "reward": "terminal team win/loss only",
   "experiments": {
@@ -11,7 +11,8 @@
       "checkpoint": "/home/xp/.local/share/xingbei-ml/runs/bc-v4-211/checkpoint.pt",
       "validationReport": "/home/xp/.local/share/xingbei-ml/evidence/bc-v4-211-validation.json",
       "lastLoss": 1.2392360132340101,
-      "truncated": 0
+      "truncated": 0,
+      "updatesInThisRun": 128
     },
     "bc-v5-211": {
       "unit": "xingbei-ml-bc-v5-211.service",
@@ -20,16 +21,29 @@
       "checkpoint": "/home/xp/.local/share/xingbei-ml/runs/bc-v5-211/checkpoint.pt",
       "validationReport": "/home/xp/.local/share/xingbei-ml/evidence/bc-v5-211-validation.json",
       "lastLoss": 1.1317285819487137,
-      "truncated": 0
+      "truncated": 0,
+      "updatesInThisRun": 64
     },
     "bc-v6-211": {
       "unit": "xingbei-ml-bc-v6-211.service",
       "validationUnit": "xingbei-ml-validate-bc-v6-211.service",
       "checkpoint": "/home/xp/.local/share/xingbei-ml/runs/bc-v6-211/checkpoint.pt",
       "validationReport": "/home/xp/.local/share/xingbei-ml/evidence/bc-v6-211-validation.json",
-      "completedUpdates": 13,
-      "lastLoss": 1.4006295591069942,
-      "truncated": 0
+      "completedUpdates": 63,
+      "lastLoss": 1.1313314974656579,
+      "truncated": 0,
+      "updatesInThisRun": 63
+    },
+    "ppo-v5-211": {
+      "unit": "xingbei-ml-ppo-v5-211.service",
+      "validationUnit": "xingbei-ml-validate-ppo-v5-211.service",
+      "checkpoint": "/home/xp/.local/share/xingbei-ml/runs/ppo-v5-211/checkpoint.pt",
+      "validationReport": "/home/xp/.local/share/xingbei-ml/evidence/ppo-v5-211-validation.json",
+      "completedUpdates": 76,
+      "updatesInThisRun": 12,
+      "lastLoss": -0.10341473382831824,
+      "truncated": 0,
+      "parentCheckpointSha256": "7db70b778cf2d46e95c8e760618c098afab4d954a6fb471567fec52879c11a8f"
     }
   },
   "findings": {
@@ -200,21 +214,206 @@
         "teacherProbability": 0.7197453545836302,
         "accuracy": 0.7692307692307693
       }
+    },
+    "bc-v4-211": {
+      "greedy": {
+        "team": {
+          "games": 504,
+          "seedClusters": 18,
+          "wins": 80,
+          "losses": 424,
+          "truncated": 0,
+          "resolvedWinRate": 0.15873015873015872,
+          "allGameWinRateBounds": [
+            0.15873015873015872,
+            0.15873015873015872
+          ],
+          "seedCluster95": [
+            0.13293650793650794,
+            0.1845238095238095
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "mixed": {
+          "games": 504,
+          "seedClusters": 18,
+          "wins": 184,
+          "losses": 320,
+          "truncated": 0,
+          "resolvedWinRate": 0.36507936507936506,
+          "allGameWinRateBounds": [
+            0.36507936507936506,
+            0.36507936507936506
+          ],
+          "seedCluster95": [
+            0.33134920634920634,
+            0.39880952380952384
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "mixedPaired": {
+          "pairs": 504,
+          "unresolvedPairs": 0,
+          "resolvedMeanWinRateDifference": -0.1349206349206349,
+          "resolvedSeedCluster95": [
+            -0.16865079365079363,
+            -0.10119047619047619
+          ],
+          "confirmatory": true
+        }
+      },
+      "sampled": {
+        "team": {
+          "games": 504,
+          "seedClusters": 18,
+          "wins": 52,
+          "losses": 452,
+          "truncated": 0,
+          "resolvedWinRate": 0.10317460317460317,
+          "allGameWinRateBounds": [
+            0.10317460317460317,
+            0.10317460317460317
+          ],
+          "seedCluster95": [
+            0.07738095238095238,
+            0.13095238095238096
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "mixed": {
+          "games": 504,
+          "seedClusters": 18,
+          "wins": 176,
+          "losses": 328,
+          "truncated": 0,
+          "resolvedWinRate": 0.3492063492063492,
+          "allGameWinRateBounds": [
+            0.3492063492063492,
+            0.3492063492063492
+          ],
+          "seedCluster95": [
+            0.31547619047619047,
+            0.3869047619047619
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "mixedPaired": {
+          "pairs": 504,
+          "unresolvedPairs": 0,
+          "resolvedMeanWinRateDifference": -0.1507936507936508,
+          "resolvedSeedCluster95": [
+            -0.1845238095238095,
+            -0.11309523809523808
+          ],
+          "confirmatory": true
+        }
+      }
+    },
+    "bc-v5-211": {
+      "greedy": {
+        "team": {
+          "games": 504,
+          "seedClusters": 18,
+          "wins": 161,
+          "losses": 343,
+          "truncated": 0,
+          "resolvedWinRate": 0.3194444444444444,
+          "allGameWinRateBounds": [
+            0.3194444444444444,
+            0.3194444444444444
+          ],
+          "seedCluster95": [
+            0.27182539682539686,
+            0.36706349206349204
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "mixed": {
+          "games": 504,
+          "seedClusters": 18,
+          "wins": 227,
+          "losses": 277,
+          "truncated": 0,
+          "resolvedWinRate": 0.4503968253968254,
+          "allGameWinRateBounds": [
+            0.4503968253968254,
+            0.4503968253968254
+          ],
+          "seedCluster95": [
+            0.41269841269841273,
+            0.488095238095238
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "mixedPaired": {
+          "pairs": 504,
+          "unresolvedPairs": 0,
+          "resolvedMeanWinRateDifference": -0.0496031746031746,
+          "resolvedSeedCluster95": [
+            -0.0873015873015873,
+            -0.011904761904761904
+          ],
+          "confirmatory": true
+        }
+      },
+      "sampled": {
+        "team": {
+          "games": 504,
+          "seedClusters": 18,
+          "wins": 128,
+          "losses": 376,
+          "truncated": 0,
+          "resolvedWinRate": 0.25396825396825395,
+          "allGameWinRateBounds": [
+            0.25396825396825395,
+            0.25396825396825395
+          ],
+          "seedCluster95": [
+            0.22023809523809523,
+            0.2896825396825397
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "mixed": {
+          "games": 504,
+          "seedClusters": 18,
+          "wins": 209,
+          "losses": 295,
+          "truncated": 0,
+          "resolvedWinRate": 0.4146825396825397,
+          "allGameWinRateBounds": [
+            0.4146825396825397,
+            0.4146825396825397
+          ],
+          "seedCluster95": [
+            0.369047619047619,
+            0.46230158730158727
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "mixedPaired": {
+          "pairs": 504,
+          "unresolvedPairs": 0,
+          "resolvedMeanWinRateDifference": -0.0853174603174603,
+          "resolvedSeedCluster95": [
+            -0.13095238095238096,
+            -0.0376984126984127
+          ],
+          "confirmatory": true
+        }
+      }
     }
   },
   "nextActions": [
-    "Check v5 and v6 validation units and reports; do not restart live jobs.",
-    "Compare contextual vs joint-card endpoints with identical 64x48 demonstration budget. Categorical endpoint has 128x48 budget; report this difference.",
-    "If representation is sufficient, resume selected BC into a separate frozen PPO experiment with identical seed/first-seed/games/warmup/encoding; preserve BC endpoint and periodic checkpoints.",
-    "Use optimization diagnostics to diagnose policy drift; entropy is recorded only, never a reward bonus.",
-    "Consider BC value-loss interference or structured actor architecture only with evidence from current endpoints.",
-    "Final reserved seeds 241000000..241000119 remain unused. Do not mark complete until independent acceptance gate is passed."
+    "Poll live v6 training/validation and PPO training units; no restarts based on stale logs.",
+    "Once v6 validation releases CPU, evaluate frozen PPO checkpoint-96.pt (32 PPO batches) on six development seeds, greedy mode, to detect improvement/collapse; keep final 192 budget unless evidence warrants explicit stop.",
+    "Compare v5 and v6 BC endpoints with identical 64x48 demonstration budget; v4 used twice as many games.",
+    "If PPO helps, continue with documented budgets; if not, inspect policy KL, return/value and teacher agreement before further changes.",
+    "All subsequent experiments use frozen source launcher. Final seeds 241000000..241000119 remain unused."
   ],
-  "previousGoalTurnClassification": "progress: exact encoder optimization, immutable source launch, tests",
+  "previousGoalTurnClassification": "progress: completed BC comparison, implemented joint-card representation, GPU PPO smoke passed",
   "currentTurnProgress": [
-    "Completed categorical BC 6144 games and full development greedy/sampled evaluation; does not qualify.",
-    "Completed contextual BC 3072 games; teacher agreement improved; validation still live.",
-    "Verified real-card marginal ambiguity, added joint card identities and regression; launched frozen joint-card experiment.",
-    "Instrumented PPO loss/KL/entropy diagnostics; isolated GPU resume smoke passed with checkpoint-2.pt."
+    "Completed contextual BC development evaluation: greedy 161/504 wins; sampled 128/504 wins.",
+    "Started frozen matched PPO continuation from contextual BC; first updates terminal-only and finite, without truncations."
   ]
 }
