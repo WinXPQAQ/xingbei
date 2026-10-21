@@ -52,6 +52,13 @@ test('encoder handles natural six-hero decision paths', async () => {
   }
 });
 
+test('encoder rejects another seat activation reservation', () => {
+  const game = new Game({ seed: 210000156 }).setup();
+  assert.throws(() => encodeDecision({ game, playerId: 1,
+    request: { type: 'skillChoice', reservedEnergy: 1 }, candidates: [true, false] }),
+  /Private activation reservation/);
+});
+
 test('persistent worker accepts two games and rejects stale selection IDs', { timeout: 30000 }, async () => {
   const worker = spawn(process.execPath, [new URL('./worker.mjs', import.meta.url).pathname], { stdio: ['pipe', 'pipe', 'pipe'] });
   const lines = createInterface({ input: worker.stdout })[Symbol.asyncIterator]();

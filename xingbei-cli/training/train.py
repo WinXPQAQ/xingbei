@@ -84,7 +84,7 @@ async def run(args):
         completed = saved['completed']
         torch.set_rng_state(saved['torch_rng'].cpu())
         if saved['cuda_rng'] and device.type == 'cuda':
-            torch.cuda.set_rng_state_all(saved['cuda_rng'])
+            torch.cuda.set_rng_state_all([state.cpu() for state in saved['cuda_rng']])
         random.setstate(saved['python_rng'])
     for iteration in range(completed, args.updates):
         started = time.perf_counter()

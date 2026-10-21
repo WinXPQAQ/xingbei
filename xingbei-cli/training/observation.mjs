@@ -3,6 +3,11 @@ import { captureObservation } from '../src/ai/observation.js';
 // This is the only model boundary. No raw request, log, presentation snapshot,
 // card ID, engine object, or function is returned. Commands stay in the worker.
 export function encodeDecision({ game, playerId, request, candidates }) {
+  // Planned activation costs belong to the acting seat, not to responders.
+  // Current six heroes cannot ask another seat here; fail closed if extended.
+  if (game.turn.state?.playerId !== playerId && (request.reservedEnergy || request.reservedHealing)) {
+    throw new Error('Private activation reservation belongs to another seat');
+  }
   const data = captureObservation(game, playerId, { activation: true });
   const seat = id => id == null ? null : (id - playerId + 6) % 6;
   const ownTeam = data.players[playerId].team;
