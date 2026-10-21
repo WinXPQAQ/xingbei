@@ -79,6 +79,15 @@ def checkpoint(path, model, optimizer, completed, args):
     os.replace(temporary, path)
 
 
+def initialize_weights(path, model, device):
+    saved = torch.load(path, map_location=device, weights_only=False)
+    if saved['schema'] != SCHEMA or saved.get('featureEncoding', 'legacy-v2') != model.feature_encoding:
+        raise ValueError('Initialization feature encoding mismatch')
+    model.load_state_dict(saved['model'])
+    return {'checkpoint': str(path), 'sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
+            'parentCompleted': saved['completed'], 'optimizerAndRng': 'fresh; explicit new curriculum, not resume'}
+
+
 async def run(args):
     torch.set_num_threads(args.threads)
     torch.manual_seed(args.seed)
@@ -91,6 +100,8 @@ async def run(args):
     if path.exists() and not args.resume:
         raise ValueError('Existing checkpoint: use --resume or a fresh output directory')
     completed = 0
+    if args.initialize:
+        args.initialization = initialize_weights(args.initialize, model, device)
     if args.resume:
         # Load only a trusted locally generated checkpoint, including RNG state.
         saved = torch.load(args.resume, map_location=device, weights_only=False)
@@ -136,7 +147,9 @@ async def run(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--output', type=pathlib.Path, required=True)
-    parser.add_argument('--resume', type=pathlib.Path)
+    initialization = parser.add_mutually_exclusive_group()
+    initialization.add_argument('--resume', type=pathlib.Path)
+    initialization.add_argument('--initialize', type=pathlib.Path, help='Copy only model weights; start an explicit fresh curriculum/optimizer/RNG')
     parser.add_argument('--device', default='cpu')
     parser.add_argument('--encoding', choices=['legacy-v2', 'categorical-seats-v3', 'contextual-seats-v4', 'contextual-joint-v5'], default='legacy-v2')
     parser.add_argument('--seed', type=int, default=41)

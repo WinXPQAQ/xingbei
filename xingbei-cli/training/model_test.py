@@ -5,7 +5,7 @@ import unittest
 
 import torch
 from model import Policy, SeatMemory, SCHEMA, batch, features, STATE_DIM, ACTION_DIM
-from train import checkpoint, update
+from train import checkpoint, update, initialize_weights
 from encoding_candidate import categorical_seats, seat_memory
 
 
@@ -114,6 +114,12 @@ class ModelTests(unittest.TestCase):
             self.assertTrue(torch.equal(model(*inputs)[0], restored(*inputs)[0]))
             self.assertEqual(saved['completed'], 3)
             self.assertEqual(len(optimizer.state), len(restored_optimizer.state))
+            initialized = Policy()
+            metadata = initialize_weights(path, initialized, 'cpu')
+            self.assertTrue(torch.equal(model(*inputs)[0], initialized(*inputs)[0]))
+            self.assertEqual(metadata['parentCompleted'], 3)
+            with self.assertRaises(ValueError):
+                initialize_weights(path, Policy(feature_encoding='contextual-joint-v5'), 'cpu')
 
 
 if __name__ == '__main__':
