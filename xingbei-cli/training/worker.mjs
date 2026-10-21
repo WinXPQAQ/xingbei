@@ -1,6 +1,7 @@
 import { createInterface } from 'node:readline';
 import { driveGame } from './driver.mjs';
 import { encodeDecision } from './observation.mjs';
+import { teacherIndex } from './teacher.mjs';
 
 // Persistent JSON-lines transport. Each worker runs one game at a time; launch
 // several workers and batch their pending decisions in the Python learner.
@@ -19,11 +20,14 @@ createInterface({ input: process.stdin }).on('line', async line => {
     running = true;
     try {
       const result = await driveGame(message.config, input => {
+        const policy = message.seatPolicies?.[input.playerId] ?? 'model';
+        if (policy !== 'model') return teacherIndex(input, policy);
         const observation = encodeDecision(input);
+        const teacher = message.teacher ? teacherIndex(input, message.teacher) : null;
         const id = ++sequence;
         return new Promise(resolve => {
           waiting = { id, resolve };
-          send({ type: 'decision', id, seat: input.playerId, observation });
+          send({ type: 'decision', id, seat: input.playerId, observation, teacher });
         });
       });
       send({ type: 'result', result });

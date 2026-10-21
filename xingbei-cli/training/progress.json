@@ -18,7 +18,8 @@
     "semantic detached model observation without entity IDs",
     "six-seat hidden-state counterfactual checks",
     "persistent JSON worker and stale-request rejection",
-    "1/2/4/8 worker uniform-policy IPC benchmark; results invariant"
+    "1/2/4/8 worker uniform-policy IPC benchmark; results invariant",
+    "explicit v1.5/v1.4 teacher mapping verified by twelve complete games"
   ],
   "incomplete": [
     "GPU/CUDA and VRAM verification",
@@ -34,14 +35,19 @@
   "gpuIssue": {
     "loadedKernelDriver": "595.91.07",
     "userspaceNVML": "595.99",
-    "status": "driver/library mismatch; no global driver changes or reboot attempted"
+    "status": "driver/library mismatch; no global driver changes or reboot attempted",
+    "onDiskKernelDriver": "595.99.02",
+    "rebootApproval": "asked; pending user reply; no reboot allowed yet"
   },
   "diagnosticSeeds": {
     "first": 210000000,
     "last": 210000100,
     "purpose": "adapter smoke/regression only; never held-out evaluation"
   },
-  "trainingSeeds": null,
+  "trainingSeeds": {
+    "first": 220000000,
+    "purpose": "reserved training/development; not final evaluation"
+  },
   "finalEvaluationSeeds": null,
   "limitations": [
     "Raw Game stays in trusted simulator callback; only encodeDecision output crosses the worker boundary.",
@@ -53,5 +59,14 @@
   "latestTests": {
     "passed": 248,
     "failed": 0
-  }
+  },
+  "implementedNotYetRuntimeVerified": [
+    "shared semantic actor/critic with independent per-seat memory",
+    "batched learner inference and explicit frozen v1.5/v1.4 opponents",
+    "terminal-only undiscounted Monte Carlo PPO",
+    "imitation warmup without permanent teacher objective",
+    "atomic model/optimizer/RNG checkpoint and schedule-checked resume"
+  ],
+  "pythonEnvironment": "/home/xp/.local/share/xingbei-ml/venv",
+  "pythonInstall": "torch 2.14.1+cpu download in progress; not yet import-verified"
 }
