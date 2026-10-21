@@ -63,7 +63,7 @@
       "residual-long-211": {
         "unit": "xingbei-ml-residual-long-211.service",
         "validationUnit": "xingbei-ml-validate-residual-long-211.service",
-        "completedAtSnapshot": 9,
+        "completedAtSnapshot": 78,
         "plannedUpdates": 96,
         "plannedGames": 2304,
         "truncatedAtSnapshot": 0,
@@ -72,7 +72,7 @@
       "residual-lr3-211": {
         "unit": "xingbei-ml-residual-lr3-211.service",
         "validationUnit": "xingbei-ml-validate-residual-lr3-211.service",
-        "completedAtSnapshot": 9,
+        "completedAtSnapshot": 79,
         "plannedUpdates": 96,
         "plannedGames": 2304,
         "truncatedAtSnapshot": 0,
@@ -85,5 +85,19 @@
     "seedCluster95LowerBoundGreaterThan": 0.5,
     "scope": "Frozen independent evaluation; supersedes old above-50-only target by explicit user request",
     "achieved": false
+  },
+  "runtimeAudit": {
+    "scheduleAudit": "first pilot 504/504 records passed",
+    "evaluationTests": 4,
+    "cpuGpuOutputsClose": true,
+    "rolloutWorkers": [
+      4,
+      8,
+      12,
+      4
+    ],
+    "rolloutResultsIdentical": true,
+    "evidenceRoot": "/home/xp/.local/share/xingbei-ml/evidence",
+    "note": "Current training remains four workers; throughput measured under concurrent training."
   }
 }
