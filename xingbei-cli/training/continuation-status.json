@@ -1,0 +1,47 @@
+{
+  "goalStatus": "active; not accepted or deployed",
+  "sourceCommit": "6475ef1",
+  "finalSeedsUsed": false,
+  "reward": "terminal team win/loss only",
+  "experiments": {
+    "bc-v4-211": {
+      "unit": "xingbei-ml-bc-v4-211.service",
+      "validationUnit": "xingbei-ml-validate-bc-v4-211.service",
+      "completedUpdates": 59,
+      "checkpoint": "/home/xp/.local/share/xingbei-ml/runs/bc-v4-211/checkpoint.pt",
+      "validationReport": "/home/xp/.local/share/xingbei-ml/evidence/bc-v4-211-validation.json",
+      "lastLoss": 1.3317336161234226
+    },
+    "bc-v5-211": {
+      "unit": "xingbei-ml-bc-v5-211.service",
+      "validationUnit": "xingbei-ml-validate-bc-v5-211.service",
+      "completedUpdates": 3,
+      "checkpoint": "/home/xp/.local/share/xingbei-ml/runs/bc-v5-211/checkpoint.pt",
+      "validationReport": "/home/xp/.local/share/xingbei-ml/evidence/bc-v5-211-validation.json",
+      "lastLoss": 1.6448400623741604
+    }
+  },
+  "findings": {
+    "oldPilotActionTeacherAccuracy": 0.200488145,
+    "ordinal36ValidationTeamWins": [
+      31,
+      168
+    ],
+    "categorical36ValidationTeamWins": [
+      28,
+      168
+    ],
+    "capacityOnlyActionAccuracy": {
+      "ordinal": 0.6278586,
+      "categorical": 0.97921
+    },
+    "interpretation": "Improved tiny-data memorization has not yet improved held-out gameplay; no evidence of beating v1.5."
+  },
+  "nextActions": [
+    "Read both stage validation reports after completion; check training truncation, budgets, source/checkpoint encoding.",
+    "Compare teacher agreement and greedy/sampled win rates on development seeds only.",
+    "Retain BC-only checkpoint, branch PPO run with same encoding; do not overwrite BC or silently change resume schedule.",
+    "If representation remains weak, diagnose on validation before adding RL compute.",
+    "Freeze a candidate only after validation warrants final test; final reserved seeds 241000000..241000119 remain unused."
+  ]
+}
