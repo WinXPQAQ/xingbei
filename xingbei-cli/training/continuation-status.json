@@ -1,6 +1,6 @@
 {
   "goalStatus": "active; not accepted or deployed",
-  "sourceCommit": "b3996ae",
+  "sourceCommit": "98d2e14",
   "finalSeedsUsed": false,
   "reward": "terminal team win/loss only",
   "experiments": {
@@ -39,9 +39,9 @@
       "validationUnit": "xingbei-ml-validate-ppo-v5-211.service",
       "checkpoint": "/home/xp/.local/share/xingbei-ml/runs/ppo-v5-211/checkpoint.pt",
       "validationReport": "/home/xp/.local/share/xingbei-ml/evidence/ppo-v5-211-validation.json",
-      "completedUpdates": 177,
-      "updatesInThisRun": 113,
-      "lastLoss": 0.2504920843574736,
+      "completedUpdates": 192,
+      "updatesInThisRun": 128,
+      "lastLoss": 0.2392935365518575,
       "truncated": 0,
       "parentCheckpointSha256": "7db70b778cf2d46e95c8e760618c098afab4d954a6fb471567fec52879c11a8f"
     },
@@ -50,10 +50,31 @@
       "validationUnit": "xingbei-ml-validate-bc-v7-211.service",
       "checkpoint": "/home/xp/.local/share/xingbei-ml/runs/bc-v7-211/checkpoint.pt",
       "validationReport": "/home/xp/.local/share/xingbei-ml/evidence/bc-v7-211-validation.json",
-      "completedUpdates": 10,
-      "updatesInThisRun": 10,
-      "lastLoss": 1.3440400329503146,
+      "completedUpdates": 64,
+      "updatesInThisRun": 64,
+      "lastLoss": 1.0989253213911345,
       "truncated": 0
+    },
+    "ppo-separate-211": {
+      "unit": "xingbei-ml-ppo-separate-211.service",
+      "validationUnit": "xingbei-ml-validate-ppo-separate-211.service",
+      "checkpoint": "/home/xp/.local/share/xingbei-ml/runs/ppo-separate-211/checkpoint.pt",
+      "validationReport": "/home/xp/.local/share/xingbei-ml/evidence/ppo-separate-211-validation.json",
+      "completedUpdates": 28,
+      "updatesInThisRun": 28,
+      "truncated": 0,
+      "lastLoss": 0.6655756657322248,
+      "status": "retired early for sampling reproducibility fix; do not restart"
+    },
+    "ppo-separate-v2-211": {
+      "unit": "xingbei-ml-ppo-separate-v2-211.service",
+      "validationUnit": "xingbei-ml-validate-ppo-separate-v2-211.service",
+      "checkpoint": "/home/xp/.local/share/xingbei-ml/runs/ppo-separate-v2-211/checkpoint.pt",
+      "validationReport": "/home/xp/.local/share/xingbei-ml/evidence/ppo-separate-v2-211-validation.json",
+      "completedUpdates": 15,
+      "updatesInThisRun": 15,
+      "truncated": 0,
+      "lastLoss": 0.33492579373220605
     }
   },
   "findings": {
@@ -535,21 +556,142 @@
           "confirmatory": true
         }
       }
+    },
+    "criticOnlyInterference": {
+      "checkpoint": "/home/xp/.local/share/xingbei-ml/runs/bc-v5-211/imitation.pt",
+      "games": 24,
+      "rows": 2082,
+      "truncated": 0,
+      "nonForcedDecisions": 1793,
+      "argmaxChanged": 139,
+      "argmaxChangeRate": 0.07752370329057445,
+      "meanPolicyKLFromCriticOnly": 0.021357311119025016,
+      "meanCriticLoss": 0.19044521896570338,
+      "epochs": 3,
+      "scope": "critic-only diagnostic using inherited Adam state; not a policy optimization or win-rate result"
+    },
+    "samplingV2Parity": {
+      "samplingVersion": 2,
+      "samePolicyRealGpuGamesEqual": true,
+      "games": 12,
+      "workers": [
+        1,
+        4
+      ],
+      "architectures": [
+        "shared",
+        "separate"
+      ],
+      "scope": "tested configurations, not a bitwise guarantee across GPU/library versions"
+    },
+    "plainPpoFinal": {
+      "greedy": {
+        "team": {
+          "games": 504,
+          "seedClusters": 18,
+          "wins": 97,
+          "losses": 407,
+          "truncated": 0,
+          "resolvedWinRate": 0.19246031746031747,
+          "allGameWinRateBounds": [
+            0.19246031746031747,
+            0.19246031746031747
+          ],
+          "seedCluster95": [
+            0.16269841269841268,
+            0.2242063492063492
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "mixed": {
+          "games": 504,
+          "seedClusters": 18,
+          "wins": 186,
+          "losses": 318,
+          "truncated": 0,
+          "resolvedWinRate": 0.36904761904761907,
+          "allGameWinRateBounds": [
+            0.36904761904761907,
+            0.36904761904761907
+          ],
+          "seedCluster95": [
+            0.33134920634920634,
+            0.40674603174603174
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "mixedPaired": {
+          "pairs": 504,
+          "unresolvedPairs": 0,
+          "resolvedMeanWinRateDifference": -0.13095238095238096,
+          "resolvedSeedCluster95": [
+            -0.16865079365079363,
+            -0.09325396825396826
+          ],
+          "confirmatory": true
+        }
+      },
+      "sampled": {
+        "team": {
+          "games": 504,
+          "seedClusters": 18,
+          "wins": 97,
+          "losses": 407,
+          "truncated": 0,
+          "resolvedWinRate": 0.19246031746031747,
+          "allGameWinRateBounds": [
+            0.19246031746031747,
+            0.19246031746031747
+          ],
+          "seedCluster95": [
+            0.1488095238095238,
+            0.23412698412698413
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "mixed": {
+          "games": 504,
+          "seedClusters": 18,
+          "wins": 187,
+          "losses": 317,
+          "truncated": 0,
+          "resolvedWinRate": 0.37103174603174605,
+          "allGameWinRateBounds": [
+            0.37103174603174605,
+            0.37103174603174605
+          ],
+          "seedCluster95": [
+            0.33928571428571425,
+            0.40476190476190477
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "mixedPaired": {
+          "pairs": 504,
+          "unresolvedPairs": 0,
+          "resolvedMeanWinRateDifference": -0.12896825396825395,
+          "resolvedSeedCluster95": [
+            -0.1607142857142857,
+            -0.09523809523809523
+          ],
+          "confirmatory": true
+        }
+      }
     }
   },
   "nextActions": [
-    "Poll current bc-v7 training/validation and ppo-v5 training/validation; all are bounded and should not be restarted while live.",
-    "Evaluate full PPO endpoint before concluding sparse terminal reward cannot help. Midpoint evidence shows degradation, not improvement.",
-    "Compare bc-v7 factual decision-context representation to v5/v6 under same 64x48 demonstration budget.",
-    "If plain PPO fails, consider an explicitly logged smaller learning rate/larger minibatch trial from the retained BC parent; flags now supported but no such trial started.",
-    "Only use label-only imitation if diagnostics justify it; observed distribution shift was small. Final reserved seeds remain unused."
+    "Poll bc-v7 validation and ppo-separate-v2 training/validation; earlier separate trial is intentionally retired.",
+    "Read sampling-correction.json; old stochastic records cannot support worker-scheduling-invariant replay claims. Teacher-forced and greedy primary evidence remains applicable.",
+    "Conservative PPO differs by critic architecture, optimizer reset, learning rate, minibatch and corrected sampling; do not attribute strength gains to one component.",
+    "Consider matched BC-only separate-critic trial with decision-context-v6 after v7 validation frees CPU; this can isolate critic interference during imitation.",
+    "All final seeds remain unused; do not mark goal complete below acceptance gate."
   ],
-  "previousGoalTurnClassification": "progress: contextual validation completed and matched PPO started",
+  "previousGoalTurnClassification": "progress: PPO midpoint degradation established; decision-context trial and diagnostic tooling added",
   "currentTurnProgress": [
-    "Joint-card BC validation completed; greedy 162/504, no clear improvement over contextual 161/504.",
-    "Paired 32-update PPO checkpoint loses 18 wins over 168 same-seed team games; recorded failure, full finite trial continues.",
-    "Implemented and tested label-only teacher queries with identical actual model trajectories; diagnostic shift is small, not established as main failure.",
-    "Launched matched 64-batch decision-context experiment from frozen source.",
-    "Added explicit optimization controls for future conservative PPO trials; current live runs unchanged."
+    "Plain PPO completed 6144 games; greedy final win rate 97/504, below BC 161/504.",
+    "Critic-only diagnostic changed 7.75% of argmax decisions; implemented independent critic preserving initial actor exactly.",
+    "Found padded multinomial RNG bug, corrected sampling version and withdrawn old scheduling-invariance assertions; probability distribution and legal masks were not wrong.",
+    "Sampling-v2 tests passed, including twelve real GPU games with shared/separate critic and 1/4 workers yielding identical trajectories.",
+    "Stopped and retained early ppo-separate-211; launched ppo-separate-v2-211 from original BC with explicit conservative settings."
   ]
 }
