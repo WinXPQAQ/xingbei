@@ -1,6 +1,7 @@
 """Persistent simulator pool and batched inference; policy fixed for a rollout."""
 import asyncio
 import json
+import math
 import pathlib
 
 import torch
@@ -43,7 +44,9 @@ class Simulator:
         await self.process.wait()
 
 
-async def collect(model, configs, workers, device, teacher=None, greedy=False, retain=True, on_result=None, execute_teacher=True, on_choice=None):
+async def collect(model, configs, workers, device, teacher=None, greedy=False, retain=True, on_result=None, execute_teacher=True, on_choice=None, temperature=1.0):
+    if not math.isfinite(temperature) or temperature <= 0:
+        raise ValueError("Sampling temperature must be finite and positive")
     jobs, requests = asyncio.Queue(), asyncio.Queue()
     for config in configs:
         jobs.put_nowait(config)
@@ -84,7 +87,7 @@ async def collect(model, configs, workers, device, teacher=None, greedy=False, r
                     assert message['type'] == 'decision'
                     state, actions = memory.encode(message['seat'], message['observation'])
                     row = {'state': state, 'actions': actions, 'seat': message['seat'], 'seed': config['seed'],
-                           'kind': message['observation']['request']['type']}
+                           'kind': message['observation']['request']['type'], 'temperature': temperature}
                     if getattr(model, 'baseline_version', None):
                         row['baselineChoice'] = message['baseline']
                         if not isinstance(row['baselineChoice'], int):
@@ -130,7 +133,7 @@ async def collect(model, configs, workers, device, teacher=None, greedy=False, r
                 pending.append(requests.get_nowait())
             with torch.inference_mode():
                 logits, values = model(*batch([row for row, _, _ in pending], device))
-                distribution = torch.distributions.Categorical(logits=logits)
+                distribution = torch.distributions.Categorical(logits=logits / temperature)
                 # Per-game random streams do not depend on OS worker scheduling.
                 choices = logits.argmax(-1) if greedy else torch.tensor([
                     sample_legal(distribution.probs[index], len(row['actions']), generator)

@@ -3,6 +3,7 @@ import argparse
 import asyncio
 import hashlib
 import json
+import math
 import os
 import pathlib
 import random
@@ -25,7 +26,10 @@ def update(model, optimizer, rows, device, imitation, epochs=3, batch_size=128, 
         for offset in range(0, len(order), batch_size):
             selected = [rows[index] for index in order[offset:offset + batch_size]]
             logits, values = model(*batch(selected, device))
-            distribution = torch.distributions.Categorical(logits=logits)
+            temperatures = torch.tensor([row.get('temperature', 1.0) for row in selected], device=device)
+            if not torch.isfinite(temperatures).all() or (temperatures <= 0).any():
+                raise ValueError("Invalid trajectory sampling temperature")
+            distribution = torch.distributions.Categorical(logits=logits / temperatures[:, None])
             choices = torch.tensor([row.get('teacherChoice', row['choice']) if imitation else row['choice'] for row in selected], device=device)
             returns = torch.tensor([row['return'] for row in selected], device=device, dtype=torch.float32)
             logp = distribution.log_prob(choices)
@@ -95,6 +99,8 @@ def initialize_weights(path, model, device):
 
 
 async def run(args):
+    if not math.isfinite(args.temperature) or args.temperature <= 0:
+        raise ValueError("Sampling temperature must be finite and positive")
     torch.set_num_threads(args.threads)
     torch.manual_seed(args.seed)
     random.seed(args.seed)
@@ -128,6 +134,8 @@ async def run(args):
         for key in ('seed', 'first_seed', 'games', 'warmup'):
             if saved['args'][key] != vars(args)[key]:
                 raise ValueError(f'Resume changed rollout schedule: {key}')
+        if saved['args'].get('temperature', 1.0) != args.temperature:
+            raise ValueError('Resume changed sampling temperature; use explicit initialization')
         load_policy_state(model, saved)
         optimizer.load_state_dict(saved['optimizer'])
         completed = saved['completed']
@@ -147,7 +155,7 @@ async def run(args):
         imitation = iteration < args.warmup
         configs = training_configs(args.first_seed, iteration + args.schedule_offset, args.games, args.seed, imitation and not args.dagger)
         rows, results, batches = await collect(model, configs, args.workers, device, teacher='v1.5' if imitation else None,
-                                              execute_teacher=not args.dagger)
+                                              execute_teacher=not args.dagger, temperature=args.temperature)
         if not rows:
             raise RuntimeError('No terminated trajectories; refusing an empty training update')
         optimization = {}
@@ -155,6 +163,7 @@ async def run(args):
                       batch_size=args.batch_size, diagnostics=optimization)
         optimization['learningRate'] = optimizer.param_groups[0]['lr']
         optimization['batchSize'] = args.batch_size
+        optimization['samplingTemperature'] = args.temperature
         checkpoint(path, model, optimizer, iteration + 1, args)
         if iteration + 1 == args.warmup:
             shutil.copy2(path, args.output / 'imitation.pt')
@@ -194,5 +203,6 @@ if __name__ == '__main__':
     parser.add_argument('--epochs', type=int, default=3)
     parser.add_argument('--learning-rate', type=float, help='Explicit optimizer learning rate, including when resuming')
     parser.add_argument('--batch-size', type=int, default=128)
+    parser.add_argument('--temperature', type=float, default=1.0, help='Training sampling only; greedy candidate ranking is unchanged')
     parser.add_argument('--save-every', type=int, default=0)
     asyncio.run(run(parser.parse_args()))

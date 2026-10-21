@@ -3,12 +3,41 @@ import asyncio
 import unittest
 
 import torch
-from model import Policy
+from model import Policy, batch
 from rollout import collect, sample_legal
 from schedule import training_configs
+from train import update
 
 
 class TeacherIsolationTests(unittest.TestCase):
+    def test_temperature_sampling_and_ppo_use_same_probabilities(self):
+        async def verify():
+            torch.set_num_threads(1)
+            torch.manual_seed(73)
+            model = Policy(feature_encoding='decision-context-v6', separate_critic=True,
+                           baseline_version='v1.5')
+            configs = training_configs(251800000, 0, 2, 211, False)
+            rows, games, _ = await collect(model, configs, 2, 'cpu', temperature=1.3)
+            self.assertTrue(all(game['terminated'] for game in games))
+            self.assertTrue(all(row['temperature'] == 1.3 for row in rows))
+            with torch.no_grad():
+                for offset in range(0, len(rows), 64):
+                    part = rows[offset:offset + 64]
+                    logits, _ = model(*batch(part, 'cpu'))
+                    distribution = torch.distributions.Categorical(logits=logits / 1.3)
+                    expected = distribution.log_prob(torch.tensor([r['choice'] for r in part]))
+                    torch.testing.assert_close(expected, torch.tensor([r['logp'] for r in part]), atol=1e-5, rtol=1e-5)
+                    self.assertTrue(torch.equal(logits.argmax(-1), (logits / 1.3).argmax(-1)))
+            diagnostic = {}
+            update(model, torch.optim.Adam(model.parameters(), lr=0), rows, 'cpu',
+                   imitation=False, epochs=1, diagnostics=diagnostic)
+            self.assertLess(abs(diagnostic['approximateKL']), 1e-6)
+            self.assertEqual(diagnostic['clipFraction'], 0)
+            for temperature in (0, -1, float('nan'), float('inf')):
+                with self.assertRaises(ValueError):
+                    await collect(model, [], 1, 'cpu', temperature=temperature)
+        asyncio.run(verify())
+
     def test_padding_cannot_change_sampling_stream(self):
         def sequence(width):
             generator = torch.Generator().manual_seed(211)
