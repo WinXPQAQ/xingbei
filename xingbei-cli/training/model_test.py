@@ -4,12 +4,12 @@ import tempfile
 import unittest
 
 import torch
-from model import Policy, SeatMemory, batch
+from model import Policy, SeatMemory, SCHEMA, batch
 from train import checkpoint, update
 
 
 def observation():
-    return {'schema': 1, 'players': [{'hero': 'sealer', 'hand': [{'elements': ['water'], 'uniqueSkills': ['waterSeal']}]}],
+    return {'schema': SCHEMA, 'players': [{'hero': 'sealer', 'hand': [{'elements': ['water'], 'uniqueSkills': ['waterSeal']}]}],
             'candidates': [{'type': 'decline'}, {'type': 'response', 'card': {'elements': ['water']}}]}
 
 

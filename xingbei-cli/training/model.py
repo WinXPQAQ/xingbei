@@ -14,7 +14,7 @@ from torch import nn
 
 STATE_DIM = 2048
 ACTION_DIM = 512
-SCHEMA = 1
+SCHEMA = 2
 
 
 def features(value, dimension):

@@ -51,7 +51,7 @@ export function encodeDecision({ game, playerId, request, candidates }) {
   };
   const context = request.context ?? {};
   const output = {
-    schema: 1,
+    schema: 2,
     current: seat(data.current),
     players: Array.from({ length: 6 }, (_, offset) => {
       const player = data.players[(playerId + offset) % 6];

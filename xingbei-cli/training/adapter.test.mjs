@@ -24,6 +24,12 @@ test('unknown decisions fail closed; optional card selections retain all combina
   assert.deepEqual(decisionCandidates(null, { type: 'cardChoice', valid: [0, 2, 3], count: 2, optional: true }), [null, [0, 2], [0, 3], [2, 3]]);
 });
 
+test('holy light has no target while magic relay retains its fixed target', () => {
+  const target = { hand: [{ name: 'holyLight', type: 'spell' }, { name: 'magicBullet', type: 'spell' }] };
+  assert.deepEqual(decisionCandidates(null, { type: 'response', target, valid: [{ index: 0 }, { index: 1 }], nextTarget: { id: 4 } }),
+    [null, { index: 0, targetId: null }, { index: 1, targetId: 4 }]);
+});
+
 test('uniform full six-hero games route asynchronous decisions without legacy fallback', async () => {
   let state = 735923;
   const kinds = new Set();

@@ -76,15 +76,15 @@
     "runs": [
       {
         "modelSeed": 41,
-        "firstGameSeed": 220100000
+        "firstGameSeed": 220400000
       },
       {
         "modelSeed": 73,
-        "firstGameSeed": 220200000
+        "firstGameSeed": 220500000
       },
       {
         "modelSeed": 107,
-        "firstGameSeed": 220300000
+        "firstGameSeed": 220600000
       }
     ],
     "gamesTotal": 2304,
@@ -93,5 +93,12 @@
     "cgroupCPUQuota": "800%",
     "device": "cpu while GPU reboot pending",
     "checkpointSelection": "last completed fixed-budget checkpoint; incomplete timeout is reported, not silently accepted as full budget"
-  }
+  },
+  "featureSchema": 2,
+  "retiredPilotAttempts": [
+    {
+      "directory": "/home/xp/.local/share/xingbei-ml/runs/pilot-41",
+      "reason": "HolyLight magic response carried a semantically irrelevant relay target; stopped before final evaluation; evidence retained"
+    }
+  ]
 }

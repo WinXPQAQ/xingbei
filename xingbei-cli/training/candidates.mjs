@@ -62,7 +62,7 @@ export function decisionCandidates(game, request) {
       const card = request.target.hand[index];
       if (card.type === 'attack') {
         for (const target of request.counterTargets ?? []) choices.push({ index, targetId: target.id });
-      } else choices.push({ index, targetId: request.nextTarget?.id ?? null });
+      } else choices.push({ index, targetId: card.name === 'magicBullet' ? request.nextTarget?.id ?? null : null });
     }
     return choices;
   }
