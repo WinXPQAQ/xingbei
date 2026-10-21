@@ -1,12 +1,12 @@
 {
-  "stage": "Both continuation trials complete; six-seed screen improved; 18-seed development expansion running; 70 percent target not achieved",
+  "stage": "18-seed expansions complete; best development team rate 56.55%; true-resume training and four milestone evaluations running; 70 percent goal unmet",
   "accepted": false,
   "deployed": false,
   "sourceCommit": "610eb2c",
   "finalSeedsUsed": false,
   "tests": {
     "node": 253,
-    "python": 17
+    "python": 18
   },
   "initialAudit": {
     "games": 42,
@@ -55,7 +55,7 @@
     "truncated": 0,
     "interpretation": "All paired win/loss outcomes unchanged in six development seed clusters; zero bootstrap difference interval is not proof of population equivalence."
   },
-  "nextStep": "Finish both unchanged-checkpoint 18-seed development expansions; audit manifests, paired mixed outcomes, hero/lineup strata and six-seed replay before choosing next training parent.",
+  "nextStep": "Monitor running resume stage and its four declared development evaluations; preserve assault/mixed limitations, final independent seeds unused.",
   "continuation": {
     "protocol": "residual-continuation-protocol.json",
     "diagnostic": "/home/xp/.local/share/xingbei-ml/evidence/residual-v1-margin-diagnostic.json",
@@ -106,7 +106,55 @@
         },
         "departuresFromBaseline": 578,
         "modelDecisions": 16686,
-        "expandedEvaluationUnit": "xingbei-ml-expand-residual-long-211.service"
+        "expandedEvaluationUnit": "xingbei-ml-expand-residual-long-211.service",
+        "expandedResult": {
+          "team": {
+            "games": 504,
+            "seedClusters": 18,
+            "wins": 285,
+            "losses": 219,
+            "truncated": 0,
+            "resolvedWinRate": 0.5654761904761905,
+            "allGameWinRateBounds": [
+              0.5654761904761905,
+              0.5654761904761905
+            ],
+            "seedCluster95": [
+              0.5277777777777778,
+              0.6031746031746033
+            ],
+            "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+          },
+          "mixed": {
+            "games": 504,
+            "seedClusters": 18,
+            "wins": 265,
+            "losses": 239,
+            "truncated": 0,
+            "resolvedWinRate": 0.5257936507936508,
+            "allGameWinRateBounds": [
+              0.5257936507936508,
+              0.5257936507936508
+            ],
+            "seedCluster95": [
+              0.503968253968254,
+              0.5496031746031745
+            ],
+            "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+          },
+          "mixedPaired": {
+            "pairs": 504,
+            "unresolvedPairs": 0,
+            "resolvedMeanWinRateDifference": 0.025793650793650792,
+            "resolvedSeedCluster95": [
+              0.003968253968253968,
+              0.0496031746031746
+            ],
+            "confirmatory": true
+          },
+          "records": 1512,
+          "overlapIdentical": true
+        }
       },
       "residual-lr3-211": {
         "unit": "xingbei-ml-residual-lr3-211.service",
@@ -154,7 +202,55 @@
         },
         "departuresFromBaseline": 614,
         "modelDecisions": 16337,
-        "expandedEvaluationUnit": "xingbei-ml-expand-residual-lr3-211.service"
+        "expandedEvaluationUnit": "xingbei-ml-expand-residual-lr3-211.service",
+        "expandedResult": {
+          "team": {
+            "games": 504,
+            "seedClusters": 18,
+            "wins": 269,
+            "losses": 235,
+            "truncated": 0,
+            "resolvedWinRate": 0.5337301587301587,
+            "allGameWinRateBounds": [
+              0.5337301587301587,
+              0.5337301587301587
+            ],
+            "seedCluster95": [
+              0.5,
+              0.5674603174603176
+            ],
+            "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+          },
+          "mixed": {
+            "games": 504,
+            "seedClusters": 18,
+            "wins": 260,
+            "losses": 244,
+            "truncated": 0,
+            "resolvedWinRate": 0.5158730158730159,
+            "allGameWinRateBounds": [
+              0.5158730158730159,
+              0.5158730158730159
+            ],
+            "seedCluster95": [
+              0.488095238095238,
+              0.5436507936507936
+            ],
+            "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+          },
+          "mixedPaired": {
+            "pairs": 504,
+            "unresolvedPairs": 0,
+            "resolvedMeanWinRateDifference": 0.015873015873015872,
+            "resolvedSeedCluster95": [
+              -0.011904761904761904,
+              0.04365079365079365
+            ],
+            "confirmatory": true
+          },
+          "records": 1512,
+          "overlapIdentical": true
+        }
       }
     }
   },
@@ -178,5 +274,22 @@
     "evidenceRoot": "/home/xp/.local/share/xingbei-ml/evidence",
     "note": "Current training remains four workers; throughput measured under concurrent training.",
     "processRestart": "CPU single-worker end-to-end two-batch uninterrupted versus restart: exact model, optimizer, torch/python RNG and completed count equality"
+  },
+  "resumeStage": {
+    "protocol": "residual-resume-protocol.json",
+    "unit": "xingbei-ml-residual-resume-211.service",
+    "validationUnit": "xingbei-ml-validate-residual-resume-211.service",
+    "parentCompleted": 96,
+    "targetCompleted": 480,
+    "additionalGames": 9216,
+    "checkpoints": [
+      192,
+      288,
+      384,
+      480
+    ],
+    "seriesEvidence": "/home/xp/.local/share/xingbei-ml/evidence/residual-resume-211-series.json",
+    "optimizer": "restored, not fresh",
+    "workers": 8
   }
 }
