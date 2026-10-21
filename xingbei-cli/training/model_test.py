@@ -15,6 +15,18 @@ def observation():
 
 
 class ModelTests(unittest.TestCase):
+    def test_candidate_context_preserves_hand_and_exposes_own_resource_changes(self):
+        import copy
+        card = {'name': 'waterStrike', 'elements': ['water'], 'fates': ['H'], 'uniqueSkills': ['waterSeal']}
+        source = {'schema': SCHEMA, 'players': [{'hero': 'sealer', 'hand': [card, card], 'energy': {'gem': 0}}],
+                  'request': {'type': 'cardChoice'}, 'candidates': [{'cards': [card]}]}
+        original = copy.deepcopy(source)
+        _, before = seat_memory('decision-context-v6').encode(0, source)
+        self.assertEqual(source, original)
+        source['players'][0]['energy']['gem'] = 1
+        _, after = seat_memory('decision-context-v6').encode(0, source)
+        self.assertFalse(torch.equal(before, after))
+
     def test_joint_cards_distinguish_actual_deck_attribute_skill_pairings(self):
         def card(element, fate, skills):
             return {'name': element + 'Strike', 'type': 'attack', 'category': 'basic',

@@ -13,11 +13,12 @@ parser.add_argument('--unit', required=True)
 parser.add_argument('--name', required=True)
 parser.add_argument('--updates', type=int, required=True)
 parser.add_argument('--checkpoint-name', choices=['imitation.pt', 'checkpoint.pt'], default='imitation.pt')
+parser.add_argument('--wait-seconds', type=int, default=1800)
 args = parser.parse_args()
 root = Path.home() / '.local/share/xingbei-ml'
 started = time.monotonic()
 while subprocess.run(['systemctl', '--user', 'is-active', '--quiet', args.unit]).returncode == 0:
-    if time.monotonic() - started > 1800:
+    if time.monotonic() - started > args.wait_seconds:
         raise TimeoutError('Training wait exceeded stage budget')
     time.sleep(5)
 checkpoint = root / 'runs' / args.name / args.checkpoint_name

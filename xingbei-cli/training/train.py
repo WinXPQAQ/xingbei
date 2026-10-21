@@ -26,7 +26,7 @@ def update(model, optimizer, rows, device, imitation, epochs=3, batch_size=128, 
             selected = [rows[index] for index in order[offset:offset + batch_size]]
             logits, values = model(*batch(selected, device))
             distribution = torch.distributions.Categorical(logits=logits)
-            choices = torch.tensor([row['choice'] for row in selected], device=device)
+            choices = torch.tensor([row.get('teacherChoice', row['choice']) if imitation else row['choice'] for row in selected], device=device)
             returns = torch.tensor([row['return'] for row in selected], device=device, dtype=torch.float32)
             logp = distribution.log_prob(choices)
             if imitation:
@@ -109,6 +109,8 @@ async def run(args):
             raise ValueError('Checkpoint feature schema mismatch')
         if saved.get('featureEncoding', 'legacy-v2') != args.encoding:
             raise ValueError('Checkpoint feature encoding mismatch')
+        if saved['args'].get('dagger', False) != args.dagger:
+            raise ValueError('Resume changed imitation execution mode')
         for key in ('seed', 'first_seed', 'games', 'warmup'):
             if saved['args'][key] != vars(args)[key]:
                 raise ValueError(f'Resume changed rollout schedule: {key}')
@@ -122,8 +124,9 @@ async def run(args):
     for iteration in range(completed, args.updates):
         started = time.perf_counter()
         imitation = iteration < args.warmup
-        configs = training_configs(args.first_seed, iteration, args.games, args.seed, imitation)
-        rows, results, batches = await collect(model, configs, args.workers, device, teacher='v1.5' if imitation else None)
+        configs = training_configs(args.first_seed, iteration, args.games, args.seed, imitation and not args.dagger)
+        rows, results, batches = await collect(model, configs, args.workers, device, teacher='v1.5' if imitation else None,
+                                              execute_teacher=not args.dagger)
         if not rows:
             raise RuntimeError('No terminated trajectories; refusing an empty training update')
         optimization = {}
@@ -133,7 +136,7 @@ async def run(args):
             shutil.copy2(path, args.output / 'imitation.pt')
         if args.save_every and (iteration + 1) % args.save_every == 0:
             shutil.copy2(path, args.output / f'checkpoint-{iteration + 1}.pt')
-        report = {'iteration': iteration, 'phase': 'imitation' if imitation else 'terminal-ppo',
+        report = {'iteration': iteration, 'phase': ('imitation-on-policy' if args.dagger else 'imitation') if imitation else 'terminal-ppo',
                   'rolloutPolicyVersion': iteration, 'decisionsUsed': len(rows),
                   'totalDecisions': sum(result['decisions'] for result in results),
                   'truncatedExcluded': sum(result['truncated'] for result in results),
@@ -151,11 +154,12 @@ if __name__ == '__main__':
     initialization.add_argument('--resume', type=pathlib.Path)
     initialization.add_argument('--initialize', type=pathlib.Path, help='Copy only model weights; start an explicit fresh curriculum/optimizer/RNG')
     parser.add_argument('--device', default='cpu')
-    parser.add_argument('--encoding', choices=['legacy-v2', 'categorical-seats-v3', 'contextual-seats-v4', 'contextual-joint-v5'], default='legacy-v2')
+    parser.add_argument('--encoding', choices=['legacy-v2', 'categorical-seats-v3', 'contextual-seats-v4', 'contextual-joint-v5', 'decision-context-v6'], default='legacy-v2')
     parser.add_argument('--seed', type=int, default=41)
     parser.add_argument('--first-seed', type=int, default=220000000)
     parser.add_argument('--updates', type=int, default=3)
     parser.add_argument('--warmup', type=int, default=1)
+    parser.add_argument('--dagger', action='store_true', help='During imitation, execute model actions and learn separately recorded teacher labels')
     parser.add_argument('--games', type=int, default=12)
     parser.add_argument('--workers', type=int, default=4)
     parser.add_argument('--threads', type=int, default=2)

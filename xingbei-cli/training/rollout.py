@@ -36,7 +36,7 @@ class Simulator:
         await self.process.wait()
 
 
-async def collect(model, configs, workers, device, teacher=None, greedy=False, retain=True, on_result=None):
+async def collect(model, configs, workers, device, teacher=None, greedy=False, retain=True, on_result=None, execute_teacher=True):
     jobs, requests = asyncio.Queue(), asyncio.Queue()
     for config in configs:
         jobs.put_nowait(config)
@@ -74,9 +74,11 @@ async def collect(model, configs, workers, device, teacher=None, greedy=False, r
                     row = {'state': state, 'actions': actions, 'seat': message['seat'], 'seed': config['seed'],
                            'kind': message['observation']['request']['type']}
                     if teacher:
-                        index = message['teacher']
-                        if not isinstance(index, int):
+                        row['teacherChoice'] = message['teacher']
+                        if not isinstance(row['teacherChoice'], int):
                             raise RuntimeError('Missing explicit teacher label')
+                    if teacher and execute_teacher:
+                        index = row['teacherChoice']
                     else:
                         future = asyncio.get_running_loop().create_future()
                         await requests.put((row, future, generator))

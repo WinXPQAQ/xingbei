@@ -38,6 +38,26 @@ class ContextualSeatMemory(CategoricalSeatMemory):
         return super().encode(seat, {**observation, 'candidates': candidates})
 
 
+class DecisionSeatMemory(ContextualSeatMemory):
+    def encode(self, seat, observation):
+        own = observation['players'][0]
+        candidates = []
+        for candidate in observation['candidates']:
+            selected = candidate.get('cards', [])
+            if candidate.get('card') is not None:
+                selected = [candidate['card']]
+            unselected = list(own['hand'] or [])
+            for card in selected:
+                if card in unselected:
+                    unselected.remove(card)
+            candidates.append({**candidate, 'unselectedHand': unselected,
+                               'selfPublic': {key: value for key, value in own.items() if key != 'hand'},
+                               'decisionContext': observation.get('request', {})})
+        # This is a partition of the observed hand, NOT a prediction that the
+        # selected cards leave it. Reveal/give/discard semantics stay in rules.
+        return super().encode(seat, {**observation, 'candidates': candidates})
+
+
 def seat_memory(encoding):
     if encoding == 'legacy-v2':
         return SeatMemory()
@@ -47,4 +67,6 @@ def seat_memory(encoding):
         return ContextualSeatMemory()
     if encoding == 'contextual-joint-v5':
         return ContextualSeatMemory(joint_cards=True)
+    if encoding == 'decision-context-v6':
+        return DecisionSeatMemory(joint_cards=True)
     raise ValueError('Unsupported feature encoding')

@@ -17,8 +17,9 @@ async def run(args):
         raise ValueError('Feature schema mismatch')
     model = Policy(feature_encoding=saved.get('featureEncoding', 'legacy-v2')).to(args.device)
     model.load_state_dict(saved['model'])
-    rows, games, _ = await collect(model, training_configs(args.first_seed, 0, args.games, 997, True),
-                                   args.workers, args.device, teacher='v1.5')
+    rows, games, _ = await collect(model, training_configs(args.first_seed, 0, args.games, 997, not args.on_policy),
+                                   args.workers, args.device, teacher='v1.5',
+                                   execute_teacher=not args.on_policy, greedy=args.on_policy)
     totals = {}
     model.eval()
     with torch.inference_mode():
@@ -33,14 +34,16 @@ async def run(args):
                 for key in ('all', row['kind']):
                     item = totals.setdefault(key, {'count': 0, 'correct': 0, 'teacherProbability': 0})
                     item['count'] += 1
-                    item['correct'] += int(logits[index].argmax().item() == row['choice'])
-                    item['teacherProbability'] += probabilities[index, row['choice']].item()
+                    label = row.get('teacherChoice', row['choice'])
+                    item['correct'] += int(logits[index].argmax().item() == label)
+                    item['teacherProbability'] += probabilities[index, label].item()
     for item in totals.values():
         item['accuracy'] = item['correct'] / item['count']
         item['teacherProbability'] /= item['count']
     report = {'checkpoint': str(args.checkpoint), 'firstSeed': args.first_seed,
               'games': len(games), 'truncated': sum(game['truncated'] for game in games),
-              'nonForcedTeacherAgreement': totals, 'notWinRate': True}
+              'nonForcedTeacherAgreement': totals, 'notWinRate': True,
+              'execution': 'model-greedy with training opponent mix; teacher labels only' if args.on_policy else 'teacher-forced'}
     args.output.write_text(json.dumps(report, indent=2) + '\n')
     print(json.dumps(report, indent=2))
 
@@ -53,4 +56,5 @@ if __name__ == '__main__':
     parser.add_argument('--games', type=int, default=48)
     parser.add_argument('--workers', type=int, default=8)
     parser.add_argument('--device', default='cuda')
+    parser.add_argument('--on-policy', action='store_true')
     asyncio.run(run(parser.parse_args()))

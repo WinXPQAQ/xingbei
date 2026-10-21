@@ -131,5 +131,24 @@
     "reward": "terminal team +/-1 only; no imitation labels during PPO",
     "purpose": "Matched initialization BC-only vs terminal PPO; retain parent and periodic snapshots; development validation only",
     "launch": "after v5 validation releases its CPU quota; parallel with v6 training within total 1200% quota"
+  },
+  "decisionContextExperiment": {
+    "name": "bc-v7-211",
+    "encoding": "decision-context-v6",
+    "seed": 211,
+    "firstSeed": 221000000,
+    "updates": 64,
+    "warmup": 64,
+    "gamesPerUpdate": 48,
+    "epochs": 3,
+    "workers": 8,
+    "cpuQuota": "800%",
+    "memoryMax": "12G",
+    "runtimeLimitSeconds": 2700,
+    "saveEvery": 32,
+    "hypothesis": "Expose factual candidate/unselected-hand partition, own public resources and request context directly to the action encoder; no strategic scores, predicted transitions or intermediate reward.",
+    "comparison": "same 64x48 teacher trajectory budget as v5/v6; use identical development partitions",
+    "dagger": false,
+    "whyNotDaggerYet": "Small diagnostic agreement shift does not establish covariate shift as the main failure; retain label-only tool for future tests."
   }
 }
