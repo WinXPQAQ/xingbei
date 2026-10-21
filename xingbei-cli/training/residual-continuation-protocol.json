@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "hypothesis": "Pilot correction margins remain below baseline prior; test longer training and a matched higher learning rate without changing exploration or representation.",
+  "diagnostic": "/home/xp/.local/share/xingbei-ml/evidence/residual-v1-margin-diagnostic.json",
+  "diagnosticSummary": "48 sampled training-range games: action mean prior 5.666 vs mean strongest alternative correction advantage .525 (maximum 1.930); skillChoice mean correction -.064. This does not establish a causal bottleneck or that raising learning rate improves strength.",
+  "parent": "/home/xp/.local/share/xingbei-ml/runs/residual-v1-211/checkpoint.pt",
+  "initialization": "Identical parent weights; both arms fresh Adam and RNG, explicit new curriculum, not optimizer-preserving resume. Retain initial and final snapshots.",
+  "shared": {"updates": 96, "gamesPerUpdate": 24, "firstSeed": 251300000, "seed": 211, "warmup": 0, "epochs": 3, "batchSize": 512, "workers": 4, "threads": 2, "device": "cuda", "baselineProbability": 0.95, "encoding": "decision-context-v6", "separateCritic": true, "maximumMinutesPerArm": 30, "cpuQuotaPerArm": "400%", "memoryPerArm": "12G"},
+  "arms": [{"name": "residual-long-211", "learningRate": 0.0001}, {"name": "residual-lr3-211", "learningRate": 0.0003}],
+  "evaluation": {"firstSeed": 231000000, "seeds": 6, "balancedMixed": true, "selection": "greedy", "baseline": "/home/xp/.local/share/xingbei-ml/evaluations/residual-v1-initial-greedy", "stage": "development screen, all arms reported; not final acceptance or proof of single-parameter causal effects across training randomness"},
+  "reward": "Terminal team win/loss only; no entropy or intermediate reward",
+  "finalSeedsUsed": false,
+  "followup": "Inspect final strength and decision departures. Expand promising candidates to the 18-seed balanced development schedule before considering frozen independent final evaluation. A failed arm remains in reports; no automatic deployment."
+}
