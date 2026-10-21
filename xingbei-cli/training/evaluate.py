@@ -12,6 +12,7 @@ from model import Policy, SCHEMA, SeatMemory, batch
 from rollout import collect
 from schedule import evaluation_configs, LINEUPS
 from evaluation_stats import summarize, paired_mixed
+from encoding_candidate import seat_memory
 
 
 async def run(args):
@@ -19,9 +20,9 @@ async def run(args):
     saved = torch.load(args.checkpoint, map_location=args.device, weights_only=False)
     if saved['schema'] != SCHEMA:
         raise ValueError('Unsupported checkpoint schema')
-    model = Policy().to(args.device)
+    model = Policy(feature_encoding=saved.get('featureEncoding', 'legacy-v2')).to(args.device)
     model.load_state_dict(saved['model'])
-    configs = evaluation_configs(args.first_seed, args.seeds, saved['args']['seed'])
+    configs = evaluation_configs(args.first_seed, args.seeds, saved['args']['seed'], args.balanced_mixed)
     args.output.mkdir(parents=True, exist_ok=True)
     raw = args.output / 'games.jsonl'
     if raw.exists():
@@ -29,7 +30,8 @@ async def run(args):
     manifest = {'checkpointSha256': hashlib.sha256(args.checkpoint.read_bytes()).hexdigest(),
                 'checkpoint': str(args.checkpoint), 'firstSeed': args.first_seed, 'seeds': args.seeds,
                 'games': len(configs), 'selection': 'greedy policy' if args.greedy else 'sampled policy', 'opponent': 'v1.5',
-                'checkpointUpdates': saved['completed'], 'featureSchema': SCHEMA}
+                'checkpointUpdates': saved['completed'], 'featureSchema': SCHEMA,
+                'balancedMixedSchedule': args.balanced_mixed, 'featureEncoding': model.feature_encoding}
     (args.output / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
     started = time.perf_counter()
     with raw.open('x') as stream:
@@ -41,7 +43,7 @@ async def run(args):
     fixtures = json.loads(subprocess.check_output(['node', str(pathlib.Path(__file__).with_name('diagnostics.mjs'))]))
     diagnostics = []
     for fixture in fixtures:
-        state, actions = SeatMemory().encode(0, fixture['observation'])
+        state, actions = seat_memory(model.feature_encoding).encode(0, fixture['observation'])
         with torch.inference_mode():
             logits, _ = model(*batch([{'state': state, 'actions': actions}], args.device))
             probabilities = logits.softmax(-1)[0]
@@ -72,4 +74,5 @@ if __name__ == '__main__':
     parser.add_argument('--threads', type=int, default=2)
     parser.add_argument('--device', default='cpu')
     parser.add_argument('--greedy', action='store_true', help='Evaluate argmax deployment; record separately from sampled policy')
+    parser.add_argument('--balanced-mixed', action='store_true', help='Decouple sole-model seat from roster rotation over 18 seeds')
     asyncio.run(run(parser.parse_args()))

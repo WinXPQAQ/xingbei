@@ -42,7 +42,7 @@ def training_configs(first_seed, iteration, games, sampling_seed, imitation):
     return configs
 
 
-def evaluation_configs(first_seed, seeds, sampling_seed):
+def evaluation_configs(first_seed, seeds, sampling_seed, balanced_mixed=False):
     configs = []
     for seed in range(first_seed, first_seed + seeds):
         for name in LINEUPS:
@@ -50,7 +50,10 @@ def evaluation_configs(first_seed, seeds, sampling_seed):
                 for start in (0, 1):
                     for mode in ('team', 'mixed'):
                         seats = [seat for seat, team in enumerate(TEAMS) if team == own]
-                        controlled = seats if mode == 'team' else [seats[seed % 3]]
+                        # Use a slower independent cycle than the six roster rotations.
+                        # Legacy schedule stays reproducible; new evaluations opt in.
+                        mixed_index = (seed // 6) % 3 if balanced_mixed else seed % 3
+                        controlled = seats if mode == 'team' else [seats[mixed_index]]
                         base = {'seed': seed, 'start': start, 'heroIds': roster(name, seed),
                                 'samplingSeed': sampling_seed, 'lineup': name, 'team': own, 'mode': mode}
                         configs.append({**base, 'arm': 'model',

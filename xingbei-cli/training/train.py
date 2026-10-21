@@ -51,6 +51,7 @@ def update(model, optimizer, rows, device, imitation, epochs=3, batch_size=128):
 def checkpoint(path, model, optimizer, completed, args):
     temporary = path.with_suffix('.tmp')
     torch.save({'schema': SCHEMA, 'model': model.state_dict(), 'optimizer': optimizer.state_dict(),
+                'featureEncoding': model.feature_encoding,
                 'completed': completed, 'args': vars(args), 'torch_rng': torch.get_rng_state(),
                 'cuda_rng': torch.cuda.get_rng_state_all() if torch.cuda.is_available() else [],
                 'python_rng': random.getstate(), 'baseline': 'd1560abd1be87b1aa5a56a33f550903508d23ac2',
@@ -65,7 +66,7 @@ async def run(args):
     torch.manual_seed(args.seed)
     random.seed(args.seed)
     device = torch.device(args.device)
-    model = Policy().to(device)
+    model = Policy(feature_encoding=args.encoding).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=3e-4)
     args.output.mkdir(parents=True, exist_ok=True)
     path = args.output / 'checkpoint.pt'
@@ -77,6 +78,8 @@ async def run(args):
         saved = torch.load(args.resume, map_location=device, weights_only=False)
         if saved['schema'] != SCHEMA:
             raise ValueError('Checkpoint feature schema mismatch')
+        if saved.get('featureEncoding', 'legacy-v2') != args.encoding:
+            raise ValueError('Checkpoint feature encoding mismatch')
         for key in ('seed', 'first_seed', 'games', 'warmup'):
             if saved['args'][key] != vars(args)[key]:
                 raise ValueError(f'Resume changed rollout schedule: {key}')
@@ -114,6 +117,7 @@ if __name__ == '__main__':
     parser.add_argument('--output', type=pathlib.Path, required=True)
     parser.add_argument('--resume', type=pathlib.Path)
     parser.add_argument('--device', default='cpu')
+    parser.add_argument('--encoding', choices=['legacy-v2', 'categorical-seats-v3'], default='legacy-v2')
     parser.add_argument('--seed', type=int, default=41)
     parser.add_argument('--first-seed', type=int, default=220000000)
     parser.add_argument('--updates', type=int, default=3)

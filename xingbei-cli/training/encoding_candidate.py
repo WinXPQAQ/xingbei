@@ -1,0 +1,33 @@
+"""Candidate feature experiment: seat identities are categories, not magnitudes.
+
+Uses only the existing detached observation. No strategic score or reward added.
+"""
+from model import SeatMemory
+
+SEAT_FIELDS = {'current', 'player', 'actor', 'target', 'recipient', 'nextTarget',
+               'source', 'owner', 'targets'}
+
+
+def categorical_seats(value, key=None):
+    if isinstance(value, dict):
+        return {name: categorical_seats(child, name) for name, child in value.items()}
+    if isinstance(value, list):
+        return [categorical_seats(child, key) for child in value]
+    if key in SEAT_FIELDS and isinstance(value, int) and not isinstance(value, bool):
+        if not 0 <= value < 6:
+            raise ValueError('Invalid relative seat')
+        return f'seat:{value}'
+    return value
+
+
+class CategoricalSeatMemory(SeatMemory):
+    def encode(self, seat, observation):
+        return super().encode(seat, categorical_seats(observation))
+
+
+def seat_memory(encoding):
+    if encoding == 'legacy-v2':
+        return SeatMemory()
+    if encoding == 'categorical-seats-v3':
+        return CategoricalSeatMemory()
+    raise ValueError('Unsupported feature encoding')

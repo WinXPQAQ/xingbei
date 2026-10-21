@@ -6,6 +6,7 @@ import unittest
 import torch
 from model import Policy, SeatMemory, SCHEMA, batch
 from train import checkpoint, update
+from encoding_candidate import categorical_seats, seat_memory
 
 
 def observation():
@@ -14,6 +15,18 @@ def observation():
 
 
 class ModelTests(unittest.TestCase):
+    def test_categorical_seats_preserve_counts_and_memory_isolation(self):
+        source = {'current': 0, 'candidates': [{'targets': [0, 5], 'count': 2}]}
+        converted = categorical_seats(source)
+        self.assertEqual(converted, {'current': 'seat:0', 'candidates': [{'targets': ['seat:0', 'seat:5'], 'count': 2}]})
+        self.assertEqual(source['current'], 0)
+        memory = seat_memory('categorical-seats-v3')
+        before, _ = memory.encode(0, observation())
+        other, _ = memory.encode(1, observation())
+        self.assertTrue(torch.equal(before, other))
+        with self.assertRaises(ValueError):
+            seat_memory('unknown')
+
     def test_seat_memory_isolated(self):
         memory = SeatMemory()
         before, _ = memory.encode(0, observation())

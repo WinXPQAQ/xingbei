@@ -5,6 +5,7 @@ import pathlib
 
 import torch
 from model import SeatMemory, batch
+from encoding_candidate import seat_memory
 
 WORKER = pathlib.Path(__file__).with_name('worker.mjs')
 
@@ -48,7 +49,7 @@ async def collect(model, configs, workers, device, teacher=None, greedy=False, r
         try:
             while not jobs.empty():
                 config = jobs.get_nowait()
-                memory, trajectory = SeatMemory(), []
+                memory, trajectory = seat_memory(model.feature_encoding), []
                 generator = torch.Generator().manual_seed(config['seed'] ^ config.get('samplingSeed', 0))
                 await simulator.send({'type': 'start', 'config': config, 'teacher': teacher,
                                       'seatPolicies': config.get('seatPolicies')})

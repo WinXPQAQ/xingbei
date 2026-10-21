@@ -62,8 +62,11 @@ class SeatMemory:
 
 
 class Policy(nn.Module):
-    def __init__(self, hidden=256):
+    def __init__(self, hidden=256, feature_encoding='legacy-v2'):
         super().__init__()
+        if feature_encoding not in ('legacy-v2', 'categorical-seats-v3'):
+            raise ValueError('Unsupported feature encoding')
+        self.feature_encoding = feature_encoding
         self.hidden = hidden
         self.state = nn.Sequential(nn.Linear(STATE_DIM * 2, hidden), nn.Tanh(), nn.Linear(hidden, hidden), nn.Tanh())
         self.action = nn.Sequential(nn.Linear(ACTION_DIM, 128), nn.Tanh(), nn.Linear(128, hidden), nn.Tanh())

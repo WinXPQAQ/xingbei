@@ -4,6 +4,14 @@ from evaluation_stats import summarize, paired_mixed
 
 
 class EvaluationTests(unittest.TestCase):
+    def test_balanced_mixed_covers_every_hero_on_both_teams(self):
+        configs = evaluation_configs(241000000, 18, 211, balanced_mixed=True)
+        for team in ('red', 'blue'):
+            heroes = {game['heroIds'][game['seatPolicies'].index('model')] for game in configs
+                      if game['mode'] == 'mixed' and game['arm'] == 'model'
+                      and game['lineup'] == 'default' and game['team'] == team}
+            self.assertEqual(heroes, set(DEFAULT))
+
     def test_schedule_keeps_all_heroes_and_paired_arms(self):
         configs = evaluation_configs(240000000, 2, 41)
         self.assertEqual(len(configs), 168)

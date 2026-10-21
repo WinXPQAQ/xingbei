@@ -15,7 +15,7 @@ async def run(args):
     saved = torch.load(args.checkpoint, map_location=args.device, weights_only=False)
     if saved['schema'] != SCHEMA:
         raise ValueError('Feature schema mismatch')
-    model = Policy().to(args.device)
+    model = Policy(feature_encoding=saved.get('featureEncoding', 'legacy-v2')).to(args.device)
     model.load_state_dict(saved['model'])
     rows, games, _ = await collect(model, training_configs(args.first_seed, 0, args.games, 997, True),
                                    args.workers, args.device, teacher='v1.5')
