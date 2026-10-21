@@ -365,6 +365,13 @@
           0.007936507936507936
         ]
       }
+    },
+    "checkpoint192Diagnostic": {
+      "games": 48,
+      "firstSeed": 251700000,
+      "truncated": 0,
+      "evidence": "/home/xp/.local/share/xingbei-ml/evidence/residual-resume-192-margin.json",
+      "finding": "Greedy departures concentrated in response (~12%); action ~0.3%, other sampled kinds zero. Sampled trajectories, not a greedy evaluation or causal gain estimate."
     }
   }
 }
