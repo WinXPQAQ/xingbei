@@ -63,7 +63,7 @@ export class TurnFlow {
       delete state.reservedHealing;
     }
     try { options.validateAction?.(); }
-    catch (error) { state.phase = Timing.ACTION_PHASE_START; throw error; }
+    catch (error) { state.phase = Timing.ACTION_PHASE_START; error.actionInvalidated = true; throw error; }
     if (state.completed) {
       const action = this.nextAction(); state.pendingActions.splice(state.pendingActions.indexOf(action), 1);
     }
