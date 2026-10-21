@@ -70,7 +70,8 @@ async def collect(model, configs, workers, device, teacher=None, greedy=False, r
                         break
                     assert message['type'] == 'decision'
                     state, actions = memory.encode(message['seat'], message['observation'])
-                    row = {'state': state, 'actions': actions, 'seat': message['seat'], 'seed': config['seed']}
+                    row = {'state': state, 'actions': actions, 'seat': message['seat'], 'seed': config['seed'],
+                           'kind': message['observation']['request']['type']}
                     if teacher:
                         index = message['teacher']
                         if not isinstance(index, int):

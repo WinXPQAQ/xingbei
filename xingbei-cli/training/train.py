@@ -6,6 +6,7 @@ import json
 import os
 import pathlib
 import random
+import shutil
 import time
 
 import torch
@@ -95,6 +96,8 @@ async def run(args):
             raise RuntimeError('No terminated trajectories; refusing an empty training update')
         loss = update(model, optimizer, rows, device, imitation, epochs=args.epochs)
         checkpoint(path, model, optimizer, iteration + 1, args)
+        if iteration + 1 == args.warmup:
+            shutil.copy2(path, args.output / 'imitation.pt')
         report = {'iteration': iteration, 'phase': 'imitation' if imitation else 'terminal-ppo',
                   'rolloutPolicyVersion': iteration, 'decisionsUsed': len(rows),
                   'totalDecisions': sum(result['decisions'] for result in results),

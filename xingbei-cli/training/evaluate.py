@@ -28,7 +28,7 @@ async def run(args):
         raise ValueError('Refusing to overwrite evaluation evidence; choose a fresh output directory')
     manifest = {'checkpointSha256': hashlib.sha256(args.checkpoint.read_bytes()).hexdigest(),
                 'checkpoint': str(args.checkpoint), 'firstSeed': args.first_seed, 'seeds': args.seeds,
-                'games': len(configs), 'selection': 'sampled policy', 'opponent': 'v1.5',
+                'games': len(configs), 'selection': 'greedy policy' if args.greedy else 'sampled policy', 'opponent': 'v1.5',
                 'checkpointUpdates': saved['completed'], 'featureSchema': SCHEMA}
     (args.output / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
     started = time.perf_counter()
@@ -36,7 +36,7 @@ async def run(args):
         def record(result):
             stream.write(json.dumps(result) + '\n')
             stream.flush()
-        _, games, batches = await collect(model, configs, args.workers, args.device, retain=False, on_result=record)
+        _, games, batches = await collect(model, configs, args.workers, args.device, greedy=args.greedy, retain=False, on_result=record)
     model_games = [game for game in games if game['arm'] == 'model']
     fixtures = json.loads(subprocess.check_output(['node', str(pathlib.Path(__file__).with_name('diagnostics.mjs'))]))
     diagnostics = []
@@ -71,4 +71,5 @@ if __name__ == '__main__':
     parser.add_argument('--workers', type=int, default=4)
     parser.add_argument('--threads', type=int, default=2)
     parser.add_argument('--device', default='cpu')
+    parser.add_argument('--greedy', action='store_true', help='Evaluate argmax deployment; record separately from sampled policy')
     asyncio.run(run(parser.parse_args()))

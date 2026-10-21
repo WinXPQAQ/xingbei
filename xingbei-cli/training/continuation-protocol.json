@@ -1,0 +1,56 @@
+{
+  "goal": "independent seed-cluster 95% lower bound above 50% team win rate against frozen v1.5",
+  "reward": "terminal team +1/-1 only; no intermediate reward",
+  "status": "development; no final evaluation authorized by validation yet",
+  "baseline": "d1560abd1be87b1aa5a56a33f550903508d23ac2",
+  "partitions": {
+    "training": [
+      221000000,
+      229999999
+    ],
+    "teacherValidation": [
+      230010000,
+      230019999
+    ],
+    "matchValidation": [
+      231000000,
+      231999999
+    ],
+    "finalReserved": [
+      241000000,
+      241000119
+    ],
+    "retiredFinal": [
+      240000000,
+      240000011
+    ]
+  },
+  "firstExperiment": {
+    "name": "bc-v3-211",
+    "modelSeed": 211,
+    "games": 6144,
+    "updates": 128,
+    "gamesPerUpdate": 48,
+    "epochs": 3,
+    "device": "cuda",
+    "workers": 8,
+    "memoryMax": "12G",
+    "cpuQuota": "800%",
+    "runtimeLimitSeconds": 1800,
+    "purpose": "measure learnability with larger demonstration budget; retain imitation endpoint"
+  },
+  "developmentChoices": [
+    "Compare argmax and sampled deployment on validation only; freeze choice before final.",
+    "Keep BC-only endpoint; subsequent PPO uses same initialization and separate output.",
+    "Inspect teacher agreement by request type, excluding forced choices.",
+    "No final evaluation until validation supports candidacy; freeze checkpoint and protocol then use reserved seeds once."
+  ],
+  "finalRequirements": [
+    "all six heroes and lineups, paired colors/start seats",
+    "single model teammate coverage uncorrelated with roster rotation",
+    "report team and mixed results, truncations and seed-cluster intervals",
+    "no sample selection or repeated final peeking",
+    "zero known illegal actions or hidden-information leaks",
+    "never deploy or push main automatically"
+  ]
+}
