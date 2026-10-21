@@ -14,3 +14,5 @@
 查看状态：`systemctl --user status xingbei-model-web.service xingbei-model-inference.service`。停止体验版：`systemctl --user disable --now xingbei-model-web.service xingbei-model-inference.service`。模型指纹通过`/api/model/health`核对。普通静态服务不设置MODEL_PORT时不启用模型。
 
 验证证据在`~/.local/share/xingbei-ml/evidence/`：253项Node测试通过；`model-server-game.json`与`model-server-parity.json`记录一局六人HTTP推理和本地推理的完整对局摘要相同，覆盖125次决策，不推广为所有局面逐决策等价证明。`model-browser-checks.json`记录1440×900及390×844的正常开局、重开进入观战、完整结束，各149次模型请求均成功，无pageerror；截图分别为`model-normal-*`和`model-finished-*`。这不是全部原版视觉还原验收。
+
+实际部署快照为`284b30148df121c9e0d31bfba995bdf8fb2a9502`。两个持久服务已启动并启用开机启动。通过Tailscale地址核对模型指纹、首页HTTP200及1440×900/390×844两次完整浏览器观战，各149次模型请求成功；首次浏览器在代理环境下访问超时，明确直连重测通过，原失败日志保留。推理请求进行中重开后，旧响应未影响新局的隔离检查通过。部署清单见`~/.local/share/xingbei-ml/preview/deployment.json`，实际浏览器证据`evidence/model-deployed-browser-retry.log`。临时4184/4185验证服务已停止。
