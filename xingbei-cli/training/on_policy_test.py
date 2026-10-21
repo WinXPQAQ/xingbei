@@ -38,9 +38,13 @@ class TeacherIsolationTests(unittest.TestCase):
                 parameter.data.zero_()
             configs = training_configs(210040000, 0, 2, 911, True)
             plain, plain_games, _ = await collect(model, configs, 2, 'cpu', greedy=True)
+            observed = []
             labelled, labelled_games, _ = await collect(model, configs, 2, 'cpu', teacher='v1.5',
-                                                       execute_teacher=False, greedy=True)
+                                                       execute_teacher=False, greedy=True,
+                                                       on_choice=lambda observation, row: observed.append((observation['request']['type'], row['choice'])))
             self.assertEqual(plain_games, labelled_games)
+            self.assertEqual(len(observed), len(labelled))
+            self.assertTrue(all(choice == 0 for _, choice in observed))
             self.assertTrue(all(game['terminated'] for game in plain_games))
             self.assertTrue(all(row['choice'] == 0 for row in labelled))
             self.assertTrue(any(row['teacherChoice'] != row['choice'] for row in labelled))

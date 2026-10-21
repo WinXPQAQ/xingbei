@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "name": "residual-resume-211",
+  "reason": "Both unchanged checkpoints completed 18-seed development expansion: low LR 285/504=56.55%, high LR 269/504=53.37%. Continue low LR development leader without claiming significant superiority or final acceptance. Its assault stratum is only 29/72 and must remain visible.",
+  "parent": "/home/xp/.local/share/xingbei-ml/runs/residual-long-211/checkpoint.pt",
+  "mode": "True resume: preserve model, critic, Adam moments and RNG. Parent completed=96. No fresh optimizer or changed reward.",
+  "training": {"startCompleted": 96, "endCompleted": 480, "additionalUpdates": 384, "gamesPerUpdate": 24, "additionalGames": 9216, "firstSeed": 251300000, "actualNewSeedStart": 251302304, "actualNewSeedEnd": 251311519, "seed": 211, "warmup": 0, "learningRate": 0.0001, "batchSize": 512, "epochs": 3, "workers": 8, "threads": 2, "device": "cuda", "maximumMinutes": 90, "cpuQuota": "800%", "memory": "16G"},
+  "unchanged": "Explicit v1.5 baseline probability .95, decision-context-v6, preview v1, separate critic, full legal candidates, terminal team +/-1 only.",
+  "workerChange": "Only rollout concurrency increases from 4 to 8 based on measured throughput and fixed-model result parity; no claim of GPU bitwise equality for arbitrary policy boundaries.",
+  "development": {"checkpoints": [192,288,384,480], "firstSeed": 231000000, "seeds": 18, "recordsEach": 1512, "selection": "greedy", "balancedMixed": true, "workers": 4, "compareAgainst": "residual-long-211-expanded-greedy", "note": "All four scheduled checkpoints reported. Reused development data, not final acceptance. Select best primarily by team win rate, inspect mixed/assault/hero strata before deciding followup."},
+  "finalSeedsUsed": false,
+  "deployment": "None; final independent target remains team win rate >= .70 and seed-cluster 95% lower bound > .50."
+}

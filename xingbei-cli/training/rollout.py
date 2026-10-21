@@ -43,7 +43,7 @@ class Simulator:
         await self.process.wait()
 
 
-async def collect(model, configs, workers, device, teacher=None, greedy=False, retain=True, on_result=None, execute_teacher=True):
+async def collect(model, configs, workers, device, teacher=None, greedy=False, retain=True, on_result=None, execute_teacher=True, on_choice=None):
     jobs, requests = asyncio.Queue(), asyncio.Queue()
     for config in configs:
         jobs.put_nowait(config)
@@ -105,6 +105,8 @@ async def collect(model, configs, workers, device, teacher=None, greedy=False, r
                         baseline_matches += int(index == row['baselineChoice'])
                         baseline_nonforced += int(len(actions) > 1)
                     row['choice'] = index
+                    if on_choice is not None:
+                        on_choice(message['observation'], row)
                     if retain:
                         trajectory.append(row)
                     await simulator.send({'type': 'select', 'id': message['id'], 'index': index})
