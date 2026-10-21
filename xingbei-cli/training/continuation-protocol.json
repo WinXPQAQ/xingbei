@@ -203,5 +203,25 @@
     "evidence": "critic-interference.json found 7.75% argmax drift from critic-only updates; separate-critic unit test proves zero initial policy change and no actor gradients from critic loss",
     "status": "restart from original retained BC, not from interrupted trial",
     "samplingVersion": 2
+  },
+  "separateCriticImitationExperiment": {
+    "name": "bc-separate-211",
+    "encoding": "decision-context-v6",
+    "separateCritic": true,
+    "seed": 211,
+    "firstSeed": 221000000,
+    "updates": 64,
+    "warmup": 64,
+    "gamesPerUpdate": 48,
+    "epochs": 3,
+    "workers": 8,
+    "cpuQuota": "800%",
+    "memoryMax": "12G",
+    "runtimeLimitSeconds": 2700,
+    "learningRate": 0.0003,
+    "batchSize": 128,
+    "saveEvery": 32,
+    "comparison": "same actor initialization and teacher trajectory schedule as bc-v7-211; separate critic is the architecture change; primary comparison greedy because old sampled evaluator used sampling version 1.",
+    "hypothesis": "Remove critic gradients from the shared actor representation during imitation, retaining the same terminal value target in an independent branch."
   }
 }
