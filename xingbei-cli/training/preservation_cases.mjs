@@ -13,7 +13,7 @@ export function preservationCases() {
   {hero:'sealer',skill:'fireSeal',element:'fire',other:'earth',targetHand:1,expected:false},
   {hero:'sealer',skill:'fireSeal',element:'fire',response:true,expected:true},
   {hero:'guardianAngel',skill:'angelWall',element:'fire',expected:true},
-  {hero:'priest',element:'water',other:'fire',expected:true},
+  {hero:'priest',element:'water',other:'fire',expected:false},
   {hero:'windSwordmaster',skill:'galeArt',element:'fire',expected:false},
   {hero:'windSwordmaster',skill:'galeArt',element:'fire',response:true,expected:true},
   {hero:'marksman',skill:'flashTrap',element:'fire',expected:true},

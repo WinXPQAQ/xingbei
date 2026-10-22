@@ -13,17 +13,10 @@ HERO_SKILLS = {
 }
 
 
-def resources(card, own):
+def hero_unique_skills(card, own):
     relevant = set(card.get('uniqueSkills', [])) & HERO_SKILLS.get(own['hero'], set())
     if 'skills' in own:
         relevant &= set(own['skills'])
-    elements = set(card.get('elements', []))
-    if own['hero'] == 'guardianAngel':
-        for element, skill in [('wind', 'windCleansing'), ('water', 'angelBlessing')]:
-            if element in elements and skill in own.get('skills', []): relevant.add(skill)
-    if own['hero'] == 'priest' and 'water' in elements and 'waterPower' in own.get('skills', []):
-        relevant.add('waterPower')
-    if card.get('name') == 'darkStrike': relevant.add('darkStrike')
     return relevant
 
 
@@ -39,7 +32,7 @@ def attack_info(observation, candidate):
     if len(cards) != 1 or len(targets) != 1 or targets[0] is None or not cards[0] or cards[0].get('type') != 'attack':
         return None
     own, target = observation['players'][0], observation['players'][targets[0]]
-    card = cards[0]; skills = resources(card, own)
+    card = cards[0]; skills = hero_unique_skills(card, own)
     effects = set()
     if active and 'bloodyRoar' in skills and target['healing'] == 2: effects.add('bloodyRoar')
     if active and 'bloodBlade' in skills and target['handCount'] in (2,3): effects.add('bloodBlade')
@@ -67,6 +60,8 @@ def preservation_bias(observation, strength=0.35):
             if alternative is None: continue
             other, other_target, other_skills, other_effects = alternative
             if other_target != target_id or other_skills or other_effects: continue
+            # Dark attacks have distinct response rules, not a hero-unique label.
+            if (card.get('name') == 'darkStrike') != (other.get('name') == 'darkStrike'): continue
             same_elements = set(card['elements']) == set(other['elements'])
             if not same_elements:
                 # Different elements are only demonstrably equivalent here when
