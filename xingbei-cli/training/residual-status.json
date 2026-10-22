@@ -856,7 +856,7 @@
     "decision": "No improvement; retain parent temp13-192. Proceed with preregistered comparison-head control trial."
   },
   "comparisonExperiment": {
-    "state": "running",
+    "state": "complete",
     "startedAtUtc": "2026-10-22T06:01:59.773951+00:00",
     "protocol": "training/residual-comparison-protocol.json",
     "arms": [
@@ -909,6 +909,45 @@
           },
           "report": "/home/xp/.local/share/xingbei-ml/evaluations/residual-comparison-control-211-96-greedy/report.json",
           "breakdown": "/home/xp/.local/share/xingbei-ml/evidence/residual-comparison-control-211-96-breakdown.json"
+        },
+        {
+          "completed": 192,
+          "team": {
+            "games": 504,
+            "seedClusters": 18,
+            "wins": 297,
+            "losses": 207,
+            "truncated": 0,
+            "resolvedWinRate": 0.5892857142857143,
+            "allGameWinRateBounds": [
+              0.5892857142857143,
+              0.5892857142857143
+            ],
+            "seedCluster95": [
+              0.5555555555555556,
+              0.6190476190476191
+            ],
+            "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+          },
+          "mixed": {
+            "games": 504,
+            "seedClusters": 18,
+            "wins": 275,
+            "losses": 229,
+            "truncated": 0,
+            "resolvedWinRate": 0.5456349206349206,
+            "allGameWinRateBounds": [
+              0.5456349206349206,
+              0.5456349206349206
+            ],
+            "seedCluster95": [
+              0.5218253968253967,
+              0.5714285714285714
+            ],
+            "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+          },
+          "report": "/home/xp/.local/share/xingbei-ml/evaluations/residual-comparison-control-211-192-greedy/report.json",
+          "breakdown": "/home/xp/.local/share/xingbei-ml/evidence/residual-comparison-control-211-192-breakdown.json"
         }
       ],
       "residual-comparison-head-211": [
@@ -950,8 +989,49 @@
           },
           "report": "/home/xp/.local/share/xingbei-ml/evaluations/residual-comparison-head-211-96-greedy/report.json",
           "breakdown": "/home/xp/.local/share/xingbei-ml/evidence/residual-comparison-head-211-96-breakdown.json"
+        },
+        {
+          "completed": 192,
+          "team": {
+            "games": 504,
+            "seedClusters": 18,
+            "wins": 277,
+            "losses": 227,
+            "truncated": 0,
+            "resolvedWinRate": 0.5496031746031746,
+            "allGameWinRateBounds": [
+              0.5496031746031746,
+              0.5496031746031746
+            ],
+            "seedCluster95": [
+              0.5059523809523809,
+              0.5912698412698413
+            ],
+            "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+          },
+          "mixed": {
+            "games": 504,
+            "seedClusters": 18,
+            "wins": 273,
+            "losses": 231,
+            "truncated": 0,
+            "resolvedWinRate": 0.5416666666666666,
+            "allGameWinRateBounds": [
+              0.5416666666666666,
+              0.5416666666666666
+            ],
+            "seedCluster95": [
+              0.5119047619047619,
+              0.5714285714285714
+            ],
+            "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+          },
+          "report": "/home/xp/.local/share/xingbei-ml/evaluations/residual-comparison-head-211-192-greedy/report.json",
+          "breakdown": "/home/xp/.local/share/xingbei-ml/evidence/residual-comparison-head-211-192-breakdown.json"
         }
       ]
-    }
+    },
+    "finalAudit": "/home/xp/.local/share/xingbei-ml/evidence/residual-comparison-final-audit.json",
+    "decision": "No advantage from comparison head; retain original parent, start registered curriculum comparison."
   }
 }
