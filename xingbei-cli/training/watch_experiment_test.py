@@ -54,10 +54,12 @@ class MonitorTest(unittest.TestCase):
                         'development': {'checkpoints': [1], 'recordsPerEvaluation': 12,
                                         'firstSeed': 20, 'seeds': 1}}
             with patch.object(monitor, 'unit_state', return_value='inactive'), \
-                    patch.object(monitor.subprocess, 'run') as audit:
+                    patch.object(monitor.subprocess, 'run', side_effect=lambda command, **kwargs: Path(command[-1]).open('x').close()) as audit:
                 result = monitor.inspect_arm(root, protocol, 'control')
                 self.assertEqual(result['state'], 'complete')
                 self.assertEqual(audit.call_count, 1)
+                self.assertEqual(monitor.inspect_arm(root, protocol, 'control')['state'], 'complete')
+                self.assertEqual(audit.call_count, 2)
                 (run / 'checkpoint-1.pt').write_bytes(b'wrong model')
                 with self.assertRaisesRegex(ValueError, 'mismatch'):
                     monitor.inspect_arm(root, protocol, 'control')

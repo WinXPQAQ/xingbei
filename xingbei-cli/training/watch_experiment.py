@@ -9,6 +9,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 
 TERMINAL = {'complete', 'failed', 'monitor-error'}
 LIVE = {'active', 'activating', 'deactivating', 'reloading'}
@@ -87,9 +88,14 @@ def inspect_arm(root, protocol, name):
                 raise ValueError(f'{name}: evaluation protocol mismatch')
             # Re-audit complete schedules and recompute breakdown from actual records.
             output = root / 'evidence' / f'{name}-{checkpoint}-monitor-audit.json'
-            subprocess.run([sys.executable, str(run / 'source/training/evaluation_breakdown.py'),
-                            '--evaluation', str(evaluation), '--sampling-seed', str(shared['seed']),
-                            '--output', str(output)], check=True, capture_output=True, timeout=60)
+            # The auditor exclusively creates its output. A completed arm may
+            # be checked again while the other arm is still evaluating.
+            with tempfile.TemporaryDirectory(dir=output.parent) as directory:
+                fresh = Path(directory) / 'audit.json'
+                subprocess.run([sys.executable, str(run / 'source/training/evaluation_breakdown.py'),
+                                '--evaluation', str(evaluation), '--sampling-seed', str(shared['seed']),
+                                '--output', str(fresh)], check=True, capture_output=True, timeout=60)
+                fresh.replace(output)
             hashes[str(checkpoint)] = digest
         result['checkpointHashes'] = hashes
     return result

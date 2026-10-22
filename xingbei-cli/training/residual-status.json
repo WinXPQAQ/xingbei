@@ -1051,14 +1051,15 @@
     "report": "/home/xp/.local/share/xingbei-ml/monitors/residual-focused-211/status.json"
   },
   "targetedExperiment": {
-    "state": "running",
+    "state": "complete",
     "protocol": "training/residual-targeted-v2-protocol.json",
     "monitor": "/home/xp/.local/share/xingbei-ml/monitors/residual-targeted-v2-211/status.json",
     "parentVersion": "1.5.1",
     "rulesVersion": "terminal-v1",
     "initializationAudit": "/home/xp/.local/share/xingbei-ml/evidence/residual-targeted-v2-initialization.json",
     "supersededTrial": "/home/xp/.local/share/xingbei-ml/evidence/residual-targeted-superseded.json",
-    "finalSeedsUsed": false
+    "finalSeedsUsed": false,
+    "decision": "Do not promote: candidate endpoint 51.39% versus control 56.15% and re-evaluated AI 1.5.1 59.13%; preview unchanged."
   },
   "previewRelease": {
     "version": "1.5.1",
