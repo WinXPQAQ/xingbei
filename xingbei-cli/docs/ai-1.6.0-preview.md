@@ -10,3 +10,5 @@ B对A胜率49.60%（1008局），B对C为53.57%（1008局）；这是已用种�
 python training/serve_model.py --checkpoint training/models/ai-1.6.0-preview.1.pt --release 1.6.0-preview.1 --port 4175
 MODEL_PORT=4175 TEST_MODE=1 PORT=4174 npm run web
 ```
+
+部署已验证：真实服务completed=0；桌面1440×900、触屏390×844各完成一局，各166次推理，全部请求使用新基础策略，无页面/推理错误，页面版本精确匹配，Tailscale HTTP200。部署源码f56dd71；旧服务和版本可回退。
