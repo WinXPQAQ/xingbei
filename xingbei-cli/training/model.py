@@ -89,7 +89,7 @@ class SeatMemory:
 
 
 class Policy(nn.Module):
-    def __init__(self, hidden=256, feature_encoding='legacy-v2', separate_critic=False, baseline_version=None, baseline_probability=0.95):
+    def __init__(self, hidden=256, feature_encoding='legacy-v2', separate_critic=False, baseline_version=None, baseline_probability=0.95, comparison_head=False):
         super().__init__()
         if feature_encoding not in ('legacy-v2', 'categorical-seats-v3', 'contextual-seats-v4', 'contextual-joint-v5', 'decision-context-v6'):
             raise ValueError('Unsupported feature encoding')
@@ -99,6 +99,9 @@ class Policy(nn.Module):
         self.baseline_probability = baseline_probability
         self.feature_encoding = feature_encoding
         self.separate_critic = separate_critic
+        self.comparison_head = comparison_head
+        if comparison_head and not baseline_version:
+            raise ValueError('Comparison head requires an explicit baseline')
         self.hidden = hidden
         self.state = nn.Sequential(nn.Linear(STATE_DIM * 2, hidden), nn.Tanh(), nn.Linear(hidden, hidden), nn.Tanh())
         self.action = nn.Sequential(nn.Linear(ACTION_DIM, 128), nn.Tanh(), nn.Linear(128, hidden), nn.Tanh())
@@ -112,6 +115,19 @@ class Policy(nn.Module):
             nn.init.zeros_(self.bias.bias)
         if separate_critic:
             self.critic_state = copy.deepcopy(self.state)
+        if comparison_head:
+            # Keep optimizer-shuffle RNG aligned with the no-head control arm.
+            # These modules initialize on CPU before the policy is moved.
+            with torch.random.fork_rng(devices=[]):
+                self.comparison = nn.ModuleDict({
+                    'state': nn.Linear(hidden, 128),
+                    'candidate': nn.Linear(hidden, 128, bias=False),
+                    'baseline': nn.Linear(hidden, 128, bias=False),
+                    'output': nn.Linear(128, 1, bias=False),
+                })
+            # Explicit upgrade starts at the parent's EXACT outputs. The head
+            # learns comparisons from terminal returns, not expert scores.
+            nn.init.zeros_(self.comparison['output'].weight)
 
     def forward(self, states, actions, mask, baseline=None):
         state = self.state(states)
@@ -127,23 +143,36 @@ class Policy(nn.Module):
             count = mask.sum(-1).clamp_min(2).to(logits.dtype)
             margin = torch.log((count - 1) * self.baseline_probability / (1 - self.baseline_probability))
             logits = logits.scatter_add(1, baseline[:, None], margin[:, None])
+            if self.comparison_head:
+                reference = action[torch.arange(action.shape[0], device=action.device), baseline]
+                comparison = (self.comparison['state'](state)[:, None, :]
+                              + self.comparison['candidate'](action)
+                              + self.comparison['baseline'](reference)[:, None, :])
+                logits = logits + self.comparison['output'](comparison.tanh()).squeeze(-1)
         elif baseline is not None:
             raise ValueError('Unexpected baseline for independent policy')
         value_state = self.critic_state(states) if self.separate_critic else state
         return logits.masked_fill(~mask, -torch.inf), self.value(value_state).squeeze(-1)
 
 
-def load_policy_state(model, saved):
+def load_policy_state(model, saved, allow_comparison_upgrade=False):
     if saved.get('baselineVersion') != model.baseline_version or saved.get('baselineProbability', 0.95) != model.baseline_probability:
         raise ValueError('Checkpoint baseline mismatch')
     if saved['schema'] != SCHEMA or saved.get('featureEncoding', 'legacy-v2') != model.feature_encoding:
         raise ValueError('Checkpoint feature encoding mismatch')
-    if model.separate_critic and not saved.get('separateCritic', False):
+    upgrade = model.comparison_head and not saved.get('comparisonHead', False)
+    if model.comparison_head != saved.get('comparisonHead', False) and not (upgrade and allow_comparison_upgrade):
+        raise ValueError('Comparison architecture mismatch; use explicit initialization for upgrade')
+    separate = model.separate_critic and not saved.get('separateCritic', False)
+    if separate or upgrade:
         missing, unexpected = model.load_state_dict(saved['model'], strict=False)
-        expected = {'critic_state.' + key for key in model.critic_state.state_dict()}
+        expected = {'critic_state.' + key for key in model.critic_state.state_dict()} if separate else set()
+        if upgrade:
+            expected |= {'comparison.' + key for key in model.comparison.state_dict()}
         if set(missing) != expected or unexpected:
             raise ValueError('Unexpected architecture conversion')
-        model.critic_state.load_state_dict(model.state.state_dict())
+        if separate:
+            model.critic_state.load_state_dict(model.state.state_dict())
     else:
         model.load_state_dict(saved['model'])
 
@@ -151,7 +180,8 @@ def load_policy_state(model, saved):
 def policy_from_checkpoint(saved, device='cpu'):
     model = Policy(feature_encoding=saved.get('featureEncoding', 'legacy-v2'),
                    separate_critic=saved.get('separateCritic', False), baseline_version=saved.get('baselineVersion'),
-                   baseline_probability=saved.get('baselineProbability', 0.95)).to(device)
+                   baseline_probability=saved.get('baselineProbability', 0.95),
+                   comparison_head=saved.get('comparisonHead', False)).to(device)
     load_policy_state(model, saved)
     return model
 

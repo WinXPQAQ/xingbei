@@ -1,0 +1,59 @@
+{
+  "name": "residual-comparison-211",
+  "state": "registered-not-launched",
+  "launchCondition": "Wait for both current continuation milestones. If neither exceeds parent development team point estimate, test this controlled architecture change. Otherwise reassess before launch.",
+  "parent": "/home/xp/.local/share/xingbei-ml/runs/residual-temp13-211/checkpoint-192.pt",
+  "parentSha256": "ea3ad473d558e668a1c944d95313760627b67b9374b158387e243520393320c9",
+  "hypothesis": "Current actor scores candidates via a state/action dot product without direct nonlinear reference to baseline candidate. A zero-output initialized comparison head may learn opportunity-cost differences while preserving initial parent outputs. This is a hypothesis, not established cause of plateau.",
+  "arms": [
+    {
+      "name": "residual-comparison-control-211",
+      "comparisonHead": false
+    },
+    {
+      "name": "residual-comparison-head-211",
+      "comparisonHead": true
+    }
+  ],
+  "initialization": "Same parent actor/critic; fresh Adam/RNG in both arms. CPU RNG isolated during extra head construction. No changed feature encoding or reward.",
+  "shared": {
+    "updates": 192,
+    "games": 24,
+    "gamesPerArm": 4608,
+    "firstSeed": 252200000,
+    "lastSeed": 252204607,
+    "seed": 211,
+    "device": "cuda",
+    "workers": 4,
+    "threads": 2,
+    "epochs": 3,
+    "learningRate": 0.0001,
+    "batchSize": 512,
+    "temperature": 1.3,
+    "baseline": "v1.5",
+    "baselineProbability": 0.95,
+    "encoding": "decision-context-v6",
+    "separateCritic": true,
+    "warmup": 0,
+    "saveEvery": 96,
+    "maximumMinutes": 60,
+    "cpuQuota": "400%",
+    "memory": "12G"
+  },
+  "development": {
+    "checkpoints": [
+      96,
+      192
+    ],
+    "firstSeed": 231000000,
+    "seeds": 18,
+    "recordsPerEvaluation": 1512,
+    "compareAgainst": "residual-temp13-211-192-greedy",
+    "greedy": true,
+    "balancedMixed": true,
+    "report": "All four checkpoints and paired between-arm endpoint difference; seven lineups and hero/mixed controls. Reused development only."
+  },
+  "reward": "Terminal team +/-1 only",
+  "finalSeedsUsed": false,
+  "decision": "Do not tune after viewing partial results. Preserve all arms and checkpoints. No automatic deployment. Choose further experiment only after complete comparisons."
+}

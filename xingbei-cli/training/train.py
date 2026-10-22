@@ -76,6 +76,7 @@ def checkpoint(path, model, optimizer, completed, args):
     torch.save({'schema': SCHEMA, 'model': model.state_dict(), 'optimizer': optimizer.state_dict(),
                 'featureEncoding': model.feature_encoding,
                 'separateCritic': model.separate_critic,
+                'comparisonHead': model.comparison_head,
                 'baselineVersion': model.baseline_version, 'baselineProbability': model.baseline_probability,
                 'previewVersion': 1 if model.baseline_version else None,
                 'samplingVersion': SAMPLING_VERSION,
@@ -92,10 +93,11 @@ def initialize_weights(path, model, device):
     saved = torch.load(path, map_location=device, weights_only=False)
     if saved['schema'] != SCHEMA or saved.get('featureEncoding', 'legacy-v2') != model.feature_encoding:
         raise ValueError('Initialization feature encoding mismatch')
-    load_policy_state(model, saved)
+    load_policy_state(model, saved, allow_comparison_upgrade=True)
     return {'checkpoint': str(path), 'sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
             'parentCompleted': saved['completed'], 'criticSeparated': model.separate_critic and not saved.get('separateCritic', False),
             'parentSamplingVersion': saved.get('samplingVersion', 1),
+            'comparisonHeadAdded': model.comparison_head and not saved.get('comparisonHead', False),
             'optimizerAndRng': 'fresh; explicit new curriculum, not resume'}
 
 
@@ -107,7 +109,7 @@ async def run(args):
     torch.manual_seed(args.seed)
     random.seed(args.seed)
     device = torch.device(args.device)
-    model = Policy(feature_encoding=args.encoding, separate_critic=args.separate_critic, baseline_version=args.baseline, baseline_probability=args.baseline_probability).to(device)
+    model = Policy(feature_encoding=args.encoding, separate_critic=args.separate_critic, baseline_version=args.baseline, baseline_probability=args.baseline_probability, comparison_head=args.comparison_head).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate if args.learning_rate is not None else 3e-4)
     args.output.mkdir(parents=True, exist_ok=True)
     path = args.output / 'checkpoint.pt'
@@ -193,6 +195,7 @@ if __name__ == '__main__':
     parser.add_argument('--baseline', choices=['v1.5'])
     parser.add_argument('--baseline-probability', type=float, default=0.95)
     parser.add_argument('--separate-critic', action='store_true')
+    parser.add_argument('--comparison-head', action='store_true', help='Learn candidate versus baseline comparisons; explicit initialization required for old checkpoints')
     parser.add_argument('--schedule-offset', type=int, default=0)
     parser.add_argument('--seed', type=int, default=41)
     parser.add_argument('--first-seed', type=int, default=220000000)

@@ -2,13 +2,57 @@ import asyncio
 import unittest
 
 import torch
-from model import Policy, batch, policy_from_checkpoint, SCHEMA
+from model import Policy, batch, policy_from_checkpoint, load_policy_state, SCHEMA, STATE_DIM, ACTION_DIM
 from model_test import observation
 from encoding_candidate import seat_memory
 from rollout import collect
 
 
 class ResidualTests(unittest.TestCase):
+    def test_comparison_upgrade_preserves_parent_and_roundtrips(self):
+        torch.set_num_threads(1)
+        torch.manual_seed(82)
+        parent = Policy(feature_encoding='decision-context-v6', separate_critic=True, baseline_version='v1.5')
+        parent_rng = torch.get_rng_state().clone()
+        torch.manual_seed(82)
+        Policy(feature_encoding='decision-context-v6', separate_critic=True,
+               baseline_version='v1.5', comparison_head=True)
+        self.assertTrue(torch.equal(parent_rng, torch.get_rng_state()))
+        # Nonzero trained-like actor: equality must not rely on zero residuals.
+        with torch.no_grad():
+            parent.action[-2].weight.normal_(0, .03)
+        saved = {'schema': SCHEMA, 'featureEncoding': parent.feature_encoding,
+                 'model': parent.state_dict(), 'separateCritic': True,
+                 'baselineVersion': 'v1.5', 'baselineProbability': .95}
+        model = Policy(feature_encoding=parent.feature_encoding, separate_critic=True,
+                       baseline_version='v1.5', comparison_head=True)
+        with self.assertRaises(ValueError):
+            load_policy_state(model, saved)
+        load_policy_state(model, saved, allow_comparison_upgrade=True)
+        states = torch.randn(2, STATE_DIM * 2)
+        actions = torch.randn(2, 5, ACTION_DIM)
+        mask = torch.tensor([[True] * 5, [True, True, True, False, False]])
+        baseline = torch.tensor([3, 1])
+        inputs = (states, actions, mask, baseline)
+        for a, b in zip(parent(*inputs), model(*inputs)):
+            self.assertTrue(torch.equal(a, b))
+        optimizer = torch.optim.Adam(model.parameters(), lr=.001)
+        loss = -model(*inputs)[0].log_softmax(-1)[:, 0].mean()
+        loss.backward()
+        self.assertGreater(model.comparison['output'].weight.grad.abs().sum().item(), 0)
+        optimizer.step()
+        expected = model(*inputs)[0]
+        self.assertTrue(torch.isneginf(expected[1, 3:]).all())
+        restored = policy_from_checkpoint({**saved, 'comparisonHead': True, 'model': model.state_dict()})
+        self.assertTrue(torch.equal(expected, restored(*inputs)[0]))
+        # Candidate permutation including padding must only permute scores.
+        order = torch.tensor([2, 0, 4, 1, 3])
+        remapped = torch.argsort(order)[baseline]
+        actual = model(states, actions[:, order], mask[:, order], remapped)[0]
+        torch.testing.assert_close(actual, expected[:, order], atol=1e-6, rtol=1e-6)
+        with self.assertRaises(ValueError):
+            load_policy_state(parent, {**saved, 'comparisonHead': True, 'model': model.state_dict()})
+
     def test_zero_adjustment_exact_and_exploration_independent_of_width(self):
         torch.set_num_threads(1)
         model = Policy(feature_encoding='decision-context-v6', separate_critic=True, baseline_version='v1.5')
