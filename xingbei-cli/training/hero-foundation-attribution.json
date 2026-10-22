@@ -1,0 +1,35 @@
+{
+  "scope": "Post-hoc attribution using the same 36 confirmation seeds; not a fresh promotion gate. A vs C reuses the completed frozen match.",
+  "firstSeed": 254100000,
+  "seeds": 36,
+  "pairs": [
+    [
+      "unchanged",
+      "original"
+    ],
+    [
+      "trained",
+      "unchanged"
+    ]
+  ],
+  "policies": {
+    "original": {
+      "checkpoint": "/home/xp/.local/share/xingbei-ml/runs/residual-focused-candidate-211/checkpoint-192.pt",
+      "sha256": "bc8accee0bc33e02624a81fdcd8ee4861c413c6356d7e73194047cd0444a2849"
+    },
+    "unchanged": {
+      "checkpoint": "/home/xp/.local/share/xingbei-ml/runs/hero-foundation-211/initial.pt",
+      "sha256": "caff00ad63e7760f65997c5bd71769e13b91d01fb17d1dc82fa4db325b288a01"
+    },
+    "trained": {
+      "checkpoint": "/home/xp/.local/share/xingbei-ml/runs/hero-foundation-211/checkpoint-192.pt",
+      "sha256": "31d6814ddb84dd795728b262de4508a4245f043fee0a5f1f773b28d2c83a369b"
+    }
+  },
+  "controlVerification": {
+    "identicalParentTensors": 16,
+    "completed": 0,
+    "difference": "Only baseline identity changes, no optimizer update"
+  },
+  "previousPair": "/home/xp/.local/share/xingbei-ml/evaluations/hero-foundation-211/candidate-vs-ai151.jsonl"
+}

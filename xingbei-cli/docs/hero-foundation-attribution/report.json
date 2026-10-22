@@ -1,0 +1,337 @@
+{
+  "scope": "Post-hoc attribution using the same 36 confirmation seeds; not a fresh promotion gate. A vs C reuses the completed frozen match.",
+  "pairs": [
+    {
+      "left": "unchanged",
+      "right": "original",
+      "leftResult": {
+        "games": 1008,
+        "seedClusters": 36,
+        "wins": 500,
+        "losses": 508,
+        "truncated": 0,
+        "resolvedWinRate": 0.49603174603174605,
+        "allGameWinRateBounds": [
+          0.49603174603174605,
+          0.49603174603174605
+        ],
+        "seedCluster95": [
+          0.4712301587301588,
+          0.5198412698412699
+        ],
+        "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+      },
+      "rightResult": {
+        "games": 1008,
+        "seedClusters": 36,
+        "wins": 508,
+        "losses": 500,
+        "truncated": 0,
+        "resolvedWinRate": 0.503968253968254,
+        "allGameWinRateBounds": [
+          0.503968253968254,
+          0.503968253968254
+        ],
+        "seedCluster95": [
+          0.4801587301587301,
+          0.5287698412698413
+        ],
+        "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+      },
+      "byLineup": {
+        "default": {
+          "games": 144,
+          "seedClusters": 36,
+          "wins": 79,
+          "losses": 65,
+          "truncated": 0,
+          "resolvedWinRate": 0.5486111111111112,
+          "allGameWinRateBounds": [
+            0.5486111111111112,
+            0.5486111111111112
+          ],
+          "seedCluster95": [
+            0.4861111111111111,
+            0.6111111111111112
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "assault": {
+          "games": 144,
+          "seedClusters": 36,
+          "wins": 73,
+          "losses": 71,
+          "truncated": 0,
+          "resolvedWinRate": 0.5069444444444444,
+          "allGameWinRateBounds": [
+            0.5069444444444444,
+            0.5069444444444444
+          ],
+          "seedCluster95": [
+            0.4652777777777778,
+            0.5486111111111112
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "spell": {
+          "games": 144,
+          "seedClusters": 36,
+          "wins": 65,
+          "losses": 79,
+          "truncated": 0,
+          "resolvedWinRate": 0.4513888888888889,
+          "allGameWinRateBounds": [
+            0.4513888888888889,
+            0.4513888888888889
+          ],
+          "seedCluster95": [
+            0.3888888888888889,
+            0.5208333333333334
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "support": {
+          "games": 144,
+          "seedClusters": 36,
+          "wins": 70,
+          "losses": 74,
+          "truncated": 0,
+          "resolvedWinRate": 0.4861111111111111,
+          "allGameWinRateBounds": [
+            0.4861111111111111,
+            0.4861111111111111
+          ],
+          "seedCluster95": [
+            0.4166666666666667,
+            0.5555555555555556
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "mixed": {
+          "games": 144,
+          "seedClusters": 36,
+          "wins": 75,
+          "losses": 69,
+          "truncated": 0,
+          "resolvedWinRate": 0.5208333333333334,
+          "allGameWinRateBounds": [
+            0.5208333333333334,
+            0.5208333333333334
+          ],
+          "seedCluster95": [
+            0.4791666666666667,
+            0.5625
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "tempo": {
+          "games": 144,
+          "seedClusters": 36,
+          "wins": 66,
+          "losses": 78,
+          "truncated": 0,
+          "resolvedWinRate": 0.4583333333333333,
+          "allGameWinRateBounds": [
+            0.4583333333333333,
+            0.4583333333333333
+          ],
+          "seedCluster95": [
+            0.3958333333333333,
+            0.5208333333333334
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "pressure": {
+          "games": 144,
+          "seedClusters": 36,
+          "wins": 72,
+          "losses": 72,
+          "truncated": 0,
+          "resolvedWinRate": 0.5,
+          "allGameWinRateBounds": [
+            0.5,
+            0.5
+          ],
+          "seedCluster95": [
+            0.4513888888888889,
+            0.5416666666666666
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        }
+      }
+    },
+    {
+      "left": "trained",
+      "right": "unchanged",
+      "leftResult": {
+        "games": 1008,
+        "seedClusters": 36,
+        "wins": 468,
+        "losses": 540,
+        "truncated": 0,
+        "resolvedWinRate": 0.4642857142857143,
+        "allGameWinRateBounds": [
+          0.4642857142857143,
+          0.4642857142857143
+        ],
+        "seedCluster95": [
+          0.431547619047619,
+          0.49702380952380953
+        ],
+        "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+      },
+      "rightResult": {
+        "games": 1008,
+        "seedClusters": 36,
+        "wins": 540,
+        "losses": 468,
+        "truncated": 0,
+        "resolvedWinRate": 0.5357142857142857,
+        "allGameWinRateBounds": [
+          0.5357142857142857,
+          0.5357142857142857
+        ],
+        "seedCluster95": [
+          0.5029761904761905,
+          0.5684523809523809
+        ],
+        "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+      },
+      "byLineup": {
+        "default": {
+          "games": 144,
+          "seedClusters": 36,
+          "wins": 62,
+          "losses": 82,
+          "truncated": 0,
+          "resolvedWinRate": 0.4305555555555556,
+          "allGameWinRateBounds": [
+            0.4305555555555556,
+            0.4305555555555556
+          ],
+          "seedCluster95": [
+            0.3472222222222222,
+            0.5208333333333334
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "assault": {
+          "games": 144,
+          "seedClusters": 36,
+          "wins": 71,
+          "losses": 73,
+          "truncated": 0,
+          "resolvedWinRate": 0.4930555555555556,
+          "allGameWinRateBounds": [
+            0.4930555555555556,
+            0.4930555555555556
+          ],
+          "seedCluster95": [
+            0.4097222222222222,
+            0.5763888888888888
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "spell": {
+          "games": 144,
+          "seedClusters": 36,
+          "wins": 67,
+          "losses": 77,
+          "truncated": 0,
+          "resolvedWinRate": 0.4652777777777778,
+          "allGameWinRateBounds": [
+            0.4652777777777778,
+            0.4652777777777778
+          ],
+          "seedCluster95": [
+            0.3958333333333333,
+            0.5347222222222222
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "support": {
+          "games": 144,
+          "seedClusters": 36,
+          "wins": 61,
+          "losses": 83,
+          "truncated": 0,
+          "resolvedWinRate": 0.4236111111111111,
+          "allGameWinRateBounds": [
+            0.4236111111111111,
+            0.4236111111111111
+          ],
+          "seedCluster95": [
+            0.3541666666666667,
+            0.4930555555555556
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "mixed": {
+          "games": 144,
+          "seedClusters": 36,
+          "wins": 61,
+          "losses": 83,
+          "truncated": 0,
+          "resolvedWinRate": 0.4236111111111111,
+          "allGameWinRateBounds": [
+            0.4236111111111111,
+            0.4236111111111111
+          ],
+          "seedCluster95": [
+            0.3472222222222222,
+            0.4930555555555556
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "tempo": {
+          "games": 144,
+          "seedClusters": 36,
+          "wins": 80,
+          "losses": 64,
+          "truncated": 0,
+          "resolvedWinRate": 0.5555555555555556,
+          "allGameWinRateBounds": [
+            0.5555555555555556,
+            0.5555555555555556
+          ],
+          "seedCluster95": [
+            0.4791666666666667,
+            0.6388888888888888
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "pressure": {
+          "games": 144,
+          "seedClusters": 36,
+          "wins": 66,
+          "losses": 78,
+          "truncated": 0,
+          "resolvedWinRate": 0.4583333333333333,
+          "allGameWinRateBounds": [
+            0.4583333333333333,
+            0.4583333333333333
+          ],
+          "seedCluster95": [
+            0.3819444444444444,
+            0.5347222222222222
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        }
+      }
+    }
+  ],
+  "matrix": {
+    "original": {
+      "unchanged": 0.503968253968254
+    },
+    "unchanged": {
+      "original": 0.49603174603174605,
+      "trained": 0.5357142857142857
+    },
+    "trained": {
+      "unchanged": 0.4642857142857143
+    }
+  },
+  "state": "complete",
+  "seconds": 601.0199583539943
+}

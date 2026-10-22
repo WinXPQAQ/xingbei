@@ -1,0 +1,102 @@
+{
+  "state": "complete",
+  "scope": "Post-hoc diagnostic comparison on previously used seeds; not a fresh acceptance test. Direct win rates are not additive causal contributions.",
+  "labels": {
+    "original": "A: old rules + original network",
+    "unchanged": "B: new rules + original network",
+    "trained": "C: new rules + trained network"
+  },
+  "matrix": {
+    "original": {
+      "unchanged": 0.503968253968254,
+      "trained": 0.5406746031746031
+    },
+    "unchanged": {
+      "original": 0.49603174603174605,
+      "trained": 0.5357142857142857
+    },
+    "trained": {
+      "unchanged": 0.4642857142857143,
+      "original": 0.4593253968253968
+    }
+  },
+  "pairs": [
+    {
+      "left": "unchanged",
+      "right": "original",
+      "result": {
+        "games": 1008,
+        "seedClusters": 36,
+        "wins": 500,
+        "losses": 508,
+        "truncated": 0,
+        "resolvedWinRate": 0.49603174603174605,
+        "allGameWinRateBounds": [
+          0.49603174603174605,
+          0.49603174603174605
+        ],
+        "seedCluster95": [
+          0.4712301587301588,
+          0.5198412698412699
+        ],
+        "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+      },
+      "rawFile": "/home/xp/.local/share/xingbei-ml/evaluations/hero-foundation-attribution/unchanged-vs-original.jsonl",
+      "sha256": "0ffdb7f38ca5a13a7c66ec22bd7da2a7fd1cb9556530264c4cb8da39ec01bcc4",
+      "reused": false
+    },
+    {
+      "left": "trained",
+      "right": "unchanged",
+      "result": {
+        "games": 1008,
+        "seedClusters": 36,
+        "wins": 468,
+        "losses": 540,
+        "truncated": 0,
+        "resolvedWinRate": 0.4642857142857143,
+        "allGameWinRateBounds": [
+          0.4642857142857143,
+          0.4642857142857143
+        ],
+        "seedCluster95": [
+          0.431547619047619,
+          0.49702380952380953
+        ],
+        "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+      },
+      "rawFile": "/home/xp/.local/share/xingbei-ml/evaluations/hero-foundation-attribution/trained-vs-unchanged.jsonl",
+      "sha256": "b9b1b615b104a48a55b0b46cef1c7c392a41f0a80688350a2c31e03c1ddd6003",
+      "reused": false
+    },
+    {
+      "left": "trained",
+      "right": "original",
+      "result": {
+        "games": 1008,
+        "seedClusters": 36,
+        "wins": 463,
+        "losses": 545,
+        "truncated": 0,
+        "resolvedWinRate": 0.4593253968253968,
+        "allGameWinRateBounds": [
+          0.4593253968253968,
+          0.4593253968253968
+        ],
+        "seedCluster95": [
+          0.43253968253968256,
+          0.4871031746031746
+        ],
+        "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+      },
+      "rawFile": "/home/xp/.local/share/xingbei-ml/evaluations/hero-foundation-211/candidate-vs-ai151.jsonl",
+      "sha256": "7b4576dcc22e1a1df36bea2630750fe364e21c5f1dd93b87317057a0eb96a3ca",
+      "reused": true
+    }
+  ],
+  "controlVerification": {
+    "identicalParentTensors": 16,
+    "completed": 0,
+    "difference": "Only baseline identity changes, no optimizer update"
+  }
+}
