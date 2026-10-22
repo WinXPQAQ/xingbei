@@ -1033,5 +1033,20 @@
     },
     "finalAudit": "/home/xp/.local/share/xingbei-ml/evidence/residual-comparison-final-audit.json",
     "decision": "No advantage from comparison head; retain original parent, start registered curriculum comparison."
+  },
+  "focusedExperiment": {
+    "state": "running",
+    "startedAtUtc": "2026-10-22T06:35:59.695047+00:00",
+    "protocol": "training/residual-focused-protocol.json",
+    "arms": [
+      "residual-focused-control-211",
+      "residual-focused-candidate-211"
+    ],
+    "plannedGamesPerArm": 4608,
+    "milestones": [
+      96,
+      192
+    ],
+    "initializationAudit": "/home/xp/.local/share/xingbei-ml/evidence/residual-focused-initialization.json"
   }
 }

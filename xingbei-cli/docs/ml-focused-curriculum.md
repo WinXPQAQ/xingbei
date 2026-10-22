@@ -11,3 +11,7 @@
 如果满足协议启动条件，两组从同一父模型出发，每组4608局，在96/192批评测并报告全部结果。该候选不读取他人手牌或未来牌序，不引入中间奖励；没有推送或部署。
 
 验证完成：25项Python测试通过；CUDA实跑24局，16全队/4自博弈/4混合，全部正常结束、零截断，证据evidence/focused-curriculum-smoke.json；git diff --check通过。不是强度测试，不作为晋级依据。
+
+## 已启动
+
+比较模块实验四个检查点均未超过父模型，启动条件已满足。两组从冻结源码de150eb执行，训练及预定评测服务均实际运行；initial.pt核查模型参数、CPU/Python/CUDA随机状态完全相同，两组Adam均为空且没有比较模块。证据evidence/residual-focused-initialization.json。登记协议中的未启动状态保留历史原文，实时状态见training/residual-status.json。
