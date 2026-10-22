@@ -121,6 +121,8 @@ async def run(args):
         raise ValueError('Residual trial requires warmup=0, separate critic and decision-context-v6')
     if getattr(args, "targeted_exploration", False) and args.warmup:
         raise ValueError("Targeted exploration is terminal-reward training only")
+    if getattr(args, "preserve_skills", False) and (args.warmup or getattr(args, "targeted_exploration", False)):
+        raise ValueError("Preservation-only training requires no refinement bias or imitation")
     if args.initialize:
         args.initialization = initialize_weights(args.initialize, model, device)
     if args.resume:
@@ -143,6 +145,8 @@ async def run(args):
                 raise ValueError(f'Resume changed rollout schedule: {key}')
         if saved['args'].get('temperature', 1.0) != args.temperature:
             raise ValueError('Resume changed sampling temperature; use explicit initialization')
+        if saved['args'].get('preserve_skills', False) != getattr(args, 'preserve_skills', False):
+            raise ValueError('Resume changed preservation exploration; explicitly initialize')
         if saved['args'].get('targeted_exploration', False) != getattr(args, 'targeted_exploration', False):
             raise ValueError('Resume changed targeted exploration; use explicit initialization')
         if saved['args'].get('curriculum', 'balanced') != args.curriculum:
@@ -167,7 +171,8 @@ async def run(args):
         configs = training_configs(args.first_seed, iteration + args.schedule_offset, args.games, args.seed, imitation and not args.dagger, args.curriculum)
         rows, results, batches = await collect(model, configs, args.workers, device, teacher='v1.5' if imitation else None,
                                               execute_teacher=not args.dagger, temperature=args.temperature,
-                                              targeted_exploration=getattr(args, "targeted_exploration", False))
+                                              targeted_exploration=getattr(args, "targeted_exploration", False),
+                                              preserve_skills=getattr(args, "preserve_skills", False))
         if not rows:
             raise RuntimeError('No terminated trajectories; refusing an empty training update')
         optimization = {}
@@ -218,6 +223,7 @@ if __name__ == '__main__':
     parser.add_argument('--batch-size', type=int, default=128)
     parser.add_argument('--temperature', type=float, default=1.0, help='Training sampling only; greedy candidate ranking is unchanged')
     parser.add_argument('--curriculum', choices=['balanced', 'v15-focused'], default='balanced')
+    parser.add_argument('--preserve-skills', action='store_true', help='All implemented heroes: explore conserving unused card resources; no refine bonus')
     parser.add_argument('--targeted-exploration', action='store_true', help='Training-only small refine/roar proposal bias; no reward shaping')
     parser.add_argument('--save-every', type=int, default=0)
     asyncio.run(run(parser.parse_args()))

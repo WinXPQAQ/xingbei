@@ -13,6 +13,7 @@ from rollout import collect, SAMPLING_VERSION
 from schedule import evaluation_configs, LINEUPS
 from evaluation_stats import summarize, paired_mixed
 from encoding_candidate import seat_memory
+from diagnose_preservation import diagnose
 
 
 async def run(args):
@@ -59,7 +60,7 @@ async def run(args):
             totals = behavior.setdefault(hero, {})
             for key, count in counts.items():
                 totals[key] = totals.get(key, 0) + count
-    report = {'behaviorDiagnostics': behavior, 'manifest': manifest, 'seconds': time.perf_counter() - started,
+    report = {'preservationDiagnostics': diagnose(model, args.device), 'behaviorDiagnostics': behavior, 'manifest': manifest, 'seconds': time.perf_counter() - started,
               'team': summarize([game for game in model_games if game['mode'] == 'team']),
               'mixed': summarize([game for game in model_games if game['mode'] == 'mixed']),
               'mixedPaired': paired_mixed(games),
