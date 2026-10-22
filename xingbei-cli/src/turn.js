@@ -90,6 +90,7 @@ export class TurnFlow {
     state.completed = true;
   }
   *end(options = {}) {
+    if (this.game.winner) { yield* this.game.present(); return; }
     const state = this.state;
     if (!state) throw new RuleError("没有正在进行的回合");
     if (!this.game.winner && !state.skipped && !state.completed) throw new RuleError("必须完成普通行动及其结算后才能结束回合");

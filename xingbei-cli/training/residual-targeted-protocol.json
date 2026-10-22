@@ -1,0 +1,67 @@
+{
+  "name": "residual-targeted-211",
+  "state": "registered-not-launched",
+  "launchCondition": "Rule/unit checks, CUDA smoke, frozen parent identity verified.",
+  "parent": "/home/xp/.local/share/xingbei-ml/runs/residual-focused-candidate-211/checkpoint-192.pt",
+  "parentSha256": "bc8accee0bc33e02624a81fdcd8ee4861c413c6356d7e73194047cd0444a2849",
+  "hypothesis": "Small training-only logit proposal bias encourages exploring refine-two and conserving inactive bloodyRoar when ordinary same-element attack at same target is available. No shaped reward. PPO replays identical biased behavior distribution.",
+  "arms": [
+    {
+      "name": "residual-targeted-control-211",
+      "curriculum": "v15-focused",
+      "targetedExploration": false
+    },
+    {
+      "name": "residual-targeted-candidate-211",
+      "curriculum": "v15-focused",
+      "targetedExploration": true
+    }
+  ],
+  "initialization": "Same AI 1.5.1 checkpoint; fresh identical Adam/RNG. Both use corrected terminal-v1 rules.",
+  "shared": {
+    "updates": 192,
+    "games": 24,
+    "gamesPerArm": 4608,
+    "firstSeed": 252400000,
+    "lastSeed": 252404607,
+    "seed": 211,
+    "device": "cuda",
+    "workers": 4,
+    "threads": 2,
+    "epochs": 3,
+    "learningRate": 0.0001,
+    "batchSize": 512,
+    "temperature": 1.3,
+    "baseline": "v1.5",
+    "baselineProbability": 0.95,
+    "encoding": "decision-context-v6",
+    "separateCritic": true,
+    "warmup": 0,
+    "saveEvery": 96,
+    "maximumMinutes": 60,
+    "cpuQuota": "400%",
+    "memory": "12G"
+  },
+  "development": {
+    "checkpoints": [
+      96,
+      192
+    ],
+    "firstSeed": 231000000,
+    "seeds": 18,
+    "recordsPerEvaluation": 1512,
+    "compareAgainst": "ai151-terminal-v1-greedy",
+    "greedy": true,
+    "balancedMixed": true,
+    "report": "All four checkpoints and paired between-arm endpoint difference; seven lineups and hero/mixed controls. Reused development only."
+  },
+  "reward": "Terminal team +/-1 only",
+  "finalSeedsUsed": false,
+  "decision": "Compare against re-evaluated 1.5.1 under terminal-v1, paired control, hero-specific refine opportunity/chosen rates and inactive roar consumption, mixed controls, and diagnostic counterexamples. No automatic promotion/deployment.",
+  "rulesVersion": "terminal-v1",
+  "bias": {
+    "refineExactlyTwo": 0.35,
+    "inactiveRoarWithOrdinaryAlternative": -0.35,
+    "applies": "Training only, not greedy deployment/evaluation"
+  }
+}

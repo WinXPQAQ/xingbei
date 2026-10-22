@@ -7,6 +7,7 @@ import pathlib
 import torch
 from model import SeatMemory, batch
 from encoding_candidate import seat_memory
+from exploration import exploration_bias, proposal_logits
 
 WORKER = pathlib.Path(__file__).with_name('worker.mjs')
 SAMPLING_VERSION = 2
@@ -44,9 +45,11 @@ class Simulator:
         await self.process.wait()
 
 
-async def collect(model, configs, workers, device, teacher=None, greedy=False, retain=True, on_result=None, execute_teacher=True, on_choice=None, temperature=1.0):
+async def collect(model, configs, workers, device, teacher=None, greedy=False, retain=True, on_result=None, execute_teacher=True, on_choice=None, temperature=1.0, targeted_exploration=False):
     if not math.isfinite(temperature) or temperature <= 0:
         raise ValueError("Sampling temperature must be finite and positive")
+    if targeted_exploration and greedy:
+        raise ValueError("Training exploration must not affect greedy evaluation")
     jobs, requests = asyncio.Queue(), asyncio.Queue()
     for config in configs:
         jobs.put_nowait(config)
@@ -60,6 +63,7 @@ async def collect(model, configs, workers, device, teacher=None, greedy=False, r
             while not jobs.empty():
                 config = jobs.get_nowait()
                 memory, trajectory = seat_memory(model.feature_encoding), []
+                decision_diagnostics = {}
                 baseline_decisions = baseline_matches = baseline_nonforced = 0
                 generator = torch.Generator().manual_seed(config['seed'] ^ config.get('samplingSeed', 0))
                 await simulator.send({'type': 'start', 'config': config, 'teacher': teacher,
@@ -68,6 +72,7 @@ async def collect(model, configs, workers, device, teacher=None, greedy=False, r
                     message = await simulator.read()
                     if message['type'] == 'result':
                         result = message['result']
+                        result['decisionDiagnostics'] = decision_diagnostics
                         if getattr(model, 'baseline_version', None):
                             result['baselineDecisions'] = baseline_decisions
                             result['baselineMatches'] = baseline_matches
@@ -88,6 +93,8 @@ async def collect(model, configs, workers, device, teacher=None, greedy=False, r
                     state, actions = memory.encode(message['seat'], message['observation'])
                     row = {'state': state, 'actions': actions, 'seat': message['seat'], 'seed': config['seed'],
                            'kind': message['observation']['request']['type'], 'temperature': temperature}
+                    if targeted_exploration:
+                        row['explorationBias'] = exploration_bias(message['observation'])
                     if getattr(model, 'baseline_version', None):
                         row['baselineChoice'] = message['baseline']
                         if not isinstance(row['baselineChoice'], int):
@@ -107,6 +114,19 @@ async def collect(model, configs, workers, device, teacher=None, greedy=False, r
                         baseline_decisions += 1
                         baseline_matches += int(index == row['baselineChoice'])
                         baseline_nonforced += int(len(actions) > 1)
+                    hints = exploration_bias(message['observation'])
+                    hero = message['observation']['players'][0]['hero']
+                    counts = decision_diagnostics.setdefault(hero, {'refineOpportunities': 0, 'refineChosen': 0,
+                        'baselineRefineChosen': 0, 'roarPreserveOpportunities': 0, 'inactiveRoarChosen': 0,
+                        'baselineInactiveRoarChosen': 0})
+                    if any(value > 0 for value in hints):
+                        counts['refineOpportunities'] += 1
+                        counts['refineChosen'] += int(hints[index] > 0)
+                        counts['baselineRefineChosen'] += int(hints[message['baseline']] > 0) if message.get('baseline') is not None else 0
+                    if any(value < 0 for value in hints):
+                        counts['roarPreserveOpportunities'] += 1
+                        counts['inactiveRoarChosen'] += int(hints[index] < 0)
+                        counts['baselineInactiveRoarChosen'] += int(hints[message['baseline']] < 0) if message.get('baseline') is not None else 0
                     row['choice'] = index
                     if on_choice is not None:
                         on_choice(message['observation'], row)
@@ -133,7 +153,8 @@ async def collect(model, configs, workers, device, teacher=None, greedy=False, r
                 pending.append(requests.get_nowait())
             with torch.inference_mode():
                 logits, values = model(*batch([row for row, _, _ in pending], device))
-                distribution = torch.distributions.Categorical(logits=logits / temperature)
+                distribution = torch.distributions.Categorical(logits=proposal_logits(
+                    logits, [row for row, _, _ in pending], torch.full((len(pending),), temperature, device=device)))
                 # Per-game random streams do not depend on OS worker scheduling.
                 choices = logits.argmax(-1) if greedy else torch.tensor([
                     sample_legal(distribution.probs[index], len(row['actions']), generator)

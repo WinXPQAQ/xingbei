@@ -410,6 +410,7 @@ function chooseResponseTarget(title, valid, targets, kind = "attack") {
 }
 
 async function resolveHumanOverflow() {
+  if (game.winner) return;
   if (playMode === "spectate") return;
   const active = session;
   const player = game.player(humanId);
@@ -655,6 +656,7 @@ async function runTurns(active) {
     if (!modelEnabled && !isHuman(player.id) && game.turn.hasExtraActions() && !game.legalCards(player.id).length) game.skipExtraActions(player.id);
     } while (game.turn.needsAction());
     active.assert();
+    if (game.winner) { shownGame = null; break; }
     events.push({ type: "turn-end", current: player.id });
     appendLog(`━━━━━━━━ ${player.name}回合结束 ━━━━━━━━`, true);
     await game.endTurnWithDecisions({ resolveOverflow: resolveHumanOverflow });

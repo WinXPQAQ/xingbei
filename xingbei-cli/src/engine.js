@@ -98,6 +98,8 @@ export class Game {
   }
 
   *present() {
+    // A terminal rule request also stops headless resolution; animations are optional.
+    if (this.winner) { yield { type: "gameOver", winner: this.winner, events: this.presentationEvents.splice(0) }; return; }
     if (this.presentationEvents.length) yield { type: "presentation", events: this.presentationEvents.splice(0) };
   }
 
@@ -211,6 +213,7 @@ export class Game {
   }
 
   *trigger(timing, context, options = {}) {
+    if (this.winner) { yield* this.present(); return; }
     if (timing !== Timing.CARD_EXPOSED) yield* this.flushRuleEvents(options);
     yield* this.present();
     this.timeline.push({ timing, playerId: context.playerId ?? context.targetId, cardId: context.card?.id ?? null, point: context.point ?? null });
@@ -343,6 +346,7 @@ export class Game {
   }
 
   changeMorale(team, amount) {
+    if (this.winner) return;
     const before = this.teams[team].morale;
     this.teams[team].morale = Math.min(15, before + amount);
     this.recordPublicAction({type:'morale',team,amount:this.teams[team].morale-before,count:this.teams[team].morale});
@@ -352,9 +356,10 @@ export class Game {
   }
 
   checkWinner() {
+    if (this.winner) return this.winner;
     const previous = this.winner;
     if (this.teams.red.morale <= 0 || this.teams.blue.cups >= 5) this.winner = "blue";
-    if (this.teams.blue.morale <= 0 || this.teams.red.cups >= 5) this.winner = "red";
+    else if (this.teams.blue.morale <= 0 || this.teams.red.cups >= 5) this.winner = "red";
     if (this.winner && !previous) this.recordPresentation("winner", { team: this.winner });
     return this.winner;
   }
@@ -480,9 +485,10 @@ export class Game {
     this.teams[player.team].cups++;
     this.recordPublicAction({type:'synthesize',playerId:actorId,team:player.team,gem:gemCount,crystal:crystalCount,count:this.teams[player.team].cups});
     this.recordPresentation("cup", { team: player.team, playerId: actorId, amount: 1 });
+    this.checkWinner();
     const enemyTeam = player.team === "red" ? "blue" : "red";
-    this.changeMorale(enemyTeam, -1);
-    this.log.push(`${player.name}消耗${gemCount}个宝石、${crystalCount}个水晶执行合成，摸3张牌；己方星杯+1，对方士气-1`);
+    if (!this.winner) this.changeMorale(enemyTeam, -1);
+    this.log.push(`${player.name}消耗${gemCount}个宝石、${crystalCount}个水晶执行合成，摸3张牌；己方星杯+1${this.teams[player.team].cups >= 5 ? "，达成胜利" : "，对方士气-1"}`);
     this.checkWinner();
     yield* this.present();
     if (this.player(actorId).pendingOverflow) yield { type: "overflow", player: this.player(actorId) };
@@ -679,6 +685,7 @@ export class Game {
     return this.player(playerId).getSkills().reduce((limit, { skill }) => (typeof skill === "string" ? this.skillDefinitions.get(skill) : skill)?.modifyHealingLimit?.(limit, { game: this, playerId }) ?? limit, 2);
   }
   changeHealing(playerId, amount, { limit = this.getHealingLimit(playerId) } = {}) {
+    if (this.winner) return 0;
     const player = this.player(playerId);
     const actual = amount > 0 ? Math.max(0, Math.min(amount, limit - player.healing)) : -Math.min(-amount, player.healing);
     const before = player.healing;
@@ -690,6 +697,7 @@ export class Game {
   }
 
   *damageSteps(targetId, amount, options = {}) {
+    if (this.winner) { yield* this.present(); return 0; }
     const { sourceId = null, damageType = DamageType.ATTACK, overflow = "first", useHealing, attackContext } = options;
     const target = this.player(targetId);
     if (!Object.values(DamageType).includes(damageType)) throw new RuleError("无效的伤害类别");

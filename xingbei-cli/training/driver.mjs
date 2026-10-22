@@ -41,7 +41,7 @@ export async function driveGame({ seed, heroIds, start = 0, turnLimit = 500, dec
           catch (error) { if (!error.actionInvalidated) throw error; }
         }
         game.assertCardLocations();
-        if (game.players.some(player => player.pendingOverflow)) throw new Error('Unresolved overflow after action');
+        if (!game.winner && game.players.some(player => player.pendingOverflow)) throw new Error('Unresolved overflow after action');
       }
       await game.endTurnWithDecisions(options);
       game.assertCardLocations();

@@ -13,12 +13,18 @@ from encoding_candidate import seat_memory
 p = argparse.ArgumentParser()
 p.add_argument('--checkpoint', type=Path, required=True)
 p.add_argument('--port', type=int, default=4175)
+p.add_argument('--release', help='Immutable local AI release; verify checkpoint hash before serving')
 a = p.parse_args()
 torch.set_num_threads(2)
 saved = torch.load(a.checkpoint, map_location='cpu', weights_only=False)
 model = policy_from_checkpoint(saved, 'cpu')
 model.eval()
 identity = {'label': '混合AI · 第192批 · 实验版', 'checkpointSha256': hashlib.sha256(a.checkpoint.read_bytes()).hexdigest(), 'completed': saved['completed'], 'baseline': model.baseline_version, 'device': 'cpu'}
+if a.release:
+    release = json.loads(Path(__file__).with_name('ai-releases.json').read_text())[a.release]
+    if identity['checkpointSha256'] != release['checkpointSha256'] or identity['baseline'] != release['baseline']:
+        raise ValueError('AI release does not match checkpoint/baseline')
+    identity.update(version=a.release, label=f'AI {a.release}', rulesVersion='terminal-v1')
 sessions = OrderedDict()
 class Handler(BaseHTTPRequestHandler):
     def reply(self, status, value):

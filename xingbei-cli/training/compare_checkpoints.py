@@ -21,6 +21,10 @@ def read(directory):
         raise ValueError('Duplicate scenario')
     return dict(zip(keys, rows))
 
+baseline_manifest = json.loads((args.baseline / 'manifest.json').read_text())
+candidate_manifest = json.loads((args.candidate / 'manifest.json').read_text())
+if baseline_manifest.get('rulesVersion') != candidate_manifest.get('rulesVersion'):
+    raise ValueError('Cannot compare different rule versions; reevaluate the baseline')
 baseline, candidate = read(args.baseline), read(args.candidate)
 if not candidate or not candidate.keys() <= baseline.keys():
     raise ValueError('Candidate scenarios are missing from baseline')

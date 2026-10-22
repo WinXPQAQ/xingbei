@@ -352,3 +352,10 @@ Web 默认端口是 `4173`，可通过 `PORT` 修改；`server.js` 未指定 `HO
 - 启动前必须检查`~/.local/share/xingbei-ml/training-control.json`，截止后禁止绕过检查启动旧冻结脚本；控制记录暂停后须用户明确恢复才能继续。
 - `xingbei-training-drain.timer`负责本机定时收尾。下次处理本线程先检查`evidence/training-pause-handoff.json`和实际运行任务；收尾完成后调用update_goal(paused)，不把本机JSON状态冒充会话goal状态。说明见xingbei-cli/docs/ml-training-pause.md。
 - 4173原版、4174体验版和模型推理保持运行，体验版模型不自动更换。
+
+
+## 胜利终止与模型体验版本（2026-10-22）
+
+- 任一胜利条件成立即锁定胜者，终止当前结算链及后续效果，不能发出新的技能选择或推进回合；第五杯不发动神官行动结束治疗，先打对手已胜利则不再结算自伤。同步/异步驱动均处理gameOver终止请求，不能依赖动画。新增连续效果应逐段yield*共用结算。
+- 用户授权将residual-focused-candidate-211第192批命名AI 1.5.1并部署独立4174体验服务；AI 1.5冻结策略和4173不改。版本以固定检查点哈希注册，页面从推理服务获取身份。59.13%为修规则前开发结果，修规则后重新评测；不称70%验收通过。
+- 针对提炼及非激活独有技保留的训练，允许小幅训练探索倾向；当前仍仅终局胜负奖励。必须有无促进对照、greedy评测不加偏置、记录各英雄有机会时的行为频率，不能将口诀偏置冒充网络学会。实现及协议见docs/ai-1.5.1-preview.md和training/residual-targeted-protocol.json（相对xingbei-cli）。

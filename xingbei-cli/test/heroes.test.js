@@ -367,3 +367,44 @@ test("开局自由选已实现角色：交换阵容、固定六人坐次，生�
   assert.throws(() => new Game({ playerHeroId: "priest", playerSeat: 6 }), /座位/);
   assert.throws(() => new Game({ playerHeroId: "priest", heroIds: [] }), /同时/);
 });
+
+test("胜利立即终止：第五杯不发动神圣启示，连续伤害不打自己，同步/异步一致", async () => {
+  const { resolveSync, resolveAsync } = await import('../src/resolution/decisions.js');
+  for (const asynchronous of [false, true]) {
+    const game = make('priest');
+    game.teams.red.cups = 4;
+    game.addStones('red', 'gem', 3);
+    game.startTurn(0);
+    let asked = 0;
+    const decide = () => { asked++; return true; };
+    const steps = game.synthesizeSteps(0, 3);
+    if (asynchronous) await resolveAsync(steps, decide);
+    else resolveSync(steps, decide);
+    assert.equal(game.winner, 'red');
+    assert.equal(game.player(0).healing, 0);
+    assert.equal(asked, 0);
+    assert.equal(game.timeline.some(entry => entry.timing === Timing.SPECIAL_ACTION_END), false);
+    assert.equal(game.teams.blue.morale, 15, '第五杯后不再继续扣士气');
+    const before = game.current;
+    game.endTurn();
+    assert.equal(game.current, before);
+    game.changeMorale('red', -99);
+    assert.equal(game.winner, 'red', '不能翻转已经确定的胜者');
+
+    const damage = make('none');
+    damage.teams.blue.morale = 1;
+    damage.player(1).handLimit = 0;
+    let continued = false;
+    function* sequence() {
+      yield* damage.damageSteps(1, 2, { sourceId: 0, damageType: 'spell' });
+      continued = true;
+      yield* damage.damageSteps(0, 2, { sourceId: 0, damageType: 'spell' });
+    }
+    if (asynchronous) await resolveAsync(sequence(), () => null);
+    else resolveSync(sequence(), () => null);
+    assert.equal(damage.winner, 'red');
+    assert.equal(continued, false);
+    assert.equal(damage.player(0).hand.length, 0);
+    damage.assertCardLocations();
+  }
+});

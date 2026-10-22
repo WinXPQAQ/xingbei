@@ -26,7 +26,7 @@ async def run(args):
     raw = args.output / 'games.jsonl'
     if raw.exists():
         raise ValueError('Refusing to overwrite evaluation evidence; choose a fresh output directory')
-    manifest = {'checkpointSha256': hashlib.sha256(args.checkpoint.read_bytes()).hexdigest(),
+    manifest = {'rulesVersion': 'terminal-v1', 'checkpointSha256': hashlib.sha256(args.checkpoint.read_bytes()).hexdigest(),
                 'checkpoint': str(args.checkpoint), 'firstSeed': args.first_seed, 'seeds': args.seeds,
                 'games': len(configs), 'selection': 'greedy policy' if args.greedy else 'sampled policy', 'opponent': 'v1.5',
                 'baselineVersion': model.baseline_version, 'baselineProbability': model.baseline_probability,
@@ -53,7 +53,13 @@ async def run(args):
                             'preferredProbability': float(probabilities[fixture['preferred']].sum()),
                             'argmaxPreferred': chosen in fixture['preferred'],
                             'argmaxCandidate': fixture['observation']['candidates'][chosen]})
-    report = {'manifest': manifest, 'seconds': time.perf_counter() - started,
+    behavior = {}
+    for game in model_games:
+        for hero, counts in game.get('decisionDiagnostics', {}).items():
+            totals = behavior.setdefault(hero, {})
+            for key, count in counts.items():
+                totals[key] = totals.get(key, 0) + count
+    report = {'behaviorDiagnostics': behavior, 'manifest': manifest, 'seconds': time.perf_counter() - started,
               'team': summarize([game for game in model_games if game['mode'] == 'team']),
               'mixed': summarize([game for game in model_games if game['mode'] == 'mixed']),
               'mixedPaired': paired_mixed(games),
