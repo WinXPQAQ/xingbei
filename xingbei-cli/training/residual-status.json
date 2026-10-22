@@ -1074,7 +1074,11 @@
     "monitor": "/home/xp/.local/share/xingbei-ml/monitors/residual-unique-only-211/status.json"
   },
   "fourPolicyLeague": {
-    "state": "running",
-    "directory": "/home/xp/.local/share/xingbei-ml/evaluations/four-policy-league-1"
+    "state": "complete",
+    "directory": "/home/xp/.local/share/xingbei-ml/evaluations/four-policy-league-1",
+    "games": 3024,
+    "audit": "/home/xp/.local/share/xingbei-ml/evaluations/four-policy-league-1/audit.json",
+    "report": "/home/xp/.local/share/xingbei-ml/evaluations/four-policy-league-1/summary.md",
+    "decision": "All three neural policies beat frozen v1.5 in this development seed batch; their mutual pair intervals include 50%; keep preview 1.5.1 unchanged."
   }
 }
