@@ -704,11 +704,73 @@
     "initializationEvidence": "/home/xp/.local/share/xingbei-ml/evidence/residual-exploration-initialization.json"
   },
   "pauseRequest": {
-    "state": "scheduled",
+    "state": "superseded-by-user-resume",
     "cutoffUtc": "2026-10-21T16:53:00Z",
     "control": "/home/xp/.local/share/xingbei-ml/training-control.json",
     "timer": "xingbei-training-drain.timer",
     "handoff": "/home/xp/.local/share/xingbei-ml/evidence/training-pause-handoff.json",
     "goalStatus": "must update via tool after drain; no automated goal API available"
+  },
+  "gpuContinuation": {
+    "name": "residual-temp13-resume-211",
+    "state": "running",
+    "checkedAtUtc": "2026-10-22T05:39:05.681496+00:00",
+    "completedAtCheck": 205,
+    "newGamesAtCheck": 312,
+    "truncatedAtCheck": 0,
+    "protocol": "training/residual-temp13-resume-protocol.json",
+    "trainingUnit": "xingbei-ml-residual-temp13-resume-211.service",
+    "validationUnit": "xingbei-ml-validate-residual-temp13-resume-211.service",
+    "parentDiagnostic": {
+      "path": "/home/xp/.local/share/xingbei-ml/evidence/residual-temp13-192-greedy-trace.json",
+      "games": 24,
+      "groups": {
+        "action": {
+          "decisions": 779,
+          "departures": 25
+        },
+        "cardChoice": {
+          "decisions": 59,
+          "departures": 0
+        },
+        "healing": {
+          "decisions": 70,
+          "departures": 0
+        },
+        "overflow": {
+          "decisions": 123,
+          "departures": 0
+        },
+        "response": {
+          "decisions": 636,
+          "departures": 74
+        },
+        "skillChoice": {
+          "decisions": 193,
+          "departures": 0
+        },
+        "weakness": {
+          "decisions": 24,
+          "departures": 0
+        },
+        "effectChoice": {
+          "decisions": 23,
+          "departures": 0
+        },
+        "playerChoice": {
+          "decisions": 47,
+          "departures": 0
+        },
+        "energyChoice": {
+          "decisions": 2,
+          "departures": 0
+        },
+        "numberChoice": {
+          "decisions": 11,
+          "departures": 0
+        }
+      },
+      "scope": "Greedy on training-range games; groups count decisions, not independent samples. First three departures per hero/kind retained in seed/seat/order order; no outcome selection. Not a counterfactual benefit estimate."
+    }
   }
 }
