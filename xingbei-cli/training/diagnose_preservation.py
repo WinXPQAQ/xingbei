@@ -9,7 +9,7 @@ from preservation import preservation_bias
 
 
 def diagnose(model, device):
-    fixtures=json.loads(subprocess.check_output(['node',str(Path(__file__).with_name('preservation_cases.mjs'))]))
+    fixtures=json.loads(subprocess.check_output(['node',str(Path(__file__).with_name('preservation_cases.mjs')), '--policy='+model.baseline_version]))
     results=[]
     model.eval()
     for fixture in fixtures:

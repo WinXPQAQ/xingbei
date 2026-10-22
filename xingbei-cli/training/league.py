@@ -44,9 +44,11 @@ async def run(args):
               if path.is_file() and path.suffix in ('.js', '.mjs', '.py')}
     manifest = {**protocol, 'verifiedPolicies': identities, 'sourceHashes': hashes, 'selection': 'greedy', 'device': args.device}
     (args.output / 'manifest.json').write_text(json.dumps(manifest, indent=2)+'\n')
-    report = {'scope': 'New development round robin; not independent 70% acceptance', 'pairs': [], 'matrix': {name: {} for name in identities}}
+    report = {'scope': protocol.get('scope', 'Development round robin; not independent 70% acceptance'), 'pairs': [], 'matrix': {name: {} for name in identities}}
     started = time.monotonic()
-    for left, right in itertools.combinations(identities, 2):
+    for left, right in protocol.get('pairs', list(itertools.combinations(identities, 2))):
+        if left not in identities or right not in identities or left == right:
+            raise ValueError('Invalid registered pair')
         schedule = configs(protocol['firstSeed'], protocol['seeds'], left, right)
         with (args.output / f'{left}-vs-{right}.jsonl').open('x') as stream:
             def record(result):

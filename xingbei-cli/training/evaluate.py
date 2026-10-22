@@ -42,7 +42,7 @@ async def run(args):
             stream.flush()
         _, games, batches = await collect(model, configs, args.workers, args.device, greedy=args.greedy, retain=False, on_result=record, response_policy=args.response_policy)
     model_games = [game for game in games if game['arm'] == 'model']
-    fixtures = json.loads(subprocess.check_output(['node', str(pathlib.Path(__file__).with_name('diagnostics.mjs')), *(['--baseline'] if model.baseline_version else [])]))
+    fixtures = json.loads(subprocess.check_output(['node', str(pathlib.Path(__file__).with_name('diagnostics.mjs')), *(['--baseline', '--policy='+model.baseline_version] if model.baseline_version else [])]))
     diagnostics = []
     for fixture in fixtures:
         state, actions = seat_memory(model.feature_encoding).encode(0, fixture['observation'])

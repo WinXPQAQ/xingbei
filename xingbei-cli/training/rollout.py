@@ -59,7 +59,7 @@ async def collect(model, configs, workers, device, teacher=None, greedy=False, r
     networks = actor_models or {'model': model}
     if actor_models and (retain or not greedy or teacher or targeted_exploration):
         raise ValueError('Multi-model routing is evaluation-only')
-    if any(net.feature_encoding != model.feature_encoding or net.baseline_version != model.baseline_version for net in networks.values()):
+    if any(net.feature_encoding != model.feature_encoding for net in networks.values()):
         raise ValueError('Multi-model evaluation requires matching observation/baseline interfaces')
     jobs, requests = asyncio.Queue(), asyncio.Queue()
     for config in configs:
@@ -79,6 +79,7 @@ async def collect(model, configs, workers, device, teacher=None, greedy=False, r
                 baseline_decisions = baseline_matches = baseline_nonforced = 0
                 generator = torch.Generator().manual_seed(config['seed'] ^ config.get('samplingSeed', 0))
                 await simulator.send({'type': 'start', 'config': config, 'teacher': teacher,
+                                      'seatBaselines': [networks[policy].baseline_version if policy in networks else None for policy in config.get('seatPolicies', ['model'] * 6)],
                                       'baseline': getattr(model, 'baseline_version', None), 'seatPolicies': ['model' if policy in networks else policy for policy in config.get('seatPolicies', ['model'] * 6)]})
                 while True:
                     message = await simulator.read()

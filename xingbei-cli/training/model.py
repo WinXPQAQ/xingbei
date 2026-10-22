@@ -93,7 +93,7 @@ class Policy(nn.Module):
         super().__init__()
         if feature_encoding not in ('legacy-v2', 'categorical-seats-v3', 'contextual-seats-v4', 'contextual-joint-v5', 'decision-context-v6'):
             raise ValueError('Unsupported feature encoding')
-        if baseline_version not in (None, "v1.5") or not 0.5 < baseline_probability < 1:
+        if baseline_version not in (None, "v1.5", "experimental/hero-foundation-1") or not 0.5 < baseline_probability < 1:
             raise ValueError("Invalid residual baseline")
         self.baseline_version = baseline_version
         self.baseline_probability = baseline_probability
@@ -155,8 +155,8 @@ class Policy(nn.Module):
         return logits.masked_fill(~mask, -torch.inf), self.value(value_state).squeeze(-1)
 
 
-def load_policy_state(model, saved, allow_comparison_upgrade=False):
-    if saved.get('baselineVersion') != model.baseline_version or saved.get('baselineProbability', 0.95) != model.baseline_probability:
+def load_policy_state(model, saved, allow_comparison_upgrade=False, allow_baseline_change=False):
+    if (saved.get('baselineVersion') != model.baseline_version and not allow_baseline_change) or saved.get('baselineProbability', 0.95) != model.baseline_probability:
         raise ValueError('Checkpoint baseline mismatch')
     if saved['schema'] != SCHEMA or saved.get('featureEncoding', 'legacy-v2') != model.feature_encoding:
         raise ValueError('Checkpoint feature encoding mismatch')

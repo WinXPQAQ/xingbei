@@ -43,7 +43,7 @@ export function preservationCases() {
   const input={game,playerId:0,request,candidates};const observation=encodeDecision(input);enrichPreview(observation);
   const uniqueIndices=candidates.flatMap((c,i)=>c?.index!=null&&game.player(0).hand[c.index]===unique?[i]:[]);
   if(!uniqueIndices.length)throw Error('Fixture unique attack not legal');
-  return {name:`${spec.hero}-${spec.skill??'water'}-${caseIndex}`,spec,reverse,observation,baselineChoice:teacherIndex(input,'v1.5'),uniqueIndices};
+  return {name:`${spec.hero}-${spec.skill??'water'}-${caseIndex}`,spec,reverse,observation,baselineChoice:teacherIndex(input,process.argv.find(v=>v.startsWith('--policy='))?.slice(9) ?? 'v1.5'),uniqueIndices};
  }));
 }
 if(process.argv[1]===new URL(import.meta.url).pathname)console.log(JSON.stringify(preservationCases()));

@@ -24,9 +24,10 @@ createInterface({ input: process.stdin }).on('line', async line => {
         const policy = message.seatPolicies?.[input.playerId] ?? 'model';
         if (policy !== 'model') return teacherIndex(input, policy);
         const observation = encodeDecision(input);
-        if (message.baseline && message.baseline !== 'v1.5') throw new Error('Unsupported baseline');
-        const baseline = message.baseline ? teacherIndex(input, message.baseline) : null;
-        if (message.baseline) enrichPreview(observation);
+        const baselineVersion = message.seatBaselines?.[input.playerId] ?? message.baseline;
+        if (baselineVersion && !['v1.5','experimental/hero-foundation-1'].includes(baselineVersion)) throw new Error('Unsupported baseline');
+        const baseline = baselineVersion ? teacherIndex(input, baselineVersion) : null;
+        if (baselineVersion) enrichPreview(observation);
         const teacher = message.teacher ? teacherIndex(input, message.teacher) : null;
         const id = ++sequence;
         return new Promise(resolve => {

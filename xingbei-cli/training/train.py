@@ -90,12 +90,13 @@ def checkpoint(path, model, optimizer, completed, args):
     os.replace(temporary, path)
 
 
-def initialize_weights(path, model, device):
+def initialize_weights(path, model, device, allow_baseline_change=False):
     saved = torch.load(path, map_location=device, weights_only=False)
     if saved['schema'] != SCHEMA or saved.get('featureEncoding', 'legacy-v2') != model.feature_encoding:
         raise ValueError('Initialization feature encoding mismatch')
-    load_policy_state(model, saved, allow_comparison_upgrade=True)
+    load_policy_state(model, saved, allow_comparison_upgrade=True, allow_baseline_change=allow_baseline_change)
     return {'checkpoint': str(path), 'sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
+            'parentBaseline': saved.get('baselineVersion'), 'newBaseline': model.baseline_version,
             'parentCompleted': saved['completed'], 'criticSeparated': model.separate_critic and not saved.get('separateCritic', False),
             'parentSamplingVersion': saved.get('samplingVersion', 1),
             'comparisonHeadAdded': model.comparison_head and not saved.get('comparisonHead', False),
@@ -124,7 +125,7 @@ async def run(args):
     if getattr(args, "preserve_skills", False) and (args.warmup or getattr(args, "targeted_exploration", False)):
         raise ValueError("Preservation-only training requires no refinement bias or imitation")
     if args.initialize:
-        args.initialization = initialize_weights(args.initialize, model, device)
+        args.initialization = initialize_weights(args.initialize, model, device, args.allow_baseline_change)
     if args.resume:
         # Load only a trusted locally generated checkpoint, including RNG state.
         saved = torch.load(args.resume, map_location=device, weights_only=False)
@@ -205,7 +206,8 @@ if __name__ == '__main__':
     initialization.add_argument('--initialize', type=pathlib.Path, help='Copy only model weights; start an explicit fresh curriculum/optimizer/RNG')
     parser.add_argument('--device', default='cpu')
     parser.add_argument('--encoding', choices=['legacy-v2', 'categorical-seats-v3', 'contextual-seats-v4', 'contextual-joint-v5', 'decision-context-v6'], default='legacy-v2')
-    parser.add_argument('--baseline', choices=['v1.5'])
+    parser.add_argument('--allow-baseline-change', action='store_true', help='Explicit weight-only transfer to a different deterministic baseline')
+    parser.add_argument('--baseline', choices=['v1.5', 'experimental/hero-foundation-1'])
     parser.add_argument('--baseline-probability', type=float, default=0.95)
     parser.add_argument('--separate-critic', action='store_true')
     parser.add_argument('--comparison-head', action='store_true', help='Learn candidate versus baseline comparisons; explicit initialization required for old checkpoints')

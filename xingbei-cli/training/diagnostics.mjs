@@ -33,12 +33,12 @@ export function prepare(ordinaryAvailable, reverse = false) {
   return { game, request: step.value, steps };
 }
 
-function sealerCases(baseline = false) {
+function sealerCases(baseline = false, version = 'v1.5') {
   return [true, false].flatMap(ordinaryAvailable => [false, true].map(reverse => {
     const { game, request } = prepare(ordinaryAvailable, reverse);
     const candidates = decisionCandidates(game, request);
     const observation = encodeDecision({ game, playerId: 0, request, candidates });
-    const baselineChoice = baseline ? teacherIndex({ game, playerId: 0, request, candidates }, 'v1.5') : null;
+    const baselineChoice = baseline ? teacherIndex({ game, playerId: 0, request, candidates }, version) : null;
     if (baseline) enrichPreview(observation);
     const preferred = candidates.flatMap((candidate, index) => {
       if (candidate == null) return [];
@@ -51,8 +51,8 @@ function sealerCases(baseline = false) {
 }
 
 
-export function diagnosticCases(baseline = false) {
-  const cases = sealerCases(baseline);
+export function diagnosticCases(baseline = false, version = 'v1.5') {
+  const cases = sealerCases(baseline, version);
   for (const healing of [0, 2]) for (const ordinaryAvailable of [true, false]) for (const reverse of [false, true]) {
     const game = new Game({ seed: 210000201, heroIds: ['berserker', 'none', 'none', 'none', 'none', 'none'] });
     const roar = game.deck.find(card => card.name === 'fireStrike' && card.hasUniqueSkill('bloodyRoar'));
@@ -77,7 +77,7 @@ export function diagnosticCases(baseline = false) {
       game.player(0).hand[candidate.index].hasUniqueSkill('bloodyRoar') === preferRoar ? [index] : []);
     cases.push({ name: preferRoar ? `use-roar-healing-${healing}-alternative-${ordinaryAvailable}` : 'preserve-inactive-roar',
       reversedHand: reverse, preferred, observation,
-      ...(baseline ? { baselineChoice: teacherIndex(input, 'v1.5') } : {}) });
+      ...(baseline ? { baselineChoice: teacherIndex(input, version) } : {}) });
   }
   return cases;
 }
@@ -102,5 +102,5 @@ export function verifyDiagnosticDecline() {
 
 if (process.argv[1] === new URL(import.meta.url).pathname) {
   verifyDiagnosticDecline();
-  console.log(JSON.stringify(diagnosticCases(process.argv.includes('--baseline'))));
+  console.log(JSON.stringify(diagnosticCases(process.argv.includes('--baseline'), process.argv.find(v=>v.startsWith('--policy='))?.slice(9) ?? 'v1.5')));
 }
