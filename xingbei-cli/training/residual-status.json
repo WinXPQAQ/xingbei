@@ -1035,7 +1035,7 @@
     "decision": "No advantage from comparison head; retain original parent, start registered curriculum comparison."
   },
   "focusedExperiment": {
-    "state": "running",
+    "state": "complete",
     "startedAtUtc": "2026-10-22T06:35:59.695047+00:00",
     "protocol": "training/residual-focused-protocol.json",
     "arms": [
@@ -1047,6 +1047,22 @@
       96,
       192
     ],
-    "initializationAudit": "/home/xp/.local/share/xingbei-ml/evidence/residual-focused-initialization.json"
+    "initializationAudit": "/home/xp/.local/share/xingbei-ml/evidence/residual-focused-initialization.json",
+    "report": "/home/xp/.local/share/xingbei-ml/monitors/residual-focused-211/status.json"
+  },
+  "targetedExperiment": {
+    "state": "running",
+    "protocol": "training/residual-targeted-v2-protocol.json",
+    "monitor": "/home/xp/.local/share/xingbei-ml/monitors/residual-targeted-v2-211/status.json",
+    "parentVersion": "1.5.1",
+    "rulesVersion": "terminal-v1",
+    "initializationAudit": "/home/xp/.local/share/xingbei-ml/evidence/residual-targeted-v2-initialization.json",
+    "supersededTrial": "/home/xp/.local/share/xingbei-ml/evidence/residual-targeted-superseded.json",
+    "finalSeedsUsed": false
+  },
+  "previewRelease": {
+    "version": "1.5.1",
+    "deployment": "/home/xp/.local/share/xingbei-ml/preview/deployment.json",
+    "automaticReplacement": false
   }
 }
