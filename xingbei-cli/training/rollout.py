@@ -45,17 +45,23 @@ class Simulator:
         await self.process.wait()
 
 
-async def collect(model, configs, workers, device, teacher=None, greedy=False, retain=True, on_result=None, execute_teacher=True, on_choice=None, temperature=1.0, targeted_exploration=False):
+async def collect(model, configs, workers, device, teacher=None, greedy=False, retain=True, on_result=None, execute_teacher=True, on_choice=None, temperature=1.0, targeted_exploration=False, actor_models=None):
     if not math.isfinite(temperature) or temperature <= 0:
         raise ValueError("Sampling temperature must be finite and positive")
     if targeted_exploration and greedy:
         raise ValueError("Training exploration must not affect greedy evaluation")
+    networks = actor_models or {'model': model}
+    if actor_models and (retain or not greedy or teacher or targeted_exploration):
+        raise ValueError('Multi-model routing is evaluation-only')
+    if any(net.feature_encoding != model.feature_encoding or net.baseline_version != model.baseline_version for net in networks.values()):
+        raise ValueError('Multi-model evaluation requires matching observation/baseline interfaces')
     jobs, requests = asyncio.Queue(), asyncio.Queue()
     for config in configs:
         jobs.put_nowait(config)
     records, results = [], []
     inference_batches = []
-    model.eval()
+    for net in networks.values():
+        net.eval()
 
     async def play():
         simulator = await Simulator().start()
@@ -67,7 +73,7 @@ async def collect(model, configs, workers, device, teacher=None, greedy=False, r
                 baseline_decisions = baseline_matches = baseline_nonforced = 0
                 generator = torch.Generator().manual_seed(config['seed'] ^ config.get('samplingSeed', 0))
                 await simulator.send({'type': 'start', 'config': config, 'teacher': teacher,
-                                      'baseline': getattr(model, 'baseline_version', None), 'seatPolicies': config.get('seatPolicies')})
+                                      'baseline': getattr(model, 'baseline_version', None), 'seatPolicies': ['model' if policy in networks else policy for policy in config.get('seatPolicies', ['model'] * 6)]})
                 while True:
                     message = await simulator.read()
                     if message['type'] == 'result':
@@ -93,6 +99,7 @@ async def collect(model, configs, workers, device, teacher=None, greedy=False, r
                     state, actions = memory.encode(message['seat'], message['observation'])
                     row = {'state': state, 'actions': actions, 'seat': message['seat'], 'seed': config['seed'],
                            'kind': message['observation']['request']['type'], 'temperature': temperature}
+                    row['actorPolicy'] = config.get('seatPolicies', ['model'] * 6)[message['seat']]
                     if targeted_exploration:
                         row['explorationBias'] = exploration_bias(message['observation'])
                     if getattr(model, 'baseline_version', None):
@@ -151,18 +158,21 @@ async def collect(model, configs, workers, device, teacher=None, greedy=False, r
             await asyncio.sleep(0.001)
             while not requests.empty():
                 pending.append(requests.get_nowait())
-            with torch.inference_mode():
-                logits, values = model(*batch([row for row, _, _ in pending], device))
-                distribution = torch.distributions.Categorical(logits=proposal_logits(
-                    logits, [row for row, _, _ in pending], torch.full((len(pending),), temperature, device=device)))
-                # Per-game random streams do not depend on OS worker scheduling.
-                choices = logits.argmax(-1) if greedy else torch.tensor([
-                    sample_legal(distribution.probs[index], len(row['actions']), generator)
-                    for index, (row, _, generator) in enumerate(pending)], device=device)
-                probabilities = distribution.log_prob(choices)
-            inference_batches.append(len(pending))
-            for index, (_, future, _) in enumerate(pending):
-                future.set_result((choices[index].item(), probabilities[index].item(), values[index].item()))
+            groups = {}
+            for item in pending:
+                groups.setdefault(item[0]['actorPolicy'], []).append(item)
+            for policy, group in groups.items():
+                with torch.inference_mode():
+                    logits, values = networks[policy](*batch([row for row, _, _ in group], device))
+                    distribution = torch.distributions.Categorical(logits=proposal_logits(
+                        logits, [row for row, _, _ in group], torch.full((len(group),), temperature, device=device)))
+                    choices = logits.argmax(-1) if greedy else torch.tensor([
+                        sample_legal(distribution.probs[index], len(row['actions']), generator)
+                        for index, (row, _, generator) in enumerate(group)], device=device)
+                    probabilities = distribution.log_prob(choices)
+                inference_batches.append(len(group))
+                for index, (_, future, _) in enumerate(group):
+                    future.set_result((choices[index].item(), probabilities[index].item(), values[index].item()))
         await asyncio.gather(*tasks)
     finally:
         for task in tasks:

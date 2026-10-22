@@ -1,0 +1,32 @@
+{
+  "name": "four-policy-league-1",
+  "rulesVersion": "terminal-v1",
+  "firstSeed": 232200000,
+  "seeds": 18,
+  "gamesPerPair": 504,
+  "totalGames": 3024,
+  "policies": {
+    "v1.5": {
+      "label": "AI 1.5.0 (frozen v1.5)"
+    },
+    "ai151": {
+      "checkpoint": "/home/xp/.local/share/xingbei-ml/runs/residual-focused-candidate-211/checkpoint-192.pt",
+      "sha256": "bc8accee0bc33e02624a81fdcd8ee4861c413c6356d7e73194047cd0444a2849",
+      "run": "residual-focused-candidate-211",
+      "completed": 192
+    },
+    "unbiased": {
+      "checkpoint": "/home/xp/.local/share/xingbei-ml/runs/residual-targeted-v2-control-211/checkpoint-192.pt",
+      "sha256": "de9195926c52d5c3c19604153141d038ae47526b6fe279c706b1c6c67974388b",
+      "run": "residual-targeted-v2-control-211",
+      "completed": 192
+    },
+    "combined": {
+      "checkpoint": "/home/xp/.local/share/xingbei-ml/runs/residual-targeted-v2-candidate-211/checkpoint-192.pt",
+      "sha256": "acda5fc7249e781414cbcc73f7568ba1023f400157b7d32cd8dbc2fe6a22ac4d",
+      "run": "residual-targeted-v2-candidate-211",
+      "completed": 192
+    }
+  },
+  "scope": "New development seeds; all six pairings, seven lineups, mirrored colors and starts 0/1; not final acceptance; no policy changes during evaluation."
+}
