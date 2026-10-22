@@ -9,6 +9,7 @@ from pathlib import Path
 import torch
 from model import policy_from_checkpoint, batch
 from encoding_candidate import seat_memory
+from response_policy import prefer_ordinary_response, POLICY
 
 p = argparse.ArgumentParser()
 p.add_argument('--checkpoint', type=Path, required=True)
@@ -25,6 +26,10 @@ if a.release:
     if identity['checkpointSha256'] != release['checkpointSha256'] or identity['baseline'] != release['baseline']:
         raise ValueError('AI release does not match checkpoint/baseline')
     identity.update(version=a.release, label=f'AI {a.release}', rulesVersion='terminal-v1')
+response_policy = release.get('responsePolicy') if a.release else None
+if response_policy not in (None, POLICY):
+    raise ValueError('Unsupported response policy')
+identity['responsePolicy'] = response_policy
 sessions = OrderedDict()
 class Handler(BaseHTTPRequestHandler):
     def reply(self, status, value):
@@ -70,6 +75,8 @@ class Handler(BaseHTTPRequestHandler):
             with torch.inference_mode():
                 logits, _ = model(*batch([{'state': features, 'actions': actions, 'baselineChoice': baseline}], 'cpu'))
                 choice = logits.argmax(-1).item()
+            if response_policy:
+                choice = prefer_ordinary_response(observation, choice)
             state.update(sequence=seq + 1, time=now)
             sessions.move_to_end(key)
             self.reply(200, {'choice': choice, 'sequence': seq, **identity})

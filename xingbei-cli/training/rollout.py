@@ -9,6 +9,7 @@ from model import SeatMemory, batch
 from encoding_candidate import seat_memory
 from exploration import exploration_bias, proposal_logits
 from preservation import preservation_bias
+from response_policy import prefer_ordinary_response, POLICY
 
 WORKER = pathlib.Path(__file__).with_name('worker.mjs')
 SAMPLING_VERSION = 2
@@ -46,9 +47,11 @@ class Simulator:
         await self.process.wait()
 
 
-async def collect(model, configs, workers, device, teacher=None, greedy=False, retain=True, on_result=None, execute_teacher=True, on_choice=None, temperature=1.0, targeted_exploration=False, actor_models=None, preserve_skills=False):
+async def collect(model, configs, workers, device, teacher=None, greedy=False, retain=True, on_result=None, execute_teacher=True, on_choice=None, temperature=1.0, targeted_exploration=False, actor_models=None, preserve_skills=False, response_policy=None):
     if not math.isfinite(temperature) or temperature <= 0:
         raise ValueError("Sampling temperature must be finite and positive")
+    if response_policy not in (None, POLICY) or response_policy and (not greedy or retain or actor_models):
+        raise ValueError('Response postprocessing is explicit single-model greedy evaluation only')
     if targeted_exploration and preserve_skills:
         raise ValueError("Run preservation and refinement as separate experiments")
     if (targeted_exploration or preserve_skills) and greedy:
@@ -122,6 +125,8 @@ async def collect(model, configs, workers, device, teacher=None, greedy=False, r
                         await requests.put((row, future, generator))
                         index, logp, value = await future
                         row.update(logp=logp, value=value)
+                    if response_policy:
+                        index = prefer_ordinary_response(message['observation'], index)
                     if 'baselineChoice' in row:
                         baseline_decisions += 1
                         baseline_matches += int(index == row['baselineChoice'])

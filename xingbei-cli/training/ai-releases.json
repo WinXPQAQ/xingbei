@@ -7,5 +7,14 @@
     "developmentWins": 298,
     "developmentGames": 504,
     "scope": "Development result under pre-terminal-fix rules; not independent acceptance"
+  },
+  "1.5.2": {
+    "checkpointSha256": "bc8accee0bc33e02624a81fdcd8ee4861c413c6356d7e73194047cd0444a2849",
+    "run": "residual-focused-candidate-211",
+    "completed": 192,
+    "baseline": "v1.5",
+    "scope": "Same AI 1.5.1 weights plus deterministic same-element ordinary-first counter; requires new evaluation, old win rate not inherited.",
+    "responsePolicy": "ordinary-first-v1",
+    "parentRelease": "1.5.1"
   }
 }

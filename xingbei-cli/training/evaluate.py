@@ -27,7 +27,7 @@ async def run(args):
     raw = args.output / 'games.jsonl'
     if raw.exists():
         raise ValueError('Refusing to overwrite evaluation evidence; choose a fresh output directory')
-    manifest = {'rulesVersion': 'terminal-v1', 'checkpointSha256': hashlib.sha256(args.checkpoint.read_bytes()).hexdigest(),
+    manifest = {'responsePolicy': args.response_policy, 'rulesVersion': 'terminal-v1', 'checkpointSha256': hashlib.sha256(args.checkpoint.read_bytes()).hexdigest(),
                 'checkpoint': str(args.checkpoint), 'firstSeed': args.first_seed, 'seeds': args.seeds,
                 'games': len(configs), 'selection': 'greedy policy' if args.greedy else 'sampled policy', 'opponent': 'v1.5',
                 'baselineVersion': model.baseline_version, 'baselineProbability': model.baseline_probability,
@@ -40,7 +40,7 @@ async def run(args):
         def record(result):
             stream.write(json.dumps(result) + '\n')
             stream.flush()
-        _, games, batches = await collect(model, configs, args.workers, args.device, greedy=args.greedy, retain=False, on_result=record)
+        _, games, batches = await collect(model, configs, args.workers, args.device, greedy=args.greedy, retain=False, on_result=record, response_policy=args.response_policy)
     model_games = [game for game in games if game['arm'] == 'model']
     fixtures = json.loads(subprocess.check_output(['node', str(pathlib.Path(__file__).with_name('diagnostics.mjs')), *(['--baseline'] if model.baseline_version else [])]))
     diagnostics = []
@@ -73,6 +73,7 @@ async def run(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    parser.add_argument('--response-policy', choices=['ordinary-first-v1'])
     parser.add_argument('--checkpoint', type=pathlib.Path, required=True)
     parser.add_argument('--output', type=pathlib.Path, required=True)
     # Explicit seed range prevents accidentally treating development as holdout.
