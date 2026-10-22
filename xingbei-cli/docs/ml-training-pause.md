@@ -16,3 +16,8 @@
 查看定时器：`systemctl --user list-timers xingbei-training-drain.timer`；查看收尾：`journalctl --user -u xingbei-training-drain.service`。
 
 验证：截止前/到点/过点、paused/draining、显式恢复、错误配置拒绝启动，以及等待登记任务自然退出且只查询不停止服务的测试通过；systemd单元校验通过。实际定时完成状态以后述交接文件为准。
+
+
+## 2026-10-22 恢复训练
+
+用户明确要求继续训练并使用GPU；已禁用旧截止计时器，保留暂停交接记录，将本机控制状态改为resumed。新阶段见`training/residual-temp13-resume-protocol.json`：从温度1.3第192批恢复至384批，新增4608局，288/384批分别评测。只用终局奖励，保留最终验收种子，4173/4174不更换。59.13%只是复用开发集点估计，不是70%验收通过。

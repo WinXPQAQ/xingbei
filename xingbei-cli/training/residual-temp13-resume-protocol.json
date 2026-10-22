@@ -1,0 +1,34 @@
+{
+  "name": "residual-temp13-resume-211",
+  "parent": "/home/xp/.local/share/xingbei-ml/runs/residual-temp13-211/checkpoint-192.pt",
+  "parentSha256": "ea3ad473d558e668a1c944d95313760627b67b9374b158387e243520393320c9",
+  "resume": "Restore actor, critic, Adam and CPU/CUDA/Python RNG. Keep temperature 1.3 and LR 0.0001. Workers 4 -> 8 for throughput.",
+  "reason": "Bounded continuation of the higher exploration arm; 298/504 development wins is not statistically proven better than previous 296/504. Do not assume more training guarantees improvement.",
+  "completedStart": 192,
+  "completedTarget": 384,
+  "additionalGames": 4608,
+  "trainingSeeds": [
+    251904608,
+    251909215
+  ],
+  "device": "cuda",
+  "workers": 8,
+  "gamesPerUpdate": 24,
+  "seed": 211,
+  "checkpoints": [
+    288,
+    384
+  ],
+  "development": {
+    "firstSeed": 231000000,
+    "seeds": 18,
+    "recordsPerCheckpoint": 1512,
+    "compareAgainst": "residual-temp13-211-192-greedy",
+    "greedy": true,
+    "balancedMixed": true
+  },
+  "reward": "terminal team +/-1 only",
+  "finalSeedsUsed": false,
+  "deployment": "Do not replace 4174; preserve 4173",
+  "decision": "Report both checkpoints including regressions; inspect representation bottlenecks before further scaling if flat."
+}
