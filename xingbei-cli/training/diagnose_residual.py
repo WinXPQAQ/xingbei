@@ -18,7 +18,7 @@ async def run(args):
     if not model.baseline_version:
         raise ValueError('Expected explicit residual policy')
     configs = training_configs(args.first_seed, 0, 48, 211, False)
-    rows, games, _ = await collect(model, configs, 4, 'cuda')
+    rows, games, _ = await collect(model, configs, 4, 'cuda', greedy=args.greedy)
     groups = defaultdict(list)
     with torch.inference_mode():
         for offset in range(0, len(rows), 128):
@@ -42,9 +42,25 @@ async def run(args):
             nums = sorted(float(v[key]) for v in values)
             result[key] = {'mean': sum(nums)/len(nums), 'min': nums[0], 'max': nums[-1], 'median': nums[len(nums)//2]}
         return result
+    # Values were recorded before each decision and before the terminal result.
+    # Diagnostic only: no reward shaping or training update is performed here.
+    critic = {}
+    for kind in sorted({row['kind'] for row in rows}):
+        selected = [row for row in rows if row['kind'] == kind]
+        outcomes = torch.tensor([row['return'] for row in selected], dtype=torch.float64)
+        predictions = torch.tensor([row['value'] for row in selected], dtype=torch.float64)
+        residuals = outcomes - predictions
+        variance = float(outcomes.var(unbiased=False))
+        critic[kind] = {'decisions': len(selected),
+                        'mse': float(residuals.square().mean()),
+                        'zeroPredictorMse': float(outcomes.square().mean()),
+                        'bias': float((predictions - outcomes).mean()),
+                        'explainedVariance': 1 - float(residuals.var(unbiased=False)) / variance if variance else None}
     report = {'checkpoint': str(args.checkpoint), 'sha256': hashlib.sha256(args.checkpoint.read_bytes()).hexdigest(),
               'firstSeed': args.first_seed, 'games': len(games), 'truncated': sum(g['truncated'] for g in games),
-              'scope': 'Sampled training-range diagnostic; excludes forced single-candidate decisions, not win-rate evidence',
+              'selection': 'greedy' if args.greedy else 'sampled-temperature-1',
+              'scope': 'Training-range diagnostic, not win-rate evidence. Margins exclude forced single-candidate decisions; critic includes them. Decisions within games are correlated, not independent samples. No causal benefit estimate.',
+              'criticByDecision': critic,
               'byDecision': {key: summary(values) for key, values in groups.items()}}
     with args.output.open('x') as stream:
         json.dump(report, stream, indent=2)
@@ -55,4 +71,5 @@ if __name__ == '__main__':
     p.add_argument('--checkpoint', type=Path, required=True)
     p.add_argument('--first-seed', type=int, required=True)
     p.add_argument('--output', type=Path, required=True)
+    p.add_argument('--greedy', action='store_true')
     asyncio.run(run(p.parse_args()))
