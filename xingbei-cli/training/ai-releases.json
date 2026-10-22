@@ -61,5 +61,19 @@
         "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
       }
     }
+  },
+  "1.6.0-preview.1": {
+    "label": "AI 1.6.0-preview.1",
+    "baseline": "experimental/hero-foundation-1",
+    "checkpointSha256": "16abe8afa1ea460f73da03f29bbac4c001afb4297ebeeae7e8c0f55aea10c7d4",
+    "sourceCheckpointSha256": "caff00ad63e7760f65997c5bd71769e13b91d01fb17d1dc82fa4db325b288a01",
+    "run": "hero-foundation-211",
+    "completed": 0,
+    "parentRelease": "1.5.1",
+    "scope": "Group B: new deterministic scoring plus original AI 1.5.1 network, exactly equal tensors, no further training. User-selected preview, not a promoted baseline.",
+    "responsePolicy": null,
+    "inference": "greedy",
+    "featureEncoding": "decision-context-v6",
+    "gameRulesVersion": "terminal-v1"
   }
 }
