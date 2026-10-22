@@ -15,3 +15,9 @@
 ## 已启动
 
 温度续训两个检查点均未超过父模型，已满足登记的启动条件。两组训练及两个评测监视服务均已启动，执行冻结源码ea23d34。实际initial.pt核查共同模型参数完全相同、新模块输出层为零、两组Adam为空，CPU/Python/CUDA随机状态完全相同，证据evidence/residual-comparison-initialization.json。GPU查询确认两个Python训练进程，4173/4174保持运行。协议中的registered-not-launched保留登记时原文，实时状态见training/residual-status.json。
+
+## 训练管线耗时检查
+
+对父模型固定24局使用cProfile，在同时运行两组训练的情况下耗时12.448秒（有分析器开销）。features累计7.374秒、SeatMemory.encode累计8.097秒；说明CPU特征构造是值得继续检查的部分，不是纯GPU算力问题。证据evidence/residual-pipeline-profile.{json,txt,pstats}。
+
+尝试缓存重复特征路径的精确CRC32值，保持累计顺序。ABBA四次各24局，逐局模型选择序列及结果完全一致：无缓存7.516/7.876秒，缓存7.398/8.022秒；平均7.696对7.710秒，没有稳定提速，已撤回代码。只保留evidence/feature-hash-cache-benchmark.json证据；未触碰训练冻结源码，不把这项性能尝试算作AI强度提高。
