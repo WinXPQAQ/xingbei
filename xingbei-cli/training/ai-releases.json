@@ -16,5 +16,50 @@
     "scope": "Same AI 1.5.1 weights plus deterministic same-element ordinary-first counter; requires new evaluation, old win rate not inherited.",
     "responsePolicy": "ordinary-first-v1",
     "parentRelease": "1.5.1"
+  },
+  "1.5.3-preview.1": {
+    "label": "AI 1.5.3-测试版",
+    "baseline": "experimental/hero-foundation-1",
+    "checkpointSha256": "22799db56e82155211396a8c81d2391471865782c29fe1680069647bdfbcf17e",
+    "sourceCheckpointSha256": "31d6814ddb84dd795728b262de4508a4245f043fee0a5f1f773b28d2c83a369b",
+    "run": "hero-foundation-211",
+    "completed": 192,
+    "scope": "Manual preview requested after failed promotion. NOT accepted baseline. No extra inference postprocessing beyond evaluated policy.",
+    "results": {
+      "v1.5": {
+        "games": 1008,
+        "seedClusters": 36,
+        "wins": 559,
+        "losses": 449,
+        "truncated": 0,
+        "resolvedWinRate": 0.5545634920634921,
+        "allGameWinRateBounds": [
+          0.5545634920634921,
+          0.5545634920634921
+        ],
+        "seedCluster95": [
+          0.5228174603174602,
+          0.5863095238095238
+        ],
+        "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+      },
+      "ai151": {
+        "games": 1008,
+        "seedClusters": 36,
+        "wins": 463,
+        "losses": 545,
+        "truncated": 0,
+        "resolvedWinRate": 0.4593253968253968,
+        "allGameWinRateBounds": [
+          0.4593253968253968,
+          0.4593253968253968
+        ],
+        "seedCluster95": [
+          0.43253968253968256,
+          0.4871031746031746
+        ],
+        "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+      }
+    }
   }
 }

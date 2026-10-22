@@ -25,7 +25,7 @@ if a.release:
     release = json.loads(Path(__file__).with_name('ai-releases.json').read_text())[a.release]
     if identity['checkpointSha256'] != release['checkpointSha256'] or identity['baseline'] != release['baseline']:
         raise ValueError('AI release does not match checkpoint/baseline')
-    identity.update(version=a.release, label=f'AI {a.release}', rulesVersion='terminal-v1')
+    identity.update(version=a.release, label=release.get('label', f'AI {a.release}'), rulesVersion='terminal-v1')
 response_policy = release.get('responsePolicy') if a.release else None
 if response_policy not in (None, POLICY):
     raise ValueError('Unsupported response policy')
