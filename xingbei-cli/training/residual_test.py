@@ -92,3 +92,19 @@ class ResidualTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+class BaselineTransferTests(unittest.TestCase):
+    def test_baseline_transfer_requires_explicit_weight_initialization(self):
+        import torch
+        from model import load_policy_state, policy_from_checkpoint, SCHEMA
+        old = Policy(feature_encoding='decision-context-v6', separate_critic=True, baseline_version='v1.5')
+        saved = {'schema': SCHEMA, 'featureEncoding': 'decision-context-v6', 'separateCritic': True,
+                 'baselineVersion': 'v1.5', 'baselineProbability': .95, 'comparisonHead': False, 'model': old.state_dict()}
+        new = Policy(feature_encoding='decision-context-v6', separate_critic=True, baseline_version='experimental/hero-foundation-1')
+        with self.assertRaisesRegex(ValueError, 'baseline mismatch'):
+            load_policy_state(new, saved)
+        load_policy_state(new, saved, allow_baseline_change=True)
+        self.assertTrue(all(torch.equal(value, new.state_dict()[key]) for key, value in old.state_dict().items()))
+        saved['baselineVersion'] = new.baseline_version
+        restored = policy_from_checkpoint(saved)
+        self.assertEqual(restored.baseline_version, 'experimental/hero-foundation-1')

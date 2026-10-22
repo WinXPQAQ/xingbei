@@ -24,12 +24,14 @@ export async function modelChoice(game, playerId, request = { type: 'action' }) 
   client.session.assert();
   const candidates = request.type === 'action' ? actionCandidates(game, playerId) : decisionCandidates(game, request);
   const input = { game, playerId, request, candidates };
-  const baseline = teacherIndex(input, 'v1.5');
+  const baselineVersion = window.XINGBEI_MODEL_BASELINE;
+  if (!['v1.5', 'experimental/hero-foundation-1'].includes(baselineVersion)) throw new Error('模型基础策略身份缺失');
+  const baseline = teacherIndex(input, baselineVersion);
   const observation = encodeDecision(input);
   enrichPreview(observation);
   const sequence = client.sequence;
   const response = await fetch('/api/model/choose', { method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ session: client.id, sequence, seat: playerId, baseline, observation }), signal: AbortSignal.timeout(30000) });
+    body: JSON.stringify({ session: client.id, sequence, seat: playerId, baselineVersion, baseline, observation }), signal: AbortSignal.timeout(30000) });
   client.session.assert();
   const result = await response.json();
   if (!response.ok || result.sequence !== sequence || !Number.isInteger(result.choice) || result.choice < 0 || result.choice >= candidates.length) {

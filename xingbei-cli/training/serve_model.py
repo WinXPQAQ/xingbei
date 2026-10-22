@@ -69,6 +69,8 @@ class Handler(BaseHTTPRequestHandler):
             observation = data['observation']
             count = len(observation['candidates'])
             baseline = data['baseline']
+            if data.get('baselineVersion') != model.baseline_version:
+                raise ValueError('Client/checkpoint baseline mismatch')
             if not 0 < count <= 20000 or type(baseline) is not int or not 0 <= baseline < count:
                 raise ValueError('Invalid candidates/baseline')
             features, actions = state['memory'].encode(seat, observation)
