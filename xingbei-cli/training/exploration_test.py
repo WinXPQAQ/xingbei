@@ -1,4 +1,7 @@
 import unittest
+import json
+import subprocess
+from pathlib import Path
 import torch
 from exploration import exploration_bias, proposal_logits
 
@@ -20,6 +23,18 @@ class ExplorationTest(unittest.TestCase):
         data = self.fixture(1)
         data['candidates'].pop(1)
         self.assertEqual(exploration_bias(data), [0, .35, 0])
+
+    def test_real_engine_roar_fixtures_have_matched_elements(self):
+        fixtures = json.loads(subprocess.check_output(['node', str(Path(__file__).with_name('diagnostics.mjs')), '--baseline']))
+        for fixture in fixtures:
+            if 'roar' not in fixture['name']:
+                continue
+            bias = exploration_bias(fixture['observation'])
+            if fixture['name'] == 'preserve-inactive-roar':
+                self.assertEqual(sum(x < 0 for x in bias), 3)
+                self.assertTrue(all(bias[i] == 0 for i in fixture['preferred']))
+            else:
+                self.assertTrue(all(x == 0 for x in bias))
 
     def test_sampling_and_ppo_replay_use_same_distribution(self):
         logits = torch.tensor([[1., 2., 3., float('-inf')]], requires_grad=True)

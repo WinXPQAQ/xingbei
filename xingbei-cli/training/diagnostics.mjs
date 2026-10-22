@@ -55,7 +55,7 @@ export function diagnosticCases(baseline = false) {
   const cases = sealerCases(baseline);
   for (const healing of [0, 2]) for (const ordinaryAvailable of [true, false]) for (const reverse of [false, true]) {
     const game = new Game({ seed: 210000201, heroIds: ['berserker', 'none', 'none', 'none', 'none', 'none'] });
-    const roar = game.deck.find(card => card.hasUniqueSkill('bloodyRoar'));
+    const roar = game.deck.find(card => card.name === 'fireStrike' && card.hasUniqueSkill('bloodyRoar'));
     const ordinary = game.deck.find(card => card.name === 'fireStrike' && !card.hasUniqueSkill('bloodyRoar'));
     const cards = ordinaryAvailable ? [roar, ordinary] : [roar];
     for (const card of reverse ? cards.reverse() : cards) game.moveCard(card.id, { zone: 'hand', playerId: 0 });
