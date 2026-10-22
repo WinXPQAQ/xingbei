@@ -1065,5 +1065,16 @@
     "version": "1.5.1",
     "deployment": "/home/xp/.local/share/xingbei-ml/preview/deployment.json",
     "automaticReplacement": false
+  },
+  "uniqueOnlyExperiment": {
+    "state": "running",
+    "protocol": "training/residual-unique-only-protocol.json",
+    "scope": "Current hero unique labels only; priest, element-only uses and refinement excluded",
+    "initializationAudit": "/home/xp/.local/share/xingbei-ml/evidence/residual-unique-only-initialization.json",
+    "monitor": "/home/xp/.local/share/xingbei-ml/monitors/residual-unique-only-211/status.json"
+  },
+  "fourPolicyLeague": {
+    "state": "running",
+    "directory": "/home/xp/.local/share/xingbei-ml/evaluations/four-policy-league-1"
   }
 }
