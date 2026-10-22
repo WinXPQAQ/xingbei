@@ -1,3 +1,4 @@
+import {createEconomyPolicy as createHeroFoundationPolicy} from './v1.5.2-rules/index.js';
 import {createEconomyPolicy as createPlans4Policy} from './v1.5-plans4/index.js';
 import {createEconomyPolicy as createPlans3Policy} from './v1.5-plans3/index.js';
 import {createEconomyPolicy as createPlansPolicy} from './v1.5-plans1/index.js';
@@ -20,6 +21,7 @@ import * as baseline from './v1.0/index.js';
 import { createPolicy } from './v1.1/index.js';
 // Explicit matchups remain possible; no assumption that version ordering implies strength.
 const choices = {
+  'experimental/hero-foundation-1': createHeroFoundationPolicy(),
   'experimental/plans-1': createPlansPolicy(),
   'experimental/plans-2': createPlans2Policy(),
   'experimental/plans-3': createPlans3Policy(),
