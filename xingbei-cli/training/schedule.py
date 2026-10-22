@@ -21,7 +21,9 @@ def roster(name, rotation):
     return [a, a, b, b, c, c]
 
 
-def training_configs(first_seed, iteration, games, sampling_seed, imitation):
+def training_configs(first_seed, iteration, games, sampling_seed, imitation, curriculum='balanced'):
+    if curriculum not in ('balanced', 'v15-focused'):
+        raise ValueError('Unknown training curriculum')
     configs = []
     for index in range(games):
         seed = first_seed + iteration * games + index
@@ -36,6 +38,18 @@ def training_configs(first_seed, iteration, games, sampling_seed, imitation):
             policies = [opponent if team == own else 'v1.5' for team in TEAMS]
             seats = [seat for seat, team in enumerate(TEAMS) if team == own]
             policies[seats[(index // 3) % 3]] = 'model'
+        if curriculum == 'v15-focused' and not imitation:
+            # Per 24 games: 16 teams versus v1.5, 4 self-play, 4 mixed.
+            # Keep both colors, all starting seats and rotating hero rosters.
+            if index % 6 < 4:
+                policies = ['model' if team == own else 'v1.5' for team in TEAMS]
+            elif index % 6 == 4:
+                policies = ['model'] * 6
+            else:
+                teammate = ['v1.5', 'v1.4'][(index // 6) % 2]
+                policies = [teammate if team == own else 'v1.5' for team in TEAMS]
+                seats = [seat for seat, team in enumerate(TEAMS) if team == own]
+                policies[seats[(index // 6 + iteration) % 3]] = 'model'
         name = list(LINEUPS)[(index + iteration) % len(LINEUPS)]
         configs.append({'seed': seed, 'start': index % 6, 'seatPolicies': policies,
                         'samplingSeed': sampling_seed, 'heroIds': roster(name, seed), 'lineup': name})

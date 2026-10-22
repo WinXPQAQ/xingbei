@@ -1,11 +1,38 @@
 import unittest
 import copy
+import hashlib
+import json
+from collections import Counter
 from evaluation_breakdown import audit_schedule, breakdown
 from schedule import evaluation_configs, training_configs, TEAMS, DEFAULT
 from evaluation_stats import summarize, paired_mixed
 
 
 class EvaluationTests(unittest.TestCase):
+    def test_focused_curriculum_preserves_legacy_and_coverage(self):
+        legacy = [training_configs(252300000, i, 24, 211, False) for i in range(7)]
+        self.assertEqual(hashlib.sha256(json.dumps(legacy, sort_keys=True).encode()).hexdigest(),
+                         'd5daab776dcec6dff26a1d1ed76c8468697b752031551a5ca277cfc6ea3128ee')
+        focused = [training_configs(252300000, i, 24, 211, False, 'v15-focused') for i in range(7)]
+        for old, new in zip(legacy, focused):
+            self.assertEqual(Counter(g['seatPolicies'].count('model') for g in new), {3: 16, 6: 4, 1: 4})
+            self.assertEqual(Counter(TEAMS[g['seatPolicies'].index('model')] for g in new
+                                     if g['seatPolicies'].count('model') == 3), {'red': 8, 'blue': 8})
+            for a, b in zip(old, new):
+                self.assertEqual({k:v for k,v in a.items() if k != 'seatPolicies'},
+                                 {k:v for k,v in b.items() if k != 'seatPolicies'})
+                if b['seatPolicies'].count('model') == 3:
+                    self.assertEqual(set(b['seatPolicies']), {'model', 'v1.5'})
+        self.assertEqual({g['start'] for group in focused for g in group}, set(range(6)))
+        self.assertEqual({h for group in focused for g in group for h in g['heroIds']}, set(DEFAULT))
+        for team in ('red', 'blue'):
+            self.assertEqual({g['seatPolicies'].index('model') for group in focused for g in group
+                              if g['seatPolicies'].count('model') == 1
+                              and TEAMS[g['seatPolicies'].index('model')] == team},
+                             {i for i,t in enumerate(TEAMS) if t == team})
+        with self.assertRaises(ValueError):
+            training_configs(1, 0, 24, 211, False, 'unknown')
+
     def test_breakdown_audits_actual_rosters_policies_and_complete_pairs(self):
         configs = evaluation_configs(231000000, 1, 211, True)
         games = [{**c, 'winner': 'red', 'terminated': True, 'truncated': False} for c in configs]

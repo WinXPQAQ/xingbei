@@ -140,6 +140,8 @@ async def run(args):
                 raise ValueError(f'Resume changed rollout schedule: {key}')
         if saved['args'].get('temperature', 1.0) != args.temperature:
             raise ValueError('Resume changed sampling temperature; use explicit initialization')
+        if saved['args'].get('curriculum', 'balanced') != args.curriculum:
+            raise ValueError('Resume changed curriculum; use explicit initialization')
         load_policy_state(model, saved)
         optimizer.load_state_dict(saved['optimizer'])
         completed = saved['completed']
@@ -157,7 +159,7 @@ async def run(args):
     for iteration in range(completed, args.updates):
         started = time.perf_counter()
         imitation = iteration < args.warmup
-        configs = training_configs(args.first_seed, iteration + args.schedule_offset, args.games, args.seed, imitation and not args.dagger)
+        configs = training_configs(args.first_seed, iteration + args.schedule_offset, args.games, args.seed, imitation and not args.dagger, args.curriculum)
         rows, results, batches = await collect(model, configs, args.workers, device, teacher='v1.5' if imitation else None,
                                               execute_teacher=not args.dagger, temperature=args.temperature)
         if not rows:
@@ -209,5 +211,6 @@ if __name__ == '__main__':
     parser.add_argument('--learning-rate', type=float, help='Explicit optimizer learning rate, including when resuming')
     parser.add_argument('--batch-size', type=int, default=128)
     parser.add_argument('--temperature', type=float, default=1.0, help='Training sampling only; greedy candidate ranking is unchanged')
+    parser.add_argument('--curriculum', choices=['balanced', 'v15-focused'], default='balanced')
     parser.add_argument('--save-every', type=int, default=0)
     asyncio.run(run(parser.parse_args()))
