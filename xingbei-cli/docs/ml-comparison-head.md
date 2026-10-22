@@ -11,3 +11,7 @@
 实验两组从同一父模型权重出发并重置Adam，唯一网络差异为比较模块，均温度1.3、终局奖励；每组4608局，在96/192批评测并保留所有结果。未使用最终保留种子，不更换4174。
 
 最终代码24项Python测试通过（19.476秒），证据evidence/comparison-head-tests.log；git diff --check通过。未改生产规则或网页，未将这些检查称为完整游戏或视觉验收。
+
+## 已启动
+
+温度续训两个检查点均未超过父模型，已满足登记的启动条件。两组训练及两个评测监视服务均已启动，执行冻结源码ea23d34。实际initial.pt核查共同模型参数完全相同、新模块输出层为零、两组Adam为空，CPU/Python/CUDA随机状态完全相同，证据evidence/residual-comparison-initialization.json。GPU查询确认两个Python训练进程，4173/4174保持运行。协议中的registered-not-launched保留登记时原文，实时状态见training/residual-status.json。

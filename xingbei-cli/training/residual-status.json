@@ -854,5 +854,20 @@
     ],
     "finalAudit": "/home/xp/.local/share/xingbei-ml/evidence/residual-temp13-resume-final-audit.json",
     "decision": "No improvement; retain parent temp13-192. Proceed with preregistered comparison-head control trial."
+  },
+  "comparisonExperiment": {
+    "state": "running",
+    "startedAtUtc": "2026-10-22T06:01:59.773951+00:00",
+    "protocol": "training/residual-comparison-protocol.json",
+    "arms": [
+      "residual-comparison-control-211",
+      "residual-comparison-head-211"
+    ],
+    "plannedGamesPerArm": 4608,
+    "milestones": [
+      96,
+      192
+    ],
+    "initializationAudit": "/home/xp/.local/share/xingbei-ml/evidence/residual-comparison-initialization.json"
   }
 }
