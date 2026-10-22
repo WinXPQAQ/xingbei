@@ -1,6 +1,6 @@
 # 当前体验版本（2026-10-22）
 
-当前更新为用户命名的AI 1.5.1，固定模型、规则终止修复及验证见[AI 1.5.1说明](ai-1.5.1-preview.md)。下面是首次部署的历史记录，不代表当前模型；实际部署以`preview/deployment.json`及`/api/model/health`为准。
+当前为AI 1.5.2：沿用1.5.1网络，增加同属性应战优先普通刀，见[1.5.2说明](ai-1.5.2-response-policy.md)。原模型和规则终止修复见[AI 1.5.1说明](ai-1.5.1-preview.md)。下面是首次部署的历史记录，不代表当前模型；实际部署以`preview/deployment.json`及`/api/model/health`为准。
 
 # 混合AI手动体验服务
 

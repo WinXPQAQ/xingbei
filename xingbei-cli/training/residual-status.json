@@ -1062,9 +1062,11 @@
     "decision": "Do not promote: candidate endpoint 51.39% versus control 56.15% and re-evaluated AI 1.5.1 59.13%; preview unchanged."
   },
   "previewRelease": {
-    "version": "1.5.1",
+    "version": "1.5.2",
     "deployment": "/home/xp/.local/share/xingbei-ml/preview/deployment.json",
-    "automaticReplacement": false
+    "automaticReplacement": false,
+    "responsePolicy": "ordinary-first-v1",
+    "parentWeights": "1.5.1"
   },
   "uniqueOnlyExperiment": {
     "state": "running",

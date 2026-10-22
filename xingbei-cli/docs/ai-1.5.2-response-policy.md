@@ -7,3 +7,5 @@
 注册表新增1.5.2，固定检查点哈希不变，增加responsePolicy=ordinary-first-v1。旧1.5.1身份和统计保留；1.5.2未继承59.13%为自身胜率。评测需显式`--response-policy ordinary-first-v1`，清单记录该标识。
 
 验证：40项Python测试、254项Node测试通过。真实引擎诊断输入经本地CPU推理与HTTP服务比较，校验所有返回等于“网络原选择＋确定性替换”，并要求至少一次发生真实替换。证据`~/.local/share/xingbei-ml/evidence/ai152-http-policy.json`。仅更新本地4174体验服务；main/4173和冻结历史策略不变。
+
+实际部署源码4842a5d，Tailscale健康接口确认1.5.2及ordinary-first-v1；1440×900和390×844实际4174回环观战完整结束，各164次模型请求成功，无页面错误，版本文字正确。证据ai152-deployed-browser.json及截图。临时4185服务已停止。旧部署记录保存在preview/deployment-before-1.5.2.json。
