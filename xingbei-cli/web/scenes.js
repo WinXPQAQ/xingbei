@@ -1,7 +1,8 @@
-import { createHeroScene } from "./hero-scenes.js";
+import { createHeroScene, createMagicFusionScene } from "./hero-scenes.js";
 import { Game } from "../src/engine.js";
 
 export const sceneNames = {
+  "magic-fusion-human": "融合魔弹：人类响应", "magic-fusion-ai": "融合魔弹：AI响应",
   "hero-saint": "英雄：圣女", "hero-holyLancer": "英雄：圣枪骑士", "hero-plagueMage": "英雄：瘟疫法师", "hero-elementalist": "英雄：元素师", "hero-valkyrie": "英雄：女武神", "hero-magicalGirl": "英雄：魔法少女",
   "hero-priest": "英雄：神官", "hero-guardianAngel": "英雄：守护天使", "hero-sealer": "英雄：封印师", "hero-marksman": "英雄：神箭手", "hero-windSwordmaster": "英雄：风之剑圣", "hero-berserker": "英雄：狂战士", opening: "六人开局", "hand-0": "零张手牌", "hand-1": "一张手牌", "hand-4": "四张手牌", "hand-6": "六张手牌",
   "opponent-draw": "对手摸牌", "poison-stack": "连续中毒", "shield-hit": "圣盾抵消", unable: "无法行动重摸", ending: "合成第五杯",
@@ -10,6 +11,7 @@ export const sceneNames = {
 };
 
 export function createScene(id, seed = 20260905) {
+  if (id.startsWith("magic-fusion-")) return createMagicFusionScene(id, seed);
   if (id.startsWith("hero-")) return createHeroScene(id, seed);
   const game = new Game({ seed, heroRules: false }).setup();
   const player = game.player(0);

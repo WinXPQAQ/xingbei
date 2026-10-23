@@ -143,7 +143,7 @@ async function humanTurn() {
           targetIds.push(id);
         }
         if (targetIds.length !== (entry.spec.targetCount ?? 1)) continue;
-        await game.executeAction(humanId, { type: "skill", skillId: entry.skillId, mode, cardIds, targetIds }, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
+        await game.executeAction(humanId, { type: "skill", skillId: entry.skillId, mode, cardIds, targetIds }, { chooseResponse, overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
       } else if (command === "buy") await game.executeAction(humanId, { type: "purchase" }, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
       else if (command === "synth") await game.executeAction(humanId, { type: "synthesize", gemCount: await chooseSynthesis(player) }, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
       else if (command === "refine") await game.executeAction(humanId, { type: "refine", stones: await chooseRefinement(player) });
@@ -198,7 +198,7 @@ async function aiTurn(actorId) {
   if (action.type === "purchase") return game.executeAction(actorId, action, { overflow: "ai" });
   if (action.type === "synthesize") return game.executeAction(actorId, action, { overflow: "ai" });
   if (action.type === "refine") return game.executeAction(actorId, action);
-  if (action.type === "skill") return game.executeAction(actorId, action, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
+  if (action.type === "skill") return game.executeAction(actorId, action, { chooseResponse, overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
   if (action.type === "pass") {
     return game.skipExtraActions(actorId);
   }

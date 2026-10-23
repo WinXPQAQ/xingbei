@@ -43,3 +43,19 @@ export function createHeroScene(id, seed) {
   }
   game.log = []; game.assertCardLocations(); return game;
 }
+
+
+// Regression fixtures for a skill-generated magic chain; all cards are real entities.
+export function createMagicFusionScene(id, seed) {
+  const humanResponds = id === "magic-fusion-human";
+  const actorId = humanResponds ? 1 : 0, targetId = humanResponds ? 0 : 1;
+  const heroes = ["bard", "bard", "bard", "swordEmperor", "assassin", "bard"];
+  heroes[actorId] = "magicalGirl"; heroes[targetId] = "elementalist";
+  const game = new Game({ seed, heroIds: heroes });
+  const give = (playerId, predicate) => game.moveCard(game.deck.find(predicate).id, { zone: "hand", playerId });
+  give(actorId, card => card.type === "attack" && card.element === "fire");
+  give(targetId, card => card.name === "holyLight");
+  for (let i = 0; i < 5; i++) give(targetId, card => card.type === "attack" && card.element === "water");
+  game.current = actorId;
+  game.log = []; game.assertCardLocations(); return game;
+}

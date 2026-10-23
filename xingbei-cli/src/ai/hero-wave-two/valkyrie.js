@@ -1,7 +1,11 @@
 // Valkyrie decisions consume detached observations only. Form is a next-turn
 // option, not a permanent attack ban; all weights are team-utility heuristics.
-import { stateOf } from "../v1.5-plans4/model.js";
-import { actionPlan, probability } from "../v1.5-plans4/planner.js";
+import { stateOf, clone, spend } from "../v1.5-plans4/model.js";
+import {
+  actionPlan,
+  probability,
+  magicBranches,
+} from "../v1.5-plans4/planner.js";
 import { cardScore } from "./cards.js";
 
 const energy = (p) => p.energy.gem + p.energy.crystal;
@@ -71,6 +75,35 @@ function summonOption(
     30 * (after - before) + form - resourceCost + (terminal ? 10000 : 0);
   return { score, use: score > 0 };
 }
+// Magic does not trigger Valkyrie's on-hit summon. Discount purely moving cards
+// around unless the bounded public relay model predicts a net morale gain.
+// This is an action preference, not a rule or a ban on the only legal card.
+function magicAdjustment(state, id, card, targetId) {
+  const next = clone(state);
+  spend(next, id, [card]);
+  const own = state.players[id].team;
+  const enemy = own === "red" ? "blue" : "red";
+  const branches = magicBranches(next, id, targetId, 2);
+  const wins = branches.some(
+    ({ probability, state: outcome }) =>
+      probability > 0 &&
+      outcome.teams[enemy].morale <= 0 &&
+      outcome.teams[own].morale > 0,
+  );
+  if (wins) return 0;
+  const gain = branches.reduce(
+    (total, { probability, state: outcome }) =>
+      total +
+      probability *
+        (state.teams[enemy].morale -
+          outcome.teams[enemy].morale -
+          (state.teams[own].morale - outcome.teams[own].morale)),
+    0,
+  );
+  if (gain <= 0) return -18;
+  if (gain < 0.5) return -10;
+  return -4;
+}
 export function valkyrieActionAdjustment(
   g,
   id,
@@ -79,6 +112,13 @@ export function valkyrieActionAdjustment(
 ) {
   const p = g.player(id),
     card = action.type === "play" ? p.hand[action.index] : null;
+  if (card?.name === "magicBullet")
+    return magicAdjustment(
+      state,
+      id,
+      state.players[id].hand[action.index],
+      action.targetId,
+    );
   if (card?.type !== "attack") return 0;
   const target = g.player(action.targetId);
   const c = state.players[id].hand[action.index];

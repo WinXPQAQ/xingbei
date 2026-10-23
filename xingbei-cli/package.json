@@ -1,12 +1,16 @@
 {
   "name": "xingbei-cli",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "private": true,
   "type": "module",
   "scripts": {
     "start": "node src/cli.js",
     "web": "node server.js",
-    "test": "node --test"
+    "test": "node --test test/cards.test.js test/model.test.js test/heroes.test.js test/heroes-wave-two.test.js test/triggers.test.js test/mandatory-action.test.js test/refresh-flow.test.js test/skill-response.test.js test/session.test.js",
+    "test:ai": "node --test test/ai*.test.js training/*.test.mjs",
+    "test:ui": "node --test test/play-mode.test.js test/action-log.test.js test/tui.test.js test/scenes.test.js"
   },
-  "engines": { "node": ">=20" }
+  "engines": {
+    "node": ">=20"
+  }
 }

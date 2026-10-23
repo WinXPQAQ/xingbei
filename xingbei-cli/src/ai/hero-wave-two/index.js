@@ -1,3 +1,8 @@
+import {
+  elementalSkills,
+  enhancementCard,
+  refinementAdjustment,
+} from "./elementalist.js";
 import { valkyrieActionAdjustment, valkyrieRuleDecision } from "./valkyrie.js";
 import { isolatePolicy } from "../observation.js";
 import { legalActions } from "../../legal-actions.js";
@@ -173,7 +178,20 @@ function skillScore(g, id, a, s) {
     case "fireball":
     case "windBlade":
     case "lightning":
-      hurt(target, skill === "fireball" ? 2 : 1);
+      {
+        const boost = enhancementCard(
+          g,
+          id,
+          skill,
+          target,
+          actor.hand.map((c) => g.cards.get(c.id)),
+        );
+        if (boost) {
+          spend(n, id, [actor.hand.find((c) => c.id === boost.id)]);
+          bonus -= retentionBonus(g, id, boost);
+        }
+        hurt(target, (skill === "fireball" ? 2 : 1) + Number(!!boost));
+      }
       if (skill === "freeze") bonus += bestHeal(g, id);
       if (skill === "lightning") stones(n, p.team, "gem", 1);
       if (skill === "meteor") extra = "spell";
@@ -253,19 +271,8 @@ function rankAiActions(g, id) {
         if (hero === "plagueMage" && c.type === "spell")
           score += healingValue(g, id, id) + 1;
       }
-      if (action.type === "refine") {
-        const { gem, crystal } = action.stones,
-          total = gem + crystal,
-          team = g.stoneCounts(p.team);
-        if (hero === "elementalist") {
-          const single = team.gem === 1 && team.crystal <= 1 && gem === 1;
-          if (p.energy.crystal + crystal > 1 || (total < 2 && !single))
-            score = -1e6;
-          else score += sumEnergy(p) === 0 ? 10 : sumEnergy(p) === 1 ? 4 : -4;
-        } else if (hero === "magicalGirl")
-          score += total === 2 ? (sumEnergy(p) === 0 ? 9 : 2) : -12;
-        else if (total < 2) score -= 12;
-      }
+      if (action.type === "refine")
+        score += refinementAdjustment(g, id, action);
       if (hero === "valkyrie")
         score += valkyrieActionAdjustment(g, id, action, s);
       return {
@@ -287,19 +294,15 @@ function chooseAiRuleDecision(r, g) {
     t = ctx.targetId == null ? null : g.player(ctx.targetId);
   if (r.type === "cardChoice") {
     const indexes = chooseAiDiscard(g, id, r.count, r.valid);
-    if (
-      r.optional &&
-      ["meteor", "freeze", "fireball", "windBlade", "lightning"].includes(
+    if (r.optional && Object.hasOwn(elementalSkills, r.skillId)) {
+      const card = enhancementCard(
+        g,
+        id,
         r.skillId,
-      )
-    ) {
-      if (
-        !t ||
-        sign(g, id, t.id) > 0 ||
-        moraleLoss(t, (ctx.amount ?? 1) + 1, "spell") <=
-          moraleLoss(t, ctx.amount ?? 1, "spell")
-      )
-        return null;
+        ctx.targetId,
+        r.valid.map((index) => p.hand[index]),
+      );
+      return card ? [p.hand.findIndex((c) => c.id === card.id)] : null;
     }
     if (r.optional && r.skillId === "magicBurst") {
       const discard = clone(s),

@@ -27,5 +27,6 @@
   "character/holyLancer.jpg": "character/shengQiangQiShi.jpg",
   "character/plagueMage.jpg": "character/wenYiFaShi.jpg",
   "character/elementalist.jpg": "character/yuanSuShi.jpg",
-  "character/valkyrie.jpg": "character/nvWuShen.jpg"
+  "character/valkyrie.jpg": "character/nvWuShen.jpg",
+  "markers/element.png": "card/zhiShiWu/hong.png"
 }

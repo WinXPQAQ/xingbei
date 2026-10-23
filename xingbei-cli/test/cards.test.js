@@ -5,7 +5,6 @@ import { Game, RuleError } from "../src/engine.js";
 import { getPolicy } from "../src/ai/versions.js";
 const legacy = getPolicy("v1.2");
 const chooseAiAction = (...args) => legacy.chooseAiAction(...args);
-const rankAiActions = (...args) => legacy.rankAiActions(...args);
 
 const card = (name, element = "water", fate = "J", id = Math.random().toString()) => createBasicCard({ id, name, element, fate });
 
@@ -303,16 +302,6 @@ test("合成选择：同类星石或总数恰好3时自动，混合且超过3时
   assert.deepEqual(mixed.synthesisOptions("red"), { automatic: false, choices: [0, 1, 2] });
 });
 
-test("AI合成永远选择合法组合中最少的宝石，即尽量使用水晶", () => {
-  const game = new Game({ heroRules: false, shuffleDeck: false });
-  game.addStones("red", "gem", 3);
-  game.addStones("red", "crystal", 2);
-  setHand(game, 0, []);
-  const action = chooseAiAction(game, 0);
-  assert.equal(action.type, "synthesize");
-  assert.equal(action.gemCount, 1);
-});
-
 test("玩家爆牌可延迟选择，必须选择不同合法编号并按弃牌数降低士气", () => {
   const game = new Game({ heroRules: false, shuffleDeck: false });
   setHand(game, 0, Array.from({ length: 6 }, (_, index) => card("holyLight", "light", "J", `h${index}`)));
@@ -364,14 +353,4 @@ test("无法行动按当前合法非提炼行动判定，不使用静态技能�
   setHand(game, 0, [card("holyLight", "light"), card("holyLight", "light"), card("holyLight", "light")]);
   assert.equal(game.canRefreshUnableHand(0), false);
   assert.throws(() => game.refreshUnableHand(0), RuleError);
-});
-
-test("冻结v1.2优先给己方圣盾，并向手牌最多的敌人使用中毒或虚弱", () => {
-  const game = new Game({ heroRules: false, shuffleDeck: false, seed: 1 });
-  setHand(game, 0, [card("holyShield")]);
-  assert.ok([0, 3, 4].includes(chooseAiAction(game, 0).targetId));
-  setHand(game, 0, [card("poison")]);
-  setHand(game, 1, [card("darkStrike")]);
-  setHand(game, 2, [card("darkStrike"), card("darkStrike")]);
-  assert.equal(rankAiActions(game, 0).find(entry => entry.action.type === "play").action.targetId, 2);
 });

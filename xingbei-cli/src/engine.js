@@ -90,7 +90,7 @@ export class Game {
     if (!this.presentationEnabled) return;
     // Detached checkpoint snapshots prevent later rule steps leaking into a frame.
     const view = {
-      players: this.players.map(player => ({ ...player.toJSON(), hand: player.hand.map(card => ({ ...card.toJSON(), ...card.getTraits({ game: this, playerId: player.id, purpose: "hand" }) })) })),
+      players: this.players.map(player => ({ ...player.toJSON(), healingLimit: this.getHealingLimit(player.id), hand: player.hand.map(card => ({ ...card.toJSON(), ...card.getTraits({ game: this, playerId: player.id, purpose: "hand" }) })) })),
       teams: this.teams, current: this.current, winner: this.winner,
       deckCount: this.deck.length, discardCount: this.discard.length,
     };

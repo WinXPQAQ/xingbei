@@ -542,7 +542,7 @@ async function selectSkillAction(skillId) {
       active.assert(); if (id == null) return;
       targetIds.push(id);
     }
-    await completeHumanAction(() => game.executeAction(humanId, { type: "skill", skillId, mode, cardIds, targetIds }, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow }));
+    await completeHumanAction(() => game.executeAction(humanId, { type: "skill", skillId, mode, cardIds, targetIds }, { chooseResponse: chooseCombatResponse, overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow }));
   } finally { active.assert(); busy = false; selectedCard = null; render(); }
 }
 
@@ -563,7 +563,7 @@ async function executeAi(actorId, scriptedAction = null) {
   else if (action.type === "purchase") await game.executeAction(actorId, action, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
   else if (action.type === "synthesize") await game.executeAction(actorId, action, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
   else if (action.type === "refine") await game.executeAction(actorId, action, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
-  else if (action.type === "skill") await game.executeAction(actorId, action, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
+  else if (action.type === "skill") await game.executeAction(actorId, action, { chooseResponse: chooseCombatResponse, overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
   else if (action.type === "pass") {
     game.skipExtraActions(actorId);
   }
@@ -581,16 +581,22 @@ async function executeAi(actorId, scriptedAction = null) {
   await resolveHumanOverflow();
 }
 
+// Skills may start the same attack/magic resolution as physical card actions.
+// Route both through one callback so AI decisions and human pending choices agree.
+async function chooseCombatResponse(context) {
+  const active = session;
+  await playback.wait(active);
+  active.assert();
+  if (!isHuman(context.target.id)) return chooseAiResponse(game, context);
+  const attack = context.attack;
+  const targets = attack ? context.counterTargets.map(player => player.id) : context.nextTarget ? [context.nextTarget.id] : [];
+  return chooseResponseTarget(`${context.actor.name}对你使用【${attack ? CARD_NAMES[attack.name] : "魔弹"}】`, context.valid, targets, attack ? "attack" : "magic");
+}
 async function resolveAttackChain(actorId, handIndex, targetId) {
   return game.attackWithDecisions(actorId, handIndex, targetId, {
     overflow: overflowPolicy,
     resolveOverflow: resolveHumanOverflow,
-    chooseResponse: async context => {
-      await playback.wait(session);
-      const { actor, target, valid, counterTargets } = context;
-      if (isHuman(target.id)) return chooseResponseTarget(`${actor.name}对你使用【${CARD_NAMES[context.attack.name]}】`, valid, counterTargets.map(player => player.id));
-      return chooseAiResponse(game, context);
-    },
+    chooseResponse: chooseCombatResponse,
   });
 }
 
@@ -599,12 +605,7 @@ async function resolveMagicChain(actorId, handIndex, targetId) {
     targetId,
     overflow: overflowPolicy,
     resolveOverflow: resolveHumanOverflow,
-    chooseResponse: async context => {
-      await playback.wait(session);
-      const { actor, target, valid, nextTarget } = context;
-      if (isHuman(target.id)) return chooseResponseTarget(`${actor.name}对你使用【魔弹】`, valid, nextTarget ? [nextTarget.id] : [], "magic");
-      return chooseAiResponse(game, context);
-    },
+    chooseResponse: chooseCombatResponse,
   });
 }
 
@@ -631,6 +632,12 @@ endExtra.addEventListener("click", () => {
   if (acceptingAction && !busy && game.turn.hasExtraActions()) { game.skipExtraActions(humanId); acceptingAction = false; finishAction?.(); render(); }
 });
 
+function scriptedSceneAction(playerId) {
+  if (!isDev || events.length !== 1) return null;
+  if (sceneId === "magic-fusion-human") return { type: "skill", skillId: "magicFusion", cardIds: [game.player(playerId).hand[0].id], targetIds: [humanId] };
+  return ["attack", "attack-switch", "attack-empty", "shield-hit", "magic", "magic-empty", "magic-linked"].includes(sceneId) ? { type: "play", index: 0, targetId: humanId } : null;
+}
+
 async function runTurns(active) {
   while (!game.winner) {
     active.assert();
@@ -653,7 +660,7 @@ async function runTurns(active) {
     if (!turn.skipped && !game.winner) {
       if (isHuman(player.id)) {
         await waitForHumanAction();
-      } else { await delay(isDev ? 0 : 150); await executeAi(player.id, isDev && ["attack", "attack-switch", "attack-empty", "shield-hit", "magic", "magic-empty", "magic-linked"].includes(sceneId) && events.length === 1 ? { type: "play", index: 0, targetId: humanId } : null); active.assert(); flushLog(); }
+      } else { await delay(isDev ? 0 : 150); await executeAi(player.id, scriptedSceneAction(player.id)); active.assert(); flushLog(); }
     }
     if (!modelEnabled && !isHuman(player.id) && game.turn.hasExtraActions() && !game.legalCards(player.id).length && !game.legalSkillActions(player.id).length) game.skipExtraActions(player.id);
     } while (game.turn.needsAction());

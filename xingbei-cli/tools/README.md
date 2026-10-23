@@ -57,3 +57,14 @@ node xingbei-cli/tools/evaluate-ai.mjs read-1 v1.0 holdout 200 /tmp/xingbei-hold
 版本、六组镜像阵容、换边/先手设计、隐私边界、置信区间与交叉评估见 [AI版本说明](../docs/ai-versions.md)，本轮事先登记与所有候选结果见 [实验记录](../docs/ai-v1.1-experiments.md)。
 
 第二批英雄：`BASE_URL=http://127.0.0.1:4186 node tools/verify-heroes-wave-two.mjs`覆盖新增六英雄的两视口交互；可通过`PLAYWRIGHT_MODULE`指定现有Playwright安装路径，证据写入`artifacts/heroes/wave-two/`。运行前启动对应工作树的服务，不应把新场景测试指向旧版本服务。
+
+显示修复：`BASE_URL=http://127.0.0.1:4188 node tools/verify-hero-display-fixes.mjs`，两视口动态检查元素灯及瘟疫治疗槽；需已有Playwright，可指定`PLAYWRIGHT_MODULE`。
+
+## 日常测试范围（用户要求精简）
+
+- `npm test`：仅核心规则、牌实例、回合、英雄规则链、响应与会话；不自动扫描整个仓库。
+- `npm run test:ai`：手动运行历史AI版本对照、隐私及训练接口检查。只有改到这些接口时才按需运行。
+- `npm run test:ui`：手动运行终端、日志、模式和开发场景的Node检查。
+- 已删除第二批英雄逐场景评分测试`ai-wave-two.test.js`、`ai-valkyrie.test.js`，以及cards中的两项旧AI打法偏好断言。此前通过结果是历史开发证据，不再是每次必须复跑的门槛。
+- 保留`skill-response.test.js`两项异步结算链：技能入口必须请求响应，等待时不推进，明确放弃后才处理治疗/圣盾；不扩展成逐角色/逐种手牌的测试矩阵。
+- 浏览器场景工具继续作为手动复现入口，不加入`npm test`；历史证据不删除。

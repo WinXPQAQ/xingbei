@@ -54,3 +54,6 @@ button:disabled { opacity: .4; }
 
 .hero-state-mark { display:inline-flex; width:26px; min-height:26px; align-items:center; justify-content:center; font-size:11px; color:#fff; background:#433933; border:1px solid #c8bca1; writing-mode:vertical-rl; }
 .hero-transformed .avatar { transform:rotate(90deg); }
+
+/* Original yuanSu markimage uses hong.png: the artwork is a gold flame lamp. */
+.marks .element-mark img { object-fit: contain; border-radius: 0; box-shadow: none; }

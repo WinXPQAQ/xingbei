@@ -218,3 +218,15 @@ test("无牌也等待响应，攻击链牌留场至结算结束；伤害类别�
     assert.equal(game.assertCardLocations(), true);
   }
 });
+
+test("呈现快照保存动态治疗上限，后续变化不回写旧动画帧", () => {
+  const game = new Game({ heroIds: ["plagueMage", "holyLancer", "priest", "saint", "valkyrie", "elementalist"] });
+  game.enablePresentation();
+  game.recordPresentation("checkpoint");
+  const first = game.presentationEvents.at(-1).view;
+  assert.deepEqual(first.players.slice(0, 3).map(p => p.healingLimit), [5, 3, 6]);
+  game.teams.red.cups = 1;
+  game.recordPresentation("checkpoint");
+  assert.equal(game.presentationEvents.at(-1).view.players[1].healingLimit, 2);
+  assert.equal(first.players[1].healingLimit, 3);
+});

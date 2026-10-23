@@ -16,7 +16,7 @@ export function presentationView(snapshot, game) {
   const players = snapshot.players.map(data => ({ ...data, hand: data.hand.map(card),
     getStatus: id => data.statuses.filter(item => item.attachment?.effectId === id) }));
   return { ...snapshot, players, deck: { length: snapshot.deckCount }, discard: { length: snapshot.discardCount },
-    player: id => players[id], legalTargets: (id, data) => game.legalTargets(id, game.cards.get(data.id)),
+    player: id => players[id], getHealingLimit: id => players[id].healingLimit, legalTargets: (id, data) => game.legalTargets(id, game.cards.get(data.id)),
     canDrawSpecial: id => players[id].hand.length <= 3,
     stoneCounts: team => ({ gem: snapshot.teams[team].achievements.filter(kind => kind === "gem").length,
       crystal: snapshot.teams[team].achievements.filter(kind => kind === "crystal").length, total: snapshot.teams[team].achievements.length }) };

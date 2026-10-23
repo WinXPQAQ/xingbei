@@ -8,8 +8,8 @@ import * as production from '../src/ai.js';
 import {getPolicy} from '../src/ai/versions.js';
 test('CLI/Web hero preview routes exports to its version and preserves old six-hero decisions',()=>{
  const accepted=getPolicy('experimental/plans-4'),stable=getPolicy('v1.5');
- assert.equal(production.AI_POLICY_VERSION,'v1.7.0-preview.1');
- for(const method of ['chooseAiResponse','chooseAiRuleDecision','chooseAiDiscard','cardScore','keepCards','giftScore','planWindAttacks'])assert.equal(production[method],getPolicy('v1.7.0-preview.1')[method]);
+ assert.equal(production.AI_POLICY_VERSION,'v1.7.0-preview.2');
+ for(const method of ['chooseAiResponse','chooseAiRuleDecision','chooseAiDiscard','cardScore','keepCards','giftScore','planWindAttacks'])assert.equal(production[method],getPolicy('v1.7.0-preview.2')[method]);
  for(const hero of ['berserker','windSwordmaster','marksman','sealer','guardianAngel','priest']) {
   const g=new Game({seed:123,playerHeroId:hero}).setup();
   assert.deepEqual(production.rankAiActions(g,0),accepted.rankAiActions(g,0));

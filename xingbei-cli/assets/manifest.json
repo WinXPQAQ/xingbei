@@ -190,6 +190,11 @@
       "path": "image/character/nvWuShen.jpg",
       "bytes": 120103,
       "sha256": "ba7746ca1d7022287a1d30d286d793170bacfa7c1d0c66852afe005f56bfcefc"
+    },
+    {
+      "path": "image/card/zhiShiWu/hong.png",
+      "bytes": 76943,
+      "sha256": "cbd4f2a2a1cf47ef8a999f2ddc5c44d1a0f9b65984a91d08ba8b93be71511d8c"
     }
   ]
 }
