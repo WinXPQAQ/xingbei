@@ -55,3 +55,5 @@ node xingbei-cli/tools/evaluate-ai.mjs read-1 v1.0 holdout 200 /tmp/xingbei-hold
 ```
 
 版本、六组镜像阵容、换边/先手设计、隐私边界、置信区间与交叉评估见 [AI版本说明](../docs/ai-versions.md)，本轮事先登记与所有候选结果见 [实验记录](../docs/ai-v1.1-experiments.md)。
+
+第二批英雄：`BASE_URL=http://127.0.0.1:4186 node tools/verify-heroes-wave-two.mjs`覆盖新增六英雄的两视口交互；可通过`PLAYWRIGHT_MODULE`指定现有Playwright安装路径，证据写入`artifacts/heroes/wave-two/`。运行前启动对应工作树的服务，不应把新场景测试指向旧版本服务。

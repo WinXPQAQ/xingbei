@@ -612,6 +612,7 @@ export class Game {
     };
     yield* this.turn.beginAction(playerId, spec.type, null, { ...options, validateAction, actionEnergyCost: spec.energy ? 1 : 0, actionHealingCost: spec.healingCost ?? 0 });
     validateAction();
+    if (this.turn.state) this.turn.state.skillId = definition.id;
     for(const targetId of targetIds.length?targetIds:[playerId])this.recordPublicAction({type:'skillAction',playerId,skillId:definition.id,targetId});
     this.recordPresentation("skill", { playerId, skillId: definition.id, label: definition.name });
     this.logSkill(playerId, definition.id, `${targetIds.length ? "目标：" + targetIds.map(id => this.actorLabel(id)).join("、") : "作用于自身"}${action.mode ? `；${spec.modes?.find(mode => mode.value === action.mode)?.label ?? action.mode}` : ""}`);
@@ -681,6 +682,15 @@ export class Game {
     this.log.push(`${this.actorLabel(playerId)}消耗${selected.gem}宝石、${selected.crystal}水晶；剩余${energy.gem}宝石、${energy.crystal}水晶`);
     this.recordPresentation("energy", { playerId, gem: -selected.gem, crystal: -selected.crystal });
   }
+  gainEnergy(playerId, kind, amount = 1) {
+    if (this.winner) return 0;
+    if (!["gem", "crystal"].includes(kind) || !Number.isInteger(amount) || amount < 0) throw new RuleError("无效能量");
+    const p = this.player(playerId), added = Math.max(0, Math.min(amount, 3-p.energy.gem-p.energy.crystal));
+    p.energy[kind] += added;
+    if (added) { this.recordPublicAction({type:"energy",playerId,gem:kind==="gem"?added:0,crystal:kind==="crystal"?added:0}); this.recordPresentation("energy",{playerId,[kind]:added}); }
+    this.log.push(`${this.actorLabel(playerId)}获得${added}${kind === "gem" ? "宝石" : "水晶"}（个人能量上限3）`);
+    return added;
+  }
   getHealingLimit(playerId) {
     return this.player(playerId).getSkills().reduce((limit, { skill }) => (typeof skill === "string" ? this.skillDefinitions.get(skill) : skill)?.modifyHealingLimit?.(limit, { game: this, playerId }) ?? limit, 2);
   }
@@ -701,7 +711,7 @@ export class Game {
     const { sourceId = null, damageType = DamageType.ATTACK, overflow = "first", useHealing, attackContext } = options;
     const target = this.player(targetId);
     if (!Object.values(DamageType).includes(damageType)) throw new RuleError("无效的伤害类别");
-    const context = attackContext ?? { targetId, sourceId, amount, damageType };
+    const context = attackContext ?? { targetId, sourceId, amount, damageType, skillId: options.skillId ?? null };
     Object.assign(context, { actorId: sourceId, targetId, sourceId, amount, damageType, point: 3 });
     yield* this.trigger(Timing.DAMAGE_BEFORE, context, options);
     context.point = 4; context.healingLimit = Math.min(Math.max(0, context.amount), target.healing);
@@ -809,10 +819,10 @@ export class Game {
     return fallback !== undefined ? fallback : this.automaticDecision(request, options);
   }
 
-  nearestOpponent(fromId, excluded = new Set()) {
+  nearestOpponent(fromId, excluded = new Set(), direction = 1) {
     const from = this.player(fromId);
     for (let n = 1; n < this.players.length; n++) {
-      const candidate = this.players[(fromId + n) % this.players.length];
+      const candidate = this.players[(fromId + direction * n + this.players.length) % this.players.length];
       if (candidate.team !== from.team && !excluded.has(candidate.id)) return candidate;
     }
     return null;
@@ -820,11 +830,19 @@ export class Game {
 
   playMagicWithDecisions(actorId, handIndex, options = {}) {
     if (this.player(actorId).hand[handIndex]?.name !== "magicBullet") throw new RuleError("请选择魔弹");
-    return resolveAsync(this.actionSteps(actorId, handIndex, this.nearestOpponent(actorId)?.id, options), request => this.interactiveDecision(request, options), options.onPresentation ?? this.onPresentation);
+    return resolveAsync(this.actionSteps(actorId, handIndex, (options.targetId ?? this.nearestOpponent(actorId)?.id), options), request => this.interactiveDecision(request, options), options.onPresentation ?? this.onPresentation);
   }
 
-  magicTarget(sourceId, participants) {
-    return this.nearestOpponent(sourceId, participants.size === this.players.length ? new Set() : participants);
+  magicTargets(playerId) {
+    const p = this.player(playerId), forward = this.nearestOpponent(playerId);
+    const reverse = p.getSkills().some(({skill}) => skill.id === "magicMastery") ? this.nearestOpponent(playerId, new Set(), -1) : null;
+    return [...new Set([forward?.id, reverse?.id].filter(id => id != null))];
+  }
+  canRelayMagic(playerId, card) {
+    return card.name === "magicBullet" || (this.player(playerId).getSkills().some(({skill}) => skill.id === "magicFusion") && card.getTraits({game:this,playerId}).elements.some(element => ["fire", "earth"].includes(element)));
+  }
+  magicTarget(sourceId, participants, direction = 1) {
+    return this.nearestOpponent(sourceId, participants.size === this.players.length ? new Set() : participants, direction);
   }
 
   startTurn(playerId, options = {}) {

@@ -451,7 +451,7 @@ async function selectCard(index) {
       const chosenIndex = selectedCard, chosenCard = game.player(humanId).hand[chosenIndex];
       const action = chosenCard.type === "attack"
         ? () => resolveAttackChain(humanId, chosenIndex, target)
-        : chosenCard.name === "magicBullet" ? () => resolveMagicChain(humanId, chosenIndex)
+        : chosenCard.name === "magicBullet" ? () => resolveMagicChain(humanId, chosenIndex, target)
           : () => game.playWithDecisions(humanId, chosenIndex, target, { autoRespond: true, overflow: overflowPolicy });
       await completeHumanAction(action);
     } else {
@@ -547,7 +547,7 @@ async function selectSkillAction(skillId) {
 
 async function waitForHumanAction() {
   acceptingAction = true;
-  elements.hint.textContent = game.canRefreshUnableHand(humanId) ? "除提炼外无合法行动，可申请换全手；换后仍须行动" : game.turn.hasExtraActions() ? "额外攻击行动，或结束回合" : "[攻击行动]或者[法术行动]";
+  elements.hint.textContent = game.canRefreshUnableHand(humanId) ? "除提炼外无合法行动，可申请换全手；换后仍须行动" : game.turn.hasExtraActions() ? "额外行动，或结束回合" : "[攻击行动]或者[法术行动]";
   render();
   if (keyboardMode) elements.hand.querySelector("button:enabled")?.focus();
   return session.wait(resolve => { finishAction = resolve; return () => { finishAction = null; }; });
@@ -570,7 +570,7 @@ async function executeAi(actorId, scriptedAction = null) {
     const card = game.player(actorId).hand[action.index];
     const options = { autoRespond: id => !isHuman(id), overflow: overflowPolicy };
     if (card.type === "attack") await resolveAttackChain(actorId, action.index, action.targetId);
-    else if (card.name === "magicBullet") await resolveMagicChain(actorId, action.index);
+    else if (card.name === "magicBullet") await resolveMagicChain(actorId, action.index, action.targetId);
     else {
       active.assert();
       await game.playWithDecisions(actorId, action.index, action.targetId, options);
@@ -593,8 +593,9 @@ async function resolveAttackChain(actorId, handIndex, targetId) {
   });
 }
 
-async function resolveMagicChain(actorId, handIndex) {
+async function resolveMagicChain(actorId, handIndex, targetId) {
   return game.playMagicWithDecisions(actorId, handIndex, {
+    targetId,
     overflow: overflowPolicy,
     resolveOverflow: resolveHumanOverflow,
     chooseResponse: async context => {

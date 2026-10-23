@@ -41,6 +41,9 @@ export function renderPlayers(game, container, humanId, targets = null, revealHa
     node.classList.toggle("untargetable", !!targets && !targets.includes(player.id));
     node.setAttribute("aria-label", `${player.name}，${player.hero.name}，${player.hand.length}张手牌`);
     const marks = [];
+    if (player.hero.state?.form) marks.push(`<span class="hero-state-mark" title="${player.hero.state.form}形态">${player.hero.state.form}</span>`);
+    if (player.hero.id === "elementalist") marks.push(`<span class="hero-state-mark" title="元素指示物（上限3）">元素${player.hero.state.elements ?? 0}</span>`);
+    node.classList.toggle("hero-transformed", !!player.hero.state?.form);
     if (player.getStatus("holyShield")[0]) marks.push('<img src="/assets/card/holyShield.png" title="圣盾" alt="圣盾">');
     if (player.getStatus("weakness")[0]) marks.push('<img src="/assets/card/weakness.png" title="虚弱" alt="虚弱">');
     if (player.getStatus("poison").length) marks.push(`<span class="poison-mark"><img src="/assets/card/poison.png" title="中毒" alt="中毒"><b>${player.getStatus("poison").length}</b></span>`);

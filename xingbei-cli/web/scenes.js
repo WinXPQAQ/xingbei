@@ -2,6 +2,7 @@ import { createHeroScene } from "./hero-scenes.js";
 import { Game } from "../src/engine.js";
 
 export const sceneNames = {
+  "hero-saint": "英雄：圣女", "hero-holyLancer": "英雄：圣枪骑士", "hero-plagueMage": "英雄：瘟疫法师", "hero-elementalist": "英雄：元素师", "hero-valkyrie": "英雄：女武神", "hero-magicalGirl": "英雄：魔法少女",
   "hero-priest": "英雄：神官", "hero-guardianAngel": "英雄：守护天使", "hero-sealer": "英雄：封印师", "hero-marksman": "英雄：神箭手", "hero-windSwordmaster": "英雄：风之剑圣", "hero-berserker": "英雄：狂战士", opening: "六人开局", "hand-0": "零张手牌", "hand-1": "一张手牌", "hand-4": "四张手牌", "hand-6": "六张手牌",
   "opponent-draw": "对手摸牌", "poison-stack": "连续中毒", "shield-hit": "圣盾抵消", unable: "无法行动重摸", ending: "合成第五杯",
   target: "选牌与目标", unusable: "不可主动使用的牌", purchase: "购买", synthesize: "合成材料", refine: "提炼材料",

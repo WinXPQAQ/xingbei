@@ -178,7 +178,7 @@ cardExposed保留离开手牌前的有效属性、origin、visibility、covered�
 
 ## 开局角色选择（v0.4.6）
 
-`getAvailableHeroes()`返回已注册完整技能的角色ID与中文名称，目前为六位。后续注册新的英雄定义会自动进入列表。`createHeroRoster(playerHeroId, playerSeat)`生成六人阵容，当前六英雄通过交换座位保持各出现一次；新增非默认英雄替换玩家座位。
+`getAvailableHeroes()`返回已注册完整技能的角色ID与中文名称，目前为十二位。后续注册新的英雄定义会自动进入列表。`createHeroRoster(playerHeroId, playerSeat)`生成六人阵容，当前六英雄通过交换座位保持各出现一次；新增非默认英雄替换玩家座位。
 
 共用引擎入口为 `new Game({ seed: 13, playerHeroId: "guardianAngel", playerSeat: 0 }).setup()`。选定角色后才初始化手牌及专属牌，封印师的场外牌按实际座位登记。非法角色、非法座位及同时传入`heroIds`和`playerHeroId`均拒绝。未传选择参数时仍保留原默认阵容，显式`heroIds`仍用于隔离场景。
 
@@ -221,3 +221,14 @@ Game.trigger不再收集全体技能或扫描状态数组；从当前actor/targe
 ## Review：技能目标直接选人（v0.5.2）
 
 共用playerChoice在网页复用chooseTarget，直接点击高亮的合法角色提交，不弹出姓名按钮；天使羁绊、神圣契约及以后同类技能统一采用此接口。规则要求的必选目标不允许Esc/取消跳过，非法目标无效。Session重开后旧选择的清理不得覆盖新局。终端/AI仍消费同一规则请求，具体呈现由各端处理。
+
+
+## 第二批英雄共用接口
+
+新增 Saint、HolyLancer、PlagueMage、Elementalist、Valkyrie、MagicalGirl 子类。`src/heroes/actions.js`复用技能的公开弃牌、独有技出牌、治疗选人、非伤害摸牌、可选额外行动和战绩星石支付。技能状态仅存在`hero.state`，实例之间不共享。
+
+`TurnFlow.addAction({type, element, sourceSkillId})`支持额外攻击和法术；原`addAttackAction`委托此接口。两种额外行动都可放弃。当前行动上下文记录`skillId`，使死亡之触不触发不朽；伤害上下文也携带`skillId`，使元素点燃不触发元素吸收。
+
+魔弹的方向由初次出牌目标确定，并在完整传递链中保持；响应不能改变方向。`Game.magicTargets`限制主动发起目标，`canRelayMagic`支持魔法少女火/地牌转化；实体的原始类型、属性和ID不变，打出的牌仍进入field并随链统一清理。其他英雄不能选择反向目标。
+
+`Player.handLimit`经英雄`modifyHandLimit`修正，圣女怜悯将结果恒定为7；治疗上限仍复用既有接口。元素数与横置形态在网页角色区域显示。来源与具体规则见[实施记录](heroes-wave-two.md)。

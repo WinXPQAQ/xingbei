@@ -22,5 +22,10 @@
   "character/marksman.jpg": "character/shenJianShou.jpg",
   "character/sealer.jpg": "character/fengYinShi.jpg",
   "card/fivefoldBinding.png": "card/zhuanShu/wuXiShuFu.png",
-  "character/guardianAngel.jpg": "character/tianShi.jpg"
+  "character/guardianAngel.jpg": "character/tianShi.jpg",
+  "character/saint.jpg": "character/shengNv.jpg",
+  "character/holyLancer.jpg": "character/shengQiangQiShi.jpg",
+  "character/plagueMage.jpg": "character/wenYiFaShi.jpg",
+  "character/elementalist.jpg": "character/yuanSuShi.jpg",
+  "character/valkyrie.jpg": "character/nvWuShen.jpg"
 }

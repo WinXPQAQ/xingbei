@@ -87,9 +87,9 @@ export class HolyLightCard extends SpellCard {
   resolve() { throw new RuleError("圣光只能用于响应攻击或魔弹"); }
 }
 export class MagicBulletCard extends SpellCard {
-  legalTargets({ game, actor }) { const target = game.nearestOpponent(actor.id); return target ? [target.id] : []; }
-  resolve({ game, actor, options }) {
-    return magicSteps(game, actor.id, actor.hand.indexOf(this), options);
+  legalTargets({ game, actor }) { return game.magicTargets(actor.id); }
+  resolve({ game, actor, targetId, options }) {
+    return magicSteps(game, actor.id, actor.hand.indexOf(this), { ...options, targetId });
   }
 }
 export class ExclusiveCard extends Card {

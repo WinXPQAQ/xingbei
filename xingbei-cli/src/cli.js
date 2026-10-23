@@ -152,11 +152,11 @@ async function humanTurn() {
         if (!card) throw new RuleError("无效的手牌编号");
         const targets = game.legalTargets(humanId, card);
         if (!targets.length) throw new RuleError("这张牌目前不可使用");
-        const target = card.name === "magicBullet" ? targets[0] : Number(targetText);
-        if (card.name !== "magicBullet" && !targets.includes(target)) throw new RuleError(`合法目标：${targets.join("、")}`);
+        const target = card.name === "magicBullet" && targetText == null && targets.length === 1 ? targets[0] : Number(targetText);
+        if (!targets.includes(target)) throw new RuleError(`合法目标：${targets.join("、")}`);
         await playCard(humanId, index, target);
       } else {
-        tui.console("play 牌号 目标号；魔弹只需play 牌号；buy购买；synth合成；refine提炼；skill英雄技能；refresh申请无法行动换牌；end放弃额外行动；quit退出。Tab切换面板，PgUp/PgDn滚动。");
+        tui.console("play 牌号 目标号；魔弹有多个方向时也需目标号；buy购买；synth合成；refine提炼；skill英雄技能；refresh申请无法行动换牌；end放弃额外行动；quit退出。Tab切换面板，PgUp/PgDn滚动。");
         continue;
       }
       await resolveHumanOverflow();
@@ -189,7 +189,7 @@ async function playCard(actorId, index, targetId) {
   const card = game.player(actorId).hand[index];
   const options = { chooseResponse, overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow };
   if (card.type === "attack") return game.attackWithDecisions(actorId, index, targetId, options);
-  if (card.name === "magicBullet") return game.playMagicWithDecisions(actorId, index, options);
+  if (card.name === "magicBullet") return game.playMagicWithDecisions(actorId, index, { ...options, targetId });
   return game.playWithDecisions(actorId, index, targetId, options);
 }
 async function aiTurn(actorId) {

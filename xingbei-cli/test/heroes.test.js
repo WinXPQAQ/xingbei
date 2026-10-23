@@ -351,7 +351,7 @@ test("六英雄默认阵容完整AI对局：逐回合、额外行动、实例守
 
 test("开局自由选已实现角色：交换阵容、固定六人坐次，生成正确专属牌且拒绝非法设置", async () => {
   const { getAvailableHeroes, createHeroRoster } = await import("../src/hero.js");
-  assert.equal(getAvailableHeroes().length, 6);
+  assert.equal(getAvailableHeroes().length, 12);
   for (const { id } of getAvailableHeroes()) {
     const game = new Game({ seed: 13, playerHeroId: id }).setup();
     assert.equal(game.player(0).hero.id, id);

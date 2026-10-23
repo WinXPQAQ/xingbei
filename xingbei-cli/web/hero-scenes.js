@@ -1,7 +1,7 @@
 import { Game } from "../src/engine.js";
 export function createHeroScene(id, seed) {
   const heroId = id.slice(5);
-  const game = new Game({ seed, heroIds: [heroId, "magicalGirl", "bard", "swordEmperor", "assassin", "magicalGirl"] });
+  const game = new Game({ seed, heroIds: [heroId, "bard", "bard", "swordEmperor", "assassin", "bard"] });
   const give = (playerId, predicate) => game.moveCard(game.deck.find(predicate).id, { zone: "hand", playerId });
   if (heroId === "berserker") {
     give(0, card => card.hasUniqueSkill("bloodyRoar"));
@@ -32,6 +32,14 @@ export function createHeroScene(id, seed) {
   if (heroId === "priest") {
     give(0, card => card.name === "holyLight"); give(0, card => card.name === "poison");
     give(0, card => card.name === "fireStrike"); game.changeHealing(0, 4); game.player(0).energy.crystal = 1;
+  }
+  if (["saint", "holyLancer", "plagueMage", "elementalist", "valkyrie", "magicalGirl"].includes(heroId)) {
+    give(0, card => card.type === "attack" && card.element === "water");
+    give(0, card => card.type === "attack" && card.element === "fire");
+    give(0, card => card.name === "magicBullet");
+    game.player(0).energy.gem = 1; game.player(0).energy.crystal = 1;
+    game.changeHealing(0, 2);
+    if (heroId === "elementalist") game.player(0).hero.state.elements = 3;
   }
   game.log = []; game.assertCardLocations(); return game;
 }

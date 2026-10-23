@@ -1,4 +1,5 @@
 import { RuleError } from "./errors.js";
+import { ELEMENT_NAMES } from "./cards.js";
 import { Timing } from "./timing.js";
 
 export class TurnFlow {
@@ -32,11 +33,14 @@ export class TurnFlow {
   needsAction() {
     return !!this.state && !this.game.winner && !this.state.skipped && (!this.state.completed || this.hasExtraActions());
   }
-  addAttackAction({ element = null, sourceSkillId = null } = {}) {
-    if (!this.state) return;
-    this.state.pendingActions.push({ type: "attack", element, sourceSkillId });
-    this.game.logSkill(this.state.playerId, sourceSkillId ?? "额外行动", `获得1次${element ? "风系限定" : ""}额外攻击行动，可选择放弃`);
-    this.game.recordPresentation("extraAction", { playerId: this.state.playerId, label: element ? "额外风系攻击行动" : "额外攻击行动" });
+  addAttackAction(options = {}) { this.addAction({ ...options, type: "attack" }); }
+  addAction({ type, element = null, sourceSkillId = null }) {
+    if (!["attack", "spell"].includes(type)) throw new RuleError("无效的额外行动类型");
+    if (!this.state || this.game.winner) return;
+    this.state.pendingActions.push({ type, element, sourceSkillId });
+    const label = type === "attack" ? "攻击行动" : "法术行动";
+    this.game.logSkill(this.state.playerId, sourceSkillId ?? "额外行动", `获得1次${element ? ELEMENT_NAMES[element] + "系限定" : ""}额外${label}，可选择放弃`);
+    this.game.recordPresentation("extraAction", { playerId: this.state.playerId, label: `额外${label}` });
   }
   canUse(type, card = null) {
     const state = this.state;
@@ -73,7 +77,7 @@ export class TurnFlow {
     }
     state.completed = false;
     if (actionType === "attack") state.attackCount++;
-    state.route = route; state.actionType = actionType;
+    state.route = route; state.actionType = actionType; state.skillId = null;
     state.phase = { attack: Timing.ATTACK_ACTION_START, spell: Timing.SPELL_ACTION_START, special: Timing.SPECIAL_ACTION_START }[actionType];
     yield* this.game.trigger(state.phase, state, options);
   }

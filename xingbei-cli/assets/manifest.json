@@ -165,6 +165,31 @@
       "path": "theme/style/hp/image/xingBei4.png",
       "bytes": 343543,
       "sha256": "de144122fe1bfc4d2534304d058ffd828577f87cfca299ddde8534f7427fe108"
+    },
+    {
+      "path": "image/character/shengNv.jpg",
+      "bytes": 121407,
+      "sha256": "8eef0b21b5f428b06200f5796701c5b4d5b7da0a805a323b01f2cf0af5fb37af"
+    },
+    {
+      "path": "image/character/shengQiangQiShi.jpg",
+      "bytes": 129516,
+      "sha256": "9faeb01d28fa48a3848923b87921d2612d02790611bcfc6492fc4ecf284754b8"
+    },
+    {
+      "path": "image/character/wenYiFaShi.jpg",
+      "bytes": 94391,
+      "sha256": "1a979d3a84c835fb8557caeb8d4ff65183f3aee50c1d6059ddb967839b097342"
+    },
+    {
+      "path": "image/character/yuanSuShi.jpg",
+      "bytes": 99597,
+      "sha256": "28646c86b9ee9df42117ee1eeb3426414a75d910c46ba1e80e6335863d5439c0"
+    },
+    {
+      "path": "image/character/nvWuShen.jpg",
+      "bytes": 120103,
+      "sha256": "ba7746ca1d7022287a1d30d286d793170bacfa7c1d0c66852afe005f56bfcefc"
     }
   ]
 }

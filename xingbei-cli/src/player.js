@@ -4,6 +4,8 @@ export class Player {
     this.hand = []; this.statuses = []; this.handLimit = 6;
     this.healing = 0; this.energy = { gem: 0, crystal: 0 };
   }
+  get handLimit() { return this.hero.getSkills().reduce((limit, skill) => skill.modifyHandLimit?.(limit, this) ?? limit, this._handLimit); }
+  set handLimit(value) { this._handLimit = value; }
   getBasicEffects() { return this.statuses.filter(card => card.category === "basic"); }
   getStatus(effectId) { return this.statuses.filter(card => card.attachment?.effectId === effectId); }
   getSkills(context = {}) {

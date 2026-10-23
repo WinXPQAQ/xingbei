@@ -6,10 +6,12 @@ export function* magicSteps(game, actorId, handIndex, options = {}) {
   if (game.winner) throw new RuleError("游戏已经结束");
   const actor = game.player(actorId), card = actor.hand[handIndex];
   if (card?.name !== "magicBullet") throw new RuleError("请选择魔弹");
+  if (options.targetId != null && !game.magicTargets(actorId).includes(options.targetId)) throw new RuleError("魔弹目标不合法");
   game.playCard(actor, handIndex, options);
   yield* game.present();
   game.log.push(`${actor.name}使用${cardName(card)}`);
-  yield* magicRelaySteps(game, actorId, options);
+  const direction = options.targetId != null && options.targetId !== game.nearestOpponent(actorId)?.id ? -1 : 1;
+  yield* magicRelaySteps(game, actorId, { ...options, direction });
 }
 
 export function* magicRelaySteps(game, actorId, options = {}) {
@@ -19,16 +21,16 @@ export function* magicRelaySteps(game, actorId, options = {}) {
     if (participants.size === game.players.length) {
       participants.clear(); game.log.push("所有玩家均已被魔弹指定，刷新魔弹指定记录");
     }
-    const target = game.magicTarget(sourceId, participants);
+    const target = game.magicTarget(sourceId, participants, options.direction ?? 1);
     if (!target) return;
     participants.add(target.id);
     game.recordPublicAction({type:'magic',actorId:sourceId,targetId:target.id,card:'magicBullet',amount:damage});
     game.recordPresentation("relay", { sourceId, playerId: target.id, amount: damage });
     yield* game.flushRuleEvents(options);
     yield* game.present();
-    const valid = target.hand.map((card, index) => ({ card, index })).filter(item => ["magicBullet", "holyLight"].includes(item.card.name));
+    const valid = target.hand.map((card, index) => ({ card, index })).filter(item => item.card.name === "holyLight" || game.canRelayMagic(target.id, item.card));
     const decision = yield { type: "response", actor: game.player(sourceId), target, valid, damage,
-      nextTarget: game.magicTarget(target.id, participants), participants: [...participants] };
+      nextTarget: game.magicTarget(target.id, participants, options.direction ?? 1), participants: [...participants] };
     const picked = decision && valid.find(item => item.index === decision.index);
     if (decision && !picked) throw new RuleError("选择的牌不能响应魔弹");
     if(picked)game.recordPublicAction({type:'response',actorId:target.id,sourceId,card:picked.card.name,result:picked.card.name==='holyLight'?'cancel':'relay'});
@@ -41,7 +43,10 @@ export function* magicRelaySteps(game, actorId, options = {}) {
     yield* game.present();
       game.log.push(`${target.name}用【圣光】抵消【魔弹】`); return;
     }
-    if (picked?.card.name === "magicBullet") {
+    if (picked && game.canRelayMagic(target.id, picked.card)) {
+      const next = game.magicTarget(target.id, participants, options.direction ?? 1);
+      if (decision.targetId != null && decision.targetId !== next?.id) throw new RuleError("魔弹传递目标不合法");
+      if (picked.card.name !== "magicBullet") game.logSkill(target.id, "magicFusion", `将${cardName(picked.card)}视为魔弹传递`);
       game.playCard(target, picked.index, options);
       yield* game.present(); damage++; sourceId = target.id;
       game.log.push(`${target.name}用【魔弹】传递【魔弹】，伤害增至${damage}`); continue;
