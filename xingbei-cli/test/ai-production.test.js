@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import {Game} from '../src/engine.js';
 import * as production from '../src/ai.js';
 import {getPolicy} from '../src/ai/versions.js';
-import {acceptsRefinement} from '../src/ai/hero-wave-two/refinement.js';
+import {acceptsRefinement} from '../src/heroes/shared/ai/wave-two/refinement.js';
 const unchangedActions=(g,id,entries)=>entries.filter(e=>acceptsRefinement(g,id,e.action)&&(e.action.type!=='play'||g.player(id).hand[e.action.index]?.name!=='magicBullet'));
 test('CLI/Web hero preview routes exports to its version and preserves old six-hero decisions except revised magic and refinement candidates',()=>{
  const accepted=getPolicy('experimental/plans-4'),stable=getPolicy('v1.5');

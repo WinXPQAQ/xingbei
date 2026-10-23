@@ -1,4 +1,4 @@
-# 游戏规则结构（v0.5.1）
+# 游戏规则结构
 
 默认六人3v3，座次红蓝蓝红红蓝，玩家控制0号红一。代码使用英文标识，玩家可见文字保持中文。所有模块为原生ES Modules，规则层没有DOM或终端依赖。
 
@@ -10,7 +10,7 @@
 | `src/card.js` | 牌继承层级、原属性/有效属性查询、合法目标、应战条件与自身结算入口 |
 | `src/cards.js`、`src/card-labels.js` | 150张基础牌配置、生成牌堆与排序；独立显示名模块避免牌和结算模块循环导入 |
 | `src/player.js` | `Player`：手牌、状态区、能量、治疗、所属英雄；查询效果与汇总技能 |
-| `src/hero-base.js`、`src/hero.js`、`src/heroes/` | Hero公共绑定/判断、英雄注册与六个子类，每个实例独立的技能清单和state |
+| `src/hero-base.js`、`src/hero.js`、`src/heroes/` | Hero公共绑定/判断、英雄注册与18个子类，每个实例独立的技能清单和state |
 | `src/triggers.js` | 六个玩家的事件订阅索引，角色/行为/时点分派、优先级与注册注销 |
 | `src/effects.js` | 效果规则定义；每个实例仍由一张实际牌承载，不创建附加状态类 |
 | `src/turn.js`、`src/timing.js` | 回合状态与明确的触发时点 |
@@ -142,7 +142,7 @@ turnBefore（天使之歌）
 
 玩家选择圣光后需确认；攻击牌/魔弹点击目标才提交，期间可换牌。浏览器和终端均在拿到最终决定后交给规则结算，牌选择不会直接改变区域。
 
-六位英雄的技能定义位于src/heroes/，包括真实五系束缚专属实体。未实现其他英雄，不将牌面其他独有技标签解释为当前英雄能力。
+18位已实现英雄分别位于`src/heroes/<英雄名>/`：`index.js`定义技能与状态，`ai.js`及同目录`ai-*.js`定义对应评分和技能决策，包括真实五系束缚专属实体。牌面的其他英雄独有技标签不自动构成当前英雄能力。完整入口见[英雄目录](../src/heroes/README.md)。
 
 
 ## 可选呈现检查点（v0.3.0）
@@ -225,7 +225,7 @@ Game.trigger不再收集全体技能或扫描状态数组；从当前actor/targe
 
 ## 第二批英雄共用接口
 
-新增 Saint、HolyLancer、PlagueMage、Elementalist、Valkyrie、MagicalGirl 子类。`src/heroes/actions.js`复用技能的公开弃牌、独有技出牌、治疗选人、非伤害摸牌、可选额外行动和战绩星石支付。技能状态仅存在`hero.state`，实例之间不共享。
+新增 Saint、HolyLancer、PlagueMage、Elementalist、Valkyrie、MagicalGirl 子类。`src/heroes/shared/actions.js`复用技能的公开弃牌、独有技出牌、治疗选人、非伤害摸牌、可选额外行动和战绩星石支付。技能状态仅存在`hero.state`，实例之间不共享。
 
 `TurnFlow.addAction({type, element, sourceSkillId})`支持额外攻击和法术；原`addAttackAction`委托此接口。两种额外行动都可放弃。当前行动上下文记录`skillId`，使死亡之触不触发不朽；伤害上下文也携带`skillId`，使元素点燃不触发元素吸收。
 

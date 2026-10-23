@@ -1,4 +1,4 @@
-import {acceptsRefinement} from '../src/ai/hero-wave-two/refinement.js';
+import {acceptsRefinement} from '../src/heroes/shared/ai/wave-two/refinement.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';

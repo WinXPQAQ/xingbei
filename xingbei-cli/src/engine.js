@@ -2,7 +2,7 @@ import { cardSets, targetCounts } from "./card-sets.js";
 import { PublicHistory } from "./ai/public-history.js";
 import { logCard, skillLabel, effectLabel } from "./action-log.js";
 import { chooseAiDiscard, chooseAiResponse, chooseAiRuleDecision } from "./ai.js";
-import { initializeSealer } from "./heroes/sealer.js";
+import { initializeSealer } from "./heroes/sealer/index.js";
 import { cardName, createDeck } from "./cards.js";
 
 import { RuleError } from "./errors.js";

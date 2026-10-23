@@ -1,5 +1,6 @@
-import {createHeroWaveThreePolicy} from "./hero-wave-three/index.js";
-import {createHeroWaveTwoPolicy} from './hero-wave-two/index.js';
+import {createEconomyPolicy as createCurrentHeroBasePolicy} from '../heroes/shared/ai/base/index.js';
+import {createHeroWaveThreePolicy} from "../heroes/shared/ai/wave-three/index.js";
+import {createHeroWaveTwoPolicy} from '../heroes/shared/ai/wave-two/index.js';
 import {createEconomyPolicy as createHeroFoundationPolicy} from './v1.5.2-rules/index.js';
 import {createEconomyPolicy as createPlans4Policy} from './v1.5-plans4/index.js';
 import {createEconomyPolicy as createPlans3Policy} from './v1.5-plans3/index.js';
@@ -85,7 +86,8 @@ choices['v1.3'] = choices['experimental/economy-4'];
 choices['v1.4'] = choices['experimental/targeted-fixes-1'];
 // Exact plans-4 frozen at a0e9baa after its independent paired confirmation.
 choices['v1.5'] = choices['experimental/plans-4'];
-choices['v1.7.0-preview.4'] = createHeroWaveTwoPolicy(choices['v1.5']);
+// Current hero modules evolve independently of the frozen v1.5 comparison policy.
+choices['v1.7.0-preview.4'] = createHeroWaveTwoPolicy(createCurrentHeroBasePolicy());
 choices['v1.8.0-preview.1'] = createHeroWaveThreePolicy(choices['v1.7.0-preview.4']);
 choices['experimental/read-1'] = choices['read-1'];
 choices['experimental/fusion-1'] = choices['fusion-1'];
