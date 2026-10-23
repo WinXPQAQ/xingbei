@@ -1,3 +1,4 @@
+import { enemyCanHeal, radianceHealing } from "./holy-lancer.js";
 import { cardScore as basicScore } from "../evaluation.js";
 export const heroIds = new Set([
   "saint",
@@ -21,13 +22,15 @@ export function retentionBonus(g, id, c, retained = []) {
   );
   if ((unique[hero] ?? []).some((skill) => c.hasUniqueSkill(skill))) return 5;
   if (hero === "saint" && es.includes("water")) return same ? 1 : 3;
-  if (hero === "holyLancer" && (es.includes("water") || c.type === "spell"))
-    return same ? 1.5 : 3;
+  if (hero === "holyLancer") {
+    const water = es.includes("water") && radianceHealing(g, id).allowed;
+    const spell = c.type === "spell" && enemyCanHeal(g, id);
+    if (water || spell) return same ? 1.5 : 3;
+  }
   if (hero === "plagueMage" && (es.includes("earth") || c.type === "spell"))
     return same ? 1.5 : 3;
   if (hero === "magicalGirl" && c.type === "spell") return 3;
-  if (hero === "valkyrie" && c.type === "spell")
-    return g.player(id).hero.state?.form ? 3 : 1.5;
+  if (hero === "valkyrie" && c.type === "spell") return 2;
   return 0;
 }
 export function cardScore(g, id, c, retained = []) {

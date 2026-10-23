@@ -1,11 +1,7 @@
 // Valkyrie decisions consume detached observations only. Form is a next-turn
 // option, not a permanent attack ban; all weights are team-utility heuristics.
-import { stateOf, clone, spend } from "../v1.5-plans4/model.js";
-import {
-  actionPlan,
-  probability,
-  magicBranches,
-} from "../v1.5-plans4/planner.js";
+import { stateOf } from "../v1.5-plans4/model.js";
+import { actionPlan, probability } from "../v1.5-plans4/planner.js";
 import { cardScore } from "./cards.js";
 
 const energy = (p) => p.energy.gem + p.energy.crystal;
@@ -43,6 +39,105 @@ function bestHealing(g, id, amount) {
     }))
     .sort((a, b) => b.value - a.value || a.targetId - b.targetId)[0];
 }
+// Sigil draws before granting healing/energy, so overflow cannot be paid for
+// by the healing this action will generate. "Stones" here means personal energy.
+export function orderSigilPreference(g, id) {
+  const p = g.player(id),
+    space = p.handLimit - p.hand.length;
+  const count = energy(p),
+    healingFull = p.healing >= g.getHealingLimit(id);
+  const morale = g.teams[p.team].morale,
+    overflow = Math.max(0, 2 - space);
+  const result = (allowed, priority, bonus, reason) => ({
+    allowed,
+    priority,
+    bonus,
+    reason,
+  });
+  if (space < 2) {
+    if (morale < 8 || morale - overflow < 6)
+      return result(false, false, 0, "unsafe-overflow");
+    if (p.healing === 0 && count === 0)
+      return result(true, false, 18, "empty-resources-safe-overflow");
+    return result(false, false, 0, "overflow-with-existing-resources");
+  }
+  if (!healingFull && count < 3)
+    return result(true, true, 0, "safe-healing-and-energy");
+  if (healingFull)
+    return count === 0
+      ? result(true, false, 8, "prepare-first-energy")
+      : result(false, false, 0, "healing-full-with-energy");
+  if (count >= 3 && p.healing === 0) {
+    const weak = p.hand.filter(
+      (card) =>
+        cardScore(
+          g,
+          id,
+          card,
+          p.hand.filter((other) => other.id !== card.id),
+        ) < 60,
+    ).length;
+    const poorHand =
+      p.hand.length <= 2 || weak >= Math.max(2, Math.ceil(p.hand.length / 2));
+    return result(
+      poorHand,
+      false,
+      poorHand ? 5 : 0,
+      poorHand ? "refill-poor-hand" : "keep-good-hand",
+    );
+  }
+  return result(false, false, 0, "resources-already-sufficient");
+}
+function summonHealingTarget(g, id, candidates = g.players.map((p) => p.id)) {
+  const actor = g.player(id);
+  const useful = candidates.filter((targetId) => {
+    const target = g.player(targetId);
+    return (
+      target.team === actor.team && target.healing < g.getHealingLimit(targetId)
+    );
+  });
+  // Own healing is replenished by next-turn radiance and sigil. Spend the
+  // optional discard on a teammate whenever any teammate can actually heal.
+  const teammates = useful.filter((targetId) => targetId !== id);
+  const targets = teammates.length ? teammates : useful;
+  return (
+    targets
+      .map((targetId) => ({
+        targetId,
+        value: valkyrieHealingValue(g, id, targetId),
+      }))
+      .sort((a, b) => b.value - a.value || a.targetId - b.targetId)[0] ?? {
+      targetId: candidates.includes(id) ? id : candidates[0],
+      value: 0,
+    }
+  );
+}
+function summonHealingOption(g, id) {
+  const p = g.player(id),
+    recipient = summonHealingTarget(g, id);
+  if (!recipient.value) return { cardIndex: null, score: 0 };
+  const candidates = p.hand
+    .flatMap((card, index) => {
+      if (card.type !== "spell") return [];
+      if (
+        card.name === "holyLight" &&
+        !p.hand.some((c, i) => i !== index && c.name === "holyLight")
+      )
+        return [];
+      const cost =
+        cardScore(
+          g,
+          id,
+          card,
+          p.hand.filter((c) => c.id !== card.id),
+        ) / 30;
+      return [{ cardIndex: index, score: recipient.value - cost }];
+    })
+    .sort((a, b) => b.score - a.score);
+  return candidates[0]?.score > 0
+    ? candidates[0]
+    : { cardIndex: null, score: 0 };
+}
 export function valkyrieFormValue(g, id) {
   // At next turn the fallback is one healing and reset. Stone-funded healing
   // offers flexibility, but is neither free nor guaranteed to remain available.
@@ -72,37 +167,12 @@ function summonOption(
   const resourceCost = p.energy.crystal ? 3.5 : 6;
   const form = ownTurn && !alreadyInForm ? valkyrieFormValue(g, id) : 0;
   const score =
-    30 * (after - before) + form - resourceCost + (terminal ? 10000 : 0);
+    30 * (after - before) +
+    form +
+    summonHealingOption(g, id).score -
+    resourceCost +
+    (terminal ? 10000 : 0);
   return { score, use: score > 0 };
-}
-// Magic does not trigger Valkyrie's on-hit summon. Discount purely moving cards
-// around unless the bounded public relay model predicts a net morale gain.
-// This is an action preference, not a rule or a ban on the only legal card.
-function magicAdjustment(state, id, card, targetId) {
-  const next = clone(state);
-  spend(next, id, [card]);
-  const own = state.players[id].team;
-  const enemy = own === "red" ? "blue" : "red";
-  const branches = magicBranches(next, id, targetId, 2);
-  const wins = branches.some(
-    ({ probability, state: outcome }) =>
-      probability > 0 &&
-      outcome.teams[enemy].morale <= 0 &&
-      outcome.teams[own].morale > 0,
-  );
-  if (wins) return 0;
-  const gain = branches.reduce(
-    (total, { probability, state: outcome }) =>
-      total +
-      probability *
-        (state.teams[enemy].morale -
-          outcome.teams[enemy].morale -
-          (state.teams[own].morale - outcome.teams[own].morale)),
-    0,
-  );
-  if (gain <= 0) return -18;
-  if (gain < 0.5) return -10;
-  return -4;
 }
 export function valkyrieActionAdjustment(
   g,
@@ -112,13 +182,6 @@ export function valkyrieActionAdjustment(
 ) {
   const p = g.player(id),
     card = action.type === "play" ? p.hand[action.index] : null;
-  if (card?.name === "magicBullet")
-    return magicAdjustment(
-      state,
-      id,
-      state.players[id].hand[action.index],
-      action.targetId,
-    );
   if (card?.type !== "attack") return 0;
   const target = g.player(action.targetId);
   const c = state.players[id].hand[action.index];
@@ -239,6 +302,14 @@ export function valkyrieRuleDecision(r, g) {
     r.type === "playerChoice" &&
     ["warGodRadiance", "heroicSummon"].includes(r.skillId)
   ) {
+    if (r.skillId === "heroicSummon")
+      return (
+        summonHealingTarget(
+          g,
+          id,
+          r.choices.map((choice) => choice.value),
+        ).targetId ?? r.defaultValue
+      );
     return (
       [...r.choices].sort(
         (a, b) =>
@@ -248,20 +319,10 @@ export function valkyrieRuleDecision(r, g) {
     );
   }
   if (r.type === "cardChoice" && r.skillId === "heroicSummon" && r.optional) {
-    const indexes = [...r.valid].sort(
-      (a, b) => cardScore(g, id, p.hand[a]) - cardScore(g, id, p.hand[b]),
-    );
-    const index = indexes[0];
-    if (index == null) return null;
-    const card = p.hand[index],
-      cost = cardScore(g, id, card) / 18;
-    // First light is an emergency response option, not cheap healing fodder.
-    if (
-      card.name === "holyLight" &&
-      !p.hand.some((c, i) => i !== index && c.name === "holyLight")
-    )
-      return null;
-    return bestHealing(g, id, 1).value > cost ? [index] : null;
+    const option = summonHealingOption(g, id);
+    return option.cardIndex != null && r.valid.includes(option.cardIndex)
+      ? [option.cardIndex]
+      : null;
   }
   return undefined;
 }

@@ -1,10 +1,21 @@
+import { evaluateMagicAction } from "./magic-value.js";
 import {
-  elementalSkills,
-  enhancementCard,
-  refinementAdjustment,
-} from "./elementalist.js";
-import { valkyrieActionAdjustment, valkyrieRuleDecision } from "./valkyrie.js";
-import { isolatePolicy } from "../observation.js";
+  planElementalActions,
+  elementalActionKey,
+  chooseElementalEnhancement,
+} from "./elemental-plan.js";
+import { radianceHealing } from "./holy-lancer.js";
+import { refinementAdjustment } from "./elementalist.js";
+import {
+  valkyrieActionAdjustment,
+  valkyrieRuleDecision,
+  orderSigilPreference,
+} from "./valkyrie.js";
+import {
+  isolatePolicy,
+  captureObservation,
+  observationView,
+} from "../observation.js";
 import { legalActions } from "../../legal-actions.js";
 import {
   stateOf,
@@ -142,6 +153,7 @@ function skillScore(g, id, a, s) {
       break;
     }
     case "radiance":
+      if (!radianceHealing(g, id).allowed) return -1e6;
       for (const t of g.players) heal(n, t.id, 1);
       extra = "attack";
       break;
@@ -168,49 +180,11 @@ function skillScore(g, id, a, s) {
       actor.healing -= spec.healingCost;
       hurt(target, spec.healingCost + costs.length - 3);
       break;
-    case "elementIgnition":
-      hurt(target, 2);
-      extra = "spell";
-      bonus -= 3;
-      break;
-    case "meteor":
-    case "freeze":
-    case "fireball":
-    case "windBlade":
-    case "lightning":
-      {
-        const boost = enhancementCard(
-          g,
-          id,
-          skill,
-          target,
-          actor.hand.map((c) => g.cards.get(c.id)),
-        );
-        if (boost) {
-          spend(n, id, [actor.hand.find((c) => c.id === boost.id)]);
-          bonus -= retentionBonus(g, id, boost);
-        }
-        hurt(target, (skill === "fireball" ? 2 : 1) + Number(!!boost));
-      }
-      if (skill === "freeze") bonus += bestHeal(g, id);
-      if (skill === "lightning") stones(n, p.team, "gem", 1);
-      if (skill === "meteor") extra = "spell";
-      if (skill === "windBlade") extra = "attack";
-      break;
-    case "moonlight":
-      hurt(target, 1 + sumEnergy(actor));
-      break;
     case "orderSigil":
       draw(n, id, 2);
       heal(n, id, 1);
       if (sumEnergy(actor) < 3) actor.energy.crystal++;
       break;
-    case "magicFusion":
-      return (
-        expected(magicBranches(n, id, target, 2)) -
-        value(s) -
-        costs.reduce((v, c) => v + retentionBonus(g, id, g.cards.get(c.id)), 0)
-      );
     case "magicBurst":
       stones(n, p.team, "gem", 1);
       // Opponent spells are hidden: mix discard and damage, never inspect them.
@@ -230,12 +204,6 @@ function skillScore(g, id, a, s) {
       break;
   }
   if (p.hero.id === "plagueMage" && skill !== "deathTouch") heal(n, id, 1);
-  if (
-    p.hero.id === "elementalist" &&
-    skill !== "elementIgnition" &&
-    (p.hero.state?.elements ?? 0) < 3
-  )
-    bonus += 1.5;
   if (extra) bonus += continuation(n, id, extra) * 0.75;
   if (
     p.hero.id === "saint" &&
@@ -254,14 +222,21 @@ function rankAiActions(g, id) {
   const p = g.player(id),
     hero = p.hero.id,
     s = stateOf(g, id);
-  return legalActions(g, id)
+  const actions = legalActions(g, id),
+    plans = planElementalActions(g, id, actions);
+  const ranked = actions
     .map((action) => {
-      let score =
-        action.type === "skill"
-          ? skillScore(g, id, action, s)
-          : actionPlan(s, id, action, { sequence: false }).score;
+      const magic = evaluateMagicAction(g, id, action, s),
+        plan = plans.get(elementalActionKey(action));
+      let score = magic
+        ? magic.score
+        : plan
+          ? plan.score
+          : action.type === "skill"
+            ? skillScore(g, id, action, s)
+            : actionPlan(s, id, action, { sequence: false }).score;
       const c = action.type === "play" ? p.hand[action.index] : null;
-      if (c) {
+      if (c && !magic) {
         score -= retentionBonus(g, id, c);
         if (
           hero === "saint" &&
@@ -273,18 +248,46 @@ function rankAiActions(g, id) {
       }
       if (action.type === "refine")
         score += refinementAdjustment(g, id, action);
-      if (hero === "valkyrie")
+      if (hero === "valkyrie") {
         score += valkyrieActionAdjustment(g, id, action, s);
+        if (action.skillId === "orderSigil") {
+          const pref = orderSigilPreference(g, id);
+          score = pref.allowed ? score + pref.bonus : -1e6;
+        }
+      }
       return {
         action,
         score,
         reason: "hero-wave-two",
-        explanation: { hero, score },
+        explanation: {
+          hero,
+          score,
+          ...(magic ? { magic: magic.explanation } : {}),
+          ...(plan ? { plan: plan.path } : {}),
+        },
       };
     })
     .sort((a, b) => b.score - a.score);
+  if (hero === "valkyrie") {
+    const pref = orderSigilPreference(g, id),
+      order = ranked.find((e) => e.action.skillId === "orderSigil");
+    // Prioritize free preparation, but do not replace a clearly decisive finish.
+    if (pref.priority && order && ranked[0].score < 1000) {
+      order.score = Math.max(order.score, ranked[0].score + 1);
+      order.explanation.priority = pref.reason;
+      order.explanation.score = order.score;
+      ranked.sort((a, b) => b.score - a.score);
+    }
+  }
+  return ranked;
 }
 function chooseAiRuleDecision(r, g) {
+  const elemental = chooseElementalEnhancement(
+    g,
+    r.playerId ?? r.player?.id,
+    r,
+  );
+  if (elemental !== undefined) return elemental;
   const valkyrie = valkyrieRuleDecision(r, g);
   if (valkyrie !== undefined) return valkyrie;
   const id = r.playerId ?? r.player?.id,
@@ -294,16 +297,6 @@ function chooseAiRuleDecision(r, g) {
     t = ctx.targetId == null ? null : g.player(ctx.targetId);
   if (r.type === "cardChoice") {
     const indexes = chooseAiDiscard(g, id, r.count, r.valid);
-    if (r.optional && Object.hasOwn(elementalSkills, r.skillId)) {
-      const card = enhancementCard(
-        g,
-        id,
-        r.skillId,
-        ctx.targetId,
-        r.valid.map((index) => p.hand[index]),
-      );
-      return card ? [p.hand.findIndex((c) => c.id === card.id)] : null;
-    }
     if (r.optional && r.skillId === "magicBurst") {
       const discard = clone(s),
         hit = clone(s);
@@ -445,6 +438,38 @@ export function createHeroWaveTwoPolicy(base) {
         id,
         ...args,
       );
+  // Apply the same active-magic accounting to the original six heroes too.
+  // Historical version objects remain frozen; only this preview's routing changes.
+  policy.rankAiActions = (g, id) => {
+    if (heroIds.has(g.player(id).hero.id))
+      return newHeroes.rankAiActions(g, id);
+    const entries = base.rankAiActions(g, id);
+    if (
+      !entries.some(
+        (e) =>
+          e.action.type === "play" &&
+          g.player(id).hand[e.action.index]?.name === "magicBullet",
+      )
+    )
+      return entries;
+    const view = observationView(
+        captureObservation(g, id, { actions: true, activation: true }),
+      ),
+      state = stateOf(view, id);
+    return entries
+      .map((entry) => {
+        const magic = evaluateMagicAction(view, id, entry.action, state);
+        return magic
+          ? {
+              ...entry,
+              score: magic.score,
+              reason: "active-magic-outcomes",
+              explanation: { magic: magic.explanation },
+            }
+          : entry;
+      })
+      .sort((a, b) => b.score - a.score);
+  };
   policy.chooseAiAction = (g, id) => policy.rankAiActions(g, id)[0].action;
   policy.chooseAiResponse = (g, r) =>
     (heroIds.has(r.target.hero.id) ? newHeroes : base).chooseAiResponse(g, r);
