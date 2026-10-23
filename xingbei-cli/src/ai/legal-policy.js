@@ -8,7 +8,11 @@ export function legalPolicy(policy) {
   if (cache.has(policy)) return cache.get(policy);
   const adapted = { ...policy,
     rankAiActions(game, id) {
-      const legal = legalActions(game,id), keys = new Set(legal.map(key));
+      // A current policy may exclude useless candidates even during refresh or
+      // fallback. Historical policies omit this hook and keep their full set.
+      const legal = legalActions(game,id)
+        .filter(action => policy.acceptsAction?.(game,id,action) ?? true);
+      const keys = new Set(legal.map(key));
       // Frozen refresh evaluators treated exchange as a completed action. Never
       // execute that obsolete model: exchange now, then ask the policy again.
       if (legal.some(a => a.type === 'refresh')) return legal.map(action => ({ action, score: 0,

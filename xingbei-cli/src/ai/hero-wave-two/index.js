@@ -5,7 +5,7 @@ import {
   chooseElementalEnhancement,
 } from "./elemental-plan.js";
 import { radianceHealing } from "./holy-lancer.js";
-import { refinementAdjustment } from "./elementalist.js";
+import { acceptsRefinement, refinementAdjustment } from "./refinement.js";
 import {
   valkyrieActionAdjustment,
   valkyrieRuleDecision,
@@ -222,7 +222,7 @@ function rankAiActions(g, id) {
   const p = g.player(id),
     hero = p.hero.id,
     s = stateOf(g, id);
-  const actions = legalActions(g, id),
+  const actions = legalActions(g, id).filter((a) => acceptsRefinement(g, id, a)),
     plans = planElementalActions(g, id, actions);
   const ranked = actions
     .map((action) => {
@@ -424,7 +424,7 @@ export function createHeroWaveTwoPolicy(base) {
     planWindAttacks: () => null,
   };
   const newHeroes = isolatePolicy(raw, { activation: true });
-  const policy = { ...base };
+  const policy = { ...base, acceptsAction: acceptsRefinement };
   for (const name of [
     "rankAiActions",
     "chooseAiDiscard",
@@ -443,7 +443,8 @@ export function createHeroWaveTwoPolicy(base) {
   policy.rankAiActions = (g, id) => {
     if (heroIds.has(g.player(id).hero.id))
       return newHeroes.rankAiActions(g, id);
-    const entries = base.rankAiActions(g, id);
+    const entries = base.rankAiActions(g, id)
+      .filter((entry) => acceptsRefinement(g, id, entry.action));
     if (
       !entries.some(
         (e) =>

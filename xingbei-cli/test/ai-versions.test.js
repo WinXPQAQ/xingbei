@@ -1,3 +1,4 @@
+import {acceptsRefinement} from '../src/ai/hero-wave-two/refinement.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -150,7 +151,7 @@ test('observation hooks never alter baseline rules, RNG or results',async()=>{
 
 
 test('preview leaves historical stable aliases frozen',()=>{
-  assert.equal(production.AI_POLICY_VERSION,'v1.7.0-preview.3');
+  assert.equal(production.AI_POLICY_VERSION,'v1.7.0-preview.4');
   for(const method of ['rankAiActions','chooseAiAction','chooseAiResponse','chooseAiRuleDecision','chooseAiDiscard','cardScore','keepCards','giftScore','planWindAttacks']) {
     assert.equal(getPolicy('v1.5')[method],getPolicy('experimental/plans-4')[method]);
     assert.equal(getPolicy('v1.4')[method],getPolicy('experimental/targeted-fixes-1')[method]);
@@ -160,8 +161,8 @@ test('preview leaves historical stable aliases frozen',()=>{
   }
   for(const hero of new Set(Object.values(lineups).flat())) {
     const g=new Game({seed:117,playerHeroId:hero}).setup();
-    const nonMagic=entries=>entries.filter(e=>e.action.type!=='play'||g.player(0).hand[e.action.index]?.name!=='magicBullet');
-    assert.deepEqual(nonMagic(production.rankAiActions(g,0)),nonMagic(getPolicy('experimental/plans-4').rankAiActions(g,0)));
+    const unchanged=entries=>entries.filter(e=>acceptsRefinement(g,0,e.action)&&(e.action.type!=='play'||g.player(0).hand[e.action.index]?.name!=='magicBullet'));
+    assert.deepEqual(unchanged(production.rankAiActions(g,0)),unchanged(getPolicy('experimental/plans-4').rankAiActions(g,0)));
   }
 });
 test('stable v1.2 and frozen fusion-1 produce identical full games across six lineups',async()=>{

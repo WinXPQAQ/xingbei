@@ -53,7 +53,7 @@ systemctl --user list-timers xingbei-update.timer
 node ~/.local/share/xingbei-deploy/update-server.mjs --status
 ```
 
-测试时使用 `TEST_MODE=1 HOST=0.0.0.0 npm run web`，页面顶部中央显示 `package.json` 中的版本号（本次体验版为 `测试 0.7.2 + AI 1.7.0-preview.3`），正常启动时不显示。当前外部验证后台服务已开启此开关；修改版本号或开关后需要重启服务。当前运行所需素材已纳入 `assets/`；完整原项目与浏览器截图产物仍保留在本地。
+测试时使用 `TEST_MODE=1 HOST=0.0.0.0 npm run web`，页面顶部中央显示 `package.json` 中的版本号（本次体验版为 `测试 0.7.3 + AI 1.7.0-preview.4`），正常启动时不显示。当前外部验证后台服务已开启此开关；修改版本号或开关后需要重启服务。当前运行所需素材已纳入 `assets/`；完整原项目与浏览器截图产物仍保留在本地。
 
 
 当前测试版本v0.3.0加入对局动画，范围、来源和接口见 [动画说明](docs/animation-restoration.md)。开发页新增连续中毒、圣盾抵消、重摸、对手摸牌和第五杯场景；工具栏支持暂停/播放效果、单步效果及结束当前动画。遵循系统减少动态效果偏好，正常对局不显示这些调试工具。用户现已授权提交本批改动并直接push到main。
