@@ -150,7 +150,7 @@ test('observation hooks never alter baseline rules, RNG or results',async()=>{
 
 
 test('production v1.5 aliases accepted plans-4 while historical stable aliases remain frozen',()=>{
-  assert.equal(production.AI_POLICY_VERSION,'v1.5');
+  assert.equal(production.AI_POLICY_VERSION,'v1.7.0-preview.1');
   for(const method of ['rankAiActions','chooseAiAction','chooseAiResponse','chooseAiRuleDecision','chooseAiDiscard','cardScore','keepCards','giftScore','planWindAttacks']) {
     assert.equal(getPolicy('v1.5')[method],getPolicy('experimental/plans-4')[method]);
     assert.equal(getPolicy('v1.4')[method],getPolicy('experimental/targeted-fixes-1')[method]);

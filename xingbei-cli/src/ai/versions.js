@@ -1,3 +1,4 @@
+import {createHeroWaveTwoPolicy} from './hero-wave-two/index.js';
 import {createEconomyPolicy as createHeroFoundationPolicy} from './v1.5.2-rules/index.js';
 import {createEconomyPolicy as createPlans4Policy} from './v1.5-plans4/index.js';
 import {createEconomyPolicy as createPlans3Policy} from './v1.5-plans3/index.js';
@@ -83,6 +84,7 @@ choices['v1.3'] = choices['experimental/economy-4'];
 choices['v1.4'] = choices['experimental/targeted-fixes-1'];
 // Exact plans-4 frozen at a0e9baa after its independent paired confirmation.
 choices['v1.5'] = choices['experimental/plans-4'];
+choices['v1.7.0-preview.1'] = createHeroWaveTwoPolicy(choices['v1.5']);
 choices['experimental/read-1'] = choices['read-1'];
 choices['experimental/fusion-1'] = choices['fusion-1'];
 export const policies = Object.freeze(Object.fromEntries(Object.entries(choices).map(([id, frozen]) => { const policy = legalPolicy(frozen); return [id, Object.freeze({ ...policy, runAiAction: (game, actorId, options) => runPolicyAction(policy, game, actorId, options) })]; })));

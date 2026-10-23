@@ -11,9 +11,11 @@ export function* choice(
   title,
   choices,
   defaultValue = choices[0]?.value,
+  context = {},
 ) {
   const value = yield {
     type: "numberChoice",
+    context,
     playerId,
     skillId,
     title,

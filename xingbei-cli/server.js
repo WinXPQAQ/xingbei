@@ -1,3 +1,4 @@
+import { WAVE_TWO_HERO_IDS } from "./src/hero.js";
 import { AI_POLICY_VERSION } from "./src/ai.js";
 import { createServer } from "node:http";
 import { readFile, stat } from "node:fs/promises";
@@ -17,6 +18,7 @@ const modelIdentity = modelPort ? await (async () => {
   return response.json();
 })() : null;
 if (modelIdentity && !['v1.5', 'experimental/hero-foundation-1'].includes(modelIdentity.baseline)) throw new Error('不支持的模型基础策略');
+const rosterScript = testMode && process.env.HERO_PREVIEW === "wave-two" ? `<script>window.XINGBEI_HERO_ROSTER=${JSON.stringify(WAVE_TWO_HERO_IDS)};</script>` : "";
 const modelScript = modelIdentity ? `<script>window.XINGBEI_MODEL=true;window.XINGBEI_MODEL_BASELINE=${JSON.stringify(modelIdentity.baseline)};</script>` : '';
 const aiLabel = modelIdentity ? modelIdentity.label : AI_POLICY_VERSION.replace(/^v/, "AI ");
 const { version } = JSON.parse(await readFile(join(projectRoot, "package.json"), "utf8"));
@@ -77,7 +79,7 @@ createServer(async (request, response) => {
     if (testMode && (filename === join(projectRoot, "web/index.html") || filename === join(projectRoot, "web/dev.html"))) {
       // Version comes from package.json, not browser state or the scene renderer.
       const label = version.replace(/[&<>"']/g, character => `&#${character.charCodeAt(0)};`);
-      response.end(content.toString("utf8").replace("<head>", `<head>${modelScript}`).replace("</body>", `<div id="test-version" class="test-version" aria-label="测试版本">测试 ${label}${" + " + aiLabel.replace(/[&<>"']/g, character => `&#${character.charCodeAt(0)};`)}</div>\n</body>`));
+      response.end(content.toString("utf8").replace("<head>", `<head>${modelScript}${rosterScript}`).replace("</body>", `<div id="test-version" class="test-version" aria-label="测试版本">测试 ${label}${" + " + aiLabel.replace(/[&<>"']/g, character => `&#${character.charCodeAt(0)};`)}</div>\n</body>`));
     } else response.end(content);
   } catch (error) {
     response.writeHead(error.status || 404, { "Content-Type": "text/plain; charset=utf-8" });

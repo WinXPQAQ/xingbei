@@ -9,13 +9,13 @@ export function captureObservation(game, observerId, { actions = false, history 
     uniqueSkills: [...c.uniqueSkills], location: copy(c.location), attachment: c.attachment ? { effectId: c.attachment.effectId } : null,
     traits: Object.fromEntries(game.players.map(p => [p.id, copy(c.getTraits({ game, playerId: p.id }))])),
   }));
-  const specData = spec => ({ ...copy(pick(spec, ['type','cardCount','targets','targetCount','targetCounts','energy','modes'])),
+  const specData = spec => ({ ...copy(pick(spec, ['type','cardCount','targets','targetCount','targetCounts','energy','healingCost','modes'])),
     allowedCardIds: game.player(observerId).hand.filter(spec.cardFilter ?? (() => true)).map(c => c.id) });
   const skills = actions ? game.legalSkillActions(observerId).map(entry => ({ skillId: entry.skillId, spec: specData(entry.spec),
     modes: (entry.spec.modes?.map(c => c.value) ?? [null]).map(mode => ({ mode, spec: specData(game.skillActionSpec(observerId, { skillId: entry.skillId, mode: mode ?? undefined })) })) })) : [];
   return copy({ observerId, current: game.current, cards,
     players: game.players.map(p => ({ id: p.id, name: p.name, team: p.team, handLimit: p.handLimit, healing: p.healing, energy: pick(p.energy,['gem','crystal']),
-      hero: { id: p.hero.id, skills: p.hero.skills.map(s => typeof s === 'string' ? s : s.id) },
+      hero: { id: p.hero.id, ...(['saint','holyLancer','plagueMage','elementalist','valkyrie','magicalGirl'].includes(p.hero.id) ? {state: pick(p.hero.state,['elements','form','compassion'])} : {}), skills: p.hero.skills.map(s => typeof s === 'string' ? s : s.id) },
       skillIds: p.getSkills().map(({skill}) => typeof skill === 'string' ? skill : skill.id),
       handIds: p.id === observerId ? p.hand.map(c => c.id) : null, handCount: p.hand.length,
       statusIds: p.statuses.map(c => c.id), healingLimit: game.getHealingLimit(p.id) })),
@@ -58,7 +58,7 @@ export function isolatePolicy(raw, {history = true, activation = false} = {}) {
     for (const key of ['target','actor','player','nextTarget']) if (request[key]) out[key] = v.player(request[key].id);
     if (request.counterTargets) out.counterTargets = request.counterTargets.map(p => v.player(p.id));
     if (request.valid) out.valid = request.valid.map(e => typeof e === 'number' ? e : {index: e.index, card: v.cards.get(e.card.id)});
-    if (request.context) out.context = { targetId: request.context.targetId, amount: request.context.amount, damageType: request.context.damageType, card: v.cards.get(request.context.card?.id) };
+    if (request.context) out.context = { targetId: request.context.targetId, amount: request.context.amount, damageType: request.context.damageType, isCounter: request.context.isCounter, card: v.cards.get(request.context.card?.id) };
     if (request.attack) out.attack = v.cards.get(request.attack.id);
     return out;
   };

@@ -83,6 +83,7 @@ export class Elementalist extends Hero {
                     title: `${name}：可明弃1张同系牌，伤害+1`,
                     skillId: id,
                     optional: true,
+                  context: {targetId: targetIds[0], amount: base},
                   },
                 )
               : null;

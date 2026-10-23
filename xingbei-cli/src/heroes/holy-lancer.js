@@ -69,7 +69,7 @@ export class HolyLancer extends Hero {
           player.healing >= 2 &&
           !game.turn.state?.usedSkills.blockHeavenSpear,
         *resolve({ game, player, context }) {
-          if (!(yield* game.offerSkill(player.id, "heavenSpear", "天枪")))
+          if (!(yield* game.offerSkill(player.id, "heavenSpear", "天枪", context)))
             return;
           game.changeHealing(player.id, -2);
           context.canCounter = false;
@@ -96,6 +96,7 @@ export class HolyLancer extends Hero {
               }),
             ),
             0,
+            context,
           );
           if (n) {
             game.changeHealing(player.id, -n);

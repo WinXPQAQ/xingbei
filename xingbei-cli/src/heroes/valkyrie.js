@@ -85,7 +85,7 @@ export class Valkyrie extends Hero {
         ...this.onOwnAttack([Timing.ATTACK_HIT]),
         filter: ({ game, player }) => game.canPayEnergy(player.id, "crystal"),
         *resolve({ game, player, context, options }) {
-          if (!(yield* game.offerSkill(player.id, "heroicSummon", "英灵召唤")))
+          if (!(yield* game.offerSkill(player.id, "heroicSummon", "英灵召唤", context)))
             return;
           yield* game.paySkillEnergy(player.id, "crystal");
           context.amount++;

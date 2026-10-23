@@ -1,6 +1,6 @@
 import { modelEnabled, installModel, modelChoice } from "/web/model-ai.js";
 import { PlaybackGate, createModeControls } from "/web/play-mode.js";
-import { getAvailableHeroes } from "/src/hero.js";
+import { getAvailableHeroes, createHeroRoster } from "/src/hero.js";
 import { CARD_NAMES, ELEMENT_NAMES, FATE_NAMES } from "/src/cards.js";
 import { Game } from "/src/engine.js";
 import { chooseAiAction, chooseAiResponse, chooseAiRuleDecision } from "/src/ai.js";
@@ -120,7 +120,8 @@ function newGame(nextGame = null, nextSeed = Date.now(), id = null) {
       $("#window").dataset.playMode = playMode;
       const playerHeroId = await choose(playMode === "spectate" ? "为AI选择角色" : "选择角色", getAvailableHeroes().map(hero => ({ value: hero.id, label: hero.name })));
       active.assert();
-      game = new Game({ seed, playerHeroId, playerSeat: humanId, revealHiddenLogs: playMode !== "normal" }).setup();
+      const rosterOptions = window.XINGBEI_HERO_ROSTER ? { heroIds: createHeroRoster(playerHeroId, humanId, window.XINGBEI_HERO_ROSTER) } : { playerHeroId, playerSeat: humanId };
+      game = new Game({ seed, ...rosterOptions, revealHiddenLogs: playMode !== "normal" }).setup();
       game.onDecision = chooseRuleDecision;
   installModel(game, isHuman, session, () => playback.wait(session));
       game.enablePresentation(onPresentation);
@@ -654,7 +655,7 @@ async function runTurns(active) {
         await waitForHumanAction();
       } else { await delay(isDev ? 0 : 150); await executeAi(player.id, isDev && ["attack", "attack-switch", "attack-empty", "shield-hit", "magic", "magic-empty", "magic-linked"].includes(sceneId) && events.length === 1 ? { type: "play", index: 0, targetId: humanId } : null); active.assert(); flushLog(); }
     }
-    if (!modelEnabled && !isHuman(player.id) && game.turn.hasExtraActions() && !game.legalCards(player.id).length) game.skipExtraActions(player.id);
+    if (!modelEnabled && !isHuman(player.id) && game.turn.hasExtraActions() && !game.legalCards(player.id).length && !game.legalSkillActions(player.id).length) game.skipExtraActions(player.id);
     } while (game.turn.needsAction());
     active.assert();
     if (game.winner) { shownGame = null; break; }
