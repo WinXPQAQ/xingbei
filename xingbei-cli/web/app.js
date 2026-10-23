@@ -1,3 +1,5 @@
+import { resolveAsync } from "/src/resolution/decisions.js";
+import { cardSets, targetCounts } from "/src/card-sets.js";
 import { modelEnabled, installModel, modelChoice } from "/web/model-ai.js";
 import { PlaybackGate, createModeControls } from "/web/play-mode.js";
 import { getAvailableHeroes, createHeroRoster } from "/src/hero.js";
@@ -70,7 +72,7 @@ function newGame(nextGame = null, nextSeed = Date.now(), id = null) {
   sceneId = id;
   game = nextGame || new Game({ seed });
   game.onDecision = chooseRuleDecision;
-  installModel(game, isHuman, session, () => playback.wait(session));
+  installModel(game, isHuman, session, playback.wait.bind(playback, session));
   acceptingAction = false;
   busy = false;
   selectedCard = null;
@@ -123,7 +125,7 @@ function newGame(nextGame = null, nextSeed = Date.now(), id = null) {
       const rosterOptions = window.XINGBEI_HERO_ROSTER ? { heroIds: createHeroRoster(playerHeroId, humanId, window.XINGBEI_HERO_ROSTER) } : { playerHeroId, playerSeat: humanId };
       game = new Game({ seed, ...rosterOptions, revealHiddenLogs: playMode !== "normal" }).setup();
       game.onDecision = chooseRuleDecision;
-  installModel(game, isHuman, session, () => playback.wait(session));
+      installModel(game, isHuman, session, playback.wait.bind(playback, session));
       game.enablePresentation(onPresentation);
       modeReady = true;
       render();
@@ -223,7 +225,8 @@ async function modeCommand(command) {
   busy = true; render();
   try {
     if (command === "draw") {
-      game.draw(humanId, 1, { overflow: "defer" });
+      await resolveAsync(game.drawSteps(humanId, 1, { overflow: overflowPolicy }),
+        request => game.interactiveDecision(request, { resolveOverflow: resolveHumanOverflow }), game.onPresentation);
     } else if (command === "discard") {
       const player = game.player(humanId);
       if (!player.hand.length) return;
@@ -294,7 +297,7 @@ async function chooseRuleDecision(request) {
   }
   if (request.type === "cardChoice") {
     if (!isHuman(request.playerId)) return chooseAiRuleDecision(request, game);
-    return chooseHand(request.title, game.player(humanId).hand, { count: request.count, valid: request.valid, cancel: request.optional });
+    return chooseHand(request.title, game.player(humanId).hand, { count: request.count, valid: request.valid, validSets: request.validSets, cancel: request.optional });
   }
   if (!request.choices) return null;
   if (!isHuman(request.playerId)) return chooseAiRuleDecision(request, game);
@@ -315,7 +318,7 @@ function closeModal() {
   if (game) render();
 }
 
-function chooseHand(title, cards, { count = 1, valid = cards.map((_, index) => index), cancel = false, cancelLabel = "不响应" } = {}) {
+function chooseHand(title, cards, { count = 1, valid = cards.map((_, index) => index), cancel = false, cancelLabel = "不响应", validSets = null } = {}) {
   return session.wait(resolve => {
     const previousHint = elements.hint.textContent;
     const previousFocus = document.activeElement;
@@ -324,12 +327,12 @@ function chooseHand(title, cards, { count = 1, valid = cards.map((_, index) => i
     elements.hint.textContent = title;
     elements.modalActions.replaceChildren();
     const confirm = document.createElement("button");
-    confirm.textContent = count > 1 ? "确认弃置" : "确定"; confirm.disabled = true;
+    confirm.textContent = count === 1 ? "确定" : "确认弃置"; confirm.disabled = true;
     handChoice = { valid, selected, select(index) {
       if (!valid.includes(index)) return;
       selected.has(index) ? selected.delete(index) : selected.add(index);
       pendingChoice.selected = [...selected];
-      confirm.disabled = selected.size !== count;
+      confirm.disabled = validSets ? !validSets.some(set => set.length === selected.size && set.every(index => selected.has(index))) : selected.size !== count;
       render();
     } };
     confirm.addEventListener("click", () => { director.captureHand(); resolve([...selected]); });
@@ -453,7 +456,7 @@ async function selectCard(index) {
       const action = chosenCard.type === "attack"
         ? () => resolveAttackChain(humanId, chosenIndex, target)
         : chosenCard.name === "magicBullet" ? () => resolveMagicChain(humanId, chosenIndex, target)
-          : () => game.playWithDecisions(humanId, chosenIndex, target, { autoRespond: true, overflow: overflowPolicy });
+          : () => game.playWithDecisions(humanId, chosenIndex, target, { chooseResponse: chooseCombatResponse, overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
       await completeHumanAction(action);
     } else {
       selectedCard = null; busy = false;
@@ -524,17 +527,19 @@ async function selectSkillAction(skillId) {
       active.assert(); if (mode == null) return;
     }
     const spec = { ...game.skillActionSpec(humanId, { skillId, mode }) }, player = game.player(humanId);
-    if (spec.targetCounts) {
-      const count = await choose(`${entry.name}：目标人数`, spec.targetCounts.map(value => ({ value, label: `${value}人` })), { cancel: true });
-      active.assert(); if (count == null) return; spec.targetCount = count;
-    }
     let cardIds = [];
-    if (spec.cardCount) {
-      const valid = player.hand.flatMap((card, index) => (spec.cardFilter?.(card) ?? true) ? [index] : []);
-      const indexes = await chooseHand(`${entry.name}：选择手牌`, player.hand, { count: spec.cardCount, valid, cancel: true, cancelLabel: "取消" });
+    if ((spec.cardCount ?? 0) > 0 || spec.cardCounts) {
+      const sets = cardSets(player.hand,spec).map(cards=>cards.map(c=>player.hand.indexOf(c)));
+      const indexes = await chooseHand(`${entry.name}：选择手牌`, player.hand, {
+        count:spec.cardCounts ? null : spec.cardCount, valid:[...new Set(sets.flat())], validSets:sets, cancel:true,cancelLabel:"取消" });
       active.assert(); if (indexes == null) return;
       cardIds = indexes.map(index => player.hand[index].id);
     }
+    const counts = targetCounts(spec,cardIds.length);
+    if (counts.length > 1) {
+      const count = await choose(`${entry.name}：目标人数`, counts.map(value=>({value,label:`${value}人`})), {cancel:true});
+      active.assert(); if (count == null) return; spec.targetCount=count;
+    } else spec.targetCount=counts[0];
     if (cardIds.length === 1) selectedCard = player.hand.findIndex(card => card.id === cardIds[0]);
     const targetIds = [];
     for (let i = 0; i < (spec.targetCount ?? 1); i++) {
@@ -554,11 +559,12 @@ async function waitForHumanAction() {
   return session.wait(resolve => { finishAction = resolve; return () => { finishAction = null; }; });
 }
 
-async function executeAi(actorId, scriptedAction = null) {
+async function executeAi(actorId, scriptedAction = null, retried = false) {
   const active = session;
   await playback.wait(active);
   const action = scriptedAction || (modelEnabled ? await modelChoice(game, actorId) : chooseAiAction(game, actorId));
   active.assert();
+  try {
   if (action.type === "refresh") await game.executeAction(actorId, action, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
   else if (action.type === "purchase") await game.executeAction(actorId, action, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
   else if (action.type === "synthesize") await game.executeAction(actorId, action, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
@@ -569,13 +575,17 @@ async function executeAi(actorId, scriptedAction = null) {
   }
   else {
     const card = game.player(actorId).hand[action.index];
-    const options = { autoRespond: id => !isHuman(id), overflow: overflowPolicy };
+    const options = { chooseResponse: chooseCombatResponse, overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow };
     if (card.type === "attack") await resolveAttackChain(actorId, action.index, action.targetId);
     else if (card.name === "magicBullet") await resolveMagicChain(actorId, action.index, action.targetId);
     else {
       active.assert();
       await game.playWithDecisions(actorId, action.index, action.targetId, options);
     }
+  }
+  } catch (error) {
+    if (error.actionInvalidated && !retried && !game.winner) return executeAi(actorId, null, true);
+    throw error;
   }
   active.assert();
   await resolveHumanOverflow();
@@ -742,7 +752,7 @@ async function specialAction(type) {
     }
     if (type === "refine") {
       const player = game.player(humanId), stones = game.stoneCounts(player.team);
-      const capacity = 3 - player.energy.gem - player.energy.crystal;
+      const capacity = game.getEnergyLimit(humanId) - player.energy.gem - player.energy.crystal;
       const picked = await chooseStones("提炼：选择星石", stones, 1, Math.min(2, stones.total, capacity));
       if (picked) await completeHumanAction(() => game.executeAction(humanId, { type: "refine", stones: picked }));
     }

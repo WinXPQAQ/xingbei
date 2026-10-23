@@ -60,9 +60,13 @@ export class TurnFlow {
     if (route === "normal" && !state.activationDone) {
       state.activationDone = true;
       state.phase = Timing.ACTIVATION;
+      state.reservedCardIds = options.actionCardIds ?? [];
+      state.reservedSkillId = options.actionSkillId ?? null;
+      state.reservedTargetIds = options.actionTargetIds ?? [];
       state.reservedEnergy = options.actionEnergyCost ?? 0;
       state.reservedHealing = options.actionHealingCost ?? 0;
       yield* this.game.trigger(Timing.ACTIVATION, state, options);
+      delete state.reservedCardIds; delete state.reservedSkillId; delete state.reservedTargetIds;
       delete state.reservedEnergy;
       delete state.reservedHealing;
     }

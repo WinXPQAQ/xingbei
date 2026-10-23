@@ -68,3 +68,6 @@ node xingbei-cli/tools/evaluate-ai.mjs read-1 v1.0 holdout 200 /tmp/xingbei-hold
 - 已删除第二批英雄逐场景评分测试`ai-wave-two.test.js`、`ai-valkyrie.test.js`，以及cards中的两项旧AI打法偏好断言。此前通过结果是历史开发证据，不再是每次必须复跑的门槛。
 - 保留`skill-response.test.js`两项异步结算链：技能入口必须请求响应，等待时不推进，明确放弃后才处理治疗/圣盾；不扩展成逐角色/逐种手牌的测试矩阵。
 - 浏览器场景工具继续作为手动复现入口，不加入`npm test`；历史证据不删除。
+
+
+第三批英雄：`BASE_URL=http://127.0.0.1:4189 node tools/verify-heroes-wave-three.mjs`手动核对18角色入口、六新英雄状态、变长牌组费用、选人及确认/取消，使用1440×900和390×844两视口。输出在`artifacts/heroes/wave-three/`；不加入日常`npm test`，不作为每次发布必须全跑的评分场景矩阵。

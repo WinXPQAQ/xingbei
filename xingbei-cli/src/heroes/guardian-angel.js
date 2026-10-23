@@ -22,7 +22,7 @@ function createSkills(hero) {
           const given = yield* game.chooseHandCards(id, count, () => true, { title: `天使祝福：交给${player.name}${count}张牌`, purpose: "give", recipientId: player.id });
           game.giveCards(id, player.id, given);
         }
-        game.draw(player.id, 0, { overflow: options.overflow });
+        yield* game.drawSteps(player.id, 0, { overflow: options.overflow });
       } },
     { id: "angelBond", name: "天使羁绊", ...hero.bind("actor", [Timing.BASIC_EFFECT_REMOVED, Timing.SHIELD_USED]),
       *resolve({ game, player }) {

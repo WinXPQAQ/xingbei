@@ -36,7 +36,7 @@ export function* healTarget(game, player, amount, skillId) {
   game.changeHealing(id, amount);
 }
 export function* drawCards(game, player, count, skillId, options) {
-  game.draw(player.id, count, {
+  yield* game.drawSteps(player.id, count, {
     overflow: "defer",
     cause: { type: "directDraw", skillId },
   });

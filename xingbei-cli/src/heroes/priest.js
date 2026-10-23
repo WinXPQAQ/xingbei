@@ -15,7 +15,7 @@ function createSkills(hero) {
           game.giveCards(player.id, targetIds[0], given);
         } else game.logSkill(player.id, "waterPower", "支付费用后无剩余手牌，未交牌");
         game.changeHealing(player.id, 1); game.changeHealing(targetIds[0], 1);
-        const target = game.player(targetIds[0]); game.draw(target.id, 0, { overflow: options.overflow });
+        const target = game.player(targetIds[0]); yield* game.drawSteps(target.id, 0, { overflow: options.overflow });
         if (target.pendingOverflow) yield { type: "overflow", player: target };
       } },
     { id: "holyGuardian", name: "圣使守护", ...hero.onDamage([Timing.HEALING_BEFORE], "target"),

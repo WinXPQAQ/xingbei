@@ -14,7 +14,7 @@ function createSkills(hero) {
         if (![0,1,2,3].includes(count)) throw new Error("圣剑数量必须为0至3");
         game.logSkill(player.id, "holySword", count ? `选择摸${count}张再暗弃${count}张` : "选择不换牌");
         if (!count) return;
-        game.draw(player.id, count, { overflow: "defer", moraleLoss: false }); yield* game.present();
+        yield* game.drawSteps(player.id, count, { overflow: "defer", moraleLoss: false }); yield* game.present();
         const cards = yield* game.chooseHandCards(player.id, count, () => true, { title: "圣剑：弃置手牌" });
         game.discardCards(player.id, cards, { visibility: "hidden", reason: "holySword" });
         yield* game.present();

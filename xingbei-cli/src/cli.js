@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { cardSets, targetCounts } from "./card-sets.js";
 import { getAvailableHeroes } from "./hero.js";
 import { cardText } from "./cards.js";
 import { Game, RuleError } from "./engine.js";
@@ -17,6 +18,11 @@ const overflowPolicy = player => player.id === humanId ? "defer" : "ai";
 game.onDecision = async request => {
   if (request.type === "cardChoice") {
     if (request.playerId !== humanId) return chooseAiRuleDecision(request, game);
+    if (request.validSets) {
+      request.validSets.forEach((set,index)=>tui.console(`${index}: ${set.map(i=>cardText(game.player(humanId).hand[i])).join("、")}`));
+      const chosen=await askIndex(tui,`${request.title}> `,request.validSets.map((_,i)=>i),{allowBlank:request.optional});
+      return chosen==null?null:request.validSets[chosen];
+    }
     const selected = [];
     while (selected.length < request.count) {
       showState(); const index = await askIndex(tui, `${request.title}> `, request.valid.filter(index => !selected.includes(index)));
@@ -66,7 +72,7 @@ async function chooseSynthesis(player) {
 async function chooseRefinement(player) {
   if (!game.canRefine(player.id)) throw new RuleError("当前不能提炼");
   const stones = game.stoneCounts(player.team);
-  const capacity = 3 - player.energy.gem - player.energy.crystal;
+  const capacity = game.getEnergyLimit(player.id) - player.energy.gem - player.energy.crystal;
   const totals = [1, 2].filter(total => total <= stones.total && total <= capacity);
   if (!totals.length) throw new RuleError("没有可提炼的星石，或个人能量已满");
   tui.console(`提炼不会改变手牌。请选择提炼数量：${totals.join("、")}`);
@@ -128,16 +134,17 @@ async function humanTurn() {
           const index = await askIndex(tui, "效果> ", entry.spec.modes.map((_, i) => i)); if (index == null) continue;
           mode = entry.spec.modes[index].value; entry.spec = game.skillActionSpec(humanId, { skillId: entry.skillId, mode });
         }
-        if (entry.spec.targetCounts) {
-          const count = await askIndex(tui, "目标人数> ", entry.spec.targetCounts); if (count == null) continue;
-          entry.spec = { ...entry.spec, targetCount: count };
+        if ((entry.spec.cardCount ?? 0) > 0 || entry.spec.cardCounts) {
+          const sets=cardSets(player.hand,entry.spec);
+          sets.forEach((cards,index)=>tui.console(`${index}: ${cards.map(cardText).join("、")}`));
+          const chosen=await askIndex(tui,"费用牌组（回车取消）> ",sets.map((_,i)=>i));
+          if(chosen==null)continue;
+          cardIds.push(...sets[chosen].map(c=>c.id));
         }
-        while (cardIds.length < (entry.spec.cardCount ?? 0)) {
-          const valid = player.hand.flatMap((card, i) => !cardIds.includes(card.id) && (entry.spec.cardFilter?.(card) ?? true) ? [i] : []);
-          const index = await askIndex(tui, "费用牌（回车取消）> ", valid); if (index == null) break;
-          cardIds.push(player.hand[index].id);
-        }
-        if (cardIds.length !== (entry.spec.cardCount ?? 0)) continue;
+        const counts=targetCounts(entry.spec,cardIds.length);
+        const targetCount=counts.length===1?counts[0]:await askIndex(tui,"目标人数> ",counts);
+        if(targetCount==null)continue;
+        entry.spec={...entry.spec,targetCount};
         while (targetIds.length < (entry.spec.targetCount ?? 1)) {
           const id = await askIndex(tui, "目标（回车取消）> ", entry.spec.targets.filter(id => !targetIds.includes(id))); if (id == null) break;
           targetIds.push(id);
@@ -192,17 +199,18 @@ async function playCard(actorId, index, targetId) {
   if (card.name === "magicBullet") return game.playMagicWithDecisions(actorId, index, { ...options, targetId });
   return game.playWithDecisions(actorId, index, targetId, options);
 }
-async function aiTurn(actorId) {
+async function aiTurn(actorId, retried = false) {
   const action = chooseAiAction(game, actorId);
-  if (action.type === "refresh") return game.executeAction(actorId, action);
-  if (action.type === "purchase") return game.executeAction(actorId, action, { overflow: "ai" });
-  if (action.type === "synthesize") return game.executeAction(actorId, action, { overflow: "ai" });
-  if (action.type === "refine") return game.executeAction(actorId, action);
-  if (action.type === "skill") return game.executeAction(actorId, action, { chooseResponse, overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
-  if (action.type === "pass") {
-    return game.skipExtraActions(actorId);
+  try {
+    if (["refresh", "purchase", "synthesize", "refine", "skill"].includes(action.type)) {
+      return await game.executeAction(actorId, action, { chooseResponse, overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
+    }
+    if (action.type === "pass") return game.skipExtraActions(actorId);
+    return await playCard(actorId, action.index, action.targetId);
+  } catch (error) {
+    if (error.actionInvalidated && !retried && !game.winner) return aiTurn(actorId, true);
+    throw error;
   }
-  return playCard(actorId, action.index, action.targetId);
 }
 
 tui.console(`星杯传说 CLI，你控制${game.player(humanId).name}。Tab切换滚动面板，PgUp/PgDn滚动。`);
@@ -224,7 +232,7 @@ while (running && !game.winner) {
     if (player.id === humanId) running = await humanTurn();
     else { await aiTurn(player.id); await resolveHumanOverflow(); flushLog(); }
   }
-  if (player.id !== humanId && game.turn.hasExtraActions() && !game.legalCards(player.id).length) game.skipExtraActions(player.id);
+  if (player.id !== humanId && game.turn.hasExtraActions() && !game.legalCards(player.id).length && !game.legalSkillActions(player.id).length) game.skipExtraActions(player.id);
   } while (running && game.turn.needsAction());
   if (game.winner) break;
   if (!running) break; // Quitting the client is not completing an ordinary action.

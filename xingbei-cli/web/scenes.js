@@ -2,6 +2,7 @@ import { createHeroScene, createMagicFusionScene } from "./hero-scenes.js";
 import { Game } from "../src/engine.js";
 
 export const sceneNames = {
+  "hero-assassin": "英雄：暗杀者", "hero-magicSwordsman": "英雄：魔剑士", "hero-adjudicator": "英雄：仲裁者", "hero-sage": "英雄：贤者", "hero-prayer": "英雄：祈祷师", "hero-heroicPuppet": "英雄：英灵人形",
   "magic-fusion-human": "融合魔弹：人类响应", "magic-fusion-ai": "融合魔弹：AI响应",
   "hero-saint": "英雄：圣女", "hero-holyLancer": "英雄：圣枪骑士", "hero-plagueMage": "英雄：瘟疫法师", "hero-elementalist": "英雄：元素师", "hero-valkyrie": "英雄：女武神", "hero-magicalGirl": "英雄：魔法少女",
   "hero-priest": "英雄：神官", "hero-guardianAngel": "英雄：守护天使", "hero-sealer": "英雄：封印师", "hero-marksman": "英雄：神箭手", "hero-windSwordmaster": "英雄：风之剑圣", "hero-berserker": "英雄：狂战士", opening: "六人开局", "hand-0": "零张手牌", "hand-1": "一张手牌", "hand-4": "四张手牌", "hand-6": "六张手牌",

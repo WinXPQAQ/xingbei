@@ -10,6 +10,10 @@ export class Hero {
   set skills(skills) { this._skills = Object.freeze([...skills]); this.onSkillsChanged?.(); }
   addSkills(...skills) { this.skills = [...this.skills, ...skills]; }
   removeSkill(id) { this.skills = this.skills.filter(skill => (typeof skill === "string" ? skill : skill.id) !== id); }
+  initialize() {}
+  allowsAction() { return true; }
+  allowsCard() { return true; }
+  canBeAttackTarget() { return true; }
   bind(role, timings, players = "self", damageTypes = null) {
     return { timings, bindings: [{ role, players, ...(damageTypes ? { damageTypes } : {}) }] };
   }

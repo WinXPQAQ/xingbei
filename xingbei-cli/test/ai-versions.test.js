@@ -151,7 +151,7 @@ test('observation hooks never alter baseline rules, RNG or results',async()=>{
 
 
 test('preview leaves historical stable aliases frozen',()=>{
-  assert.equal(production.AI_POLICY_VERSION,'v1.7.0-preview.4');
+  assert.equal(production.AI_POLICY_VERSION,'v1.8.0-preview.1');
   for(const method of ['rankAiActions','chooseAiAction','chooseAiResponse','chooseAiRuleDecision','chooseAiDiscard','cardScore','keepCards','giftScore','planWindAttacks']) {
     assert.equal(getPolicy('v1.5')[method],getPolicy('experimental/plans-4')[method]);
     assert.equal(getPolicy('v1.4')[method],getPolicy('experimental/targeted-fixes-1')[method]);

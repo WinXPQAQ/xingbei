@@ -10,8 +10,8 @@ import {acceptsRefinement} from '../src/ai/hero-wave-two/refinement.js';
 const unchangedActions=(g,id,entries)=>entries.filter(e=>acceptsRefinement(g,id,e.action)&&(e.action.type!=='play'||g.player(id).hand[e.action.index]?.name!=='magicBullet'));
 test('CLI/Web hero preview routes exports to its version and preserves old six-hero decisions except revised magic and refinement candidates',()=>{
  const accepted=getPolicy('experimental/plans-4'),stable=getPolicy('v1.5');
- assert.equal(production.AI_POLICY_VERSION,'v1.7.0-preview.4');
- for(const method of ['chooseAiResponse','chooseAiRuleDecision','chooseAiDiscard','cardScore','keepCards','giftScore','planWindAttacks'])assert.equal(production[method],getPolicy('v1.7.0-preview.4')[method]);
+ assert.equal(production.AI_POLICY_VERSION,'v1.8.0-preview.1');
+ for(const method of ['chooseAiResponse','chooseAiRuleDecision','chooseAiDiscard','cardScore','keepCards','giftScore','planWindAttacks'])assert.equal(production[method],getPolicy('v1.8.0-preview.1')[method]);
  for(const hero of ['berserker','windSwordmaster','marksman','sealer','guardianAngel','priest']) {
   const g=new Game({seed:123,playerHeroId:hero}).setup();
   assert.deepEqual(unchangedActions(g,0,production.rankAiActions(g,0)),unchangedActions(g,0,accepted.rankAiActions(g,0)));

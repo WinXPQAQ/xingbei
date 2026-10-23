@@ -1,3 +1,4 @@
+import { cardSets, targetCounts } from "./card-sets.js";
 import { PublicHistory } from "./ai/public-history.js";
 import { logCard, skillLabel, effectLabel } from "./action-log.js";
 import { chooseAiDiscard, chooseAiResponse, chooseAiRuleDecision } from "./ai.js";
@@ -61,6 +62,7 @@ export class Game {
     this.log = [];
     this.revealHiddenLogs = revealHiddenLogs;
     initializeSealer(this);
+    for (const player of this.players) player.hero.initialize(this, player);
     for (const player of this.players) {
       this.triggers.registerHero(player);
       player.hero.onSkillsChanged = () => this.triggers.registerHero(player);
@@ -90,7 +92,7 @@ export class Game {
     if (!this.presentationEnabled) return;
     // Detached checkpoint snapshots prevent later rule steps leaking into a frame.
     const view = {
-      players: this.players.map(player => ({ ...player.toJSON(), healingLimit: this.getHealingLimit(player.id), hand: player.hand.map(card => ({ ...card.toJSON(), ...card.getTraits({ game: this, playerId: player.id, purpose: "hand" }) })) })),
+      players: this.players.map(player => ({ ...player.toJSON(), healingLimit: this.getHealingLimit(player.id), energyLimit: this.getEnergyLimit(player.id), hand: player.hand.map(card => ({ ...card.toJSON(), ...card.getTraits({ game: this, playerId: player.id, purpose: "hand" }) })) })),
       teams: this.teams, current: this.current, winner: this.winner,
       deckCount: this.deck.length, discardCount: this.discard.length,
     };
@@ -298,6 +300,30 @@ export class Game {
     }
   }
 
+  // draw() is the low-level move used by setup/fixtures. Gameplay uses this
+  // decision-aware path so before-draw skills also run during nested damage.
+  *drawSteps(playerId, count, options = {}) {
+    if (this.winner) { yield* this.present(); return; }
+    const cause = options.cause ?? { type: "directDraw" };
+    const context = { playerId, count, cause, specialAction: !!options.specialAction };
+    const nestedOptions = { ...options };
+    delete nestedOptions.moraleLoss; delete nestedOptions.attackContext; delete nestedOptions.useHealing;
+    if (count > 0) yield* this.trigger(Timing.DRAW_BEFORE, context, nestedOptions);
+    this.draw(playerId, Math.max(0, context.count), { ...options, cause, overflow: "defer" });
+    yield* this.present();
+    const player = this.player(playerId);
+    if (!player.pendingOverflow) return;
+    const excess = player.hand.length - player.handLimit;
+    const policy = typeof options.overflow === "function" ? options.overflow(player, excess) : options.overflow ?? "first";
+    if (policy === "defer") yield { type: "overflow", player };
+    else {
+      const indexes = policy === "ai" ? chooseAiDiscard(this, playerId, excess)
+        : policy === "random" ? this.randomIndexes(player.hand.length, excess)
+        : policy === "first" ? Array.from({ length: excess }, (_, index) => index) : policy;
+      yield* this.overflowSteps(playerId, indexes, { ...options, ...player.pendingOverflow });
+    }
+  }
+
   randomIndexes(length, count) {
     const available = Array.from({ length }, (_, index) => index);
     const selected = [];
@@ -364,9 +390,23 @@ export class Game {
     return this.winner;
   }
 
+  allowsAction(playerId, type, skillId = null) {
+    const player = this.player(playerId);
+    return player.hero.allowsAction({ game: this, player, type, skillId });
+  }
+  allowsCard(playerId, card, purpose = "action") {
+    const player = this.player(playerId);
+    return player.hero.allowsCard({ game: this, player, card, purpose });
+  }
+  canAttackTarget(actorId, targetId, isCounter = false) {
+    const actor = this.player(actorId), player = this.player(targetId);
+    return actor.team !== player.team && player.hero.canBeAttackTarget({ game: this, player, actor, isCounter });
+  }
   legalTargets(actorId, card) {
+    if (!this.allowsAction(actorId, card.type) || !this.allowsCard(actorId, card)) return [];
     if (this.turn.state && (this.turn.state.playerId !== actorId || !this.turn.canUse(card.type, card))) return [];
-    return card.legalTargets({ game: this, actor: this.player(actorId) });
+    return card.legalTargets({ game: this, actor: this.player(actorId) })
+      .filter(id => card.type !== "attack" || this.canAttackTarget(actorId, id));
   }
 
   legalCards(actorId) {
@@ -389,7 +429,7 @@ export class Game {
   }
 
   canDrawSpecial(actorId) {
-    return (!this.turn.state || (this.turn.state.playerId === actorId && this.turn.canUse("special"))) && this.player(actorId).hand.length <= 3;
+    return this.allowsAction(actorId, "special") && (!this.turn.state || (this.turn.state.playerId === actorId && this.turn.canUse("special"))) && this.player(actorId).hand.length <= 3;
   }
 
   stoneCounts(team) {
@@ -459,7 +499,7 @@ export class Game {
     if (!this.canDrawSpecial(actorId)) throw new RuleError("购买只能在手牌为0至3张时执行");
     if (this.winner) throw new RuleError("游戏已经结束");
     yield* this.turn.beginAction(actorId, "special");
-    this.draw(actorId, 3, options);
+    yield* this.drawSteps(actorId, 3, { ...options, specialAction: true });
     const player = this.player(actorId);
     const gems = this.addStones(player.team, "gem");
     const crystals = this.addStones(player.team, "crystal");
@@ -481,7 +521,7 @@ export class Game {
     if (this.winner) throw new RuleError("游戏已经结束");
     yield* this.turn.beginAction(actorId, "special");
     this.removeStones(player.team, { gem: gemCount, crystal: crystalCount });
-    this.draw(actorId, 3, options);
+    yield* this.drawSteps(actorId, 3, { ...options, specialAction: true });
     this.teams[player.team].cups++;
     this.recordPublicAction({type:'synthesize',playerId:actorId,team:player.team,gem:gemCount,crystal:crystalCount,count:this.teams[player.team].cups});
     this.recordPresentation("cup", { team: player.team, playerId: actorId, amount: 1 });
@@ -499,7 +539,7 @@ export class Game {
   canRefine(playerId) {
     if (this.turn.state && this.turn.state.playerId !== playerId) return false;
     const player = this.player(playerId);
-    return !this.winner && this.turn.canUse("special") && player.energy.gem + player.energy.crystal < 3 && this.stoneCounts(player.team).total > 0;
+    return !this.winner && this.allowsAction(playerId, "special") && this.turn.canUse("special") && player.energy.gem + player.energy.crystal < this.getEnergyLimit(playerId) && this.stoneCounts(player.team).total > 0;
   }
 
   *refineSteps(actorId, { gem = 0, crystal = 0 }, options = {}) {
@@ -509,7 +549,7 @@ export class Game {
     if (!Number.isInteger(gem) || !Number.isInteger(crystal) || total < 1 || total > 2) {
       throw new RuleError("提炼必须选择1至2个星石");
     }
-    if (player.energy.gem + player.energy.crystal + total > 3) throw new RuleError("角色能量上限为3");
+    if (player.energy.gem + player.energy.crystal + total > this.getEnergyLimit(actorId)) throw new RuleError(`角色能量上限为${this.getEnergyLimit(actorId)}`);
     this.validateStoneRemoval(player.team, { gem, crystal });
     if (this.winner) throw new RuleError("游戏已经结束");
     yield* this.turn.beginAction(actorId, "special");
@@ -535,7 +575,7 @@ export class Game {
     const cards = player.hand.map(card => card.toJSON());
     while (player.hand.length) this.discardCard(player, 0, { animate: false });
     this.recordPresentation("discard", { playerId: actorId, cards, reason: "refresh", visibility: DiscardVisibility.PUBLIC });
-    this.draw(actorId, count, { moraleLoss: false });
+    yield* this.drawSteps(actorId, count, { ...options, moraleLoss: false });
     this.log.push(`${player.name}无法行动，展示并弃置全部手牌：${revealed}；重摸${count}张`);
     yield* this.flushRuleEvents(options);
     yield* this.present();
@@ -584,8 +624,8 @@ export class Game {
       const definition = typeof skill === "string" ? this.skillDefinitions.get(skill) : skill;
       if (!definition?.action) return [];
       const spec = definition.action(this, player);
-      if (!spec || !this.turn.canUse(spec.type) || (spec.energy && !this.canPayEnergy(playerId, spec.energy))) return [];
-      if (player.hand.filter(spec.cardFilter ?? (() => true)).length < (spec.cardCount ?? 0) || (spec.targets?.length ?? 0) < (spec.targetCount ?? 1)) return [];
+      if (!spec || !this.allowsAction(playerId, spec.type, definition.id) || !this.turn.canUse(spec.type) || (spec.energy && !this.canPayEnergy(playerId, spec.energy))) return [];
+      if (!cardSets(player.hand, spec).some(cards => targetCounts(spec, cards.length).some(count => (spec.targets?.length ?? 0) >= count))) return [];
       return [{ skillId: definition.id, name: definition.name, spec }];
     });
   }
@@ -603,14 +643,19 @@ export class Game {
     if (!spec) throw new RuleError("技能选项无效");
     const cards = (action.cardIds ?? []).map(id => this.cards.get(id));
     const targetIds = action.targetIds ?? [];
-    if (cards.length !== (spec.cardCount ?? 0) || new Set(cards).size !== cards.length || cards.some(card => !card || card.location.zone !== "hand" || card.location.playerId !== playerId || !(spec.cardFilter?.(card) ?? true))) throw new RuleError("技能手牌费用无效");
-    if (!(spec.targetCounts ?? [spec.targetCount ?? 1]).includes(targetIds.length) || new Set(targetIds).size !== targetIds.length || targetIds.some(id => !spec.targets.includes(id))) throw new RuleError("技能目标无效");
-    const definition = player.getSkills().map(({ skill }) => typeof skill === "string" ? this.skillDefinitions.get(skill) : skill).find(skill => skill.id === action.skillId);
-    const validateAction = () => {
-      const current = this.skillActionSpec(playerId, action);
-      if (!current || (current.energy && !this.canPayEnergy(playerId, current.energy))) throw new RuleError("启动后此技能费用或选项已不可用，请重新选择行动");
+    const validateSelection = current => {
+      if (!current || !this.allowsAction(playerId, current.type, action.skillId) ||
+        (current.energy && !this.canPayEnergy(playerId, current.energy))) throw new RuleError("此技能费用或选项已不可用，请重新选择行动");
+      if (!(current.cardCounts ?? [current.cardCount ?? 0]).includes(cards.length) || new Set(cards).size !== cards.length ||
+        cards.some(card => !card || card.location.zone !== "hand" || card.location.playerId !== playerId || !(current.cardFilter?.(card) ?? true)) ||
+        !(current.cardsFilter?.(cards) ?? true)) throw new RuleError("技能手牌费用无效");
+      if (!targetCounts(current, cards.length).includes(targetIds.length) || new Set(targetIds).size !== targetIds.length ||
+        targetIds.some(id => !current.targets.includes(id))) throw new RuleError("技能目标无效");
     };
-    yield* this.turn.beginAction(playerId, spec.type, null, { ...options, validateAction, actionEnergyCost: spec.energy ? 1 : 0, actionHealingCost: spec.healingCost ?? 0 });
+    validateSelection(spec);
+    const definition = player.getSkills().map(({ skill }) => typeof skill === "string" ? this.skillDefinitions.get(skill) : skill).find(skill => skill.id === action.skillId);
+    const validateAction = () => validateSelection(this.skillActionSpec(playerId, action));
+    yield* this.turn.beginAction(playerId, spec.type, null, { ...options, validateAction, actionEnergyCost: spec.energy ? 1 : 0, actionHealingCost: spec.healingCost ?? 0, actionCardIds: cards.map(card => card.id), actionSkillId: action.skillId, actionTargetIds: targetIds });
     validateAction();
     if (this.turn.state) this.turn.state.skillId = definition.id;
     for(const targetId of targetIds.length?targetIds:[playerId])this.recordPublicAction({type:'skillAction',playerId,skillId:definition.id,targetId});
@@ -634,6 +679,22 @@ export class Game {
     if (!Array.isArray(indexes) || indexes.length !== count || new Set(indexes).size !== count || indexes.some(index => !valid.includes(index))) throw new RuleError("无效的手牌选择");
     return indexes.map(index => player.hand[index]);
   }
+  *chooseCardSet(playerId, { counts, cardsFilter, skillId, title = "选择手牌", optional = false, context = null }) {
+    const player = this.player(playerId);
+    const sets = cardSets(player.hand, { cardCounts: counts, cardsFilter });
+    if (!sets.length) {
+      if (optional) return null;
+      throw new RuleError("没有符合条件的手牌组合");
+    }
+    const validSets = sets.map(cards => cards.map(card => player.hand.indexOf(card)));
+    const indexes = yield { type: "cardChoice", playerId, skillId, title, optional, context,
+      count: null, counts, validSets, valid: [...new Set(validSets.flat())],
+      defaultValue: optional ? null : validSets[0] };
+    if (optional && indexes == null) return null;
+    if (!Array.isArray(indexes) || new Set(indexes).size !== indexes.length ||
+      !validSets.some(set => set.length === indexes.length && set.every(index => indexes.includes(index)))) throw new RuleError("无效的手牌组合");
+    return indexes.map(index => player.hand[index]);
+  }
   discardCards(playerId, cards, { visibility = "public", reason = "skillCost", covered = false } = {}) {
     const player = this.player(playerId);
     if (cards.some(card => card.location.zone !== "hand" || card.location.playerId !== playerId)) throw new RuleError("弃牌必须来自本人手牌");
@@ -648,7 +709,7 @@ export class Game {
   }
 
   *offerSkill(playerId, skillId, title, context = {}) {
-    const value = yield { type: "skillChoice", playerId, skillId, title, context, energy: { ...this.player(playerId).energy }, reservedEnergy: this.turn.state?.reservedEnergy ?? 0, reservedHealing: this.turn.state?.reservedHealing ?? 0,
+    const value = yield { type: "skillChoice", playerId, skillId, title, context, energy: { ...this.player(playerId).energy }, reservedEnergy: this.turn.state?.reservedEnergy ?? 0, reservedHealing: this.turn.state?.reservedHealing ?? 0, reservedCardIds: this.turn.state?.reservedCardIds ?? [], reservedSkillId: this.turn.state?.reservedSkillId ?? null,
       choices: [{ value: true, label: "发动" }, { value: false, label: "不发动" }], defaultValue: false };
     // Declined offers may reveal hidden eligibility (e.g. a wind attack in hand).
     if(value===true)this.recordPublicAction({type:'skillResponse',playerId,skillId,accepted:true,targetId:context.targetId});
@@ -685,11 +746,15 @@ export class Game {
   gainEnergy(playerId, kind, amount = 1) {
     if (this.winner) return 0;
     if (!["gem", "crystal"].includes(kind) || !Number.isInteger(amount) || amount < 0) throw new RuleError("无效能量");
-    const p = this.player(playerId), added = Math.max(0, Math.min(amount, 3-p.energy.gem-p.energy.crystal));
+    const p = this.player(playerId), added = Math.max(0, Math.min(amount, this.getEnergyLimit(playerId)-p.energy.gem-p.energy.crystal));
     p.energy[kind] += added;
     if (added) { this.recordPublicAction({type:"energy",playerId,gem:kind==="gem"?added:0,crystal:kind==="crystal"?added:0}); this.recordPresentation("energy",{playerId,[kind]:added}); }
-    this.log.push(`${this.actorLabel(playerId)}获得${added}${kind === "gem" ? "宝石" : "水晶"}（个人能量上限3）`);
+    this.log.push(`${this.actorLabel(playerId)}获得${added}${kind === "gem" ? "宝石" : "水晶"}（个人能量上限${this.getEnergyLimit(playerId)}）`);
     return added;
+  }
+  getEnergyLimit(playerId) {
+    return this.player(playerId).getSkills().reduce((limit, { skill }) =>
+      (typeof skill === "string" ? this.skillDefinitions.get(skill) : skill)?.modifyEnergyLimit?.(limit, { game: this, playerId }) ?? limit, 3);
   }
   getHealingLimit(playerId) {
     return this.player(playerId).getSkills().reduce((limit, { skill }) => (typeof skill === "string" ? this.skillDefinitions.get(skill) : skill)?.modifyHealingLimit?.(limit, { game: this, playerId }) ?? limit, 2);
@@ -711,51 +776,46 @@ export class Game {
     const { sourceId = null, damageType = DamageType.ATTACK, overflow = "first", useHealing, attackContext } = options;
     const target = this.player(targetId);
     if (!Object.values(DamageType).includes(damageType)) throw new RuleError("无效的伤害类别");
-    const context = attackContext ?? { targetId, sourceId, amount, damageType, skillId: options.skillId ?? null };
+    const nestedOptions = { ...options };
+    delete nestedOptions.attackContext; delete nestedOptions.moraleLoss; delete nestedOptions.useHealing;
+    const context = (damageType === DamageType.ATTACK && !options.skillId ? attackContext : null) ?? { targetId, sourceId, amount, damageType, skillId: options.skillId ?? null };
     Object.assign(context, { actorId: sourceId, targetId, sourceId, amount, damageType, point: 3 });
-    yield* this.trigger(Timing.DAMAGE_BEFORE, context, options);
+    yield* this.trigger(Timing.DAMAGE_BEFORE, context, nestedOptions);
     context.point = 4; context.healingLimit = Math.min(Math.max(0, context.amount), target.healing);
-    yield* this.trigger(Timing.HEALING_BEFORE, context, options);
-    const requested = useHealing ?? (context.healingLimit ? yield { type: "healing", playerId: targetId, context: { amount: context.amount, damageType }, title: "使用治疗抵挡伤害", choices: Array.from({ length: context.healingLimit + 1 }, (_, value) => ({ value, label: `使用${value}治疗` })), defaultValue: 0 } : 0);
+    yield* this.trigger(Timing.HEALING_BEFORE, context, nestedOptions);
+    const requested = useHealing ?? (context.healingLimit ? yield { type: "healing", playerId: targetId, context: { amount: context.amount, damageType, moraleLoss: options.moraleLoss !== false }, title: "使用治疗抵挡伤害", choices: Array.from({ length: context.healingLimit + 1 }, (_, value) => ({ value, label: `使用${value}治疗` })), defaultValue: 0 } : 0);
     if (!Number.isInteger(requested) || requested < 0 || requested > context.healingLimit) throw new RuleError("无效的治疗使用数量");
     this.recordPublicAction({type:'healing',playerId:targetId,amount:requested,result:'prevent'});
     if (requested) this.log.push(`${this.actorLabel(targetId)}使用${requested}治疗抵挡${requested}点${context.damageType === "attack" ? "攻击" : "法术"}伤害`);
     this.changeHealing(targetId, -requested);
     context.actual = Math.max(0, context.amount - requested);
     context.point = 5;
-    yield* this.trigger(Timing.DAMAGE_ACTUAL_BEFORE, context, options);
+    yield* this.trigger(Timing.DAMAGE_ACTUAL_BEFORE, context, nestedOptions);
     context.actual = Math.max(0, context.actual);
     context.point = 6;
-    yield* this.trigger(Timing.DAMAGE_ACTUAL, context, options);
+    yield* this.trigger(Timing.DAMAGE_ACTUAL, context, nestedOptions);
     this.recordPresentation("damage", { playerId: targetId, sourceId, amount: context.actual, damageType: context.damageType });
     yield* this.present();
-    if (context.actual) this.draw(targetId, context.actual, { overflow: "defer", cause: { type: "damage", sourceId, damageType: context.damageType } });
-    yield* this.present();
-    if (target.pendingOverflow) {
-      const excess = target.hand.length - target.handLimit;
-      const policy = typeof overflow === "function" ? overflow(target, excess) : overflow;
-      if (policy === "defer") yield { type: "overflow", player: target };
-      else {
-        const indexes = policy === "ai" ? chooseAiDiscard(this, targetId, excess) : policy === "random" ? this.randomIndexes(target.hand.length, excess) : policy === "first" ? Array.from({ length: excess }, (_, index) => index) : policy;
-        yield* this.overflowSteps(targetId, indexes, { ...options, ...target.pendingOverflow });
-      }
-    }
+    if (context.actual) yield* this.drawSteps(targetId, context.actual, {
+      ...nestedOptions, overflow, moraleLoss: options.moraleLoss !== false,
+      cause: { type: "damage", sourceId, damageType: context.damageType, skillId: context.skillId },
+    });
     this.recordPublicAction({type:'damage',sourceId:context.sourceId,targetId,amount:context.actual,result:context.damageType});
     this.log.push(`${target.name}承受${context.actual}点${context.damageType === DamageType.SPELL ? "法术" : "攻击"}伤害`);
-    yield* this.trigger(Timing.DAMAGE_AFTER, context, options);
+    yield* this.trigger(Timing.DAMAGE_AFTER, context, nestedOptions);
     return context.actual;
   }
   damage(targetId, amount, options = {}) { return resolveSync(this.damageSteps(targetId, amount, options), request => this.automaticDecision(request, options)); }
 
   canRespond(attack, response, context = {}) {
-    return attack.canRespond(response, { game: this, ...context });
+    return (context.targetId == null || this.allowsCard(context.targetId, response, "response")) && attack.canRespond(response, { game: this, ...context });
   }
 
   *actionSteps(actorId, handIndex, targetId, options = {}) {
     if (this.winner) throw new RuleError("游戏已经结束");
     const actor = this.player(actorId), card = actor.hand[handIndex];
     if (!card || !this.legalTargets(actorId, card).includes(targetId)) throw new RuleError("这张牌目前不能指定该目标");
-    yield* this.turn.beginAction(actorId, card.type, card, { ...options, validateAction: () => {
+    yield* this.turn.beginAction(actorId, card.type, card, { ...options, actionCardIds: [card.id], actionTargetIds: [targetId], validateAction: () => {
       if (!actor.hand.includes(card) || !this.legalTargets(actorId, card).includes(targetId)) throw new RuleError("启动后原出牌不再合法，请重新选择行动");
     } });
     if (card.type !== 'attack' && card.name !== 'magicBullet') this.recordPublicAction({type:'spell',actorId,targetId,card:card.name,elements:[...card.getTraits({game:this,playerId:actorId}).elements]});

@@ -6,7 +6,7 @@ export function* attackSteps(game, actorId, handIndex, targetId, options = {}) {
   if (game.winner) throw new RuleError("游戏已经结束");
   let actor = game.player(actorId), target = game.player(targetId);
   let attack = actor.hand[handIndex], isCounter = false;
-  if (attack?.type !== "attack" || actor.team === target.team) throw new RuleError("攻击牌只能指定对手");
+  if (attack?.type !== "attack" || !game.canAttackTarget(actorId, targetId)) throw new RuleError("攻击牌只能指定对手");
   let attackTraits = attack.getTraits({ game, playerId: actor.id, purpose: "attack" });
   game.playCard(actor, handIndex, { ...options, targetId });
   yield* game.present();
@@ -19,11 +19,11 @@ export function* attackSteps(game, actorId, handIndex, targetId, options = {}) {
     context.point = 2;
     yield* game.trigger(Timing.ATTACK_DECISION, context, options);
     if (context.forceHitRequested) { context.forcedHit = true; context.shieldable = false; }
-    const counterTargets = game.players.filter(player => player.team !== target.team && player.id !== actor.id);
+    const counterTargets = game.players.filter(player => game.canAttackTarget(target.id, player.id, true) && player.id !== actor.id);
     const valid = target.hand.map((card, index) => ({ card, index })).filter(item =>
       game.canRespond(attack, item.card, { actorId: actor.id, targetId: target.id, attackTraits }) &&
       (item.card.name === "holyLight" ? context.canHolyLight : context.canCounter && counterTargets.length));
-    const decision = context.forcedHit ? null : yield { type: "response", actor, target, attack, attackTraits, valid, counterTargets, isCounter, shieldable: context.shieldable };
+    const decision = context.forcedHit ? null : yield { type: "response", actor, target, attack, attackTraits, valid, counterTargets, isCounter, damage: context.amount, shieldable: context.shieldable };
     context.sourceHandCount = actor.hand.length; context.targetHandCount = target.hand.length;
     if (!decision) {
       yield* game.trigger(Timing.ATTACK_HIT_CHECK, context, options);

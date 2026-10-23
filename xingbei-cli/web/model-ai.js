@@ -34,6 +34,7 @@ export async function modelChoice(game, playerId, request = { type: 'action' }) 
     body: JSON.stringify({ session: client.id, sequence, seat: playerId, baselineVersion, baseline, observation }), signal: AbortSignal.timeout(30000) });
   client.session.assert();
   const result = await response.json();
+  client.session.assert();
   if (!response.ok || result.sequence !== sequence || !Number.isInteger(result.choice) || result.choice < 0 || result.choice >= candidates.length) {
     throw new Error(`模型推理失败，请重新开始：${result.error || '无效返回'}`);
   }

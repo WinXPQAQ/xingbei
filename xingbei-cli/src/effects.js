@@ -21,7 +21,7 @@ export const BASIC_EFFECTS = {
       const choice = yield { type: "weakness", player, card };
       game.removeEffect(card.id);
       if (choice === "draw") {
-        game.draw(player.id, 3, { overflow: options.overflow });
+        yield* game.drawSteps(player.id, 3, { overflow: options.overflow });
         game.log.push(`${player.name}选择摸3张牌取消【虚弱】，本回合继续行动`);
         yield* game.present();
         if (player.pendingOverflow) yield { type: "overflow", player };

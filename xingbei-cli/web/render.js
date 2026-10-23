@@ -2,6 +2,14 @@ import { UNIQUE_SKILL_NAMES } from "/src/unique-skills.js";
 // Presentation adapted from v1.6.7 UI, music and nova. See SOURCES.md.
 import { CARD_NAMES, ELEMENT_NAMES, FATE_NAMES } from "/src/cards.js";
 
+const formNames = { prayer: "祈祷", runeBurst: "蓄势迸发" };
+const heroMarkers = {
+  elementalist: [["elements", "元素", 3, "element"]],
+  adjudicator: [["judgment", "审判", 4, "judgment"]],
+  prayer: [["prayerRunes", "祈祷符文", 3, "prayerRunes"]],
+  heroicPuppet: [["battleRunes", "战纹", 3, "battleRunes"], ["magicRunes", "魔纹", 3, "magicRunes"]],
+};
+
 export function cardContents(card, context = {}) {
   return `<img class="image" src="/assets/card/${card.name}.png" alt=""><span class="info"><span>${card.getTraits(context).elements.map(element => ELEMENT_NAMES[element]).join("/")}${card.getTraits(context).fates.map(fate => FATE_NAMES[fate]).join("/")}</span></span><span class="name" aria-hidden="true"></span><span class="range">${(card.uniqueSkills ?? []).map(id => UNIQUE_SKILL_NAMES[id] ?? id).join("<br>")}</span>`;
 }
@@ -41,15 +49,21 @@ export function renderPlayers(game, container, humanId, targets = null, revealHa
     node.classList.toggle("untargetable", !!targets && !targets.includes(player.id));
     node.setAttribute("aria-label", `${player.name}，${player.hero.name}，${player.hand.length}张手牌`);
     const marks = [];
-    if (player.hero.state?.form) marks.push(`<span class="hero-state-mark" title="${player.hero.state.form}形态">${player.hero.state.form}</span>`);
-    if (player.hero.id === "elementalist" && player.hero.state.elements > 0) marks.push(`<span class="element-mark" title="元素 ${player.hero.state.elements}/3" aria-label="元素 ${player.hero.state.elements}/3"><img src="/assets/markers/element.png" alt="元素"><b>${player.hero.state.elements}</b></span>`);
+    if (player.hero.state?.form) {
+      const form = formNames[player.hero.state.form] ?? player.hero.state.form;
+      marks.push(`<span class="hero-state-mark" title="${form}形态">${form}</span>`);
+    }
+    for (const [field, label, maximum, image] of heroMarkers[player.hero.id] ?? []) {
+      const amount = player.hero.state?.[field] ?? 0;
+      if (amount > 0) marks.push(`<span class="element-mark" data-hero-marker="${field}" title="${label} ${amount}/${maximum}" aria-label="${label} ${amount}/${maximum}"><img src="/assets/markers/${image}.png" alt="${label}"><b>${amount}</b></span>`);
+    }
     node.classList.toggle("hero-transformed", !!player.hero.state?.form);
     if (player.getStatus("holyShield")[0]) marks.push('<img src="/assets/card/holyShield.png" title="圣盾" alt="圣盾">');
     if (player.getStatus("weakness")[0]) marks.push('<img src="/assets/card/weakness.png" title="虚弱" alt="虚弱">');
     if (player.getStatus("poison").length) marks.push(`<span class="poison-mark"><img src="/assets/card/poison.png" title="中毒" alt="中毒"><b>${player.getStatus("poison").length}</b></span>`);
     for (const card of player.statuses.filter(card => !["holyShield", "weakness", "poison"].includes(card.attachment.effectId))) {
       const id = card.attachment.effectId, label = UNIQUE_SKILL_NAMES[id] ?? CARD_NAMES[id] ?? id;
-      marks.push(`<span class="poison-mark"><img src="/assets/card/${card.name}.png" title="${label}" alt="${label}"><b>${label.startsWith("五") ? "" : label[0]}</b></span>`);
+      marks.push(`<span class="poison-mark" data-effect-id="${id}"><img src="/assets/card/${card.name}.png" title="${label}" alt="${label}"><b>${label.startsWith("五") ? "" : label[0]}</b></span>`);
     }
     const energy = [
       ["crystal", "crystal", "水晶"], ["gem", "gem", "宝石"],

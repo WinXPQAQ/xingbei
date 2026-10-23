@@ -28,5 +28,14 @@
   "character/plagueMage.jpg": "character/wenYiFaShi.jpg",
   "character/elementalist.jpg": "character/yuanSuShi.jpg",
   "character/valkyrie.jpg": "character/nvWuShen.jpg",
-  "markers/element.png": "card/zhiShiWu/hong.png"
+  "markers/element.png": "card/zhiShiWu/hong.png",
+  "character/magicSwordsman.jpg": "character/moJianShi.jpg",
+  "character/adjudicator.jpg": "character/zhongCaiZhe.jpg",
+  "character/sage.jpg": "character/xianZhe.jpg",
+  "character/prayer.jpg": "character/qiDaoShi.jpg",
+  "character/heroicPuppet.jpg": "character/yingLingRenXing.jpg",
+  "markers/battleRunes.png": "card/zhuanShu/zhanWen.png",
+  "markers/magicRunes.png": "card/zhuanShu/moWen.png",
+  "markers/prayerRunes.png": "card/zhiShiWu/hong.png",
+  "markers/judgment.png": "card/zhiShiWu/hong.png"
 }

@@ -30,7 +30,7 @@ function createSkills(hero) {
         yield* game.paySkillEnergy(player.id, "crystal");
         const target = game.player(targetIds[0]);
         game.logSkill(player.id, "snipe", `令${game.actorLabel(target.id)}补牌：原有${target.hand.length}张，非伤害摸${Math.max(0, 5 - target.hand.length)}张（补至至少5张；手牌上限${target.handLimit}）`);
-        game.draw(target.id, Math.max(0, 5 - target.hand.length), { overflow: options.overflow, cause: { type: "directDraw", sourceId: player.id, skillId: "snipe" } });
+        yield* game.drawSteps(target.id, Math.max(0, 5 - target.hand.length), { overflow: options.overflow, cause: { type: "directDraw", sourceId: player.id, skillId: "snipe" } });
         yield* game.present();
         if (target.pendingOverflow) yield { type: "overflow", player: target };
         game.turn.addAttackAction({ sourceSkillId: "snipe" });

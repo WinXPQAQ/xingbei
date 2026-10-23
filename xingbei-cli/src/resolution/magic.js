@@ -28,7 +28,7 @@ export function* magicRelaySteps(game, actorId, options = {}) {
     game.recordPresentation("relay", { sourceId, playerId: target.id, amount: damage });
     yield* game.flushRuleEvents(options);
     yield* game.present();
-    const valid = target.hand.map((card, index) => ({ card, index })).filter(item => item.card.name === "holyLight" || game.canRelayMagic(target.id, item.card));
+    const valid = target.hand.map((card, index) => ({ card, index })).filter(item => game.allowsCard(target.id, item.card, "response") && (item.card.name === "holyLight" || game.canRelayMagic(target.id, item.card)));
     const decision = yield { type: "response", actor: game.player(sourceId), target, valid, damage,
       nextTarget: game.magicTarget(target.id, participants, options.direction ?? 1), participants: [...participants] };
     const picked = decision && valid.find(item => item.index === decision.index);

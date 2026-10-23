@@ -2,7 +2,7 @@ import { resolveSync } from '../resolution/decisions.js';
 
 // Sync compatibility entry with policy-local nested decisions, including overflow.
 // A frozen policy must not inherit the production policy through Game's defaults.
-export function runPolicyAction(policy, game, actorId, { autoRespond = true } = {}) {
+export function runPolicyAction(policy, game, actorId, { autoRespond = true, retried = false } = {}) {
   const action = policy.chooseAiAction(game, actorId);
   const options = { ai: true, autoRespond,
     overflow: (player, excess) => policy.chooseAiDiscard(game, player.id, excess),
@@ -24,5 +24,8 @@ export function runPolicyAction(policy, game, actorId, { autoRespond = true } = 
     else if (action.type === 'play') game.play(actorId, action.index, action.targetId, options);
     else game.skipExtraActions(actorId);
     return action;
+  } catch (error) {
+    if (error.actionInvalidated && !retried && !game.winner) return runPolicyAction(policy, game, actorId, { autoRespond, retried: true });
+    throw error;
   } finally { game.automaticDecision = previous; }
 }

@@ -26,7 +26,7 @@ sealerEffects.fivefoldBinding = {
     game.removeEffect(card.id, { zone: "outside" });
     if (weakness) game.removeEffect(weakness.id);
     if (choice === "draw") {
-      game.draw(player.id, count, { overflow: options.overflow, cause: { type: "directDraw", skillId: "fivefoldBinding" } });
+      yield* game.drawSteps(player.id, count, { overflow: options.overflow, cause: { type: "directDraw", skillId: "fivefoldBinding" } });
       yield* game.present(); if (player.pendingOverflow) yield { type: "overflow", player };
     } else context.skipped = true;
   },
@@ -63,7 +63,7 @@ function createSkills(hero) {
         const id = yield* game.chooseBasicEffect(player.id, effects, "封印破碎：选择收入手中的基础效果", { skillId: "sealBreaking" });
         yield* game.paySkillEnergy(player.id, "crystal");
         game.removeEffect(id, { zone: "hand", playerId: player.id });
-        game.draw(player.id, 0, { overflow: options.overflow });
+        yield* game.drawSteps(player.id, 0, { overflow: options.overflow });
       } },
   ];
 }

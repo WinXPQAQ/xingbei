@@ -1,3 +1,9 @@
+import { HeroicPuppet } from "./heroes/heroic-puppet.js";
+import { Prayer } from "./heroes/prayer.js";
+import { Sage } from "./heroes/sage.js";
+import { Adjudicator } from "./heroes/adjudicator.js";
+import { MagicSwordsman } from "./heroes/magic-swordsman.js";
+import { Assassin } from "./heroes/assassin.js";
 import { Saint } from "./heroes/saint.js";
 import { HolyLancer } from "./heroes/holy-lancer.js";
 import { PlagueMage } from "./heroes/plague-mage.js";
@@ -16,7 +22,7 @@ const definitions = [
   ["berserker", "狂战士"], ["magicalGirl", "魔法少女"], ["bard", "吟游诗人"],
   ["swordEmperor", "剑帝"], ["priest", "神官"], ["assassin", "暗杀者"],
 ];
-export const HERO_DEFINITIONS = { saint: { name: "圣女", HeroClass: Saint }, holyLancer: { name: "圣枪骑士", HeroClass: HolyLancer }, plagueMage: { name: "瘟疫法师", HeroClass: PlagueMage }, elementalist: { name: "元素师", HeroClass: Elementalist }, valkyrie: { name: "女武神", HeroClass: Valkyrie }, magicalGirl: { name: "魔法少女", HeroClass: MagicalGirl }, priest: { name: "神官", HeroClass: Priest }, guardianAngel: { name: "守护天使", HeroClass: GuardianAngel }, sealer: { name: "封印师", HeroClass: Sealer }, marksman: { name: "神箭手", HeroClass: Marksman }, windSwordmaster: { name: "风之剑圣", HeroClass: WindSwordmaster }, berserker: { name: "狂战士", HeroClass: Berserker } };
+export const HERO_DEFINITIONS = { assassin: { name: "暗杀者", HeroClass: Assassin }, magicSwordsman: { name: "魔剑士", HeroClass: MagicSwordsman }, adjudicator: { name: "仲裁者", HeroClass: Adjudicator }, sage: { name: "贤者", HeroClass: Sage }, prayer: { name: "祈祷师", HeroClass: Prayer }, heroicPuppet: { name: "英灵人形", HeroClass: HeroicPuppet }, saint: { name: "圣女", HeroClass: Saint }, holyLancer: { name: "圣枪骑士", HeroClass: HolyLancer }, plagueMage: { name: "瘟疫法师", HeroClass: PlagueMage }, elementalist: { name: "元素师", HeroClass: Elementalist }, valkyrie: { name: "女武神", HeroClass: Valkyrie }, magicalGirl: { name: "魔法少女", HeroClass: MagicalGirl }, priest: { name: "神官", HeroClass: Priest }, guardianAngel: { name: "守护天使", HeroClass: GuardianAngel }, sealer: { name: "封印师", HeroClass: Sealer }, marksman: { name: "神箭手", HeroClass: Marksman }, windSwordmaster: { name: "风之剑圣", HeroClass: WindSwordmaster }, berserker: { name: "狂战士", HeroClass: Berserker } };
 export function createHero(id, enabled = true) {
   const definition = HERO_DEFINITIONS[id];
   const name = definition?.name ?? definitions.find(entry => entry[0] === id)?.[1] ?? id;
@@ -29,6 +35,7 @@ export function getAvailableHeroes() {
   const ids = [...new Set([...DEFAULT_HERO_IDS, ...Object.keys(HERO_DEFINITIONS)])];
   return ids.map(id => ({ id, name: HERO_DEFINITIONS[id].name }));
 }
+export const WAVE_THREE_HERO_IDS = ["assassin", "magicSwordsman", "adjudicator", "sage", "prayer", "heroicPuppet"];
 export const WAVE_TWO_HERO_IDS = ["saint", "holyLancer", "plagueMage", "elementalist", "valkyrie", "magicalGirl"];
 export function createHeroRoster(playerHeroId, playerSeat = 0, initialRoster = DEFAULT_HERO_IDS) {
   if (initialRoster.length !== 6 || initialRoster.some(id => !Object.hasOwn(HERO_DEFINITIONS, id))) throw new Error("无效的测试阵容");
