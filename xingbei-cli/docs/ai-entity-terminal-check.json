@@ -1,0 +1,852 @@
+{
+  "purpose": "terminal-reward pipeline verification, not AI strength acceptance",
+  "rule_opponent_round": {
+    "round": 1,
+    "opponent": "v1.8.0-preview.1",
+    "decisions": 386,
+    "completed": 6,
+    "truncated": 0,
+    "rollout": {
+      "decisions": 386,
+      "candidates": 3761,
+      "bytes": 3259431,
+      "batches": 238,
+      "max_batch": 4,
+      "collate_seconds": 0.1680645173182711,
+      "infer_seconds": 0.4758440724108368,
+      "parse_seconds": 0.045773477060720325,
+      "seconds": 1.3405899259960279,
+      "games_per_second": 4.475641569171226,
+      "decisions_per_second": 287.93294095001556,
+      "mean_batch": 1.6218487394957983
+    },
+    "update": {
+      "updates": 13,
+      "policy_loss": 0.944525773708637,
+      "value_loss": 0.4638881797973926,
+      "entropy": 1.424019877727215
+    },
+    "games": [
+      {
+        "seed": 211102700,
+        "start": 0,
+        "turns": 33,
+        "decisions": 107,
+        "maxCandidates": 66,
+        "kinds": {
+          "action": 36,
+          "response": 45,
+          "skillChoice": 11,
+          "weakness": 2,
+          "overflow": 8,
+          "healing": 1,
+          "numberChoice": 2,
+          "cardChoice": 2
+        },
+        "winner": "blue",
+        "terminated": true,
+        "truncated": false,
+        "truncationReason": null,
+        "rewards": {
+          "0": -1,
+          "1": 1,
+          "2": 1,
+          "3": -1,
+          "4": -1,
+          "5": 1
+        }
+      },
+      {
+        "seed": 211102701,
+        "start": 1,
+        "turns": 45,
+        "decisions": 148,
+        "maxCandidates": 341,
+        "kinds": {
+          "action": 54,
+          "response": 44,
+          "overflow": 11,
+          "skillChoice": 19,
+          "weakness": 1,
+          "healing": 9,
+          "cardChoice": 6,
+          "playerChoice": 2,
+          "numberChoice": 2
+        },
+        "winner": "red",
+        "terminated": true,
+        "truncated": false,
+        "truncationReason": null,
+        "rewards": {
+          "0": 1,
+          "1": -1,
+          "2": -1,
+          "3": 1,
+          "4": 1,
+          "5": -1
+        }
+      },
+      {
+        "seed": 211102702,
+        "start": 2,
+        "turns": 46,
+        "decisions": 127,
+        "maxCandidates": 84,
+        "kinds": {
+          "action": 45,
+          "response": 40,
+          "skillChoice": 13,
+          "overflow": 11,
+          "cardChoice": 8,
+          "playerChoice": 3,
+          "weakness": 3,
+          "numberChoice": 3,
+          "energyChoice": 1
+        },
+        "winner": "blue",
+        "terminated": true,
+        "truncated": false,
+        "truncationReason": null,
+        "rewards": {
+          "0": -1,
+          "1": 1,
+          "2": 1,
+          "3": -1,
+          "4": -1,
+          "5": 1
+        }
+      },
+      {
+        "seed": 211102703,
+        "start": 3,
+        "turns": 58,
+        "decisions": 151,
+        "maxCandidates": 106,
+        "kinds": {
+          "action": 60,
+          "response": 50,
+          "playerChoice": 3,
+          "skillChoice": 13,
+          "weakness": 3,
+          "overflow": 6,
+          "energyChoice": 1,
+          "effectChoice": 1,
+          "cardChoice": 5,
+          "healing": 9
+        },
+        "winner": "red",
+        "terminated": true,
+        "truncated": false,
+        "truncationReason": null,
+        "rewards": {
+          "0": 1,
+          "1": -1,
+          "2": -1,
+          "3": 1,
+          "4": 1,
+          "5": -1
+        }
+      },
+      {
+        "seed": 211102704,
+        "start": 4,
+        "turns": 10,
+        "decisions": 37,
+        "maxCandidates": 31,
+        "kinds": {
+          "action": 12,
+          "skillChoice": 4,
+          "response": 9,
+          "overflow": 9,
+          "cardChoice": 2,
+          "healing": 1
+        },
+        "winner": "blue",
+        "terminated": true,
+        "truncated": false,
+        "truncationReason": null,
+        "rewards": {
+          "0": -1,
+          "1": 1,
+          "2": 1,
+          "3": -1,
+          "4": -1,
+          "5": 1
+        }
+      },
+      {
+        "seed": 211102705,
+        "start": 5,
+        "turns": 53,
+        "decisions": 144,
+        "maxCandidates": 84,
+        "kinds": {
+          "action": 54,
+          "response": 53,
+          "skillChoice": 11,
+          "overflow": 11,
+          "weakness": 1,
+          "cardChoice": 7,
+          "numberChoice": 7
+        },
+        "winner": "red",
+        "terminated": true,
+        "truncated": false,
+        "truncationReason": null,
+        "rewards": {
+          "0": 1,
+          "1": -1,
+          "2": -1,
+          "3": 1,
+          "4": 1,
+          "5": -1
+        }
+      }
+    ]
+  },
+  "resumed_self_play_round": {
+    "round": 2,
+    "opponent": "self",
+    "decisions": 1014,
+    "completed": 6,
+    "truncated": 0,
+    "rollout": {
+      "decisions": 1014,
+      "candidates": 10485,
+      "bytes": 9138730,
+      "batches": 347,
+      "max_batch": 4,
+      "collate_seconds": 0.3721933704800904,
+      "infer_seconds": 0.5333609610097483,
+      "parse_seconds": 0.14137265854515135,
+      "seconds": 1.8381390509894118,
+      "games_per_second": 3.2641708997860586,
+      "decisions_per_second": 551.6448820638439,
+      "mean_batch": 2.922190201729107
+    },
+    "update": {
+      "updates": 32,
+      "policy_loss": -0.5838697822764516,
+      "value_loss": 1.2089818492531776,
+      "entropy": 1.4481177292764187
+    },
+    "games": [
+      {
+        "seed": 211102706,
+        "start": 0,
+        "turns": 75,
+        "decisions": 173,
+        "maxCandidates": 210,
+        "kinds": {
+          "action": 76,
+          "skillChoice": 15,
+          "response": 44,
+          "overflow": 10,
+          "playerChoice": 7,
+          "weakness": 5,
+          "healing": 4,
+          "effectChoice": 3,
+          "cardChoice": 6,
+          "bindingChoice": 1,
+          "numberChoice": 2
+        },
+        "winner": "blue",
+        "terminated": true,
+        "truncated": false,
+        "truncationReason": null,
+        "rewards": {
+          "0": -1,
+          "1": 1,
+          "2": 1,
+          "3": -1,
+          "4": -1,
+          "5": 1
+        }
+      },
+      {
+        "seed": 211102707,
+        "start": 1,
+        "turns": 58,
+        "decisions": 196,
+        "maxCandidates": 179,
+        "kinds": {
+          "action": 74,
+          "response": 54,
+          "skillChoice": 26,
+          "overflow": 14,
+          "playerChoice": 3,
+          "cardChoice": 6,
+          "healing": 11,
+          "weakness": 1,
+          "energyChoice": 1,
+          "numberChoice": 6
+        },
+        "winner": "blue",
+        "terminated": true,
+        "truncated": false,
+        "truncationReason": null,
+        "rewards": {
+          "0": -1,
+          "1": 1,
+          "2": 1,
+          "3": -1,
+          "4": -1,
+          "5": 1
+        }
+      },
+      {
+        "seed": 211102708,
+        "start": 2,
+        "turns": 60,
+        "decisions": 167,
+        "maxCandidates": 160,
+        "kinds": {
+          "action": 60,
+          "response": 58,
+          "skillChoice": 16,
+          "numberChoice": 6,
+          "overflow": 13,
+          "weakness": 3,
+          "cardChoice": 8,
+          "playerChoice": 3
+        },
+        "winner": "blue",
+        "terminated": true,
+        "truncated": false,
+        "truncationReason": null,
+        "rewards": {
+          "0": -1,
+          "1": 1,
+          "2": 1,
+          "3": -1,
+          "4": -1,
+          "5": 1
+        }
+      },
+      {
+        "seed": 211102709,
+        "start": 3,
+        "turns": 81,
+        "decisions": 216,
+        "maxCandidates": 94,
+        "kinds": {
+          "action": 87,
+          "skillChoice": 13,
+          "response": 78,
+          "playerChoice": 5,
+          "weakness": 5,
+          "overflow": 12,
+          "healing": 6,
+          "numberChoice": 2,
+          "cardChoice": 6,
+          "effectChoice": 1,
+          "energyChoice": 1
+        },
+        "winner": "blue",
+        "terminated": true,
+        "truncated": false,
+        "truncationReason": null,
+        "rewards": {
+          "0": -1,
+          "1": 1,
+          "2": 1,
+          "3": -1,
+          "4": -1,
+          "5": 1
+        }
+      },
+      {
+        "seed": 211102710,
+        "start": 4,
+        "turns": 37,
+        "decisions": 98,
+        "maxCandidates": 28,
+        "kinds": {
+          "action": 43,
+          "response": 26,
+          "skillChoice": 9,
+          "numberChoice": 2,
+          "healing": 1,
+          "overflow": 9,
+          "cardChoice": 5,
+          "weakness": 1,
+          "playerChoice": 2
+        },
+        "winner": "blue",
+        "terminated": true,
+        "truncated": false,
+        "truncationReason": null,
+        "rewards": {
+          "0": -1,
+          "1": 1,
+          "2": 1,
+          "3": -1,
+          "4": -1,
+          "5": 1
+        }
+      },
+      {
+        "seed": 211102711,
+        "start": 5,
+        "turns": 65,
+        "decisions": 164,
+        "maxCandidates": 30,
+        "kinds": {
+          "action": 64,
+          "response": 55,
+          "skillChoice": 18,
+          "overflow": 13,
+          "weakness": 4,
+          "cardChoice": 4,
+          "numberChoice": 2,
+          "healing": 3,
+          "playerChoice": 1
+        },
+        "winner": "red",
+        "terminated": true,
+        "truncated": false,
+        "truncationReason": null,
+        "rewards": {
+          "0": 1,
+          "1": -1,
+          "2": -1,
+          "3": 1,
+          "4": 1,
+          "5": -1
+        }
+      }
+    ]
+  },
+  "final_inference": {
+    "results": [
+      {
+        "seed": 211102300,
+        "start": 0,
+        "turns": 50,
+        "decisions": 141,
+        "maxCandidates": 462,
+        "kinds": {
+          "action": 57,
+          "skillChoice": 15,
+          "response": 37,
+          "overflow": 9,
+          "numberChoice": 2,
+          "cardChoice": 5,
+          "weakness": 2,
+          "playerChoice": 5,
+          "healing": 7,
+          "effectChoice": 2
+        },
+        "winner": "blue",
+        "terminated": true,
+        "truncated": false,
+        "truncationReason": null,
+        "rewards": {
+          "0": -1,
+          "1": 1,
+          "2": 1,
+          "3": -1,
+          "4": -1,
+          "5": 1
+        }
+      },
+      {
+        "seed": 211102301,
+        "start": 1,
+        "turns": 39,
+        "decisions": 104,
+        "maxCandidates": 175,
+        "kinds": {
+          "action": 44,
+          "skillChoice": 13,
+          "response": 20,
+          "cardChoice": 5,
+          "healing": 8,
+          "overflow": 11,
+          "weakness": 2,
+          "numberChoice": 1
+        },
+        "winner": "red",
+        "terminated": true,
+        "truncated": false,
+        "truncationReason": null,
+        "rewards": {
+          "0": 1,
+          "1": -1,
+          "2": -1,
+          "3": 1,
+          "4": 1,
+          "5": -1
+        }
+      },
+      {
+        "seed": 211102302,
+        "start": 2,
+        "turns": 36,
+        "decisions": 95,
+        "maxCandidates": 28,
+        "kinds": {
+          "action": 38,
+          "response": 28,
+          "cardChoice": 6,
+          "skillChoice": 9,
+          "overflow": 10,
+          "playerChoice": 1,
+          "numberChoice": 3
+        },
+        "winner": "blue",
+        "terminated": true,
+        "truncated": false,
+        "truncationReason": null,
+        "rewards": {
+          "0": -1,
+          "1": 1,
+          "2": 1,
+          "3": -1,
+          "4": -1,
+          "5": 1
+        }
+      },
+      {
+        "seed": 211102303,
+        "start": 3,
+        "turns": 67,
+        "decisions": 143,
+        "maxCandidates": 58,
+        "kinds": {
+          "action": 66,
+          "response": 45,
+          "cardChoice": 3,
+          "weakness": 3,
+          "skillChoice": 8,
+          "overflow": 8,
+          "playerChoice": 4,
+          "effectChoice": 1,
+          "healing": 5
+        },
+        "winner": "red",
+        "terminated": true,
+        "truncated": false,
+        "truncationReason": null,
+        "rewards": {
+          "0": 1,
+          "1": -1,
+          "2": -1,
+          "3": 1,
+          "4": 1,
+          "5": -1
+        }
+      },
+      {
+        "seed": 211102304,
+        "start": 4,
+        "turns": 31,
+        "decisions": 98,
+        "maxCandidates": 167,
+        "kinds": {
+          "action": 39,
+          "skillChoice": 12,
+          "response": 16,
+          "cardChoice": 8,
+          "playerChoice": 3,
+          "overflow": 10,
+          "healing": 5,
+          "numberChoice": 4,
+          "weakness": 1
+        },
+        "winner": "blue",
+        "terminated": true,
+        "truncated": false,
+        "truncationReason": null,
+        "rewards": {
+          "0": -1,
+          "1": 1,
+          "2": 1,
+          "3": -1,
+          "4": -1,
+          "5": 1
+        }
+      },
+      {
+        "seed": 211102305,
+        "start": 5,
+        "turns": 51,
+        "decisions": 119,
+        "maxCandidates": 84,
+        "kinds": {
+          "action": 52,
+          "response": 35,
+          "cardChoice": 1,
+          "overflow": 11,
+          "weakness": 4,
+          "skillChoice": 15,
+          "numberChoice": 1
+        },
+        "winner": "red",
+        "terminated": true,
+        "truncated": false,
+        "truncationReason": null,
+        "rewards": {
+          "0": 1,
+          "1": -1,
+          "2": -1,
+          "3": 1,
+          "4": 1,
+          "5": -1
+        }
+      }
+    ],
+    "stats": {
+      "decisions": 382,
+      "candidates": 4149,
+      "bytes": 3071672,
+      "batches": 236,
+      "max_batch": 4,
+      "collate_seconds": 0.1487488215789199,
+      "infer_seconds": 0.24520671635400504,
+      "parse_seconds": 0.036367300897836685,
+      "seconds": 1.01816969900392,
+      "games_per_second": 5.892927284979928,
+      "decisions_per_second": 375.18303714372206,
+      "mean_batch": 1.61864406779661
+    }
+  },
+  "profile": {
+    "results": [
+      {
+        "seed": 211102300,
+        "start": 0,
+        "turns": 50,
+        "decisions": 141,
+        "maxCandidates": 462,
+        "kinds": {
+          "action": 57,
+          "skillChoice": 15,
+          "response": 37,
+          "overflow": 9,
+          "numberChoice": 2,
+          "cardChoice": 5,
+          "weakness": 2,
+          "playerChoice": 5,
+          "healing": 7,
+          "effectChoice": 2
+        },
+        "profile": {
+          "candidatesMs": 7.809974000000281,
+          "decisionWaitMs": 735.5509219999993,
+          "invariantsMs": 9.224366999999745,
+          "elapsedMs": 789.141257
+        },
+        "winner": "blue",
+        "terminated": true,
+        "truncated": false,
+        "truncationReason": null,
+        "rewards": {
+          "0": -1,
+          "1": 1,
+          "2": 1,
+          "3": -1,
+          "4": -1,
+          "5": 1
+        }
+      },
+      {
+        "seed": 211102301,
+        "start": 1,
+        "turns": 39,
+        "decisions": 104,
+        "maxCandidates": 175,
+        "kinds": {
+          "action": 44,
+          "skillChoice": 13,
+          "response": 20,
+          "cardChoice": 5,
+          "healing": 8,
+          "overflow": 11,
+          "weakness": 2,
+          "numberChoice": 1
+        },
+        "profile": {
+          "candidatesMs": 7.0093220000003384,
+          "decisionWaitMs": 485.079062,
+          "invariantsMs": 6.885207000000207,
+          "elapsedMs": 530.352665
+        },
+        "winner": "red",
+        "terminated": true,
+        "truncated": false,
+        "truncationReason": null,
+        "rewards": {
+          "0": 1,
+          "1": -1,
+          "2": -1,
+          "3": 1,
+          "4": 1,
+          "5": -1
+        }
+      },
+      {
+        "seed": 211102302,
+        "start": 2,
+        "turns": 36,
+        "decisions": 95,
+        "maxCandidates": 28,
+        "kinds": {
+          "action": 38,
+          "response": 28,
+          "cardChoice": 6,
+          "skillChoice": 9,
+          "overflow": 10,
+          "playerChoice": 1,
+          "numberChoice": 3
+        },
+        "profile": {
+          "candidatesMs": 4.2673340000002185,
+          "decisionWaitMs": 488.7488129999997,
+          "invariantsMs": 5.7764999999998,
+          "elapsedMs": 529.882173
+        },
+        "winner": "blue",
+        "terminated": true,
+        "truncated": false,
+        "truncationReason": null,
+        "rewards": {
+          "0": -1,
+          "1": 1,
+          "2": 1,
+          "3": -1,
+          "4": -1,
+          "5": 1
+        }
+      },
+      {
+        "seed": 211102303,
+        "start": 3,
+        "turns": 67,
+        "decisions": 143,
+        "maxCandidates": 58,
+        "kinds": {
+          "action": 66,
+          "response": 45,
+          "cardChoice": 3,
+          "weakness": 3,
+          "skillChoice": 8,
+          "overflow": 8,
+          "playerChoice": 4,
+          "effectChoice": 1,
+          "healing": 5
+        },
+        "profile": {
+          "candidatesMs": 6.8265480000002015,
+          "decisionWaitMs": 685.0077640000004,
+          "invariantsMs": 9.12232100000054,
+          "elapsedMs": 737.61284
+        },
+        "winner": "red",
+        "terminated": true,
+        "truncated": false,
+        "truncationReason": null,
+        "rewards": {
+          "0": 1,
+          "1": -1,
+          "2": -1,
+          "3": 1,
+          "4": 1,
+          "5": -1
+        }
+      },
+      {
+        "seed": 211102304,
+        "start": 4,
+        "turns": 31,
+        "decisions": 98,
+        "maxCandidates": 167,
+        "kinds": {
+          "action": 39,
+          "skillChoice": 12,
+          "response": 16,
+          "cardChoice": 8,
+          "playerChoice": 3,
+          "overflow": 10,
+          "healing": 5,
+          "numberChoice": 4,
+          "weakness": 1
+        },
+        "profile": {
+          "candidatesMs": 5.148216999999704,
+          "decisionWaitMs": 316.4154040000001,
+          "invariantsMs": 4.28359200000034,
+          "elapsedMs": 344.392235
+        },
+        "winner": "blue",
+        "terminated": true,
+        "truncated": false,
+        "truncationReason": null,
+        "rewards": {
+          "0": -1,
+          "1": 1,
+          "2": 1,
+          "3": -1,
+          "4": -1,
+          "5": 1
+        }
+      },
+      {
+        "seed": 211102305,
+        "start": 5,
+        "turns": 51,
+        "decisions": 119,
+        "maxCandidates": 84,
+        "kinds": {
+          "action": 52,
+          "response": 35,
+          "cardChoice": 1,
+          "overflow": 11,
+          "weakness": 4,
+          "skillChoice": 15,
+          "numberChoice": 1
+        },
+        "profile": {
+          "candidatesMs": 3.5142069999997148,
+          "decisionWaitMs": 363.35395999999935,
+          "invariantsMs": 5.842227999999636,
+          "elapsedMs": 393.549575
+        },
+        "winner": "red",
+        "terminated": true,
+        "truncated": false,
+        "truncationReason": null,
+        "rewards": {
+          "0": 1,
+          "1": -1,
+          "2": -1,
+          "3": 1,
+          "4": 1,
+          "5": -1
+        }
+      }
+    ],
+    "stats": {
+      "decisions": 382,
+      "candidates": 4149,
+      "bytes": 3072479,
+      "batches": 224,
+      "max_batch": 4,
+      "collate_seconds": 0.15492461109533906,
+      "infer_seconds": 0.256267681485042,
+      "parse_seconds": 0.0411620355444029,
+      "seconds": 1.0257414419902489,
+      "games_per_second": 5.849427306318232,
+      "decisions_per_second": 372.41353850226074,
+      "mean_batch": 1.7053571428571428
+    }
+  },
+  "checks": {
+    "terminal_team_rewards": true,
+    "truncated_games_excluded": true,
+    "weights_changed_each_round": true,
+    "round_counter_restored": true,
+    "core_tests": 92,
+    "entity_tests": 4
+  }
+}

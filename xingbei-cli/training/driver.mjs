@@ -3,7 +3,14 @@ import { actionCandidates, decisionCandidates, decisionPlayer } from './candidat
 
 // Trusted simulator-side callback. Raw game/request never crosses into the
 // learner: a separate encoder must construct its detached observation.
-export async function driveGame({ seed, heroIds, start = 0, turnLimit = 500, decisionLimit = 10000 }, select) {
+export async function driveGame({ seed, heroIds, start = 0, turnLimit = 500, decisionLimit = 10000, profile = false }, select) {
+  const started = performance.now();
+  const timings = { candidatesMs: 0, decisionWaitMs: 0, invariantsMs: 0 };
+  const timed = (key, fn) => {
+    if (!profile) return fn();
+    const start = performance.now();
+    try { return fn(); } finally { timings[key] += performance.now() - start; }
+  };
   const game = new Game({ seed, ...(heroIds ? { heroIds } : {}) }).setup();
   game.current = start;
   game.automaticDecision = request => { throw new Error(`Forbidden automatic fallback: ${request.type}`); };
@@ -16,13 +23,15 @@ export async function driveGame({ seed, heroIds, start = 0, turnLimit = 500, dec
     decisions++;
     kinds[request.type] = (kinds[request.type] ?? 0) + 1;
     maxCandidates = Math.max(maxCandidates, candidates.length);
+    const start = profile ? performance.now() : 0;
     const index = await select({ game, playerId, request, candidates });
+    if (profile) timings.decisionWaitMs += performance.now() - start;
     if (!Number.isInteger(index) || index < 0 || index >= candidates.length) throw new Error(`Invalid candidate index ${index}`);
     return candidates[index];
   }
   async function decide(request) {
     const playerId = decisionPlayer(request);
-    const value = await pick(playerId, request, decisionCandidates(game, request));
+    const value = await pick(playerId, request, timed('candidatesMs', () => decisionCandidates(game, request)));
     if (request.type === 'overflow') return game.resolveOverflowWithDecisions(playerId, value, options);
     return value;
   }
@@ -34,23 +43,24 @@ export async function driveGame({ seed, heroIds, start = 0, turnLimit = 500, dec
       const id = game.current;
       await game.beginTurn(id, { ...options, chooseWeakness: decide }, options);
       while (game.turn.needsAction()) {
-        const action = await pick(id, { type: 'action' }, actionCandidates(game, id));
+        const action = await pick(id, { type: 'action' }, timed('candidatesMs', () => actionCandidates(game, id)));
         if (action.type === 'pass') game.skipExtraActions(id);
         else {
           try { await game.executeAction(id, action, options); }
           catch (error) { if (!error.actionInvalidated) throw error; }
         }
-        game.assertCardLocations();
+        timed('invariantsMs', () => game.assertCardLocations());
         if (!game.winner && game.players.some(player => player.pendingOverflow)) throw new Error('Unresolved overflow after action');
       }
       await game.endTurnWithDecisions(options);
-      game.assertCardLocations();
+      timed('invariantsMs', () => game.assertCardLocations());
     }
     if (!game.winner) reason = 'turnLimit';
   } catch (error) {
     if (error !== limit) throw error;
     reason = 'decisionLimit';
   }
-  return { seed, start, turns, decisions, maxCandidates, kinds, winner: game.winner, terminated: !!game.winner, truncated: !game.winner, truncationReason: reason,
+  return { seed, start, turns, decisions, maxCandidates, kinds,
+    ...(profile ? { profile: { ...timings, elapsedMs: performance.now()-started } } : {}), winner: game.winner, terminated: !!game.winner, truncated: !game.winner, truncationReason: reason,
     rewards: game.winner ? Object.fromEntries(game.players.map(player => [player.id, player.team === game.winner ? 1 : -1])) : null };
 }

@@ -19,7 +19,7 @@ ROSTERS = [
 
 
 async def run_games(model, vocabulary, configs, *, workers=4, device='cpu', opponent=None,
-                    sparse=True, batch_wait_ms=1):
+                    sparse=True, batch_wait_ms=1, trajectory=False):
     if workers < 1 or not configs: raise ValueError('Need workers and game configs')
     jobs = asyncio.Queue()
     for index, config in enumerate(configs): jobs.put_nowait((index, config))
@@ -43,6 +43,7 @@ async def run_games(model, vocabulary, configs, *, workers=4, device='cpu', oppo
             except asyncio.QueueEmpty: break
             # Mirror model side across games; protocol does not infer strength
             # from this small throughput sample.
+            moves = []
             red = index % 2 == 0
             policies = ['model' if opponent is None or ((seat in [0,3,4]) == red) else opponent for seat in range(6)]
             await send(process, dict(type='start', schema=SCHEMA, config=config, seatPolicies=policies,
@@ -54,10 +55,16 @@ async def run_games(model, vocabulary, configs, *, workers=4, device='cpu', oppo
                 start = time.perf_counter(); message = json.loads(line); stats['parse_seconds'] += time.perf_counter()-start
                 if message['type'] == 'error': raise RuntimeError(message['error'])
                 if message['type'] == 'result':
-                    results[index] = message['result']; break
+                    results[index] = message['result']
+                    if trajectory: results[index]['trajectory'] = moves
+                    break
                 future = asyncio.get_running_loop().create_future()
                 await pending.put((message['observation'], future))
-                choice = await future
+                selection = await future
+                if trajectory:
+                    moves.append(dict(observation=message['observation'], seat=message['seat'], **selection))
+                    choice = selection['choice']
+                else: choice = selection
                 await send(process, dict(type='select', id=message['id'], index=choice))
 
     async def infer():
@@ -71,7 +78,14 @@ async def run_games(model, vocabulary, configs, *, workers=4, device='cpu', oppo
             if device == 'cuda': torch.cuda.synchronize()
             stats['collate_seconds'] += time.perf_counter()-start
             start = time.perf_counter()
-            with torch.inference_mode(): choices = model.policy_logits(batch).argmax(-1).tolist()
+            with torch.inference_mode():
+                if trajectory:
+                    logits, values = model(batch)
+                    distribution = torch.distributions.Categorical(logits=logits)
+                    selected = distribution.sample()
+                    choices = [dict(choice=choice, old_log_prob=logp, old_value=value)
+                               for choice, logp, value in zip(selected.tolist(), distribution.log_prob(selected).tolist(), values.tolist())]
+                else: choices = model.policy_logits(batch).argmax(-1).tolist()
             stats['infer_seconds'] += time.perf_counter()-start
             stats['batches'] += 1; stats['decisions'] += len(items)
             stats['candidates'] += sum(len(o['candidates']) for o in observations)
@@ -111,11 +125,12 @@ if __name__ == '__main__':
     parser.add_argument('--opponent', default=None)
     parser.add_argument('--raw', action='store_true')
     parser.add_argument('--output')
+    parser.add_argument('--profile', action='store_true')
     args = parser.parse_args()
     if args.games < 1 or args.workers < 1: parser.error('games and workers must be positive')
     torch.set_num_threads(2)
     model, vocabulary = EntityPolicy.restore(torch.load(args.checkpoint, map_location='cpu', weights_only=False))
-    configs = [dict(seed=211102300+i, heroIds=ROSTERS[i % 3], start=i % 6) for i in range(args.games)]
+    configs = [dict(seed=211102300+i, heroIds=ROSTERS[i % 3], start=i % 6, profile=args.profile) for i in range(args.games)]
     report = asyncio.run(run_games(model, vocabulary, configs, workers=args.workers, device=args.device,
                                   opponent=args.opponent, sparse=not args.raw))
     text = json.dumps(report, indent=2)
