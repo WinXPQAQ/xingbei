@@ -12,7 +12,7 @@ import { DEFAULT_HERO_IDS, WAVE_TWO_HERO_IDS, WAVE_THREE_HERO_IDS } from '../../
 const output = process.argv[2];
 if (!output) throw new Error('Usage: node training/entity/collect.mjs OUTPUT.jsonl [GAMES=12] [SEED=211102100]');
 const games = Number(process.argv[3] ?? 12), seed = Number(process.argv[4] ?? 211102100);
-const revision = { commit: execFileSync('git', ['rev-parse', 'HEAD'], {encoding:'utf8'}).trim(),
+const revision = process.env.XINGBEI_SOURCE_REVISION ? { commit: process.env.XINGBEI_SOURCE_REVISION, immutableSnapshot: true } : { commit: execFileSync('git', ['rev-parse', 'HEAD'], {encoding:'utf8'}).trim(),
   diffSha256: createHash('sha256').update(execFileSync('git', ['diff', 'HEAD', '--', 'src', 'training'])).digest('hex') };
 const file = fs.openSync(output, 'wx');
 const teacher = 'v1.8.0-preview.1', rosters = [DEFAULT_HERO_IDS, WAVE_TWO_HERO_IDS, WAVE_THREE_HERO_IDS];
