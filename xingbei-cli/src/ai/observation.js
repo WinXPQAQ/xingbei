@@ -17,7 +17,7 @@ export function captureObservation(game, observerId, { actions = false, history 
     modes: (entry.spec.modes?.map(c => c.value) ?? [null]).map(mode => ({ mode, spec: specData(game.skillActionSpec(observerId, { skillId: entry.skillId, mode: mode ?? undefined })) })) })) : [];
   return copy({ observerId, current: game.current, cards,
     players: game.players.map(p => ({ id: p.id, name: p.name, team: p.team, handLimit: p.handLimit, healing: p.healing, energy: pick(p.energy,['gem','crystal']),
-      hero: { id: p.hero.id, ...(['saint','holyLancer','plagueMage','elementalist','valkyrie','magicalGirl','assassin','magicSwordsman','adjudicator','sage','prayer','heroicPuppet'].includes(p.hero.id) ? {state: pick(p.hero.state,['elements','form','compassion','judgment','requiredJudgment','prayerRunes','battleRunes','magicRunes'])} : {}), skills: p.hero.skills.map(s => typeof s === 'string' ? s : s.id) },
+      hero: { id: p.hero.id, ...(['saint','holyLancer','plagueMage','elementalist','valkyrie','magicalGirl','assassin','magicSwordsman','adjudicator','sage','prayer','heroicPuppet','adventurer','fighter','brave','redLotusKnight','magicLancer','bard'].includes(p.hero.id) ? {state: pick(p.hero.state,['elements','form','compassion','judgment','requiredJudgment','prayerRunes','battleRunes','magicRunes','spirit','lockedTarget','rage','intellect','bloodSeals','attackBonus','released','inspiration','damagedEnemies','concertoUsed'])} : {}), skills: p.hero.skills.map(s => typeof s === 'string' ? s : s.id) },
       skillIds: p.getSkills().map(({skill}) => typeof skill === 'string' ? skill : skill.id),
       handIds: p.id === observerId ? p.hand.map(c => c.id) : null, handCount: p.hand.length,
       statusIds: p.statuses.map(c => c.id), healingLimit: game.getHealingLimit(p.id), ...(game.getEnergyLimit?.(p.id)!==undefined && game.getEnergyLimit(p.id)!==3 ? {energyLimit:game.getEnergyLimit(p.id)} : {}) })),
@@ -62,7 +62,10 @@ export function isolatePolicy(raw, {history = true, activation = false} = {}) {
     if (request.counterTargets) out.counterTargets = request.counterTargets.map(p => v.player(p.id));
     if (request.valid) out.valid = request.valid.map(e => typeof e === 'number' ? e : {index: e.index, card: v.cards.get(e.card.id)});
     if (request.context) out.context = { ...copy(pick(request.context,["sourceId","actual","count","drawCount","skillId","extraSpell","purpose","sameElement","damage","moraleLoss","battleRunes","magicRunes"])), targetId: request.context.targetId, amount: request.context.amount, damageType: request.context.damageType, isCounter: request.context.isCounter, card: v.cards.get(request.context.card?.id) };
-    if (request.attack) out.attack = v.cards.get(request.attack.id);
+    if (request.attack) {
+      const traits = copy(request.attackTraits ?? request.attack.getTraits());
+      out.attack = v.cards.get(request.attack.id) ?? { id: null, name: request.attack.name, type: "attack", elements: traits.elements, fates: traits.fates, uniqueSkills: [], element: traits.elements[0], getTraits: () => copy(traits), hasUniqueSkill: () => false };
+    }
     return out;
   };
   return { ...raw,

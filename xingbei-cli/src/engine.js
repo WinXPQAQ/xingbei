@@ -355,7 +355,7 @@ export class Game {
     this.recordPresentation("discard", { playerId: id, cards: discarded.map(card => card.toJSON()), visibility: "hidden", reason: "overflow" });
     delete player.pendingOverflow;
     const context = { playerId: id, team: player.team, amount: moraleLoss ? -excess : 0, cause };
-    if (context.amount) { yield* this.trigger(Timing.MORALE_BEFORE, context, options); context.amount = Math.min(0, context.amount); this.changeMorale(player.team, context.amount); }
+    if (context.amount) { yield* this.trigger(Timing.MORALE_BEFORE, context, options); context.amount = Math.min(0, context.amount); if (Number.isFinite(cause.moraleLimit)) context.amount = Math.max(context.amount, -cause.moraleLimit); this.changeMorale(player.team, context.amount); }
     this.log.push(`${player.name}爆牌，暗弃${discarded.length}张手牌${discardedDetails}；己方士气-${-context.amount}`);
     yield* this.present(); return discarded;
   }
@@ -398,7 +398,7 @@ export class Game {
 
   allowsAction(playerId, type, skillId = null) {
     const player = this.player(playerId);
-    return player.hero.allowsAction({ game: this, player, type, skillId });
+    return player.hero.allowsAction({ game: this, player, type, skillId }) && player.statuses.every(card => this.effects.get(card.attachment.effectId)?.allowsAction?.({ game: this, player, type, skillId, card }) ?? true);
   }
   allowsCard(playerId, card, purpose = "action") {
     const player = this.player(playerId);
@@ -406,7 +406,7 @@ export class Game {
   }
   canAttackTarget(actorId, targetId, isCounter = false) {
     const actor = this.player(actorId), player = this.player(targetId);
-    return actor.team !== player.team && player.hero.canBeAttackTarget({ game: this, player, actor, isCounter });
+    return actor.team !== player.team && actor.statuses.every(card => this.effects.get(card.attachment.effectId)?.allowsAttackTarget?.({ game: this, actor, targetId, isCounter, card }) ?? true) && player.hero.canBeAttackTarget({ game: this, player, actor, isCounter });
   }
   legalTargets(actorId, card) {
     if (!this.allowsAction(actorId, card.type) || !this.allowsCard(actorId, card)) return [];
@@ -507,8 +507,9 @@ export class Game {
     yield* this.turn.beginAction(actorId, "special");
     yield* this.drawSteps(actorId, 3, { ...options, specialAction: true });
     const player = this.player(actorId);
-    const gems = this.addStones(player.team, "gem");
-    const crystals = this.addStones(player.team, "crystal");
+    const reward = player.hero.purchaseStones?.() ?? { gem: 1, crystal: 1 };
+    const gems = this.addStones(player.team, "gem", reward.gem);
+    const crystals = this.addStones(player.team, "crystal", reward.crystal);
     this.log.push(`${player.name}执行购买，摸3张牌；己方战绩区获得${gems}个宝石和${crystals}个水晶${gems + crystals < 2 ? "（战绩区上限5个）" : ""}`);
     yield* this.present();
     if (this.player(actorId).pendingOverflow) yield { type: "overflow", player: this.player(actorId) };
@@ -804,7 +805,7 @@ export class Game {
     yield* this.present();
     if (context.actual) yield* this.drawSteps(targetId, context.actual, {
       ...nestedOptions, overflow, moraleLoss: options.moraleLoss !== false,
-      cause: { type: "damage", sourceId, damageType: context.damageType, skillId: context.skillId },
+      cause: { type: "damage", sourceId, damageType: context.damageType, skillId: context.skillId, moraleLimit: context.moraleLimit },
     });
     this.recordPublicAction({type:'damage',sourceId:context.sourceId,targetId,amount:context.actual,result:context.damageType});
     this.log.push(`${target.name}承受${context.actual}点${context.damageType === DamageType.SPELL ? "法术" : "攻击"}伤害`);

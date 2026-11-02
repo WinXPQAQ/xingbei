@@ -5,10 +5,10 @@ import { Timing } from "../timing.js";
 export function* attackSteps(game, actorId, handIndex, targetId, options = {}) {
   if (game.winner) throw new RuleError("游戏已经结束");
   let actor = game.player(actorId), target = game.player(targetId);
-  let attack = actor.hand[handIndex], isCounter = false;
+  let attack = options.virtualAttack ?? actor.hand[handIndex], isCounter = false;
   if (attack?.type !== "attack" || !game.canAttackTarget(actorId, targetId)) throw new RuleError("攻击牌只能指定对手");
   let attackTraits = attack.getTraits({ game, playerId: actor.id, purpose: "attack" });
-  game.playCard(actor, handIndex, { ...options, targetId });
+  if (!options.virtualAttack) game.playCard(actor, handIndex, { ...options, targetId });
   yield* game.present();
   let chainDepth = 0;
   while (true) {
@@ -41,6 +41,7 @@ export function* attackSteps(game, actorId, handIndex, targetId, options = {}) {
         game.recordPresentation("miss", { playerId: target.id, cause: context.cause });
         yield* game.trigger(Timing.ATTACK_MISS, context, options);
       }
+      yield* game.trigger(Timing.ATTACK_RESOLVED, context, options);
       if (target.pendingOverflow) yield { type: "overflow", player: target };
       break;
     }
@@ -59,6 +60,7 @@ export function* attackSteps(game, actorId, handIndex, targetId, options = {}) {
     game.recordPublicAction({type:'response',actorId:target.id,sourceId:actor.id,targetId:nextTarget?.id??actor.id,card:response.name,elements:[...nextTraits.elements],result:response.name==='holyLight'?'cancel':'redirect'});
     game.log.push(`${target.name}使用${response.name === "holyLight" ? cardName(response) + "抵消攻击" : "应战攻击" + cardName(response)}，原攻击未命中`);
     yield* game.trigger(Timing.ATTACK_MISS, context, options);
+    yield* game.trigger(Timing.ATTACK_RESOLVED, context, options);
     if (response.name === "holyLight") {
       game.recordPresentation("miss", { playerId: target.id, cause: "holyLight" });
       yield* game.present(); break;

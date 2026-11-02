@@ -52,6 +52,8 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
         }
         refs.card = [addCard(card)];
       }
+      if (field.type === 'player') refs.target = playerRef(field.value);
+      if (field.type === 'players') refs.participants = field.value.map(seat);
       add('heroState', { field: field.key, value: ['enum','boolean'].includes(field.type) ? field.value : null },
         field.type === 'number' ? { value: field.value } : {}, refs);
     }

@@ -70,6 +70,9 @@ export class TurnFlow {
       delete state.reservedEnergy;
       delete state.reservedHealing;
     }
+    if (state.skipped) {
+      const error = new RuleError("行动阶段已跳过"); error.actionInvalidated = true; throw error;
+    }
     try { options.validateAction?.(); }
     catch (error) {
       state.phase = Timing.ACTION_PHASE_START;

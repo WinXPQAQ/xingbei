@@ -37,5 +37,17 @@
   "markers/battleRunes.png": "card/zhuanShu/zhanWen.png",
   "markers/magicRunes.png": "card/zhuanShu/moWen.png",
   "markers/prayerRunes.png": "card/zhiShiWu/hong.png",
-  "markers/judgment.png": "card/zhiShiWu/hong.png"
+  "markers/judgment.png": "card/zhiShiWu/hong.png",
+  "character/fighter.jpg": "character/geDouJia.jpg",
+  "character/adventurer.jpg": "character/maoXianJia.jpg",
+  "character/brave.jpg": "character/yongZhe.jpg",
+  "character/redLotusKnight.jpg": "character/hongLianQiShi.jpg",
+  "character/magicLancer.jpg": "character/moQiang.jpg",
+  "card/provocation.png": "card/zhuanShu/tiaoXin.png",
+  "card/eternalMovement.png": "card/zhuanShu/yongHengYueZhang.png",
+  "markers/spirit.png": "card/zhiShiWu/hong.png",
+  "markers/rage.png": "card/zhiShiWu/hong.png",
+  "markers/bloodSeals.png": "card/zhiShiWu/hong.png",
+  "markers/inspiration.png": "card/zhiShiWu/hong.png",
+  "markers/intellect.png": "card/zhiShiWu/lan.png"
 }

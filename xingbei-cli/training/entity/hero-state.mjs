@@ -1,3 +1,9 @@
+import adventurer from '../../src/heroes/adventurer/observation.js';
+import fighter from '../../src/heroes/fighter/observation.js';
+import brave from '../../src/heroes/brave/observation.js';
+import redLotusKnight from '../../src/heroes/red-lotus-knight/observation.js';
+import magicLancer from '../../src/heroes/magic-lancer/observation.js';
+import bard from '../../src/heroes/bard/observation.js';
 import berserker from '../../src/heroes/berserker/observation.js';
 import windSwordmaster from '../../src/heroes/wind-swordmaster/observation.js';
 import marksman from '../../src/heroes/marksman/observation.js';
@@ -17,7 +23,7 @@ import sage from '../../src/heroes/sage/observation.js';
 import prayer from '../../src/heroes/prayer/observation.js';
 import heroicPuppet from '../../src/heroes/heroic-puppet/observation.js';
 
-export const heroFields = Object.freeze({berserker,windSwordmaster,marksman,sealer,guardianAngel,priest,saint,holyLancer,plagueMage,elementalist,valkyrie,magicalGirl,assassin,magicSwordsman,adjudicator,sage,prayer,heroicPuppet});
+export const heroFields = Object.freeze({adventurer,fighter,brave,redLotusKnight,magicLancer,bard,berserker,windSwordmaster,marksman,sealer,guardianAngel,priest,saint,holyLancer,plagueMage,elementalist,valkyrie,magicalGirl,assassin,magicSwordsman,adjudicator,sage,prayer,heroicPuppet});
 export function declaredState(player, observerId) {
   const fields = heroFields[player.hero.id];
   if (!fields) throw new Error(`Hero lacks observation contract: ${player.hero.id}`);

@@ -1,7 +1,7 @@
 import { Game } from "../src/engine.js";
 export function createHeroScene(id, seed) {
   const heroId = id.slice(5);
-  const game = new Game({ seed, heroIds: [heroId, "bard", "bard", "swordEmperor", "bard", "bard"] });
+  const game = new Game({ seed, heroIds: [heroId, "none", "none", "none", "none", "none"] });
   const give = (playerId, predicate) => game.moveCard(game.deck.find(predicate).id, { zone: "hand", playerId });
   if (heroId === "berserker") {
     give(0, card => card.hasUniqueSkill("bloodyRoar"));

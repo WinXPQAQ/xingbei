@@ -89,6 +89,7 @@ choices['v1.5'] = choices['experimental/plans-4'];
 // Current hero modules evolve independently of the frozen v1.5 comparison policy.
 choices['v1.7.0-preview.4'] = createHeroWaveTwoPolicy(createCurrentHeroBasePolicy());
 choices['v1.8.0-preview.1'] = createHeroWaveThreePolicy(choices['v1.7.0-preview.4']);
+choices['v1.9.0-preview.1'] = choices['v1.8.0-preview.1'];
 choices['experimental/read-1'] = choices['read-1'];
 choices['experimental/fusion-1'] = choices['fusion-1'];
 export const policies = Object.freeze(Object.fromEntries(Object.entries(choices).map(([id, frozen]) => { const policy = legalPolicy(frozen); return [id, Object.freeze({ ...policy, runAiAction: (game, actorId, options) => runPolicyAction(policy, game, actorId, options) })]; })));

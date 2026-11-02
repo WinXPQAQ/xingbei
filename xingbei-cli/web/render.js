@@ -2,8 +2,12 @@ import { UNIQUE_SKILL_NAMES } from "/src/unique-skills.js";
 // Presentation adapted from v1.6.7 UI, music and nova. See SOURCES.md.
 import { CARD_NAMES, ELEMENT_NAMES, FATE_NAMES } from "/src/cards.js";
 
-const formNames = { prayer: "祈祷", runeBurst: "蓄势迸发" };
+const formNames = { dragonFist: "百式幻龙拳", phantom: "幻影", exhausted: "精疲力竭", boilingBlood: "热血沸腾", eternalPrisoner: "永恒囚徒", prayer: "祈祷", runeBurst: "蓄势迸发" };
 const heroMarkers = {
+  fighter: [["spirit", "斗气", 6, "spirit"]],
+  brave: [["rage", "怒气", 4, "rage"], ["intellect", "知性", 4, "intellect"]],
+  bard: [["inspiration", "灵感", 3, "inspiration"]],
+  redLotusKnight: [["bloodSeals", "血印", 2, "bloodSeals"]],
   elementalist: [["elements", "元素", 3, "element"]],
   adjudicator: [["judgment", "审判", 4, "judgment"]],
   prayer: [["prayerRunes", "祈祷符文", 3, "prayerRunes"]],

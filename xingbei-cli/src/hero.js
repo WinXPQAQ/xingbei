@@ -1,3 +1,9 @@
+import { Adventurer } from "./heroes/adventurer/index.js";
+import { Fighter } from "./heroes/fighter/index.js";
+import { Brave } from "./heroes/brave/index.js";
+import { RedLotusKnight } from "./heroes/red-lotus-knight/index.js";
+import { MagicLancer } from "./heroes/magic-lancer/index.js";
+import { Bard } from "./heroes/bard/index.js";
 import { HeroicPuppet } from "./heroes/heroic-puppet/index.js";
 import { Prayer } from "./heroes/prayer/index.js";
 import { Sage } from "./heroes/sage/index.js";
@@ -23,6 +29,13 @@ const definitions = [
   ["swordEmperor", "剑帝"], ["priest", "神官"], ["assassin", "暗杀者"],
 ];
 export const HERO_DEFINITIONS = {
+  adventurer: { name: "冒险家", HeroClass: Adventurer },
+  fighter: { name: "格斗家", HeroClass: Fighter },
+  brave: { name: "勇者", HeroClass: Brave },
+  redLotusKnight: { name: "红莲骑士", HeroClass: RedLotusKnight },
+  magicLancer: { name: "魔枪", HeroClass: MagicLancer },
+  bard: { name: "吟游诗人", HeroClass: Bard },
+
   assassin: { name: "暗杀者", HeroClass: Assassin },
   magicSwordsman: { name: "魔剑士", HeroClass: MagicSwordsman },
   adjudicator: { name: "仲裁者", HeroClass: Adjudicator },
@@ -65,3 +78,5 @@ export function createHeroRoster(playerHeroId, playerSeat = 0, initialRoster = D
   else roster[playerSeat] = playerHeroId;
   return roster;
 }
+
+export const WAVE_FOUR_HERO_IDS = ["adventurer", "fighter", "brave", "redLotusKnight", "magicLancer", "bard"];
