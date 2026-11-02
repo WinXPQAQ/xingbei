@@ -38,7 +38,7 @@ python training/entity/train.py /tmp/entities.jsonl /tmp/entities.pt --steps 100
 python training/entity/play.py /tmp/entities.pt --device cpu
 ```
 
-采集记录教师版本和完整对局seed。监督训练按整局划分数据，词表仅由训练集建立；这仍是原型数据切分，尚未构成正式留出评测协议。权重、优化器、随机状态、训练/验证seed一起保存；恢复继续训练命令尚待实现。不要使用这个原型检查点替换线上基线。
+采集记录教师版本和完整对局seed。监督训练按整局划分数据，词表仅由训练集建立；这仍是原型数据切分，尚未构成正式留出评测协议。权重、优化器、随机状态、训练/验证seed一起保存；恢复继续训练现使用下文的 `--resume` 参数。不要使用这个原型检查点替换线上基线。
 
 
 ## 上下文补齐（第二批）
@@ -78,3 +78,33 @@ python training/entity/pool.py /path/bootstrap.pt --games 6 --workers 4 --device
 已审阅六包103角色条目、605技能/状态条目的说明，并补查跨包复用、继承、标记intro和预言容器源码；逐英雄架构要求与源文件哈希见 `ai-hero-mechanism-review.md`，统一契约见 `ai-observation-schema.md`。这是表示能力审查，不是未实现角色的规则验收。
 
 审查发现当前训练端以组合枚举多人目标，遗漏反向顺序。已改为枚举有序目标，因反应与即时胜负检查可能产生不同结果；牌组费用仍用无序集合。固定规则教师原有动作仍能映射，未修改其生产评分或候选顺序。额外修正双重回响/法力潮汐的使用标记，将其中绝对座位转成相对座位。表示与规则对照尚待完成，不部署新模型。
+
+
+## 同信息监督对照与训练恢复（第五批）
+
+`train.py` 现在支持 `--resume`，恢复模型、优化器、CPU/CUDA随机状态、Python采样状态、整局划分及累计步数，验证数据SHA-256、架构和batch。`--steps` 表示额外更新次数；输出已有文件拒绝覆盖。旧原型检查点没有训练元数据，不能冒充可恢复检查点。CPU“连续4步”与“2步后保存、恢复再2步”参数、优化器、随机状态和累计步数完全一致；没有声称GPU跨硬件/不同批量调度位级复现。
+
+监督对照使用同一24局、3698次决策，整局划分2745训练/953验证决策，验证覆盖三批18英雄。两架构均seed17、batch32、AdamW 3e-4、200次更新、终局±1价值标签、相同教师。哈希对照复用旧CRC32特征方法，但接收同样的完整实体观测，并展开候选所引用实体；它是约59万参数的适配MLP，不是冻结1.5模型，不额外获得EMA历史。实体网络约61万参数。
+
+| 指标 | 实体Transformer | 同信息哈希MLP |
+| --- | --- | --- |
+| 教师动作top-1 | 46.80% | 44.91% |
+| 行动选择 | 88/332 | 80/332 |
+| 应战选择 | 175/245 | 172/245 |
+| 爆牌弃牌 | 8/85 | 6/85 |
+| 终局价值MSE | 0.9834 | 1.0967 |
+| 训练前预编码 | 1.14s | 3.28s |
+| 200步GPU训练 | 3.25s | 0.54s |
+
+实体词表在验证集的特征未知率约0.025%（此统计不包含关系标签）。完整逐决策指标、概率分箱和seed见 `ai-entity-comparison.json`。Brier值等于此±1价值MSE的1/4，没有新增奖励信息。该单seed小样本不证明统计显著差异、长期可学习性、强度提升或泛化到未训练英雄；低准确率也说明还不能代替当前服务AI。不会为了漂亮结果反复试留出数据。
+
+复现（Python使用PyTorch环境）：
+
+```bash
+node training/entity/collect.mjs /path/decisions.jsonl 24 211102500
+python training/entity/train.py /path/decisions.jsonl /path/entity.pt --steps 200 --batch 32 --device cuda
+python training/entity/train.py /path/decisions.jsonl /path/hash.pt --steps 200 --batch 32 --device cuda --architecture hash
+python training/entity/train.py /path/decisions.jsonl /path/continued.pt --resume /path/entity.pt --steps 100 --device cuda
+```
+
+本机数据与两模型保留于 `/home/xp/.local/share/xingbei-ml/entity-comparison/`。采集增加源码commit与diff摘要；正式采集应在干净提交上运行。下一步将实体管线接入基于终局回报的策略更新，仍不替换线上模型。

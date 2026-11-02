@@ -163,11 +163,11 @@ class EntityPolicy(nn.Module):
         return logits, self.value(critic).squeeze(-1)
 
     def checkpoint(self, vocabulary):
-        return dict(schema=SCHEMA, config=self.config, symbols=vocabulary.symbols, state=self.state_dict())
+        return dict(schema=SCHEMA, architecture='entity', config=self.config, symbols=vocabulary.symbols, state=self.state_dict())
 
     @classmethod
     def restore(cls, checkpoint):
-        if checkpoint['schema'] != SCHEMA:
+        if checkpoint['schema'] != SCHEMA or checkpoint.get('architecture', 'entity') != 'entity':
             raise ValueError('Incompatible checkpoint schema')
         model = cls(**checkpoint['config'])
         model.load_state_dict(checkpoint['state'])

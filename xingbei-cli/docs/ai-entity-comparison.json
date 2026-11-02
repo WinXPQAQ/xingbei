@@ -1,0 +1,251 @@
+{
+  "scope": "one seed, fixed 24 games, 200 supervised updates; not a strength evaluation",
+  "entity": {
+    "architecture": "entity",
+    "steps": 200,
+    "additional_steps": 200,
+    "train_decisions": 2745,
+    "validation_decisions": 953,
+    "accuracy": 0.46799580272822666,
+    "value_mse": 0.9834173120199283,
+    "brier": 0.24585432800498208,
+    "calibration": [
+      {
+        "count": 0,
+        "predicted": 0.0,
+        "won": 0
+      },
+      {
+        "count": 209,
+        "predicted": 74.94128343462944,
+        "won": 86
+      },
+      {
+        "count": 647,
+        "predicted": 322.7663640530227,
+        "won": 334
+      },
+      {
+        "count": 97,
+        "predicted": 61.834844306111336,
+        "won": 56
+      },
+      {
+        "count": 0,
+        "predicted": 0.0,
+        "won": 0
+      }
+    ],
+    "by_type": {
+      "action": {
+        "correct": 88,
+        "count": 332
+      },
+      "response": {
+        "correct": 175,
+        "count": 245
+      },
+      "playerChoice": {
+        "correct": 8,
+        "count": 26
+      },
+      "cardChoice": {
+        "correct": 31,
+        "count": 51
+      },
+      "skillChoice": {
+        "correct": 94,
+        "count": 121
+      },
+      "overflow": {
+        "correct": 8,
+        "count": 85
+      },
+      "healing": {
+        "correct": 19,
+        "count": 56
+      },
+      "weakness": {
+        "correct": 9,
+        "count": 11
+      },
+      "numberChoice": {
+        "correct": 14,
+        "count": 26
+      }
+    },
+    "first_loss": 2.706676721572876,
+    "last_loss": 2.488612651824951,
+    "parameters": 607106,
+    "prepare_seconds": 1.1366575369611382,
+    "train_seconds": 3.2530263169901446,
+    "data_sha256": "53e14dcb17ec3cb70af893921182ffdf1bba4db9153fcbe1aa9468f70bea2968",
+    "entity_vocabulary_coverage": {
+      "unknown": 197,
+      "total": 783464,
+      "rate": 0.0002514474181328051
+    },
+    "train_seeds": [
+      211102507,
+      211102518,
+      211102523,
+      211102504,
+      211102520,
+      211102506,
+      211102515,
+      211102500,
+      211102514,
+      211102503,
+      211102508,
+      211102517,
+      211102505,
+      211102521,
+      211102511,
+      211102509,
+      211102513,
+      211102516
+    ],
+    "validation_seeds": [
+      211102519,
+      211102522,
+      211102502,
+      211102501,
+      211102512,
+      211102510
+    ],
+    "device": "cuda",
+    "output": "/home/xp/.local/share/xingbei-ml/entity-comparison/entity.pt"
+  },
+  "hash": {
+    "architecture": "hash",
+    "steps": 200,
+    "additional_steps": 200,
+    "train_decisions": 2745,
+    "validation_decisions": 953,
+    "accuracy": 0.4491080797481637,
+    "value_mse": 1.0967457684761368,
+    "brier": 0.2741864421190342,
+    "calibration": [
+      {
+        "count": 133,
+        "predicted": 16.991788744926453,
+        "won": 60
+      },
+      {
+        "count": 290,
+        "predicted": 88.4475498944521,
+        "won": 142
+      },
+      {
+        "count": 292,
+        "predicted": 144.36299841923756,
+        "won": 128
+      },
+      {
+        "count": 171,
+        "predicted": 116.74225399643183,
+        "won": 98
+      },
+      {
+        "count": 67,
+        "predicted": 59.01441836357117,
+        "won": 48
+      }
+    ],
+    "by_type": {
+      "action": {
+        "correct": 80,
+        "count": 332
+      },
+      "response": {
+        "correct": 172,
+        "count": 245
+      },
+      "playerChoice": {
+        "correct": 1,
+        "count": 26
+      },
+      "cardChoice": {
+        "correct": 32,
+        "count": 51
+      },
+      "skillChoice": {
+        "correct": 94,
+        "count": 121
+      },
+      "overflow": {
+        "correct": 6,
+        "count": 85
+      },
+      "healing": {
+        "correct": 19,
+        "count": 56
+      },
+      "weakness": {
+        "correct": 9,
+        "count": 11
+      },
+      "numberChoice": {
+        "correct": 15,
+        "count": 26
+      }
+    },
+    "first_loss": 2.6214306354522705,
+    "last_loss": 2.273552179336548,
+    "parameters": 592482,
+    "prepare_seconds": 3.278590574976988,
+    "train_seconds": 0.5363240600563586,
+    "data_sha256": "53e14dcb17ec3cb70af893921182ffdf1bba4db9153fcbe1aa9468f70bea2968",
+    "entity_vocabulary_coverage": {
+      "unknown": 197,
+      "total": 783464,
+      "rate": 0.0002514474181328051
+    },
+    "train_seeds": [
+      211102507,
+      211102518,
+      211102523,
+      211102504,
+      211102520,
+      211102506,
+      211102515,
+      211102500,
+      211102514,
+      211102503,
+      211102508,
+      211102517,
+      211102505,
+      211102521,
+      211102511,
+      211102509,
+      211102513,
+      211102516
+    ],
+    "validation_seeds": [
+      211102519,
+      211102522,
+      211102502,
+      211102501,
+      211102512,
+      211102510
+    ],
+    "device": "cuda",
+    "output": "/home/xp/.local/share/xingbei-ml/entity-comparison/hash.pt"
+  },
+  "resume_check": {
+    "device": "cpu",
+    "uninterrupted_steps": 4,
+    "split_steps": [
+      2,
+      2
+    ],
+    "equal": [
+      "parameters",
+      "optimizer",
+      "torch_rng",
+      "python_rng",
+      "split",
+      "step_count"
+    ]
+  }
+}
