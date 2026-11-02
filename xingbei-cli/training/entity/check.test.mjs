@@ -79,3 +79,17 @@ test('nested trigger context reaches decisions and is restored after cancellatio
   iterator.return();
   assert.equal(game.activeTrigger, undefined);
 });
+
+test('training enumerates both target orders and uses relative per-seat skill markers', async () => {
+  const game = new Game({ seed: 211102003 }).setup();
+  game.current = 4; await game.beginTurn(4);
+  game.turn.state.usedSkills['doubleEcho:5'] = true;
+  const spec = { targets: [1, 2], targetCount: 2, cardCount: 0 };
+  game.legalSkillActions = () => [{ skillId: 'orderedProbe', spec }];
+  game.skillActionSpec = () => spec;
+  const candidates = actionCandidates(game, 4);
+  assert.deepEqual(candidates.filter(c => c.skillId === 'orderedProbe').map(c => c.targetIds), [[1, 2], [2, 1]]);
+  const o = encodeEntities({ game, playerId: 4, request: { type: 'action' }, candidates });
+  assert.ok(o.entities.find(t => t.kind === 'turn').categorical.usedSkills.includes('doubleEcho:1'));
+  assert.deepEqual(o.candidates.filter(c => c.categorical.skill === 'orderedProbe').map(c => c.refs.targets), [[3, 4], [4, 3]]);
+});

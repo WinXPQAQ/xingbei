@@ -68,7 +68,10 @@ export function encodeEntities({ game, playerId, request, candidates }) {
   const turn = game.turn.state;
   if (turn) {
     add('turn', { phase: turn.phase, route: turn.route, actionType: turn.actionType, skipped: turn.skipped,
-      usedSkills: Object.entries(turn.usedSkills ?? {}).filter(([,v]) => v).map(([k]) => k),
+      usedSkills: Object.entries(turn.usedSkills ?? {}).filter(([,v]) => v).map(([key]) => {
+        const match = /^(doubleEcho|manaTide):([0-5])$/.exec(key);
+        return match ? `${match[1]}:${seat(Number(match[2]))}` : key;
+      }),
       activationDone: turn.playerId === playerId ? turn.activationDone : null },
       { completed: turn.completed, attackCount: turn.attackCount }, { owner: playerRef(turn.playerId) });
     for (const [position, action] of (turn.pendingActions ?? []).entries())

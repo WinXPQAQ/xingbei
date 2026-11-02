@@ -25,3 +25,12 @@ export function distinctElements(game, playerId, cards) {
     !used.has(element) && assign(index + 1, new Set([...used, element])));
   return assign(0, new Set());
 }
+
+// Target order is part of a command: reactions and immediate victory can make
+// A→B differ from B→A. Card fees remain unordered sets unless specified otherwise.
+export function orderedSelections(items, count) {
+  if (count === 0) return [[]];
+  if (count < 0 || count > items.length) return [];
+  return items.flatMap((item, index) => orderedSelections(items.filter((_, i) => i !== index), count - 1)
+    .map(rest => [item, ...rest]));
+}

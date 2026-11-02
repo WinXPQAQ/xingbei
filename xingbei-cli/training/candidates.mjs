@@ -1,5 +1,5 @@
 // Rule-only enumeration. No policy import, score, top-k pruning, or fallback.
-import { combinations, cardSets, targetCounts } from '../src/card-sets.js';
+import { combinations, cardSets, targetCounts, orderedSelections } from '../src/card-sets.js';
 export { combinations };
 
 export function actionCandidates(game, playerId) {
@@ -20,7 +20,7 @@ export function actionCandidates(game, playerId) {
       if (!spec) continue;
       const costs = cardSets(player.hand, spec);
       for (const cards of costs) for (const count of targetCounts(spec, cards.length)) {
-        for (const targetIds of combinations(spec.targets, count)) {
+        for (const targetIds of orderedSelections(spec.targets, count)) {
           actions.push({ type: 'skill', skillId: entry.skillId, ...(mode === undefined ? {} : { mode }), cardIds: cards.map(card => card.id), targetIds });
         }
       }
