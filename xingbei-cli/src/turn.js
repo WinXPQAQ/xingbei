@@ -80,7 +80,7 @@ export class TurnFlow {
       throw error;
     }
     if (state.completed) {
-      const action = this.nextAction(); state.pendingActions.splice(state.pendingActions.indexOf(action), 1);
+      const action = this.nextAction(); state.actionSourceSkillId = action.sourceSkillId; state.pendingActions.splice(state.pendingActions.indexOf(action), 1);
     }
     state.completed = false;
     if (actionType === "attack") state.attackCount++;

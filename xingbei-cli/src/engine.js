@@ -52,6 +52,7 @@ export class Game {
     this.cards = new Map();
     this.effects = new Map(Object.entries(BASIC_EFFECTS));
     this.skillDefinitions = new Map(); this.pendingRuleEvents = []; this.processingRuleEvents = false;
+    this.formEpochs = new Map();
     this.triggers = new TriggerRegistry(this);
     this.presentationEnabled = false; this.presentationEvents = []; this.presentationSequence = 0;
     this.turn = new TurnFlow(this); this.timeline = [];
@@ -93,7 +94,7 @@ export class Game {
     // Detached checkpoint snapshots prevent later rule steps leaking into a frame.
     const view = {
       players: this.players.map(player => ({ ...player.toJSON(), healingLimit: this.getHealingLimit(player.id), energyLimit: this.getEnergyLimit(player.id), hand: player.hand.map(card => ({ ...card.toJSON(), ...card.getTraits({ game: this, playerId: player.id, purpose: "hand" }) })) })),
-      teams: this.teams, current: this.current, winner: this.winner,
+      field: this.field.map(card => card.toJSON()), teams: this.teams, current: this.current, winner: this.winner,
       deckCount: this.deck.length, discardCount: this.discard.length,
     };
     this.presentationEvents.push(JSON.parse(JSON.stringify({ sequence: ++this.presentationSequence, type, ...data, view })));
@@ -110,11 +111,12 @@ export class Game {
   }
 
   zone(location) {
-    if (!location || !["deck", "discard", "hand", "field", "status", "outside"].includes(location.zone)) throw new RuleError("无效的牌区域");
-    if (["hand", "status"].includes(location.zone)) {
+    if (!location || !["deck", "discard", "hand", "covered", "field", "status", "outside"].includes(location.zone)) throw new RuleError("无效的牌区域");
+    if (["hand", "status", "covered"].includes(location.zone)) {
       if (!Number.isInteger(location.playerId)) throw new RuleError("玩家区域需要明确玩家编号");
       const player = this.player(location.playerId);
-      return location.zone === "hand" ? player.hand : player.statuses;
+      if (location.zone === "covered" && location.pile != null && typeof location.pile !== "string") throw new RuleError("无效盖牌种类");
+      return location.zone === "hand" ? player.hand : location.zone === "covered" ? player.covered : player.statuses;
     }
     if (location.playerId != null) throw new RuleError("公共区域不能指定玩家");
     return { deck: this.deck, discard: this.discard, field: this.field, outside: this.outside }[location.zone];
@@ -214,6 +216,50 @@ export class Game {
     return { elements: [...new Set(traits.elements)], fates: [...new Set(traits.fates)] };
   }
 
+  // Notify only after the entire skill (including nested draws/damage) finishes.
+  *resolveSkillEffect(definition, payload, method = "resolve") {
+    const before = this.players.map(p => ({ form: p.hero.state.form, epoch: this.formEpochs.get(p.id) ?? 0 }));
+    const result = definition[method]?.(payload);
+    if (result?.next) yield* result;
+    else if (result?.then) yield { type: "promise", promise: result };
+    for (const p of this.players) {
+      if (!before[p.id].form && p.hero.state.form && (this.formEpochs.get(p.id) ?? 0) === before[p.id].epoch) {
+        this.formEpochs.set(p.id, before[p.id].epoch + 1);
+        yield* this.trigger(Timing.FORM_ENTERED, { actorId: p.id, form: p.hero.state.form, skillId: definition.id }, payload.options);
+      }
+    }
+  }
+
+  coverCards(playerId, cards, pile) {
+    for (const card of cards) {
+      if (!card || !["hand", "field"].includes(card.location.zone) || (card.location.zone === "hand" && card.location.playerId !== playerId)) throw new RuleError("盖牌来源无效");
+    }
+    const detail = this.describeCards(cards, playerId, { hidden: true });
+    for (const card of cards) this.moveCard(card.id, { zone: "covered", playerId, pile }, { animate: false, covered: true });
+    this.recordPublicAction({ type: "cover", playerId, count: cards.length });
+    this.log.push(`${this.actorLabel(playerId)}放置${cards.length}张盖牌${detail}`);
+  }
+  *chooseCoveredCard(playerId, pile, { skillId, title = "选择盖牌", optional = false, predicate = () => true } = {}) {
+    const cards = this.player(playerId).covered.filter(c => c.location.pile === pile && predicate(c));
+    if (!cards.length) { if (optional) return null; throw new RuleError("没有可选盖牌"); }
+    const choices = cards.map(c => ({ value: c.id, label: logCard(c, this, playerId) }));
+    if (optional) choices.push({ value: null, label: "不发动" });
+    const id = yield { type: "effectChoice", playerId, skillId, title, choices, optional, context: this.activeTrigger?.context ?? null, defaultValue: optional ? null : cards[0].id };
+    if (optional && id === null) return null;
+    const card = cards.find(c => c.id === id);
+    if (!card) throw new RuleError("无效盖牌选择");
+    return card;
+  }
+  discardCovered(playerId, card, { reveal = false, skillId } = {}) {
+    if (card.location.zone !== "covered" || card.location.playerId !== playerId) throw new RuleError("只能移除自己的盖牌");
+    const detail = this.describeCards([card], playerId, { hidden: !reveal });
+    // Covered cards never trigger seal, including when revealed as a cost.
+    this.moveCard(card.id, { zone: "discard" }, { animate: false, covered: true, visibility: reveal ? "public" : "hidden" });
+    if (reveal) this.recordPublicAction({ type: "coveredReveal", playerId, card: card.name, elements: [...card.getTraits({ game: this, playerId }).elements] });
+    this.logSkill(playerId, skillId, `${reveal ? "展示并" : ""}移除1张盖牌${detail}`);
+    this.recordPresentation("discard", { playerId, cards: [card.toJSON()], visibility: reveal ? "public" : "hidden", reason: skillId });
+  }
+
   *trigger(timing, context, options = {}) {
     if (this.winner) { yield* this.present(); return; }
     if (timing !== Timing.CARD_EXPOSED) yield* this.flushRuleEvents(options);
@@ -238,9 +284,7 @@ export class Game {
       const previousTrigger = this.activeTrigger;
       this.activeTrigger = { timing, context, ownerId: entry.player.id, skillId: entry.definition.id };
       try {
-        const result = entry.definition.resolve?.(payload);
-        if (result?.next) yield* result;
-        else if (result?.then) yield { type: "promise", promise: result };
+        yield* this.resolveSkillEffect(entry.definition, payload);
       } finally { this.activeTrigger = previousTrigger; }
       yield* this.present();
       if (this.winner) break;
@@ -249,9 +293,9 @@ export class Game {
 
   assertCardLocations() {
     const seen = new Set();
-    for (const location of [{ zone: "deck" }, { zone: "discard" }, { zone: "field" }, { zone: "outside" }, ...this.players.flatMap(player => [{ zone: "hand", playerId: player.id }, { zone: "status", playerId: player.id }])]) {
+    for (const location of [{ zone: "deck" }, { zone: "discard" }, { zone: "field" }, { zone: "outside" }, ...this.players.flatMap(player => [{ zone: "hand", playerId: player.id }, { zone: "status", playerId: player.id }, { zone: "covered", playerId: player.id }])]) {
       for (const card of this.zone(location)) {
-        if (seen.has(card.id) || this.cards.get(card.id) !== card || JSON.stringify(card.location) !== JSON.stringify(location)) throw new RuleError("牌登记或位置不一致");
+        if (seen.has(card.id) || this.cards.get(card.id) !== card || JSON.stringify(card.location) !== JSON.stringify(location.zone === "covered" ? { ...location, pile: card.location.pile } : location)) throw new RuleError("牌登记或位置不一致");
         if (location.zone !== "status" && card.attachment) throw new RuleError("非状态区牌不能承载挂载效果");
         seen.add(card.id);
       }
@@ -355,7 +399,15 @@ export class Game {
     this.recordPresentation("discard", { playerId: id, cards: discarded.map(card => card.toJSON()), visibility: "hidden", reason: "overflow" });
     delete player.pendingOverflow;
     const context = { playerId: id, team: player.team, amount: moraleLoss ? -excess : 0, cause };
-    if (context.amount) { yield* this.trigger(Timing.MORALE_BEFORE, context, options); context.amount = Math.min(0, context.amount); if (Number.isFinite(cause.moraleLimit)) context.amount = Math.max(context.amount, -cause.moraleLimit); this.changeMorale(player.team, context.amount); }
+    if (context.amount) {
+      yield* this.trigger(Timing.MORALE_BEFORE, context, options);
+      context.amount = Math.min(0, context.amount);
+      if (Number.isFinite(cause.moraleLimit)) context.amount = Math.max(context.amount, -cause.moraleLimit);
+      const before = this.teams[player.team].morale;
+      this.changeMorale(player.team, context.amount);
+      context.amount = this.teams[player.team].morale - before;
+      if (context.amount) yield* this.trigger(Timing.MORALE_AFTER, context, options);
+    }
     this.log.push(`${player.name}爆牌，暗弃${discarded.length}张手牌${discardedDetails}；己方士气-${-context.amount}`);
     yield* this.present(); return discarded;
   }
@@ -669,7 +721,7 @@ export class Game {
     this.recordPresentation("skill", { playerId, skillId: definition.id, label: definition.name });
     this.logSkill(playerId, definition.id, `${targetIds.length ? "目标：" + targetIds.map(id => this.actorLabel(id)).join("、") : "作用于自身"}${action.mode ? `；${spec.modes?.find(mode => mode.value === action.mode)?.label ?? action.mode}` : ""}`);
     const resolutionCards = [];
-    yield* definition.resolveAction({ game: this, player, cards, targetIds, action, options: { ...options, resolutionCards } });
+    yield* this.resolveSkillEffect(definition, { game: this, player, cards, targetIds, action, options: { ...options, resolutionCards } }, "resolveAction");
     for (const id of resolutionCards) if (this.cards.get(id).location.zone === "field") this.moveCard(id, { zone: "discard" }, { animate: false });
     if (resolutionCards.length) this.recordPresentation("cleanup", { cardIds: resolutionCards, visibility: "public" });
     if (player.pendingOverflow) yield { type: "overflow", player };

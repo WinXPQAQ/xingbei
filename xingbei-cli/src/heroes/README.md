@@ -1,6 +1,6 @@
 # 英雄实现入口
 
-当前24位已实现英雄均在本目录，每位英雄一个英文名称目录。
+当前30位已实现英雄均在本目录，每位英雄一个英文名称目录。
 
 ```text
 heroes/
@@ -38,6 +38,18 @@ heroes/
 | 贤者 | [sage/index.js](sage/index.js) | [sage/ai.js](sage/ai.js) |
 | 祈祷师 | [prayer/index.js](prayer/index.js) | [prayer/ai.js](prayer/ai.js) |
 | 英灵人形 | [heroic-puppet/index.js](heroic-puppet/index.js) | [heroic-puppet/ai.js](heroic-puppet/ai.js) |
+| 冒险家 | [adventurer/index.js](adventurer/index.js) | [adventurer/ai.js](adventurer/ai.js) |
+| 格斗家 | [fighter/index.js](fighter/index.js) | [fighter/ai.js](fighter/ai.js) |
+| 勇者 | [brave/index.js](brave/index.js) | [brave/ai.js](brave/ai.js) |
+| 红莲骑士 | [red-lotus-knight/index.js](red-lotus-knight/index.js) | [red-lotus-knight/ai.js](red-lotus-knight/ai.js) |
+| 魔枪 | [magic-lancer/index.js](magic-lancer/index.js) | [magic-lancer/ai.js](magic-lancer/ai.js) |
+| 吟游诗人 | [bard/index.js](bard/index.js) | [bard/ai.js](bard/ai.js) |
+| 灵符师 | [talisman-master/index.js](talisman-master/index.js) | [talisman-master/ai.js](talisman-master/ai.js) |
+| 剑帝 | [sword-emperor/index.js](sword-emperor/index.js) | [sword-emperor/ai.js](sword-emperor/ai.js) |
+| 魔弓 | [magic-archer/index.js](magic-archer/index.js) | [magic-archer/ai.js](magic-archer/ai.js) |
+| 苍炎魔女 | [azure-flame-witch/index.js](azure-flame-witch/index.js) | [azure-flame-witch/ai.js](azure-flame-witch/ai.js) |
+| 血色剑灵 | [blood-sword-spirit/index.js](blood-sword-spirit/index.js) | [blood-sword-spirit/ai.js](blood-sword-spirit/ai.js) |
+| 兽灵武士 | [beast-warrior/index.js](beast-warrior/index.js) | [beast-warrior/ai.js](beast-warrior/ai.js) |
 
 `../hero.js`只负责英雄注册、选角列表与阵容；`../hero-base.js`是共用英雄基类。规则文件不导入评分代码，AI只能估计候选结果，真实结算仍走规则引擎。
 
@@ -54,3 +66,5 @@ heroes/
 桌面1440×900与触屏390×844均实际加载18份英雄规则和18份AI入口，选角、进入对局成功，控制台及HTTP错误0。这是路径与运行检查，没有重新进行整套视觉还原验收。原始记录保存在本地`artifacts/heroes/layout-2026-10-24/`。
 
 第四批：`adventurer`（冒险家）、`fighter`（格斗家）、`brave`（勇者）、`red-lotus-knight`（红莲骑士）、`magic-lancer`（魔枪）、`bard`（吟游诗人）。各目录同样包含规则、AI和观测声明。规则裁定与验证见 [第四批报告](../../docs/heroes-wave-four.md)。
+
+第五批规则、AI及观测接口说明见[第五批报告](../../docs/heroes-wave-five.md)。盖牌实体共用操作位于`shared/covered.js`，各英雄的触发条件、费用与效果仍在自己的目录。

@@ -13,7 +13,7 @@ export function* attackSteps(game, actorId, handIndex, targetId, options = {}) {
   let chainDepth = 0;
   while (true) {
     const context = { actorId: actor.id, sourceId: actor.id, targetId: target.id, card: attack, attackTraits,
-      isCounter, chainOriginId: actorId, chainDepth, amount: 2, damageType: "attack", hit: true, shieldable: true, canCounter: true, canHolyLight: true, point: 1 };
+      isCounter, chainOriginId: actorId, chainDepth, amount: 2, actionSourceSkillId: isCounter ? null : (options.actionSourceSkillId ?? game.turn.state?.actionSourceSkillId), damageType: "attack", hit: true, shieldable: true, canCounter: true, canHolyLight: true, point: 1 };
     game.log.push(`${actor.name}使用${isCounter ? "应战攻击" : "主动攻击"}${cardName(attack)}，目标是${target.name}`);
     game.recordPublicAction({type:'attack',actorId:actor.id,targetId:target.id,card:attack.name,elements:[...attackTraits.elements],counter:isCounter});
     yield* game.trigger(Timing.ATTACK_DECLARED, context, options);
@@ -32,11 +32,13 @@ export function* attackSteps(game, actorId, handIndex, targetId, options = {}) {
       if (context.forcedHit) context.hit = true;
       game.recordPublicAction({type:'attackResult',actorId:actor.id,targetId:target.id,card:attack.name,result:context.hit?'hit':context.cause??'blocked'});
       if (context.hit) {
-        yield* game.trigger(Timing.ATTACK_HIT, context, options);
         game.log.push(`${actor.name}的${cardName(attack)}命中${target.name}`);
-        yield* game.damageSteps(target.id, context.amount, { ...options, sourceId: actor.id, damageType: "attack", attackContext: context });
+        // Hit rewards precede hit skills and damage (timing workbook C149).
+        // This also preserves the reward when a hit skill ends the game.
         const added = game.addStones(actor.team, isCounter ? "crystal" : "gem");
         game.log.push(`${isCounter ? "应战攻击" : "主动攻击"}命中，${actor.name}一方战绩区${added ? `获得1个${isCounter ? "水晶" : "宝石"}` : "已满5个星石，未增加星石"}`);
+        yield* game.trigger(Timing.ATTACK_HIT, context, options);
+        if (!context.damageReplaced) yield* game.damageSteps(target.id, context.amount, { ...options, sourceId: actor.id, damageType: "attack", attackContext: context });
       } else {
         game.recordPresentation("miss", { playerId: target.id, cause: context.cause });
         yield* game.trigger(Timing.ATTACK_MISS, context, options);

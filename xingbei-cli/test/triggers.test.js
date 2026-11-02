@@ -8,6 +8,40 @@ import { resolveSync } from "../src/resolution/decisions.js";
 const trigger = (game, timing, context) => resolveSync(game.trigger(timing, context), request => request.defaultValue);
 const empty = () => new Game({ heroRules: false, shuffleDeck: false });
 
+test("主动与应战命中先加战绩再触发技能；满区不补发，技能获胜终止后续伤害", async () => {
+  for (const asynchronous of [false, true]) for (const counter of [false, true]) for (const full of [false, true]) {
+    const game = empty(), ownerId = counter ? 1 : 0, targetId = counter ? 3 : 1;
+    const owner = game.player(ownerId), kind = counter ? "crystal" : "gem", calls = [];
+    for (const id of counter ? [0, 1] : [0]) {
+      const card = game.deck.find(card => card.name === "waterStrike");
+      game.moveCard(card.id, { zone: "hand", playerId: id });
+    }
+    if (full) game.addStones(owner.team, kind, 5);
+    owner.hero.addSkills({
+      id: "use-hit-reward", ...owner.hero.onOwnAttack([Timing.ATTACK_HIT]),
+      resolve({ context }) {
+        calls.push("hit");
+        assert.equal(context.isCounter, counter);
+        assert.equal(game.stoneCounts(owner.team)[kind], full ? 5 : 1);
+        assert.equal(game.timeline.some(entry => entry.timing === Timing.DAMAGE_BEFORE), false);
+        // Consuming it here must not cause the reward to be granted again later.
+        game.removeStones(owner.team, { [kind]: 1 });
+        if (full) game.changeMorale(game.player(targetId).team, -15);
+      },
+    });
+    const options = counter ? { responses: { 1: { index: 0, targetId } } } : {};
+    if (asynchronous) await game.attackWithDecisions(0, 0, 1, options);
+    else game.attack(0, 0, 1, options);
+    assert.deepEqual(calls, ["hit"]);
+    assert.equal(game.stoneCounts(owner.team)[kind], full ? 4 : 0);
+    assert.equal(game.player(targetId).hand.length, full ? 0 : 2);
+    assert.equal(game.timeline.some(entry => entry.timing === Timing.DAMAGE_BEFORE), !full);
+    assert.equal(game.winner, full ? owner.team : null);
+    if (counter) assert.equal(game.stoneCounts("red").total, 0);
+    game.assertCardLocations();
+  }
+});
+
 test("六英雄继承基类并隔离实例；120个订阅槽只检查相关玩家、保留优先级与时点2子事件", () => {
   for (const id of DEFAULT_HERO_IDS) {
     const first = createHero(id), second = createHero(id);

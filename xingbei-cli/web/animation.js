@@ -13,7 +13,7 @@ export function preloadAnimationAssets() {
 
 export function presentationView(snapshot, game) {
   const card = data => ({ ...data, getTraits: () => ({ elements: data.elements, fates: data.fates }) });
-  const players = snapshot.players.map(data => ({ ...data, hand: data.hand.map(card),
+  const players = snapshot.players.map(data => ({ ...data, hand: data.hand.map(card), covered: (data.covered ?? []).map(card),
     getStatus: id => data.statuses.filter(item => item.attachment?.effectId === id) }));
   return { ...snapshot, players, deck: { length: snapshot.deckCount }, discard: { length: snapshot.discardCount },
     player: id => players[id], getHealingLimit: id => players[id].healingLimit, legalTargets: (id, data) => game.legalTargets(id, game.cards.get(data.id)),

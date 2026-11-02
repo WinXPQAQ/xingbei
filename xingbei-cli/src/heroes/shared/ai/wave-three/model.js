@@ -9,6 +9,8 @@ export function publicState(game, id) {
   const state = stateOf(game, id);
   for (const p of state.players) {
     p.heroState = { ...game.player(p.id).hero.state };
+    p.coveredCount = game.player(p.id).covered?.length ?? 0;
+    p.healingDisabled = [...game.cards.values()].some(c => c.name === "roseGarden" && c.location.zone === "field");
     p.energyLimit = game.getEnergyLimit(p.id);
   }
   return state;
@@ -46,7 +48,7 @@ export function applyDamage(state, id, amount, healing, type, moraleLoss = true)
 export function hurt(state, id, amount, type = "spell", { moraleLoss = true } = {}) {
   if (terminal(state) || amount <= 0) return 0;
   const p = state.players[id];
-  const max = damageHealing(p, amount, type);
+  const max = p.healingDisabled ? 0 : damageHealing(p, amount, type);
   let healing = moraleLoss ? Math.min(max, Math.max(0, p.count + amount - p.limit)) : 0;
   if (id === state.observer) {
     let best = -Infinity;

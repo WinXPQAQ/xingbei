@@ -4,7 +4,7 @@ import { cardSets } from "../card-sets.js";
 const pick = (value, keys) => Object.fromEntries(keys.filter(k => value?.[k] !== undefined).map(k => [k, value[k]]));
 const copy = value => value == null ? value : JSON.parse(JSON.stringify(value));
 export function captureObservation(game, observerId, { actions = false, history = true, activation = false } = {}) {
-  const visible = [...game.player(observerId).hand, ...game.players.flatMap(p => p.statuses), ...game.field];
+  const visible = [...game.player(observerId).hand, ...game.player(observerId).covered, ...game.players.flatMap(p => p.statuses), ...game.field];
   const cards = [...new Map(visible.map(c => [c.id, c])).values()].map(c => ({
     id: c.id, name: c.name, type: c.type, category: c.category, elements: [...c.elements], fates: [...c.fates],
     uniqueSkills: [...c.uniqueSkills], location: copy(c.location), attachment: c.attachment ? { effectId: c.attachment.effectId } : null,
@@ -17,9 +17,10 @@ export function captureObservation(game, observerId, { actions = false, history 
     modes: (entry.spec.modes?.map(c => c.value) ?? [null]).map(mode => ({ mode, spec: specData(game.skillActionSpec(observerId, { skillId: entry.skillId, mode: mode ?? undefined })) })) })) : [];
   return copy({ observerId, current: game.current, cards,
     players: game.players.map(p => ({ id: p.id, name: p.name, team: p.team, handLimit: p.handLimit, healing: p.healing, energy: pick(p.energy,['gem','crystal']),
-      hero: { id: p.hero.id, ...(['saint','holyLancer','plagueMage','elementalist','valkyrie','magicalGirl','assassin','magicSwordsman','adjudicator','sage','prayer','heroicPuppet','adventurer','fighter','brave','redLotusKnight','magicLancer','bard'].includes(p.hero.id) ? {state: pick(p.hero.state,['elements','form','compassion','judgment','requiredJudgment','prayerRunes','battleRunes','magicRunes','spirit','lockedTarget','rage','intellect','bloodSeals','attackBonus','released','inspiration','damagedEnemies','concertoUsed'])} : {}), skills: p.hero.skills.map(s => typeof s === 'string' ? s : s.id) },
+      hero: { id: p.hero.id, ...(['talismanMaster','swordEmperor','magicArcher','azureFlameWitch','bloodSwordSpirit','beastWarrior','saint','holyLancer','plagueMage','elementalist','valkyrie','magicalGirl','assassin','magicSwordsman','adjudicator','sage','prayer','heroicPuppet','adventurer','fighter','brave','redLotusKnight','magicLancer','bard'].includes(p.hero.id) ? {state: pick(p.hero.state,['swordQi','charged','pierceUsed','multiShotUsed','lastTarget','rebirth','blood','gardenCardId','souls','residual','elements','form','compassion','judgment','requiredJudgment','prayerRunes','battleRunes','magicRunes','spirit','lockedTarget','rage','intellect','bloodSeals','attackBonus','released','inspiration','damagedEnemies','concertoUsed'])} : {}), skills: p.hero.skills.map(s => typeof s === 'string' ? s : s.id) },
       skillIds: p.getSkills().map(({skill}) => typeof skill === 'string' ? skill : skill.id),
       handIds: p.id === observerId ? p.hand.map(c => c.id) : null, handCount: p.hand.length,
+      coveredIds: p.id === observerId ? p.covered.map(c => c.id) : null, coveredCount: p.covered.length,
       statusIds: p.statuses.map(c => c.id), healingLimit: game.getHealingLimit(p.id), ...(game.getEnergyLimit?.(p.id)!==undefined && game.getEnergyLimit(p.id)!==3 ? {energyLimit:game.getEnergyLimit(p.id)} : {}) })),
     teams: Object.fromEntries(Object.entries(game.teams).map(([id,t]) => [id,pick(t,['morale','cups','gem','crystal','achievements'])])), turn: game.turn.state ? pick(game.turn.state,['playerId','completed','attackCount','pendingActions','usedSkills',...(activation&&game.turn.state.playerId===observerId?['activationDone','reservedEnergy','reservedHealing',...(game.turn.state.reservedCardIds?.length?['reservedCardIds','reservedSkillId','reservedTargetIds']:[])]:[])]) : null, hasExtraActions: game.turn.hasExtraActions?.() ?? false,
     effects: [...game.effects].map(([id, effect]) => [id, { isSeal: !!effect.isSeal }]),
@@ -37,6 +38,7 @@ export function observationView(data) {
     hasUniqueSkill: id => c.uniqueSkills.includes(id), getTraits: ({playerId}) => copy(c.traits[playerId]),
   }]));
   const players = d.players.map(p => ({ ...p, hand: p.handIds ? p.handIds.map(id => cards.get(id)) : Object.freeze({ length: p.handCount }),
+    covered: p.coveredIds ? p.coveredIds.map(id => cards.get(id)) : Object.freeze({ length: p.coveredCount ?? 0 }),
     statuses: p.statusIds.map(id => cards.get(id)), getSkills: () => p.skillIds.map(id => ({skill: {id}})),
     getStatus: id => p.statusIds.map(id => cards.get(id)).filter(c => c.attachment?.effectId === id),
     getBasicEffects: () => p.statusIds.map(id => cards.get(id)).filter(c => c.category === 'basic'),

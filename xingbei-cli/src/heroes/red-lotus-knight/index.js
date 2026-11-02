@@ -42,14 +42,15 @@ export class RedLotusKnight extends Hero {
           if (game.winner) return;
           context.amount += 2; game.logSkill(player.id, 'slaughterFeast', '移除1血印，承受4法伤，本次攻击+2');
         } },
-      { id: 'boilingBlood', name: '热血沸腾', ...this.onOwnTurn([Timing.MORALE_BEFORE, Timing.TURN_END]),
-        filter: ({ timing, context }) => timing === Timing.TURN_END ? !!this.state.form : context.amount < 0 && context.cause?.type === 'damage',
+      { id: 'boilingBloodGuard', name: '热血沸腾免士气', ...this.onOwnTurn([Timing.MORALE_BEFORE]),
+        filter: ({ context }) => !!this.state.form && context.amount < 0 && context.cause?.type === 'damage',
+        resolve({ game, player, context }) { context.amount = 0; game.logSkill(player.id, 'boilingBlood', '本次伤害爆牌不降低士气'); } },
+      { id: 'boilingBlood', name: '热血沸腾', ...this.onOwnTurn([Timing.MORALE_AFTER, Timing.TURN_END]),
+        filter: ({ timing, context }) => timing === Timing.TURN_END ? !!this.state.form : !this.state.form && context.amount < 0 && context.cause?.type === 'damage',
         resolve({ game, player, timing, context }) {
           if (timing === Timing.TURN_END) {
             player.hero.state.form = null; game.changeHealing(player.id, 2);
             game.logSkill(player.id, 'boilingBlood', '回合结束重置，获得2治疗');
-          } else if (player.hero.state.form) {
-            context.amount = 0; game.logSkill(player.id, 'boilingBlood', '本次伤害爆牌不降低士气');
           } else {
             player.hero.state.form = 'boilingBlood';
             game.logSkill(player.id, 'boilingBlood', `本次士气下降${-context.amount}，横置；后续承伤不降士气`);

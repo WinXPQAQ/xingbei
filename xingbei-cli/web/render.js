@@ -2,8 +2,12 @@ import { UNIQUE_SKILL_NAMES } from "/src/unique-skills.js";
 // Presentation adapted from v1.6.7 UI, music and nova. See SOURCES.md.
 import { CARD_NAMES, ELEMENT_NAMES, FATE_NAMES } from "/src/cards.js";
 
-const formNames = { dragonFist: "百式幻龙拳", phantom: "幻影", exhausted: "精疲力竭", boilingBlood: "热血沸腾", eternalPrisoner: "永恒囚徒", prayer: "祈祷", runeBurst: "蓄势迸发" };
+const formNames = { flame: "烈焰", iaido: "御魂流居合", dragonFist: "百式幻龙拳", phantom: "幻影", exhausted: "精疲力竭", boilingBlood: "热血沸腾", eternalPrisoner: "永恒囚徒", prayer: "祈祷", runeBurst: "蓄势迸发" };
 const heroMarkers = {
+  swordEmperor: [["swordQi", "剑气", 5, "swordQi"]],
+  azureFlameWitch: [["rebirth", "重生", 4, "rebirth"]],
+  bloodSwordSpirit: [["blood", "鲜血", 3, "blood"]],
+  beastWarrior: [["souls", "兽魂", 2, "souls"], ["residual", "残心", 4, "residual"]],
   fighter: [["spirit", "斗气", 6, "spirit"]],
   brave: [["rage", "怒气", 4, "rage"], ["intellect", "知性", 4, "intellect"]],
   bard: [["inspiration", "灵感", 3, "inspiration"]],
@@ -69,12 +73,22 @@ export function renderPlayers(game, container, humanId, targets = null, revealHa
       const id = card.attachment.effectId, label = UNIQUE_SKILL_NAMES[id] ?? CARD_NAMES[id] ?? id;
       marks.push(`<span class="poison-mark" data-effect-id="${id}"><img src="/assets/card/${card.name}.png" title="${label}" alt="${label}"><b>${label.startsWith("五") ? "" : label[0]}</b></span>`);
     }
+    if (player.covered?.length) {
+      const label = { swordEmperor: "剑魂", talismanMaster: "妖力", magicArcher: "充能" }[player.hero.id] ?? "盖牌";
+      const visible = revealHands || player.id === humanId;
+      const cards = player.covered.map(card => `<span class="covered-card" title="${visible ? cardLabel(card, { game, playerId: player.id }) : '盖牌'}"><img src="${visible ? '/assets/card/' + card.name + '.png' : '/theme/cardback.png'}" alt="${visible ? cardLabel(card, { game, playerId: player.id }) : '盖牌'}">${visible ? `<small>${card.getTraits({ game, playerId: player.id }).fates.map(f => FATE_NAMES[f]).join('/')}</small>` : ''}</span>`).join('');
+      marks.push(`<details class="covered-mark"><summary title="${label}，点击查看"><img src="/theme/cardback.png" alt="${label}"><b>${player.covered.length}</b></summary><div class="covered-cards">${cards}</div></details>`);
+    }
+    if (game.field?.some(card => card.name === 'roseGarden')) marks.push('<img src="/assets/card/roseGarden.png" title="血蔷薇庭院在场：不能使用治疗抵伤" alt="血蔷薇庭院">');
     const energy = [
       ["crystal", "crystal", "水晶"], ["gem", "gem", "宝石"],
     ].filter(([kind]) => player.energy[kind] > 0).map(([kind, image, label]) => `<span><img src="/assets/stones/${image}.png" alt="${label}"><b>${player.energy[kind]}</b></span>`).join("");
     const revealed = revealHands ? `<div class="revealed-hand" aria-label="${player.name}的手牌">${player.hand.map(card => `<span class="revealed-card"><img data-hand-card-id="${card.id}" src="/assets/card/${card.name}.png" alt="${cardLabel(card, { game, playerId: player.id })}" title="${cardLabel(card, { game, playerId: player.id })}"><small class="revealed-fate" aria-hidden="true">${card.getTraits({ game, playerId: player.id }).fates.map(fate => FATE_NAMES[fate] ?? fate).join("/")}</small></span>`).join("")}</div>` : "";
     const markup = `<img class="avatar" src="/assets/character/${player.hero.portrait}.jpg" alt=""><span class="player-name" title="${player.name}；${player.hero.implemented || player.hero.skills?.length ? "已实现角色技能" : "角色技能尚未实现"}">${player.hero.name}</span><span class="identity"><span>${player.team === "red" ? "红" : "蓝"}</span></span><span class="count">${player.hand.length}/${player.handLimit}</span><span class="hp" title="治疗 ${player.healing}" aria-label="治疗 ${player.healing}">${Array.from({ length: Math.max(player.healing, game.getHealingLimit?.(player.id) ?? player.healingLimit ?? 2) }, (_, index) => index).reverse().map(index => `<span class="${index < player.healing ? "" : "lost"}"></span>`).join("")}</span><span class="energy" title="个人能量" style="top:${6 + marks.length * 28}px">${energy}</span><div class="marks">${marks.reverse().join("")}</div>${revealed}`;
-    if (node._markup !== markup) { node.innerHTML = markup; node._markup = markup; }
+    if (node._markup !== markup) {
+      node.innerHTML = markup; node._markup = markup;
+      for (const pile of node.querySelectorAll(".covered-mark")) for (const type of ["click", "keydown"]) pile.addEventListener(type, event => event.stopPropagation());
+    }
     if (player.energy.gem + player.energy.crystal === 0) node.querySelector(".energy").hidden = true;
 
   }

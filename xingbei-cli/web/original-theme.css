@@ -57,3 +57,14 @@ button:disabled { opacity: .4; }
 
 /* Original yuanSu markimage uses hong.png: the artwork is a gold flame lamp. */
 .marks .element-mark img { object-fit: contain; border-radius: 0; box-shadow: none; }
+
+/* Covered piles use the existing card back; only the owner/test view sees faces. */
+.covered-mark { position: relative; width: 26px; height: 26px; }
+.covered-mark summary { cursor: pointer; list-style: none; position: relative; }
+.covered-mark summary::-webkit-details-marker { display: none; }
+.covered-mark summary b { position: absolute; bottom: 0; right: 0; color: white; text-shadow: 0 1px 2px black; }
+.covered-cards { position: absolute; z-index: 20; right: 28px; top: 0; width: 128px; display: grid; grid-template-columns: repeat(4, 30px); gap: 2px; padding: 4px; background: rgba(25,20,15,.95); border: 1px solid #b8a67a; border-radius: 4px; }
+.covered-card { position: relative; width: 30px; height: 40px; }
+.player .marks .covered-card img { width: 30px; height: 40px; object-fit: cover; }
+.covered-card small { position: absolute; right: 1px; top: 0; font-size: 11px; color: white; text-shadow: 0 1px 2px black; }
+.player[data-position="0"] .covered-cards, .player[data-position="4"] .covered-cards, .player[data-position="5"] .covered-cards { right: auto; left: 28px; }

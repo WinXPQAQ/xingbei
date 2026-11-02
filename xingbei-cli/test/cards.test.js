@@ -249,7 +249,8 @@ test("战绩已满时主动和异步应战命中仍造成伤害，但不再增�
   active.play(0, 0, 1);
   assert.equal(active.players[1].hand.length, 2);
   assert.deepEqual(active.stoneCounts("red"), { gem: 0, crystal: 5, total: 5 });
-  assert.match(active.log.at(-1), /未增加星石/);
+  assert.ok(active.log.findIndex(line => /未增加星石/.test(line)) >= 0);
+  assert.match(active.log.at(-1), /承受2点攻击伤害/);
 
   const counter = new Game({ heroRules: false, shuffleDeck: false });
   counter.addStones("blue", "gem", 5);
@@ -261,7 +262,8 @@ test("战绩已满时主动和异步应战命中仍造成伤害，但不再增�
   });
   assert.equal(counter.players[3].hand.length, 2);
   assert.deepEqual(counter.stoneCounts("blue"), { gem: 5, crystal: 0, total: 5 });
-  assert.match(counter.log.at(-1), /未增加星石/);
+  assert.ok(counter.log.findIndex(line => /未增加星石/.test(line)) >= 0);
+  assert.match(counter.log.at(-1), /承受2点攻击伤害/);
 });
 
 test("提炼1至2个星石进入个人能量且不改变手牌", () => {

@@ -1,6 +1,7 @@
 export const Timing = Object.freeze({
+  FORM_ENTERED: "formEntered",
   DRAW_BEFORE: "drawBefore",
-  TURN_BEFORE: "turnBefore", BASIC_EFFECT_REMOVED: "basicEffectRemoved", SHIELD_USED: "shieldUsed", MORALE_BEFORE: "moraleBefore",
+  TURN_BEFORE: "turnBefore", BASIC_EFFECT_REMOVED: "basicEffectRemoved", SHIELD_USED: "shieldUsed", MORALE_BEFORE: "moraleBefore", MORALE_AFTER: "moraleAfter",
   CARD_EXPOSED: "cardExposed",
   TURN_START: "turnStart", ACTION_PHASE_BEFORE: "actionPhaseBefore", ACTION_PHASE_START: "actionPhaseStart",
   ACTION_PHASE_SKIPPED: "actionPhaseSkipped", ACTIVATION: "activation",

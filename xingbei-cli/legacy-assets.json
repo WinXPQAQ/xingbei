@@ -49,5 +49,16 @@
   "markers/rage.png": "card/zhiShiWu/hong.png",
   "markers/bloodSeals.png": "card/zhiShiWu/hong.png",
   "markers/inspiration.png": "card/zhiShiWu/hong.png",
-  "markers/intellect.png": "card/zhiShiWu/lan.png"
+  "markers/intellect.png": "card/zhiShiWu/lan.png",
+  "character/talismanMaster.jpg": "character/lingFuShi.jpg",
+  "character/magicArcher.jpg": "character/moGong.jpg",
+  "character/azureFlameWitch.jpg": "character/cangYanMoNv.jpg",
+  "character/bloodSwordSpirit.jpg": "character/xueSeJianLing.jpg",
+  "character/beastWarrior.jpg": "character/shouLingWuShi.jpg",
+  "card/roseGarden.png": "card/zhuanShu/xueQiangWeiTingYuan.png",
+  "markers/swordQi.png": "card/zhiShiWu/hong.png",
+  "markers/rebirth.png": "card/zhiShiWu/hong.png",
+  "markers/blood.png": "card/zhiShiWu/hong.png",
+  "markers/residual.png": "card/zhiShiWu/hong.png",
+  "markers/souls.png": "card/zhiShiWu/lan.png"
 }

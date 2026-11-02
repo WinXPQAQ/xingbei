@@ -15,7 +15,7 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
   for (let offset = 0; offset < 6; offset++) {
     const p = game.player((playerId + offset) % 6);
     add('player', { hero: p.hero.id, team: side(p.team) }, { seat: offset,
-      handCount: p.hand.length, handLimit: p.handLimit, healing: p.healing,
+      coveredCount: p.covered.length, handCount: p.hand.length, handLimit: p.handLimit, healing: p.healing,
       healingLimit: game.getHealingLimit(p.id), energyLimit: game.getEnergyLimit(p.id),
       gem: p.energy.gem, crystal: p.energy.crystal });
   }
@@ -34,6 +34,7 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
     cards.set(card.id, index); return index;
   };
   game.player(playerId).hand.forEach(addCard);
+  game.player(playerId).covered.forEach(addCard);
   for (let offset = 0; offset < 6; offset++) game.player((playerId + offset) % 6).statuses.forEach(addCard);
   for (let offset = 0; offset < 6; offset++) {
     const p = game.player((playerId + offset) % 6);

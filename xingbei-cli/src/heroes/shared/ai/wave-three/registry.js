@@ -1,3 +1,9 @@
+import { talismanMasterAi } from "../../../talisman-master/ai.js";
+import { swordEmperorAi } from "../../../sword-emperor/ai.js";
+import { magicArcherAi } from "../../../magic-archer/ai.js";
+import { azureFlameWitchAi } from "../../../azure-flame-witch/ai.js";
+import { bloodSwordSpiritAi } from "../../../blood-sword-spirit/ai.js";
+import { beastWarriorAi } from "../../../beast-warrior/ai.js";
 import { fighterAi } from "../../../fighter/ai.js";
 import { magicLancerAi } from "../../../magic-lancer/ai.js";
 import { braveAi } from "../../../brave/ai.js";
@@ -11,7 +17,7 @@ import { sageAi } from "../../../sage/ai.js";
 import { prayerAi } from "../../../prayer/ai.js";
 import { heroicPuppetAi } from "../../../heroic-puppet/ai.js";
 
-const profiles = [fighterAi,magicLancerAi,braveAi,adventurerAi,redLotusKnightAi,bardAi,assassinAi, magicSwordsmanAi, adjudicatorAi, sageAi, prayerAi, heroicPuppetAi];
+const profiles = [talismanMasterAi,swordEmperorAi,magicArcherAi,azureFlameWitchAi,bloodSwordSpiritAi,beastWarriorAi,fighterAi,magicLancerAi,braveAi,adventurerAi,redLotusKnightAi,bardAi,assassinAi, magicSwordsmanAi, adjudicatorAi, sageAi, prayerAi, heroicPuppetAi];
 const byHero = new Map(profiles.map((profile) => [profile.id, profile]));
 const decisions = new Map(profiles.flatMap((profile) => Object.entries(profile.decisions ?? {})));
 const empty = Object.freeze({});
