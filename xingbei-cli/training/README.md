@@ -21,3 +21,6 @@ python training/entity/play.py /tmp/round2.pt --device cpu
 必要接口检查为 `node --test training/entity/check.test.mjs`。性能工具 `entity/benchmark.py` 检查同信息传输等价和分项耗时，`entity/pool.py --profile` 测完整多进程推理。无需为了训练工具改动运行历史全部AI策略实验或浏览器截图。
 
 当前服务器PyTorch解释器为 `/home/xp/.local/share/xingbei-ml/venv-gpu/bin/python`；数据与实验检查点位于 `/home/xp/.local/share/xingbei-ml/entity-comparison/`，不随代码提交。训练入口不会更新线上服务模型。
+
+
+实体接口当前为 `entities-v3`。超过128个候选的行动按需进行条件分步选择，其余问题保持原样；采集、推理、终局奖励训练共用适配器。v2数据/模型不直接兼容，需重新采集训练。具体约定见 [观测规范](../docs/ai-observation-schema.md#按需分步行动entities-v3)。

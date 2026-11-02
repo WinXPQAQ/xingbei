@@ -1,9 +1,9 @@
 import { declaredState } from './hero-state.mjs';
 
-export const ENTITY_SCHEMA = 'entities-v2';
+export const ENTITY_SCHEMA = 'entities-v3';
 // Trusted boundary. Only explicitly visible fields leave this module. Entity
 // references are local array offsets, never engine card IDs or deck positions.
-export function encodeEntities({ game, playerId, request, candidates }) {
+export function encodeEntities({ game, playerId, request, candidates, continuations }) {
   const entities = [], cards = new Map(), skills = new Map();
   const seat = id => (id - playerId + 6) % 6;
   const playerRef = id => id == null ? [] : [seat(id)];
@@ -87,7 +87,7 @@ export function encodeEntities({ game, playerId, request, candidates }) {
   for (const key of ['hit','forcedHit','forceHitRequested','canCounter','canHolyLight','bloodBlade',
     'hadesTremor','puppetMissMode','disableHolyStrike','extraSpell','moraleLoss','sameElement','specialAction'])
     if (context[key] !== undefined || request[key] !== undefined) flags[key] = request[key] ?? context[key];
-  const question = add('question', { type: request.type, skill: request.skillId ?? null,
+  const question = add('question', { type: request.type, stage: request.stage ?? 'complete', skill: request.skillId ?? null,
     timing: event?.timing ?? null, ...flags,
     purpose: request.purpose ?? context.purpose ?? null, damageType: context.damageType ?? (request.type === 'response' ? request.attack ? 'attack' : 'spell' : null),
     optional: !!request.optional, counter: request.isCounter ?? context.isCounter ?? null, shieldable: request.shieldable ?? context.shieldable ?? null },
@@ -131,5 +131,19 @@ export function encodeEntities({ game, playerId, request, candidates }) {
     else throw new Error(`Unsupported candidate ${request.type}`);
     return { kind: 'candidate', categorical, numbers, refs };
   };
-  return { schema: ENTITY_SCHEMA, question, entities, candidates: candidates.map(candidate) };
+  if (request.prefix) {
+    const token = candidate(request.prefix);
+    token.kind = 'decisionPrefix';
+    entities.push(token);
+  }
+  const encoded = candidates.map(candidate);
+  // Show feasible continuations without exposing hidden state. Multi-card sets
+  // stay sets; target ordering remains on the actual target-choice tokens.
+  continuations?.forEach((values, index) => {
+    const tokens = values.map(candidate);
+    encoded[index].numbers.continuations = values.length;
+    for (const role of ['cards', 'targets']) encoded[index].refs['available' + role] =
+      [...new Set(tokens.flatMap(token => token.refs[role] ?? []))];
+  });
+  return { schema: ENTITY_SCHEMA, question, entities, candidates: encoded };
 }

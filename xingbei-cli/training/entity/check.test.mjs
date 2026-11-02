@@ -93,3 +93,28 @@ test('training enumerates both target orders and uses relative per-seat skill ma
   assert.ok(o.entities.find(t => t.kind === 'turn').categorical.usedSkills.includes('doubleEcho:1'));
   assert.deepEqual(o.candidates.filter(c => c.categorical.skill === 'orderedProbe').map(c => c.refs.targets), [[3, 4], [4, 3]]);
 });
+
+test('conditional action selection preserves every command and teacher path without mutation', async () => {
+  const { selectEntityDecision } = await import('./decisions.mjs');
+  const candidates = Array.from({ length: 144 }, (_, i) => ({ type: 'skill', skillId: `skill${i % 2}`,
+    cardIds: [Math.floor(i / 2) % 6], targetIds: [Math.floor(i / 12) % 6], stones: { gem: Math.floor(i / 72) } }));
+  const input = { request: { type: 'action' }, candidates };
+  const original = JSON.stringify(input);
+  for (let teacher = 0; teacher < candidates.length; teacher++) {
+    const steps = [];
+    const selected = await selectEntityDecision(input, (step, answer) => {
+      steps.push(step.request.stage);
+      assert.ok(answer >= 0 && answer < step.candidates.length);
+      return answer;
+    }, { teacher });
+    assert.equal(selected, teacher);
+    assert.deepEqual(steps, ['action', 'cards', 'targets', 'completion']);
+  }
+  assert.equal(JSON.stringify(input), original);
+  let calls = 0;
+  assert.equal(await selectEntityDecision({ ...input, request: { type: 'response' } }, step => {
+    calls++; assert.equal(step.candidates, candidates); return 7;
+  }), 7);
+  assert.equal(calls, 1);
+  await assert.rejects(selectEntityDecision(input, () => -1), /Invalid subdecision/);
+});

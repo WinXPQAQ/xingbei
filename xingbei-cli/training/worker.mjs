@@ -4,6 +4,7 @@ import { encodeDecision } from './observation.mjs';
 import { encodeEntities, ENTITY_SCHEMA } from './entity/observation.mjs';
 import { createWireEncoder } from './entity/wire.mjs';
 import { enrichPreview } from './preview.mjs';
+import { selectEntityDecision } from './entity/decisions.mjs';
 import { teacherIndex } from './teacher.mjs';
 
 // Persistent JSON-lines transport. Each worker runs one game at a time; launch
@@ -26,20 +27,23 @@ createInterface({ input: process.stdin }).on('line', async line => {
     const pack = message.wire ? createWireEncoder(message.vocabulary) : value => value;
     running = true;
     try {
-      const result = await driveGame(message.config, input => {
+      const result = await driveGame(message.config, async input => {
         const policy = message.seatPolicies?.[input.playerId] ?? 'model';
         if (policy !== 'model') return teacherIndex(input, policy);
-        const observation = message.schema === ENTITY_SCHEMA ? encodeEntities(input) : encodeDecision(input);
-        const baselineVersion = message.seatBaselines?.[input.playerId] ?? message.baseline;
-        if (baselineVersion && !['v1.5','experimental/hero-foundation-1'].includes(baselineVersion)) throw new Error('Unsupported baseline');
-        const baseline = baselineVersion ? teacherIndex(input, baselineVersion) : null;
-        if (baselineVersion) enrichPreview(observation);
-        const teacher = message.teacher ? teacherIndex(input, message.teacher) : null;
-        const id = ++sequence;
-        return new Promise(resolve => {
-          waiting = { id, resolve };
-          send({ type: 'decision', id, seat: input.playerId, observation: pack(observation), teacher, baseline });
-        });
+        const fullTeacher = message.teacher ? teacherIndex(input, message.teacher) : null;
+        const query = (input, teacher) => {
+          const observation = message.schema === ENTITY_SCHEMA ? encodeEntities(input) : encodeDecision(input);
+          const baselineVersion = message.seatBaselines?.[input.playerId] ?? message.baseline;
+          if (baselineVersion && !['v1.5','experimental/hero-foundation-1'].includes(baselineVersion)) throw new Error('Unsupported baseline');
+          const baseline = baselineVersion ? teacherIndex(input, baselineVersion) : null;
+          if (baselineVersion) enrichPreview(observation);
+          const id = ++sequence;
+          return new Promise(resolve => {
+            waiting = { id, resolve };
+            send({ type: 'decision', id, seat: input.playerId, observation: pack(observation), teacher, baseline });
+          });
+        };
+        return message.schema === ENTITY_SCHEMA ? selectEntityDecision(input, query, { teacher: fullTeacher }) : query(input, fullTeacher);
       });
       send({ type: 'result', result });
     } finally { running = false; }
