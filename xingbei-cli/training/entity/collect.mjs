@@ -26,7 +26,7 @@ try {
       decisions.push({ seat: input.playerId, choice, observation }); return choice;
     });
     if (!result.terminated) throw new Error(`Truncated game ${result.seed}; not a loss label`);
-    fs.writeSync(file, JSON.stringify({ schema: 'entities-v1', teacher, heroIds, result, decisions }) + '\n');
+    fs.writeSync(file, JSON.stringify({ schema: 'entities-v2', teacher, heroIds, result, decisions }) + '\n');
     totals.games++;
   }
 } finally { fs.closeSync(file); }

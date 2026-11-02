@@ -10,9 +10,10 @@ export function* attackSteps(game, actorId, handIndex, targetId, options = {}) {
   let attackTraits = attack.getTraits({ game, playerId: actor.id, purpose: "attack" });
   game.playCard(actor, handIndex, { ...options, targetId });
   yield* game.present();
+  let chainDepth = 0;
   while (true) {
     const context = { actorId: actor.id, sourceId: actor.id, targetId: target.id, card: attack, attackTraits,
-      isCounter, amount: 2, damageType: "attack", hit: true, shieldable: true, canCounter: true, canHolyLight: true, point: 1 };
+      isCounter, chainOriginId: actorId, chainDepth, amount: 2, damageType: "attack", hit: true, shieldable: true, canCounter: true, canHolyLight: true, point: 1 };
     game.log.push(`${actor.name}使用${isCounter ? "应战攻击" : "主动攻击"}${cardName(attack)}，目标是${target.name}`);
     game.recordPublicAction({type:'attack',actorId:actor.id,targetId:target.id,card:attack.name,elements:[...attackTraits.elements],counter:isCounter});
     yield* game.trigger(Timing.ATTACK_DECLARED, context, options);
@@ -23,7 +24,8 @@ export function* attackSteps(game, actorId, handIndex, targetId, options = {}) {
     const valid = target.hand.map((card, index) => ({ card, index })).filter(item =>
       game.canRespond(attack, item.card, { actorId: actor.id, targetId: target.id, attackTraits }) &&
       (item.card.name === "holyLight" ? context.canHolyLight : context.canCounter && counterTargets.length));
-    const decision = context.forcedHit ? null : yield { type: "response", actor, target, attack, attackTraits, valid, counterTargets, isCounter, damage: context.amount, shieldable: context.shieldable };
+    const decision = context.forcedHit ? null : yield { type: "response", actor, target, attack, attackTraits, valid, counterTargets, isCounter, chainOriginId: actorId, chainDepth, damage: context.amount, shieldable: context.shieldable,
+      canCounter: context.canCounter, canHolyLight: context.canHolyLight };
     context.sourceHandCount = actor.hand.length; context.targetHandCount = target.hand.length;
     if (!decision) {
       yield* game.trigger(Timing.ATTACK_HIT_CHECK, context, options);
@@ -61,6 +63,6 @@ export function* attackSteps(game, actorId, handIndex, targetId, options = {}) {
       game.recordPresentation("miss", { playerId: target.id, cause: "holyLight" });
       yield* game.present(); break;
     }
-    actor = target; target = nextTarget; attack = response; attackTraits = nextTraits; isCounter = true;
+    actor = target; target = nextTarget; attack = response; attackTraits = nextTraits; isCounter = true; chainDepth++;
   }
 }

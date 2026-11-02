@@ -34,7 +34,7 @@ try:
         if message['type'] == 'result':
             print(json.dumps(message['result'], indent=2)); break
         with torch.inference_mode():
-            logits, _ = model(collate([message['observation']], vocabulary, args.device))
+            logits = model.policy_logits(collate([message['observation']], vocabulary, args.device))
         send({'type': 'select', 'id': message['id'], 'index': int(logits[0].argmax())})
     else: raise RuntimeError('Worker exited before completing a game')
 finally:

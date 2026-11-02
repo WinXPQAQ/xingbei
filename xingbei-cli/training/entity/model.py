@@ -7,7 +7,7 @@ import math
 import torch
 from torch import nn
 
-SCHEMA = 'entities-v1'
+SCHEMA = 'entities-v2'
 
 
 def features(token):
@@ -31,8 +31,8 @@ class Vocabulary:
         for observation in observations:
             for token in observation['entities'] + observation['candidates']:
                 symbols.update(key for key, _ in features(token))
-                for role in token['refs']:
-                    symbols.add('ref:' + role)
+                for role, pointers in token['refs'].items():
+                    symbols.update('ref:' + role + (f':{i}' if role == 'targets' else '') for i in range(len(pointers)))
         return cls(['<pad>', '<unknown>'] + sorted(symbols))
 
     def id(self, symbol):
@@ -56,11 +56,11 @@ def collate(observations, vocabulary, device='cpu'):
                 for symbol, weight in features(token):
                     rows.append(row); ids.append(vocabulary.id(symbol)); weights.append(weight)
                 for role, pointers in token['refs'].items():
-                    for pointer in pointers:
+                    for i, pointer in enumerate(pointers):
                         if not 0 <= pointer < len(observation['entities']):
                             raise ValueError('Invalid entity pointer')
                         source.append(row); target.append(b * width + pointer)
-                        role_ids.append(vocabulary.id('ref:' + role))
+                        role_ids.append(vocabulary.id('ref:' + role + (f':{i}' if role == 'targets' else '')))
     tensor = lambda data, dtype=torch.long: torch.tensor(data, dtype=dtype, device=device)
     return dict(rows=tensor(rows), ids=tensor(ids), weights=tensor(weights, torch.float32),
                 source=tensor(source), target=tensor(target), roles=tensor(role_ids),
@@ -92,12 +92,15 @@ class EntityEncoder(nn.Module):
         relations.index_add_(0, batch['source'], messages)
         return self.norm(vectors + relations)
 
-    def forward(self, batch):
+    def forward(self, batch, with_actions=True):
         size, total = batch['mask'].shape
         count = batch['entities']
         raw = self.tokens(batch)
         linked = self.relate(raw, batch).reshape(size, total, self.width)
         contextual = self.transformer(linked[:, :count], src_key_padding_mask=batch['mask'][:, :count])
+        question = contextual[torch.arange(size, device=contextual.device), batch['question']]
+        if not with_actions:
+            return question
         # Candidate contents do not enter the entity Transformer. This avoids
         # quadratic attention across the potentially large candidate set.
         all_context = torch.cat((contextual, linked[:, count:]), dim=1).reshape(-1, self.width)
@@ -115,12 +118,16 @@ class EntityPolicy(nn.Module):
         self.score = nn.Sequential(nn.Linear(width * 2, width), nn.GELU(), nn.Linear(width, 1))
         self.value = nn.Sequential(nn.Linear(width, width), nn.GELU(), nn.Linear(width, 1), nn.Tanh())
 
-    def forward(self, batch):
+    def policy_logits(self, batch):
         question, actions = self.actor(batch)
         query = question[:, None].expand(-1, actions.shape[1], -1)
         logits = self.score(torch.cat((query, actions), dim=-1)).squeeze(-1)
         logits = logits.masked_fill(batch['mask'][:, batch['entities']:], -torch.inf)
-        critic, _ = self.critic(batch)
+        return logits
+
+    def forward(self, batch):
+        logits = self.policy_logits(batch)
+        critic = self.critic(batch, with_actions=False)
         return logits, self.value(critic).squeeze(-1)
 
     def checkpoint(self, vocabulary):

@@ -233,9 +233,15 @@ export class Game {
         this.recordPresentation("effect", { playerId: entry.player.id, card: entry.card.toJSON(), effectId: entry.card.attachment.effectId });
         yield* this.present();
       }
-      const result = entry.definition.resolve?.(payload);
-      if (result?.next) yield* result;
-      else if (result?.then) yield { type: "promise", promise: result };
+      // Decision adapters whitelist the visible fields of this scoped event.
+      // Nested triggers restore the suspended outer event, including on errors.
+      const previousTrigger = this.activeTrigger;
+      this.activeTrigger = { timing, context, ownerId: entry.player.id, skillId: entry.definition.id };
+      try {
+        const result = entry.definition.resolve?.(payload);
+        if (result?.next) yield* result;
+        else if (result?.then) yield { type: "promise", promise: result };
+      } finally { this.activeTrigger = previousTrigger; }
       yield* this.present();
       if (this.winner) break;
     }

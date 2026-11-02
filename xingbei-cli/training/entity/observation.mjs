@@ -1,6 +1,6 @@
 import { declaredState } from './hero-state.mjs';
 
-export const ENTITY_SCHEMA = 'entities-v1';
+export const ENTITY_SCHEMA = 'entities-v2';
 // Trusted boundary. Only explicitly visible fields leave this module. Entity
 // references are local array offsets, never engine card IDs or deck positions.
 export function encodeEntities({ game, playerId, request, candidates }) {
@@ -57,6 +57,8 @@ export function encodeEntities({ game, playerId, request, candidates }) {
     }
   }
   game.field.forEach(addCard);
+  game.discard.filter(card => card.discardVisibility === 'public').forEach(addCard);
+  add('piles', {}, { deckCount: game.deck.length, discardCount: game.discard.length });
   const cardRef = id => {
     if (id == null) return [];
     if (!cards.has(id)) throw new Error('Request references a non-visible card');
@@ -75,17 +77,28 @@ export function encodeEntities({ game, playerId, request, candidates }) {
       { energy: turn.reservedEnergy ?? 0, healing: turn.reservedHealing ?? 0 },
       { cards: (turn.reservedCardIds ?? []).flatMap(cardRef), targets: (turn.reservedTargetIds ?? []).map(seat) });
   }
-  const context = request.context ?? {};
+  const event = game.activeTrigger;
+  const context = { ...event?.context, ...request.context };
+  // Never serialize the raw context: it can contain hidden cards and callbacks.
+  const flags = {};
+  for (const key of ['hit','forcedHit','forceHitRequested','canCounter','canHolyLight','bloodBlade',
+    'hadesTremor','puppetMissMode','disableHolyStrike','extraSpell','moraleLoss','sameElement','specialAction'])
+    if (context[key] !== undefined || request[key] !== undefined) flags[key] = request[key] ?? context[key];
   const question = add('question', { type: request.type, skill: request.skillId ?? null,
+    timing: event?.timing ?? null, ...flags,
     purpose: request.purpose ?? context.purpose ?? null, damageType: context.damageType ?? (request.type === 'response' ? request.attack ? 'attack' : 'spell' : null),
-    optional: !!request.optional, counter: request.isCounter ?? context.isCounter ?? null, shieldable: request.shieldable ?? null },
-    { amount: request.damage ?? context.amount ?? 0, count: request.count ?? 0,
+    optional: !!request.optional, counter: request.isCounter ?? context.isCounter ?? null, shieldable: request.shieldable ?? context.shieldable ?? null },
+    { amount: request.damage ?? context.amount ?? 0, count: request.count ?? context.count ?? 0,
+      chainDepth: request.chainDepth ?? context.chainDepth ?? 0, direction: request.direction ?? 0,
+      point: context.point ?? 0, sourceHandCount: context.sourceHandCount ?? 0, targetHandCount: context.targetHandCount ?? 0,
+      battleRunes: context.battleRunes ?? 0, magicRunes: context.magicRunes ?? 0,
       actual: context.actual ?? 0, drawCount: context.drawCount ?? 0 },
     { actor: playerRef(request.actor?.id ?? context.actorId ?? context.sourceId),
       target: playerRef(request.target?.id ?? request.targetId ?? context.targetId),
+      chainOrigin: playerRef(request.chainOriginId ?? context.chainOriginId),
       recipient: playerRef(request.recipientId), nextTarget: playerRef(request.nextTarget?.id),
       participants: (request.participants ?? []).map(seat),
-      card: cardRef(request.attack?.id ?? context.card?.id) });
+      card: cardRef(request.attack?.id ?? (cards.has(context.card?.id) ? context.card.id : null)) });
   for (const [position, event] of (game.publicHistory?.actions ?? []).slice(-32).entries()) {
     const categorical = {}, numbers = { position }, refs = {};
     for (const key of ['type','card','elements','fates','uniqueSkills','counter','result','skillId','accepted','effectId'])

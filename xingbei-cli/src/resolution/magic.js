@@ -30,7 +30,7 @@ export function* magicRelaySteps(game, actorId, options = {}) {
     yield* game.present();
     const valid = target.hand.map((card, index) => ({ card, index })).filter(item => game.allowsCard(target.id, item.card, "response") && (item.card.name === "holyLight" || game.canRelayMagic(target.id, item.card)));
     const decision = yield { type: "response", actor: game.player(sourceId), target, valid, damage,
-      nextTarget: game.magicTarget(target.id, participants, options.direction ?? 1), participants: [...participants] };
+      nextTarget: game.magicTarget(target.id, participants, options.direction ?? 1), participants: [...participants], chainOriginId: actorId, chainDepth: damage - 2, direction: options.direction ?? 1 };
     const picked = decision && valid.find(item => item.index === decision.index);
     if (decision && !picked) throw new RuleError("选择的牌不能响应魔弹");
     if(picked)game.recordPublicAction({type:'response',actorId:target.id,sourceId,card:picked.card.name,result:picked.card.name==='holyLight'?'cancel':'relay'});
