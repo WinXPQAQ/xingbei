@@ -1,6 +1,7 @@
 import { createInterface } from 'node:readline';
 import { driveGame } from './driver.mjs';
 import { encodeDecision } from './observation.mjs';
+import { encodeEntities, ENTITY_SCHEMA } from './entity/observation.mjs';
 import { enrichPreview } from './preview.mjs';
 import { teacherIndex } from './teacher.mjs';
 
@@ -18,12 +19,14 @@ createInterface({ input: process.stdin }).on('line', async line => {
       return;
     }
     if (message.type !== 'start' || running) throw new Error('Expected start while idle');
+    if (message.schema && ![2, ENTITY_SCHEMA].includes(message.schema)) throw new Error('Unsupported observation schema');
+    if (message.schema === ENTITY_SCHEMA && (message.baseline || message.seatBaselines)) throw new Error('Legacy residual baseline is incompatible with entity schema');
     running = true;
     try {
       const result = await driveGame(message.config, input => {
         const policy = message.seatPolicies?.[input.playerId] ?? 'model';
         if (policy !== 'model') return teacherIndex(input, policy);
-        const observation = encodeDecision(input);
+        const observation = message.schema === ENTITY_SCHEMA ? encodeEntities(input) : encodeDecision(input);
         const baselineVersion = message.seatBaselines?.[input.playerId] ?? message.baseline;
         if (baselineVersion && !['v1.5','experimental/hero-foundation-1'].includes(baselineVersion)) throw new Error('Unsupported baseline');
         const baseline = baselineVersion ? teacherIndex(input, baselineVersion) : null;

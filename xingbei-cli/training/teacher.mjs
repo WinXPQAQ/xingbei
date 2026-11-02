@@ -11,6 +11,9 @@ export function teacherIndex({ game, playerId, request, candidates }, version) {
   else if (request.type === 'response') value = policy.chooseAiResponse(game, request);
   else if (request.type === 'overflow') value = policy.chooseAiDiscard(game, playerId, game.player(playerId).hand.length - game.player(playerId).handLimit);
   else value = policy.chooseAiRuleDecision(request, game);
+  // The engine interprets every non-draw weakness answer as skipping. Some
+  // newer policies return null; record the executed command, not a new fallback.
+  if (request.type === 'weakness' && value !== 'draw') value = 'skip';
   const key = choice => {
     if (request.type === 'response' && choice != null) {
       const card = game.player(playerId).hand[choice.index];

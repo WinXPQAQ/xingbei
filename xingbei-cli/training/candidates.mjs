@@ -1,9 +1,6 @@
 // Rule-only enumeration. No policy import, score, top-k pruning, or fallback.
-export function combinations(items, count) {
-  if (count === 0) return [[]];
-  if (count < 0 || count > items.length) return [];
-  return items.flatMap((item, i) => combinations(items.slice(i + 1), count - 1).map(rest => [item, ...rest]));
-}
+import { combinations, cardSets, targetCounts } from '../src/card-sets.js';
+export { combinations };
 
 export function actionCandidates(game, playerId) {
   if (game.winner) return [];
@@ -21,8 +18,8 @@ export function actionCandidates(game, playerId) {
     for (const mode of entry.spec.modes?.map(item => item.value) ?? [undefined]) {
       const spec = game.skillActionSpec(playerId, { skillId: entry.skillId, mode });
       if (!spec) continue;
-      const costs = combinations(player.hand.filter(spec.cardFilter ?? (() => true)), spec.cardCount ?? 0);
-      for (const cards of costs) for (const count of spec.targetCounts ?? [spec.targetCount ?? 1]) {
+      const costs = cardSets(player.hand, spec);
+      for (const cards of costs) for (const count of targetCounts(spec, cards.length)) {
         for (const targetIds of combinations(spec.targets, count)) {
           actions.push({ type: 'skill', skillId: entry.skillId, ...(mode === undefined ? {} : { mode }), cardIds: cards.map(card => card.id), targetIds });
         }
@@ -38,7 +35,7 @@ export function actionCandidates(game, playerId) {
     for (let gem = 0; gem <= Math.min(2, stones.gem); gem++) {
       for (let crystal = 0; crystal <= Math.min(2, stones.crystal); crystal++) {
         const count = gem + crystal;
-        if (count >= 1 && count <= 2 && count + player.energy.gem + player.energy.crystal <= 3) actions.push({ type: 'refine', stones: { gem, crystal } });
+        if (count >= 1 && count <= 2 && count + player.energy.gem + player.energy.crystal <= game.getEnergyLimit(playerId)) actions.push({ type: 'refine', stones: { gem, crystal } });
       }
     }
   }
@@ -71,7 +68,7 @@ export function decisionCandidates(game, request) {
     const player = game.player(decisionPlayer(request));
     return combinations(player.hand.map((_, index) => index), Math.max(0, player.hand.length - player.handLimit));
   }
-  if (request.type === 'cardChoice') return [...(request.optional ? [null] : []), ...combinations(request.valid, request.count)];
+  if (request.type === 'cardChoice') return [...(request.optional ? [null] : []), ...(request.validSets ?? combinations(request.valid, request.count))];
   if (request.type === 'weakness') return ['draw', 'skip'];
   if (['skillChoice', 'playerChoice', 'effectChoice', 'numberChoice', 'energyChoice', 'healing', 'bindingChoice'].includes(request.type)) {
     if (!request.choices?.length) throw new Error(`Empty ${request.type}`);
