@@ -12,6 +12,7 @@ parser.add_argument('--seed', type=int, default=211102200)
 parser.add_argument('--device', default='cpu')
 parser.add_argument('--opponent', default='v1.8.0-preview.1')
 parser.add_argument('--heroes', nargs=6)
+parser.add_argument('--raw', action='store_true', help='Use readable JSON rather than sparse wire')
 args = parser.parse_args()
 torch.set_num_threads(2)
 # Only load checkpoints generated locally by the training command.
@@ -27,6 +28,7 @@ config = {'seed': args.seed}
 if args.heroes: config['heroIds'] = args.heroes
 try:
     send({'type': 'start', 'schema': SCHEMA, 'config': config,
+          **({} if args.raw else {'wire': 'sparse-v1', 'vocabulary': vocabulary.symbols}),
           'seatPolicies': ['model', args.opponent, args.opponent, 'model', 'model', args.opponent]})
     for line in worker.stdout:
         message = json.loads(line)

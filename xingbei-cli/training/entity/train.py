@@ -4,7 +4,7 @@ import json
 import random
 from pathlib import Path
 import torch
-from model import EntityPolicy, Vocabulary, collate
+from model import EntityPolicy, Vocabulary, collate, pack_observation
 
 parser = argparse.ArgumentParser()
 parser.add_argument('data')
@@ -29,6 +29,8 @@ def samples(games):
 
 train, valid = samples(training), samples(validation)
 vocab = Vocabulary.fit(row[0] for row in train)
+train = [(pack_observation(o, vocab), choice, reward) for o, choice, reward in train]
+valid = [(pack_observation(o, vocab), choice, reward) for o, choice, reward in valid]
 model = EntityPolicy(len(vocab.symbols)).to(args.device)
 optimizer = torch.optim.AdamW(model.parameters(), lr=3e-4)
 losses = []
@@ -53,7 +55,7 @@ with torch.no_grad():
         logits, values = model(batch)
         for row, choice, value in zip(rows, logits.argmax(-1).tolist(), values.tolist()):
             hit = int(choice == row[1]); correct += hit; squared += (value - row[2]) ** 2; count += 1
-            kind = row[0]['entities'][row[0]['question']]['categorical']['type']
+            kind = row[0]['decision_type']
             stat = by_type.setdefault(kind, {'correct': 0, 'count': 0}); stat['correct'] += hit; stat['count'] += 1
 
 checkpoint = model.checkpoint(vocab)

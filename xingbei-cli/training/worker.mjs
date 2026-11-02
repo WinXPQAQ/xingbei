@@ -2,6 +2,7 @@ import { createInterface } from 'node:readline';
 import { driveGame } from './driver.mjs';
 import { encodeDecision } from './observation.mjs';
 import { encodeEntities, ENTITY_SCHEMA } from './entity/observation.mjs';
+import { createWireEncoder } from './entity/wire.mjs';
 import { enrichPreview } from './preview.mjs';
 import { teacherIndex } from './teacher.mjs';
 
@@ -21,6 +22,8 @@ createInterface({ input: process.stdin }).on('line', async line => {
     if (message.type !== 'start' || running) throw new Error('Expected start while idle');
     if (message.schema && ![2, ENTITY_SCHEMA].includes(message.schema)) throw new Error('Unsupported observation schema');
     if (message.schema === ENTITY_SCHEMA && (message.baseline || message.seatBaselines)) throw new Error('Legacy residual baseline is incompatible with entity schema');
+    if (message.wire && (message.wire !== 'sparse-v1' || message.schema !== ENTITY_SCHEMA)) throw new Error('Unsupported wire format');
+    const pack = message.wire ? createWireEncoder(message.vocabulary) : value => value;
     running = true;
     try {
       const result = await driveGame(message.config, input => {
@@ -35,7 +38,7 @@ createInterface({ input: process.stdin }).on('line', async line => {
         const id = ++sequence;
         return new Promise(resolve => {
           waiting = { id, resolve };
-          send({ type: 'decision', id, seat: input.playerId, observation, teacher, baseline });
+          send({ type: 'decision', id, seat: input.playerId, observation: pack(observation), teacher, baseline });
         });
       });
       send({ type: 'result', result });

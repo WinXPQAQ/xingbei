@@ -4,6 +4,8 @@ Vocabulary is explicit and checkpointed. Unknown features map to UNK, never hash
 An entity is encoded once; candidate pointers reuse contextual entity vectors.
 """
 import math
+import hashlib
+import json
 import torch
 from torch import nn
 
@@ -24,6 +26,7 @@ class Vocabulary:
     def __init__(self, symbols=None):
         self.symbols = symbols or ['<pad>', '<unknown>']
         self.ids = {symbol: i for i, symbol in enumerate(self.symbols)}
+        self.digest = hashlib.sha256(json.dumps(self.symbols, ensure_ascii=False, separators=(',', ':')).encode()).hexdigest()
 
     @classmethod
     def fit(cls, observations):
@@ -39,6 +42,22 @@ class Vocabulary:
         return self.ids.get(symbol, 1)
 
 
+
+def pack_observation(observation, vocabulary):
+    """Cache fixed features once per dataset, not on every optimizer step."""
+    if observation['schema'] != SCHEMA or observation.get('wire'):
+        raise ValueError('Expected raw entity observation')
+    def pack(token):
+        pairs = [(vocabulary.id(symbol), weight) for symbol, weight in features(token)]
+        links = [(vocabulary.id('ref:' + role + (f':{i}' if role == 'targets' else '')), pointer)
+                 for role, pointers in token['refs'].items() for i, pointer in enumerate(pointers)]
+        return [[p[0] for p in pairs], [p[1] for p in pairs], [p[0] for p in links], [p[1] for p in links]]
+    return dict(schema=SCHEMA, wire='sparse-v1', vocabulary=vocabulary.digest,
+                question=observation['question'],
+                decision_type=observation['entities'][observation['question']]['categorical']['type'],
+                entities=[pack(t) for t in observation['entities']], candidates=[pack(t) for t in observation['candidates']])
+
+
 def collate(observations, vocabulary, device='cpu'):
     if any(o['schema'] != SCHEMA for o in observations):
         raise ValueError('Incompatible observation schema')
@@ -49,18 +68,31 @@ def collate(observations, vocabulary, device='cpu'):
     rows, ids, weights, source, target, role_ids = [], [], [], [], [], []
     mask = torch.ones((batch, width), dtype=torch.bool)
     for b, observation in enumerate(observations):
+        packed = observation.get('wire') == 'sparse-v1'
+        if observation.get('wire') not in (None, 'sparse-v1'):
+            raise ValueError('Unknown wire format')
+        if packed and observation['vocabulary'] != vocabulary.digest:
+            raise ValueError('Wire/checkpoint vocabulary mismatch')
         for group, offset in [('entities', 0), ('candidates', entity_count)]:
             for i, token in enumerate(observation[group]):
                 row = b * width + offset + i
                 mask[b, offset + i] = False
-                for symbol, weight in features(token):
-                    rows.append(row); ids.append(vocabulary.id(symbol)); weights.append(weight)
-                for role, pointers in token['refs'].items():
-                    for i, pointer in enumerate(pointers):
-                        if not 0 <= pointer < len(observation['entities']):
-                            raise ValueError('Invalid entity pointer')
-                        source.append(row); target.append(b * width + pointer)
-                        role_ids.append(vocabulary.id('ref:' + role + (f':{i}' if role == 'targets' else '')))
+                if packed:
+                    feature_ids, feature_weights, roles, pointers = token
+                    if len(feature_ids) != len(feature_weights) or len(roles) != len(pointers):
+                        raise ValueError('Malformed sparse token')
+                    entries = zip(feature_ids, feature_weights)
+                    relations = zip(roles, pointers)
+                else:
+                    entries = ((vocabulary.id(symbol), weight) for symbol, weight in features(token))
+                    relations = ((vocabulary.id('ref:' + role + (f':{i}' if role == 'targets' else '')), pointer)
+                                 for role, pointers in token['refs'].items() for i, pointer in enumerate(pointers))
+                for feature_id, weight in entries:
+                    rows.append(row); ids.append(feature_id); weights.append(weight)
+                for role_id, pointer in relations:
+                    if not 0 <= pointer < len(observation['entities']):
+                        raise ValueError('Invalid entity pointer')
+                    source.append(row); target.append(b * width + pointer); role_ids.append(role_id)
     tensor = lambda data, dtype=torch.long: torch.tensor(data, dtype=dtype, device=device)
     return dict(rows=tensor(rows), ids=tensor(ids), weights=tensor(weights, torch.float32),
                 source=tensor(source), target=tensor(target), roles=tensor(role_ids),

@@ -48,3 +48,26 @@ python training/entity/play.py /tmp/entities.pt --device cpu
 - schema 升为 `entities-v2`；v1原型权重不兼容。实战推理仅调用策略，不再计算无用的价值网络。
 - 三项实体检查和现有92项核心规则检查通过。相同6局919决策重新测量：旧编码677.4ms，新编码168.9ms；补足公开弃牌后JSON体积为20.6MB，超过旧版18.3MB。此前“编码约1/8、传输更小”仅适用于首批不完整输入，**不是当前完整输入结果**。后续需要压缩传输和拆分推理计时。
 - v2 GPU四步更新及精确恢复通过，仅验证运行；仍未开始正式强度训练或表示A/B。
+
+
+## 稀疏传输与批量推理（第三批）
+
+`wire.mjs` 按检查点词表把实体预编码为特征索引、权重及关系；词表SHA-256必须匹配。无哈希碰撞或观测裁剪，raw模式仍可诊断。训练数据在词表建立后一次预编码，优化器各步不再重复解析类别字符串。`pool.py` 用持久Node进程生成独立对局，由一个Python进程合并待决策请求进行GPU推理；没有共享座位私有状态。
+
+必要检查：32个同源决策的raw、Node稀疏传输、Python缓存预编码产生完全相同的张量；raw和稀疏的策略输出完全一致。旧worker兼容检查4项通过；GPU缓存训练两步及精确恢复通过。
+
+性能证据见 `ai-entity-performance.json`：
+
+- 固定32决策450候选，序列化736,383→279,991字节。Node额外打包约5.06ms；Python解析3.10→2.02ms，组批14.90→9.55ms。不是无成本压缩，部分工作移到模拟进程。
+- 4进程、GPU批量推理、6个相同seed/阵容对局：双方均656次决策/7238候选，最终结果完全相同；raw约1.039s，稀疏约0.954s。worker输出字节13,504,865→5,242,836（未计启动时发送词表的单次成本）。仅小样本，不将约9%的差异称为稳定训练提升。
+- 单决策网络推理CPU约0.33ms、GPU约0.40ms；32批次GPU约0.57ms。GPU优势需要合批；这些网络计时不包括组批/传输。结果没有推出新的AI强度结论。
+
+复现命令（在xingbei-cli，Python使用现有PyTorch环境）：
+
+```bash
+python training/entity/benchmark.py /path/decisions.jsonl /path/bootstrap.pt
+python training/entity/pool.py /path/bootstrap.pt --games 6 --workers 4 --device cuda
+python training/entity/pool.py /path/bootstrap.pt --games 6 --workers 4 --device cuda --raw
+```
+
+本机数据和模型已保留在 `/home/xp/.local/share/xingbei-ml/entity-v2-bootstrap/`，不上传训练数据/权重。当前仅完成输入与运行管线的这些改进，逐技能语义审查、正式表示对照和训练任务仍继续推进。
