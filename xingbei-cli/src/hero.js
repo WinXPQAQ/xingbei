@@ -1,3 +1,4 @@
+import { GodEater } from "./heroes/god-eater/index.js";
 import { Lawgiver } from "./heroes/lawgiver/index.js";
 import { Cardinal } from "./heroes/cardinal/index.js";
 import { Chronicler } from "./heroes/chronicler/index.js";
@@ -58,6 +59,7 @@ const definitions = [
   ["swordEmperor", "剑帝"], ["priest", "神官"], ["assassin", "暗杀者"],
 ];
 export const HERO_DEFINITIONS = {
+  godEater: { name: "噬神者", HeroClass: GodEater },
   lawgiver: { name: "铸律者", HeroClass: Lawgiver },
   cardinal: { name: "红衣主教", HeroClass: Cardinal },
   chronicler: { name: "记录者", HeroClass: Chronicler },
@@ -153,3 +155,5 @@ export const WAVE_SEVEN_HERO_IDS = ["butterflyDancer", "battleMage", "starfallWi
 export const WAVE_EIGHT_HERO_IDS = ["nobleLady", "headMaid", "barrierMaster", "mystic", "defiler", "swordWitch"];
 
 export const WAVE_NINE_HERO_IDS = ["lawgiver", "cardinal", "chronicler", "missionary", "heretic", "mystic"];
+
+export const GOD_EATER_HERO_IDS = ["godEater", "moonGoddess", "priest", "magicArcher", "swordEmperor", "witchHunter"];

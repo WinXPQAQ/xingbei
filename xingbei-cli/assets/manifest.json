@@ -485,6 +485,21 @@
       "path": "image/card/zhuanShu/diLieBoTao.png",
       "bytes": 334277,
       "sha256": "419b297e873d9ed60512ec40fd95b5b19afdf080e7dec576d1835c035a617cdf"
+    },
+    {
+      "path": "image/character/shiShenZhe.jpg",
+      "bytes": 160603,
+      "sha256": "ed3c84e628758ff55f52b6b88557136637ab58bc014a015232fd4ac84564d2e4"
+    },
+    {
+      "path": "image/card/moRen.png",
+      "bytes": 264906,
+      "sha256": "b08dfba84a37a1d3b8a44f5e3355969033c1c6b82ceda190228d6d8d0c0ca687"
+    },
+    {
+      "path": "image/card/yiRen.png",
+      "bytes": 263751,
+      "sha256": "27b574228dbfc697a1d963826edb8ee07d5cb872630e3c23a6d7c2eb70589c77"
     }
   ]
 }

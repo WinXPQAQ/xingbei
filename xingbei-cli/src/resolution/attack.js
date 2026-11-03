@@ -1,3 +1,4 @@
+import { attackTraitsFor } from "./card-traits.js";
 import { playableCards } from "../playable-cards.js";
 import { RuleError } from "../errors.js";
 import { cardName } from "../card-labels.js";
@@ -8,8 +9,9 @@ export function* attackSteps(game, actorId, handIndex, targetId, options = {}) {
   let actor = game.player(actorId), target = game.player(targetId);
   let attack = options.virtualAttack ?? playableCards(actor)[handIndex], isCounter = false;
   if (attack?.type !== "attack" || !game.canAttackTarget(actorId, targetId)) throw new RuleError("攻击牌只能指定对手");
-  let attackTraits = attack.getTraits({ game, playerId: actor.id, purpose: "attack" });
-  if (!options.virtualAttack) game.playCard(actor, handIndex, { ...options, targetId });
+  let attackTraits = yield* attackTraitsFor(game, actor.id, attack, { targetId, element: options.element, required: options.requiredElement });
+  if (!options.virtualAttack) game.playCard(actor, handIndex, { ...options, targetId, traits: attackTraits });
+  yield* game.flushCardMoves(options);
   yield* game.present();
   let chainDepth = 0, previousAttackTraits = null, requiresCounterSkill = false;
   while (true) {
@@ -63,8 +65,9 @@ export function* attackSteps(game, actorId, handIndex, targetId, options = {}) {
     }
     requiresCounterSkill = !attack.canRespond(picked.card, { game, actorId: actor.id, targetId: target.id, attackTraits });
     previousAttackTraits = attackTraits;
-    const nextTraits = (responseAttack ?? picked.card).getTraits({ game, playerId: target.id, purpose: "attack" });
-    const response = game.playCard(target, picked.index, { ...options, targetId: nextTarget?.id ?? actor.id });
+    const nextTraits = yield* attackTraitsFor(game, target.id, responseAttack ?? picked.card, { matching: attackTraits.elements, element: decision.element, targetId: nextTarget?.id });
+    const response = game.playCard(target, picked.index, { ...options, targetId: nextTarget?.id ?? actor.id, traits: nextTraits });
+    yield* game.flushCardMoves(options);
     yield* game.present();
     context.hit = false; context.cause = response.name;
     game.recordPublicAction({type:'response',actorId:target.id,sourceId:actor.id,targetId:nextTarget?.id??actor.id,card:response.name,elements:[...nextTraits.elements],result:response.name==='holyLight'?'cancel':'redirect'});

@@ -329,10 +329,13 @@ function chooseHand(title, cards, { count = 1, valid = cards.map((_, index) => i
     elements.modalActions.replaceChildren();
     const confirm = document.createElement("button");
     confirm.textContent = confirmLabel ?? (count === 1 ? "确定" : "确认弃置"); confirm.disabled = true;
-    handChoice = { valid, selected, select(index) {
-      if (!valid.includes(index)) return;
+    const available = () => validSets ? valid.filter(index => selected.has(index) ||
+      validSets.some(set => set.includes(index) && [...selected].every(i => set.includes(i)))) : valid;
+    handChoice = { valid: available(), selected, select(index) {
+      if (!available().includes(index)) return;
       selected.has(index) ? selected.delete(index) : selected.add(index);
       pendingChoice.selected = [...selected];
+      handChoice.valid = available(); pendingChoice.valid = handChoice.valid;
       confirm.disabled = validSets ? !validSets.some(set => set.length === selected.size && set.every(index => selected.has(index))) : selected.size !== count;
       render();
     } };

@@ -118,6 +118,8 @@ export class Lawgiver extends Ecclesiastic {
       : limit;
   }
   *orbCircuit(g, p, offering, options) {
+    const offeringType = offering.category === "exclusive" ? "exclusive" : offering.type;
+    const matches = c => (c.category === "exclusive" ? "exclusive" : c.type) === offeringType;
     let id = p.id;
     try {
       for (let step = 0; step < g.players.length && !g.winner; step++) {
@@ -125,8 +127,8 @@ export class Lawgiver extends Ecclesiastic {
           effectId: "royalOrb",
           sourcePlayerId: p.id,
         });
-        const cs = g.player(id).hand.some((c) => c.type === offering.type)
-          ? yield* g.chooseHandCards(id, 1, (c) => c.type === offering.type, {
+        const cs = g.player(id).hand.some(matches)
+          ? yield* g.chooseHandCards(id, 1, matches, {
               skillId: "royalPressure",
               context: { sourceId: p.id },
               optional: true,

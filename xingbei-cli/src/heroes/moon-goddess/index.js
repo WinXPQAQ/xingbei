@@ -12,11 +12,18 @@ export class MoonGoddess extends Hero {
       {id:'moonReset',name:'月渎回合重置',...this.bind('player',[Timing.TURN_BEFORE],'all'),resolve(){hero.state.desecrationUsed=false;}},
       {id:'newMoonShelter',name:'新月庇护',...this.bind('team',[Timing.MORALE_BEFORE],'self'),priority:-10,
         filter:({context})=>!hero.state.form&&context.amount<0&&context.cause?.type==='damage'&&context.discarded?.length>0,
-        *resolve({game,player,context}){
+        *resolve({game,player,context,options}){
           if(!(yield* game.offerSkill(player.id,'newMoonShelter','新月庇护：免除本次士气损失，以弃牌形成暗月',context)))return;
+          const originalAmount=context.amount;
+          const cards=context.discarded.filter(c=>c.location.zone==='discard'||(c.location.zone==='outside'&&c.publicIdentity&&['demonBlade','alienBlade'].includes(c.name)));
           hero.state.form='darkMoon';context.amount=0;
-          game.coverCards(player.id,context.discarded,'darkMoon',{sources:['discard']});
-          game.logSkill(player.id,'newMoonShelter',`进入暗月形态，${context.discarded.length}张爆牌作为暗月，本次士气不下降`);
+          game.coverCards(player.id,cards,'darkMoon',{sources:['discard','outside']});
+          yield* game.flushCardMoves(options);
+          // A blade that disappears cannot remain as collateral for this morale.
+          const lost=context.discarded.length-cards.filter(c=>c.location.zone==='covered'&&c.location.pile==='darkMoon'&&c.location.playerId===player.id).length;
+          context.amount=Math.max(originalAmount,-lost);
+          if(!hero.moons(player).length)hero.state.form=null;
+          game.logSkill(player.id,'newMoonShelter',`${cards.length}张爆牌作为暗月，其中${lost}张已移除；本次士气下降${-context.amount}`);
         }},
       {id:'medusaEye',name:'美杜莎之眼',...this.bind('actor',[Timing.ATTACK_DECLARED],'all'),priority:-15,
         filter:({game,player,context})=>game.player(context.actorId).team!==player.team&&hero.moons(player).some(c=>c.getTraits({game,playerId:player.id}).elements.some(e=>context.attackTraits.elements.includes(e))),

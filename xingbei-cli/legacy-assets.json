@@ -116,5 +116,8 @@
   "markers/relics.png": "card/zhiShiWu/lan.png",
   "markers/silverBullets.png": "card/zhiShiWu/hong.png",
   "markers/archives.png": "card/zhiShiWu/hong.png",
-  "markers/devotion.png": "card/zhiShiWu/hong.png"
+  "markers/devotion.png": "card/zhiShiWu/hong.png",
+  "character/godEater.jpg": "character/shiShenZhe.jpg",
+  "card/demonBlade.png": "card/moRen.png",
+  "card/alienBlade.png": "card/yiRen.png"
 }

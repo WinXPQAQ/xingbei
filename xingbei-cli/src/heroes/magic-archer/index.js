@@ -61,7 +61,7 @@ export class MagicArcher extends Hero {
           yield* game.drawSteps(player.id,n,{...options,cause:{type:'directDraw',skillId:'charge'}});
           if(!n||!player.hand.length)return;
           const cards=yield* game.chooseCardSet(player.id,{counts:Array.from({length:Math.min(n,player.hand.length)},(_,i)=>i+1),skillId:'chargeCover',title:'充能：可盖放手牌',optional:true});
-          if(cards){game.coverCards(player.id,cards,'charge');yield* trimCovered(game,player,'charge',8,'chargeTrim');}
+          if(cards){game.coverCards(player.id,cards,'charge');yield* game.flushCardMoves(options);yield* trimCovered(game,player,'charge',8,'chargeTrim');}
         }},
       {id:'magicEye',name:'魔眼',...this.onOwnTurn([Timing.ACTIVATION]),
         filter:({game,player})=>!hero.state.charged&&game.canPayEnergy(player.id,'gem'),
@@ -71,7 +71,7 @@ export class MagicArcher extends Hero {
           const mode=yield* choice(player.id,'magicEyeMode','魔眼：选择效果',[{value:'discard',label:'目标角色弃1张'},{value:'draw',label:'自己摸3张'}],'discard');
           if(mode==='draw')yield* game.drawSteps(player.id,3,{...options,cause:{type:'directDraw',skillId:'magicEye'}});
           else {const targetId=yield* game.choosePlayer(player.id,targets(game),'魔眼：选择弃牌角色',{skillId:'magicEyeTarget'});yield* discardHand(game,targetId,1,'magicEyeDiscard',options);}
-          if(player.hand.length){const cards=yield* game.chooseHandCards(player.id,1,()=>true,{skillId:'chargeCover',title:'魔眼：将1张手牌作为充能'});game.coverCards(player.id,cards,'charge');yield* trimCovered(game,player,'charge',8,'chargeTrim');}
+          if(player.hand.length){const cards=yield* game.chooseHandCards(player.id,1,()=>true,{skillId:'chargeCover',title:'魔眼：将1张手牌作为充能'});game.coverCards(player.id,cards,'charge');yield* game.flushCardMoves(options);yield* trimCovered(game,player,'charge',8,'chargeTrim');}
           game.gainEnergy(player.id,'crystal');
         }},
     ];

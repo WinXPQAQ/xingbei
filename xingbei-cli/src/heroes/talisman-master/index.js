@@ -18,7 +18,7 @@ export class TalismanMaster extends Hero {
             if (id === 'thunderTalisman') yield* game.damageSteps(targetId, amount, { ...options, sourceId: player.id, damageType: 'spell', skillId: id });
             else yield* discardHand(game, targetId, 1, id, options);
           }
-          yield* player.hero.chant(game, player);
+          yield* player.hero.chant(game, player, options);
         },
       })),
       { id: 'chant', name: '念咒' },
@@ -47,9 +47,9 @@ export class TalismanMaster extends Hero {
     }
     return 1;
   }
-  *chant(game, player) {
+  *chant(game, player, options) {
     if (coveredCards(player, 'spiritPower').length >= 2 || !player.hand.length) return;
     const cards = yield* game.chooseHandCards(player.id, 1, () => true, { skillId: 'chant', title: '念咒：可将1张手牌作为妖力', optional: true });
-    if (cards) { game.logSkill(player.id, 'chant', '将手牌盖放为妖力'); game.coverCards(player.id, cards, 'spiritPower'); }
+    if (cards) { game.logSkill(player.id, 'chant', '将手牌盖放为妖力'); game.coverCards(player.id, cards, 'spiritPower'); yield* game.flushCardMoves(options); }
   }
 }

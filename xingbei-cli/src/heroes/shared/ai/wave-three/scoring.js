@@ -32,7 +32,10 @@ export function attackOutcomes(game, id, state, card, targetId, { active = true,
   const next = copy(state), p = next.players[id];
   const selected = alreadyPlayed ? card : p.hand.find((c) => c.id === card.id);
   if (!selected) return [];
-  if (!alreadyPlayed) spend(next, id, [selected]);
+  if (!alreadyPlayed) {
+    spend(next, id, [selected]);
+    if (["demonBlade", "alienBlade"].includes(card.name)) hurt(next, id, p.hero === "godEater" ? 1 : 3, "spell");
+  }
   if (terminal(next)) return [{ probability: 1, state: next }];
   const profile = heroAi(p.hero);
   profile.prepareAttack?.({ state: next, id, player: p, card, active, variant }, scoringApi);

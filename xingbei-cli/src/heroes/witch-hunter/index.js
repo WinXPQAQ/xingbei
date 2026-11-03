@@ -232,8 +232,11 @@ export class WitchHunter extends Hero {
     };
   }
   *capture(game, p, id, skillId, options) {
-    const cs = yield* discardHand(game, id, 1, `${skillId}Cost`, options);
-    if (cs.length)
-      game.coverCards(p.id, cs, "manaBottle", { sources: ["discard"] });
+    if (!game.player(id).hand.length) return;
+    const cs = yield* game.chooseHandCards(id, 1, () => true, { skillId: `${skillId}Cost`, title: "选择1张牌作为魔力瓶", purpose: "reserve" });
+    // One hand→covered move distinguishes taking another player's blade from
+    // covering one's own; a temporary discard would incorrectly trigger 3 damage.
+    game.coverCards(p.id, cs, "manaBottle", { sources: ["hand"], sourcePlayerId: id });
+    yield* game.flushCardMoves(options);
   }
 }

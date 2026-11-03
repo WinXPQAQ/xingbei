@@ -160,11 +160,12 @@ export class HeadMaid extends Hero {
             "shadowStitchCost",
             options,
           );
-          if (cs.length) {
+          const remaining = cs.filter(c => c.location.zone === "discard");
+          if (remaining.length) {
             const c = yield* chooseVisibleCard(
               game,
               player.id,
-              cs,
+              remaining,
               "shadowStitchCard",
               "观看弃牌，选择1张作为影",
             );
@@ -354,7 +355,8 @@ export class HeadMaid extends Hero {
     );
   }
   *addShadows(g, p, cs, options) {
-    g.coverCards(p.id, cs, "shadow", { sources: ["hand", "field", "discard"] });
+    g.coverCards(p.id, cs.filter(c => ["hand", "field", "discard"].includes(c.location.zone)), "shadow", { sources: ["hand", "field", "discard"] });
+    yield* g.flushCardMoves(options);
     yield* trimCovered(g, p, "shadow", 3, "shadowOverflow");
   }
 }

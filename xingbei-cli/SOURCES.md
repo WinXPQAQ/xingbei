@@ -32,3 +32,5 @@
 第八批的矜贵之女、女仆长、结界师、神秘学者、染污者参考 `character/shenZiChuangLin.js`；剑之魔女参考 `character/teDian.js`。六张头像和风穴、绝界两张专属牌图片均原样复制，路径、字节数和哈希见assets清单。神秘学者立即续接规则以用户补充为准；仍沿用上述来源与许可。
 
 第九批终末祷铸五位英雄参考 `character/zhongMoDaoZhu.js`，结合用户提供的结算时间轴。放逐采用用户修订“摸6–7张牌，放入6张基础牌”。新增头像、史书、王权宝珠、路标、末日预言及两张灾殃图片原样复制，详情见assets清单，沿用上述许可与来源。
+
+噬神者规则参考原项目`character/shenZiChuangLin.js`，渗蚀、直接移除豁免及双属性选择以本次用户修订为准。新增`image/character/shiShenZhe.jpg`、`image/card/moRen.png`、`image/card/yiRen.png`原样复制，原许可和哈希清单沿用；原项目不修改。

@@ -1,3 +1,4 @@
+import { rememberSelection, resolveExposureTraits } from "./resolution/card-traits.js";
 import { playableCards } from "./playable-cards.js";
 import { cardSets, targetCounts } from "./card-sets.js";
 import { PublicHistory } from "./ai/public-history.js";
@@ -175,7 +176,7 @@ export class Game {
     return card;
   }
 
-  moveCard(cardId, destination, { animate = true, reason = null, targetId = null, visibility = DiscardVisibility.PUBLIC, covered = false } = {}) {
+  moveCard(cardId, destination, { animate = true, reason = null, targetId = null, visibility = DiscardVisibility.PUBLIC, covered = false, removal = false } = {}) {
     if (!Object.values(DiscardVisibility).includes(visibility)) throw new RuleError("无效的弃牌可见性");
     const card = this.cards.get(cardId);
     if (!card) throw new RuleError(`不存在牌 ${cardId}`);
@@ -192,13 +193,26 @@ export class Game {
     previous.splice(index, 1); next.push(card);
     this.publicHistory.move(from, destination, publicTraits);
     card.setLocation(destination);
+    if (destination.zone !== "field") card.committedTraits = null;
     if (destination.zone !== "covered") card.coveredVisibility = null;
     card.discardVisibility = destination.zone === "discard" ? visibility : null;
     if (destination.zone !== "status") card.attachment = null;
     if (from.zone === "status" || destination.zone === "status") this.triggers.registerCard(card);
     for (const location of [from, destination]) if (location.zone === "hand") (this.changedHands ??= new Set()).add(location.playerId);
+    card.pendingTraitSelection = null;
+    card.onMoved?.(this, { from, to: card.location, removal });
     if (animate) this.recordPresentation("move", { card: card.toJSON(), from, to: card.location, reason, targetId, visibility });
     return card;
+  }
+
+  // Move a complete batch first; resolve its reactions depth-first. Each nested
+  // move drains its own batch, rather than consuming suspended sibling events.
+  *flushCardMoves(options = {}) {
+    const batch = (this.pendingCardMoves ??= []).splice(0);
+    for (const event of batch) {
+      if (this.winner) { yield* this.present(); return; }
+      yield* event.card.resolveMove(this, event, options);
+    }
   }
 
   registerEffect(id, definition) {
@@ -261,10 +275,12 @@ export class Game {
 
   // Notify only after the entire skill (including nested draws/damage) finishes.
   *resolveSkillEffect(definition, payload, method = "resolve") {
+    yield* this.flushCardMoves(payload.options);
     const before = this.players.map(p => ({ form: p.hero.state.form, epoch: this.formEpochs.get(p.id) ?? 0 }));
     const result = definition[method]?.(payload);
     if (result?.next) yield* result;
     else if (result?.then) yield { type: "promise", promise: result };
+    yield* this.flushCardMoves(payload.options);
     for (const p of this.players) {
       if (!before[p.id].form && p.hero.state.form && (this.formEpochs.get(p.id) ?? 0) === before[p.id].epoch) {
         this.formEpochs.set(p.id, before[p.id].epoch + 1);
@@ -273,9 +289,9 @@ export class Game {
     }
   }
 
-  coverCards(playerId, cards, pile, { sources = ["hand", "field"], reveal = false } = {}) {
+  coverCards(playerId, cards, pile, { sources = ["hand", "field"], reveal = false, sourcePlayerId = playerId } = {}) {
     for (const card of cards) {
-      if (!card || !sources.includes(card.location.zone) || (card.location.zone === "hand" && card.location.playerId !== playerId)) throw new RuleError("盖牌来源无效");
+      if (!card || !sources.includes(card.location.zone) || (card.location.zone === "hand" && card.location.playerId !== sourcePlayerId)) throw new RuleError("盖牌来源无效");
     }
     const detail = this.describeCards(cards, playerId, { hidden: !reveal });
     if (reveal) this.queueExposure(playerId, cards.filter(c => c.location.zone === "hand"), { reason: "publicReserve" });
@@ -323,6 +339,7 @@ export class Game {
   }
 
   *trigger(timing, context, options = {}) {
+    yield* this.flushCardMoves(options);
     if (this.winner) { yield* this.present(); return; }
     if (timing !== Timing.CARD_EXPOSED) yield* this.flushRuleEvents(options);
     yield* this.present();
@@ -417,6 +434,7 @@ export class Game {
   // draw() is the low-level move used by setup/fixtures. Gameplay uses this
   // decision-aware path so before-draw skills also run during nested damage.
   *drawSteps(playerId, count, options = {}) {
+    yield* this.flushCardMoves(options);
     if (this.winner) { yield* this.present(); return; }
     const cause = options.cause ?? { type: "directDraw" };
     const context = { playerId, count, cause, specialAction: !!options.specialAction, damageContext: options.damageContext };
@@ -466,6 +484,7 @@ export class Game {
     const discarded = [...indexes].sort((a, b) => b - a).map(index => this.discardCard(player, index, { animate: false, visibility: "hidden" }));
     this.recordPresentation("discard", { playerId: id, cards: discarded.map(card => card.toJSON()), visibility: "hidden", reason: "overflow" });
     delete player.pendingOverflow;
+    yield* this.flushCardMoves(options);
     const context = { playerId: id, team: player.team, amount: moraleLoss ? -excess : 0, cause, discarded };
     if (context.amount) {
       yield* this.trigger(Timing.MORALE_BEFORE, context, options);
@@ -491,7 +510,8 @@ export class Game {
     const publicCard=playableCards(player)[index];
     this.recordPublicAction({type:'play',playerId:player.id,targetId:options.targetId,card:publicCard.name,elements:[...publicCard.getTraits({game:this,playerId:player.id}).elements],fates:[...publicCard.getTraits({game:this,playerId:player.id}).fates],uniqueSkills:[...publicCard.uniqueSkills]});
     this.log.push(`${this.actorLabel(player.id)}出牌${this.describeCards([playableCards(player)[index]], player.id)}`);
-    this.queueExposure(player.id, [playableCards(player)[index]], { reason: "play" });
+    this.queueExposure(player.id, [playableCards(player)[index]], { reason: "play", traits: options.traits ? [options.traits] : null });
+    if (options.traits && publicCard.getTraits({ game: this, playerId: player.id }).elements.length > 1) publicCard.committedTraits = options.traits;
     const card = this.moveCard(playableCards(player)[index].id, { zone: "field" }, { reason: "play", targetId: options.targetId });
     options.resolutionCards?.push(card.id);
     return card;
@@ -715,16 +735,22 @@ export class Game {
     yield* this.present();
   }
 
-  queueExposure(playerId, cards, { reason = "show", visibility = "public", covered = false } = {}) {
+  queueExposure(playerId, cards, { reason = "show", visibility = "public", covered = false, traits = null } = {}) {
     if (visibility !== "public" || covered || !cards.length) return;
-    this.pendingRuleEvents.push({ playerId, cards: [...cards], traits: cards.map(card => card.getTraits({ game: this, playerId, purpose: "exposure" })), origin: "hand", visibility, covered, reason });
+    this.pendingRuleEvents.push({ playerId, cards: [...cards], traits: traits ?? cards.map(card => card.getTraits({ game: this, playerId, purpose: "exposure" })), selections: cards.map(c => c.pendingTraitSelection ?? null), origin: "hand", visibility, covered, reason });
   }
   *flushRuleEvents(options = {}) {
+    yield* this.flushCardMoves(options);
     if (this.processingRuleEvents) return;
     this.processingRuleEvents = true;
     try {
       while (!this.winner && (this.pendingRuleEvents.length || this.pendingMoraleEvents?.length || this.pendingHealingEvents?.length || this.pendingHealingChanges?.length || this.changedHands?.size)) {
-        if (this.pendingRuleEvents.length) yield* this.trigger(Timing.CARD_EXPOSED, this.pendingRuleEvents.shift(), options);
+        if (this.pendingRuleEvents.length) {
+          const event = this.pendingRuleEvents.shift();
+          yield* resolveExposureTraits(this, event);
+          yield* this.trigger(Timing.CARD_EXPOSED, event, options);
+          for (const c of event.cards) c.pendingTraitSelection = null;
+        }
         else if (this.pendingMoraleEvents?.length) yield* this.trigger(Timing.MORALE_AFTER, this.pendingMoraleEvents.shift(), options);
         else if (this.pendingHealingChanges?.length) yield* this.trigger(Timing.HEALING_CHANGED, this.pendingHealingChanges.shift(), options);
         else if (this.pendingHealingEvents?.length) yield* this.trigger(Timing.HEALING_OVERFLOW, this.pendingHealingEvents.shift(), options);
@@ -802,6 +828,7 @@ export class Game {
     const validateAction = () => validateSelection(this.skillActionSpec(playerId, action));
     yield* this.turn.beginAction(playerId, spec.type, null, { ...options, validateAction, actionEnergyCost: spec.energy ? 1 : 0, actionHealingCost: spec.healingCost ?? 0, actionCardIds: cards.map(card => card.id), actionSkillId: action.skillId, actionTargetIds: targetIds });
     validateAction();
+    rememberSelection(this, playerId, cards, cs => cs.every(c => spec.cardFilter?.(c) ?? true) && (spec.cardsFilter?.(cs) ?? true));
     if (this.turn.state) this.turn.state.skillId = definition.id;
     for(const targetId of targetIds.length?targetIds:[playerId])this.recordPublicAction({type:'skillAction',playerId,skillId:definition.id,targetId});
     this.recordPresentation("skill", { playerId, skillId: definition.id, label: definition.name });
@@ -823,7 +850,9 @@ export class Game {
     const indexes = yield { type: "cardChoice", playerId, count, valid, purpose, recipientId, skillId, context, cards: player.hand, title, optional, defaultValue: optional ? null : valid.slice(0, count) };
     if (optional && indexes == null) return null;
     if (!Array.isArray(indexes) || indexes.length !== count || new Set(indexes).size !== count || indexes.some(index => !valid.includes(index))) throw new RuleError("无效的手牌选择");
-    return indexes.map(index => player.hand[index]);
+    const selected = indexes.map(index => player.hand[index]);
+    rememberSelection(this, playerId, selected, cs => cs.every(predicate));
+    return selected;
   }
   *chooseCardSet(playerId, { counts, cardsFilter, skillId, title = "选择手牌", optional = false, context = null }) {
     const player = this.player(playerId);
@@ -839,7 +868,9 @@ export class Game {
     if (optional && indexes == null) return null;
     if (!Array.isArray(indexes) || new Set(indexes).size !== indexes.length ||
       !validSets.some(set => set.length === indexes.length && set.every(index => indexes.includes(index)))) throw new RuleError("无效的手牌组合");
-    return indexes.map(index => player.hand[index]);
+    const selected = indexes.map(index => player.hand[index]);
+    rememberSelection(this, playerId, selected, cardsFilter);
+    return selected;
   }
   discardCards(playerId, cards, { visibility = "public", reason = "skillCost", covered = false } = {}) {
     const player = this.player(playerId);
@@ -997,12 +1028,13 @@ export class Game {
     if (this.winner) throw new RuleError("游戏已经结束");
     const actor = this.player(actorId), card = playableCards(actor)[handIndex];
     if (!card || !this.legalTargets(actorId, card).includes(targetId)) throw new RuleError("这张牌目前不能指定该目标");
+    const requiredElement = this.turn.state?.completed ? this.turn.nextAction()?.element : null;
     yield* this.turn.beginAction(actorId, card.type, card, { ...options, actionCardIds: [card.id], actionTargetIds: [targetId], validateAction: () => {
       if (!playableCards(actor).includes(card) || !this.legalTargets(actorId, card).includes(targetId)) throw new RuleError("启动后原出牌不再合法，请重新选择行动");
     } });
     if (card.type !== 'attack' && card.name !== 'magicBullet') this.recordPublicAction({type:'spell',actorId,targetId,card:card.name,elements:[...card.getTraits({game:this,playerId:actorId}).elements]});
     const resolutionCards = [];
-    const result = card.resolve({ game: this, actor, targetId, options: { ...options, resolutionCards } });
+    const result = card.resolve({ game: this, actor, targetId, options: { ...options, resolutionCards, requiredElement } });
     if (result?.next) yield* result;
     else if (result?.then) yield { type: "promise", promise: result };
     for (const id of resolutionCards) {

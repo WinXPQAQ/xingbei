@@ -27,6 +27,7 @@ export class Card {
   get fate() { return this.fates[0] ?? null; }
   getPrintedTraits() { return { elements: [...this.elements], fates: [...this.fates] }; }
   getTraits(context = {}) {
+    if (this.location?.zone === "field" && this.committedTraits) return { elements: [...this.committedTraits.elements], fates: [...this.committedTraits.fates] };
     return context.game ? context.game.modifyTraits(this, this.getPrintedTraits(), context) : this.getPrintedTraits();
   }
   hasUniqueSkill(id) { return this.uniqueSkills.includes(id); }

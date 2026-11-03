@@ -172,7 +172,7 @@ export class Mystic extends Hero {
     );
   }
   *addWords(g, p, cs, options) {
-    g.coverCards(p.id, cs, "word", {
+    g.coverCards(p.id, cs.filter(c => ["hand", "discard"].includes(c.location.zone)), "word", {
       sources: ["hand", "discard"],
       reveal: true,
     });

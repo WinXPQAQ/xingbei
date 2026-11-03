@@ -20,7 +20,7 @@ function createSkills(hero) {
           const target = game.player(id), count = Math.min(target.hand.length, targetIds.length === 1 ? 2 : 1);
           if (!count) { game.logSkill(player.id, "angelBlessing", `${game.actorLabel(id)}没有手牌，未交牌`); continue; }
           const given = yield* game.chooseHandCards(id, count, () => true, { title: `天使祝福：交给${player.name}${count}张牌`, purpose: "give", recipientId: player.id });
-          game.giveCards(id, player.id, given);
+          game.giveCards(id, player.id, given); yield* game.flushCardMoves(options);
         }
         yield* game.drawSteps(player.id, 0, { overflow: options.overflow });
       } },

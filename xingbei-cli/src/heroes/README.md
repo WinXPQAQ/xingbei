@@ -1,6 +1,6 @@
 # 英雄实现入口
 
-当前53位已实现英雄均在本目录，每位英雄一个英文名称目录。
+当前54位已实现英雄均在本目录，每位英雄一个英文名称目录。
 
 ```text
 heroes/
@@ -118,4 +118,12 @@ heroes/
 | 传教士 | [index.js](missionary/index.js) | [ai.js](missionary/ai.js) |
 | 异教徒 | [index.js](heretic/index.js) | [ai.js](heretic/ai.js) |
 
-各目录提供观测声明，铸律者与红衣主教共享资源操作在`lawgiver/shared.js`。放逐按用户修订摸6–7张牌、选6张基础牌；噬神者仍待后续实现。规则、AI及验证见[第九批报告](../../docs/heroes-wave-nine.md)。
+各目录提供观测声明，铸律者与红衣主教共享资源操作在`lawgiver/shared.js`。放逐按用户修订摸6–7张牌、选6张基础牌；噬神者现已在后续批次实现。规则、AI及验证见[第九批报告](../../docs/heroes-wave-nine.md)。
+
+## 噬神者（0.15.0）
+
+| 英雄 | 规则与刃实体 | 基础AI | 观测 |
+| --- | --- | --- | --- |
+| 噬神者 | `god-eater/index.js` | `god-eater/ai.js` | `god-eater/observation.js` |
+
+渗蚀由卡牌移动触发，伤害来源固定为该刃所属噬神者；共用引擎只负责移牌事件与嵌套结算。双属性约束解释在`src/resolution/card-traits.js`。用户裁定、验证及评分局限见[噬神者报告](../../docs/god-eater.md)。

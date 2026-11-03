@@ -136,6 +136,7 @@ export class StarfallWitch extends Hero {
               skillId: "revelationCard",
             });
             game.coverCards(player.id, cs, "rune");
+            yield* game.flushCardMoves(options);
             yield* trimCovered(game, player, "rune", 6, "runeOverflow");
             const law = yield* choice(
               player.id,
@@ -235,6 +236,7 @@ export class StarfallWitch extends Hero {
                 { animate: false },
               );
               game.coverCards(player.id, [hand], "rune");
+              yield* game.flushCardMoves(options);
               game.logSkill(
                 player.id,
                 "goldenLaw",
@@ -299,6 +301,7 @@ export class StarfallWitch extends Hero {
               { skillId: "creationCards" },
             );
             game.coverCards(player.id, cs, "rune");
+            yield* game.flushCardMoves(options);
             yield* trimCovered(game, player, "rune", 6, "runeOverflow");
           }
           if (player.hand.length <= player.handLimit)

@@ -12,7 +12,7 @@ export const moonGoddessAi={
  },
  decisions:{
   newMoonShelter:({context})=>context.amount<0,
-  medusaEye:({request,state,player})=>state.teams[player.team].morale>6&&player.heroState.petrification===2&&player.energy.gem>0?request.choices.find(c=>c.value!=null)?.value??null:null,
+  medusaEye:({request,state,player})=>request.type==='cardChoice'?undefined:state.teams[player.team].morale>6&&player.heroState.petrification===2&&player.energy.gem>0?request.choices.find(c=>c.value!=null)?.value??null:null,
   medusaDamage:(a,api)=>damageTarget(a,api,1),
   moonCycle({request,player}){if(request.type==='effectChoice')return request.defaultValue;if(request.type==='playerChoice')return undefined;return player.healing>0&&player.heroState.newMoon<2?'healing':'skip';},
   moonDesecration(a,api){if(a.request.type==='playerChoice')return damageTarget(a,api,1);return a.state.players.some(p=>p.team!==a.player.team&&api.damageGain(a.state,a.id,p.id,1)>3);},
