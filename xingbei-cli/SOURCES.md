@@ -28,3 +28,5 @@
 英雄技能及逐牌独有技来自原项目character/shiZhouNian.js与card/xingBei.js；六判定时点遵循用户规则，.range提取layout/default/layout.css。复制与改写继续遵循本仓库GPL许可。
 
 第七批英雄增加原项目 `character/yiDuanYeHuo.js` 的战斗法师、星坠女巫、圣庭检察士、猎巫人、圣殿骑士规则参考；蝶舞者仍来自十周年包。六张头像与繁星、影月、蚀日、异端裁决所四张专属牌图片原样复制，来源路径与哈希见assets清单，继续沿用上述许可说明。
+
+第八批的矜贵之女、女仆长、结界师、神秘学者、染污者参考 `character/shenZiChuangLin.js`；剑之魔女参考 `character/teDian.js`。六张头像和风穴、绝界两张专属牌图片均原样复制，路径、字节数和哈希见assets清单。神秘学者立即续接规则以用户补充为准；仍沿用上述来源与许可。

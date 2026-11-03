@@ -90,6 +90,7 @@ choices['v1.5'] = choices['experimental/plans-4'];
 choices['v1.7.0-preview.4'] = createHeroWaveTwoPolicy(createCurrentHeroBasePolicy());
 choices['v1.8.0-preview.1'] = createHeroWaveThreePolicy(choices['v1.7.0-preview.4']);
 choices['v1.10.0-preview.1'] = createHeroWaveThreePolicy(choices['v1.7.0-preview.4']);
+choices['v1.13.0-preview.1'] = createHeroWaveThreePolicy(choices['v1.7.0-preview.4']);
 choices['v1.12.0-preview.1'] = createHeroWaveThreePolicy(choices['v1.7.0-preview.4']);
 choices['v1.11.0-preview.1'] = createHeroWaveThreePolicy(choices['v1.7.0-preview.4']);
 choices['v1.9.0-preview.1'] = choices['v1.8.0-preview.1'];

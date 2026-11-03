@@ -3,11 +3,11 @@ import { cardSets } from "../card-sets.js";
 // whitelist of legal observations, never a proxy, live entity, or engine callback.
 const pick = (value, keys) => Object.fromEntries(keys.filter(k => value?.[k] !== undefined).map(k => [k, value[k]]));
 const copy = value => value == null ? value : JSON.parse(JSON.stringify(value));
-export function captureObservation(game, observerId, { actions = false, history = true, activation = false } = {}) {
-  const visible = [...game.player(observerId).hand, ...game.player(observerId).covered, ...game.players.flatMap(p => p.statuses), ...game.field];
+export function captureObservation(game, observerId, { actions = false, history = true, activation = false, revealedCards = [] } = {}) {
+  const visible = [...game.player(observerId).hand, ...game.player(observerId).covered, ...game.players.flatMap(p => [...p.statuses, ...p.covered.filter(c => c.coveredVisibility === "public")]), ...game.field, ...revealedCards];
   const cards = [...new Map(visible.map(c => [c.id, c])).values()].map(c => ({
     id: c.id, name: c.name, type: c.type, category: c.category, elements: [...c.elements], fates: [...c.fates],
-    uniqueSkills: [...c.uniqueSkills], location: copy(c.location), attachment: c.attachment ? { effectId: c.attachment.effectId } : null,
+    uniqueSkills: [...c.uniqueSkills], coveredVisibility: c.coveredVisibility, location: copy(c.location), attachment: c.attachment ? { effectId: c.attachment.effectId } : null,
     traits: Object.fromEntries(game.players.map(p => [p.id, copy(c.getTraits({ game, playerId: p.id }))])),
   }));
   const specData = spec => ({ ...copy(pick(spec, ['type','cardCount','targets','targetCount','targetCounts','energy','healingCost','modes','cardCounts','targetCountsByCardCount','requiresActivation'])),
@@ -17,7 +17,7 @@ export function captureObservation(game, observerId, { actions = false, history 
     modes: (entry.spec.modes?.map(c => c.value) ?? [null]).map(mode => ({ mode, spec: specData(game.skillActionSpec(observerId, { skillId: entry.skillId, mode: mode ?? undefined })) })) })) : [];
   return copy({ observerId, current: game.current, extraTurns: [...(game.turn.extraTurns ?? [])], cards,
     players: game.players.map(p => ({ id: p.id, name: p.name, team: p.team, handLimit: p.handLimit, healing: p.healing, energy: pick(p.energy,['gem','crystal']),
-      hero: { id: p.hero.id, ...(['butterflyDancer','battleMage','starfallWitch','inquisitor','witchHunter','templar','elfArcher','yinYangMaster','soulWarlock','bloodWitch','moonGoddess','holyArcher','talismanMaster','swordEmperor','magicArcher','azureFlameWitch','bloodSwordSpirit','beastWarrior','saint','holyLancer','plagueMage','elementalist','valkyrie','magicalGirl','assassin','magicSwordsman','adjudicator','sage','prayer','heroicPuppet','adventurer','fighter','brave','redLotusKnight','magicLancer','bard'].includes(p.hero.id) ? {state: pick(p.hero.state,['chrysalises','witherProtection','actionCount','runeExchangeUsed','enchantedStrikeUsed','starlight','moonlight','eclipse','starRingUsed','courtCardId','courtHealing','rulings','verdictUsed','ambushUsed','holySeals','form','awaitNextTurn','divineMightBlocked','healingBlockedIds','elementShotUsed','windArrowPending','ghostFire','yellowSoul','blueSoul','linkCardId','fateCardId','linkedPlayerId','newMoon','petrification','desecrationUsed','nextUncounterable','faith','cannon','swordQi','charged','pierceUsed','multiShotUsed','lastTarget','rebirth','blood','gardenCardId','souls','residual','elements','form','compassion','judgment','requiredJudgment','prayerRunes','battleRunes','magicRunes','spirit','lockedTarget','rage','intellect','bloodSeals','attackBonus','released','inspiration','damagedEnemies','concertoUsed'])} : {}), skills: p.hero.skills.map(s => typeof s === 'string' ? s : s.id) },
+      hero: { id: p.hero.id, ...(['nobleLady','headMaid','barrierMaster','mystic','defiler','swordWitch','butterflyDancer','battleMage','starfallWitch','inquisitor','witchHunter','templar','elfArcher','yinYangMaster','soulWarlock','bloodWitch','moonGoddess','holyArcher','talismanMaster','swordEmperor','magicArcher','azureFlameWitch','bloodSwordSpirit','beastWarrior','saint','holyLancer','plagueMage','elementalist','valkyrie','magicalGirl','assassin','magicSwordsman','adjudicator','sage','prayer','heroicPuppet','adventurer','fighter','brave','redLotusKnight','magicLancer','bard'].includes(p.hero.id) ? {state: pick(p.hero.state,['lessons','friendshipUsed','threads','form','flashUsed','flashActive','tunnelCardId','windHitCardId','ritual','realmCardId','sorcery','fairyUsed','castingWordId','malice','surgeUsed','attacksCompleted','imaginaryUsed','severanceUsed','chrysalises','witherProtection','actionCount','runeExchangeUsed','enchantedStrikeUsed','starlight','moonlight','eclipse','starRingUsed','courtCardId','courtHealing','rulings','verdictUsed','ambushUsed','holySeals','form','awaitNextTurn','divineMightBlocked','healingBlockedIds','elementShotUsed','windArrowPending','ghostFire','yellowSoul','blueSoul','linkCardId','fateCardId','linkedPlayerId','newMoon','petrification','desecrationUsed','nextUncounterable','faith','cannon','swordQi','charged','pierceUsed','multiShotUsed','lastTarget','rebirth','blood','gardenCardId','souls','residual','elements','form','compassion','judgment','requiredJudgment','prayerRunes','battleRunes','magicRunes','spirit','lockedTarget','rage','intellect','bloodSeals','attackBonus','released','inspiration','damagedEnemies','concertoUsed'])} : {}), skills: p.hero.skills.map(s => typeof s === 'string' ? s : s.id) },
       skillIds: p.getSkills().map(({skill}) => typeof skill === 'string' ? skill : skill.id),
       handIds: p.id === observerId ? p.hand.map(c => c.id) : null, handCount: p.hand.length,
       coveredIds: p.id === observerId ? p.covered.map(c => c.id) : null, coveredCount: p.covered.length,
@@ -56,14 +56,14 @@ export function observationView(data) {
   };
 }
 export function isolatePolicy(raw, {history = true, activation = false} = {}) {
-  const view = (game, id, actions = false) => observationView(captureObservation(game, id, {actions, history, activation}));
+  const view = (game, id, actions = false, revealedCards = []) => observationView(captureObservation(game, id, {actions, history, activation, revealedCards}));
   const requestView = (request, v) => {
     const out = {};
     for (const key of ['type','protectedTargetId','playerId','skillId','purpose','recipientId','targetId','count','counts','validSets','optional','defaultValue','shieldable','isCounter','damage','reservedEnergy','reservedHealing','reservedCardIds','reservedSkillId','energy','choices']) if (request[key] !== undefined) out[key] = copy(request[key]);
     for (const key of ['target','actor','player','nextTarget']) if (request[key]) out[key] = v.player(request[key].id);
     if (request.counterTargets) out.counterTargets = request.counterTargets.map(p => v.player(p.id));
     if (request.valid) out.valid = request.valid.map(e => typeof e === 'number' ? e : {index: e.index, card: v.cards.get(e.card.id), ...(e.asAttack ? {asAttack:true} : {})});
-    if (request.context) out.context = { ...copy(pick(request.context,["sourceId","actual","count","drawCount","skillId","extraSpell","purpose","sameElement","damage","moraleLoss","battleRunes","magicRunes","transferTargetId","attackTraits","team"])), targetId: request.context.targetId, amount: request.context.amount, damageType: request.context.damageType, isCounter: request.context.isCounter, card: v.cards.get(request.context.card?.id) };
+    if (request.context) out.context = { ...copy(pick(request.context,["triggered","stage","sourceId","actual","count","drawCount","skillId","extraSpell","purpose","sameElement","damage","moraleLoss","battleRunes","magicRunes","transferTargetId","attackTraits","team"])), targetId: request.context.targetId, amount: request.context.amount, damageType: request.context.damageType, isCounter: request.context.isCounter, card: v.cards.get(request.context.card?.id) };
     if (request.attack) {
       const traits = copy(request.attackTraits ?? request.attack.getTraits());
       out.attack = v.cards.get(request.attack.id) ?? { id: null, name: request.attack.name, type: "attack", elements: traits.elements, fates: traits.fates, uniqueSkills: [], element: traits.elements[0], getTraits: () => copy(traits), hasUniqueSkill: () => false };
@@ -76,7 +76,7 @@ export function isolatePolicy(raw, {history = true, activation = false} = {}) {
     chooseAiResponse(g, r) { const v = view(g,r.target.id); return raw.chooseAiResponse(v,requestView(r,v)); },
     chooseAiRuleDecision(r,g) {
       if (!g) return r.defaultValue ?? null;
-      const id = r.playerId ?? r.player?.id, v = view(g,id);
+      const id = r.playerId ?? r.player?.id, v = view(g,id,false,r.revealedCards ?? []);
       if (r.type === 'overflow') return g.resolveOverflow(id,raw.chooseAiDiscard(v,id,v.player(id).hand.length-v.player(id).handLimit));
       return raw.chooseAiRuleDecision(requestView(r,v),v);
     },

@@ -152,6 +152,7 @@ export class Game {
     previous.splice(index, 1); next.push(card);
     this.publicHistory.move(from, destination, publicTraits);
     card.setLocation(destination);
+    if (destination.zone !== "covered") card.coveredVisibility = null;
     card.discardVisibility = destination.zone === "discard" ? visibility : null;
     if (destination.zone !== "status") card.attachment = null;
     if (from.zone === "status" || destination.zone === "status") this.triggers.registerCard(card);
@@ -232,12 +233,17 @@ export class Game {
     }
   }
 
-  coverCards(playerId, cards, pile, { sources = ["hand", "field"] } = {}) {
+  coverCards(playerId, cards, pile, { sources = ["hand", "field"], reveal = false } = {}) {
     for (const card of cards) {
       if (!card || !sources.includes(card.location.zone) || (card.location.zone === "hand" && card.location.playerId !== playerId)) throw new RuleError("盖牌来源无效");
     }
-    const detail = this.describeCards(cards, playerId, { hidden: true });
-    for (const card of cards) this.moveCard(card.id, { zone: "covered", playerId, pile }, { animate: false, covered: true });
+    const detail = this.describeCards(cards, playerId, { hidden: !reveal });
+    if (reveal) this.queueExposure(playerId, cards.filter(c => c.location.zone === "hand"), { reason: "publicReserve" });
+    for (const card of cards) {
+      this.moveCard(card.id, { zone: "covered", playerId, pile }, { animate: false, covered: true });
+      card.coveredVisibility = reveal ? "public" : "hidden";
+      if (reveal) this.recordPublicAction({ type: "coveredReveal", playerId, card: card.name, ...card.getTraits({ game: this, playerId }) });
+    }
     this.recordPublicAction({ type: "cover", playerId, count: cards.length });
     this.log.push(`${this.actorLabel(playerId)}放置${cards.length}张盖牌${detail}`);
   }
@@ -265,7 +271,7 @@ export class Game {
     if (!card) throw new RuleError("无效盖牌选择");
     return card;
   }
-  discardCovered(playerId, card, { reveal = false, skillId } = {}) {
+  discardCovered(playerId, card, { reveal = card.coveredVisibility === "public", skillId } = {}) {
     if (card.location.zone !== "covered" || card.location.playerId !== playerId) throw new RuleError("只能移除自己的盖牌");
     const detail = this.describeCards([card], playerId, { hidden: !reveal });
     // Covered cards never trigger seal, including when revealed as a cost.
@@ -290,6 +296,7 @@ export class Game {
       if (entry.sourceCard && (entry.sourceCard.location.zone !== "status" || entry.sourceCard.location.playerId !== entry.player.id)) continue;
       const payload = { game: this, timing, context, options, ...entry };
       if (entry.definition.filter && !entry.definition.filter(payload)) continue;
+      if (entry.card?.category === "basic" && this.players.some(owner => owner.hero.blocksBasicEffects?.({ game: this, player: owner, targetId: entry.player.id }))) continue;
       if (entry.card) {
         this.recordPresentation("effect", { playerId: entry.player.id, card: entry.card.toJSON(), effectId: entry.card.attachment.effectId });
         yield* this.present();
@@ -363,6 +370,7 @@ export class Game {
         this.resolveOverflow(id, indexes, { moraleLoss, cause });
       }
     }
+    return cards.map(card => this.cards.get(card.id));
   }
 
   // draw() is the low-level move used by setup/fixtures. Gameplay uses this
@@ -374,10 +382,10 @@ export class Game {
     const nestedOptions = { ...options };
     delete nestedOptions.moraleLoss; delete nestedOptions.attackContext; delete nestedOptions.useHealing;
     if (count > 0) yield* this.trigger(Timing.DRAW_BEFORE, context, nestedOptions);
-    this.draw(playerId, Math.max(0, context.count), { ...options, cause, overflow: "defer" });
+    const drawn = this.draw(playerId, Math.max(0, context.count), { ...options, cause, overflow: "defer" });
     yield* this.present();
     const player = this.player(playerId);
-    if (!player.pendingOverflow) return;
+    if (!player.pendingOverflow) return drawn;
     const excess = player.hand.length - player.handLimit;
     const policy = typeof options.overflow === "function" ? options.overflow(player, excess) : options.overflow ?? "first";
     if (policy === "defer") yield { type: "overflow", player };
@@ -387,6 +395,7 @@ export class Game {
         : policy === "first" ? Array.from({ length: excess }, (_, index) => index) : policy;
       yield* this.overflowSteps(playerId, indexes, { ...options, ...player.pendingOverflow });
     }
+    return drawn;
   }
 
   randomIndexes(length, count) {
@@ -634,6 +643,7 @@ export class Game {
     player.energy.gem += gem;
     player.energy.crystal += crystal;
     this.recordPresentation("energy", { playerId: actorId, gem, crystal });
+    if (this.turn.state) this.turn.state.refinedStones = { gem, crystal };
     this.recordPublicAction({type:'refine',playerId:actorId,gem,crystal});
     this.log.push(`${player.name}提炼${gem}个宝石、${crystal}个水晶；个人能量变为${player.energy.gem}宝石、${player.energy.crystal}水晶`);
     yield* this.present();
@@ -755,6 +765,7 @@ export class Game {
     yield* this.resolveSkillEffect(definition, { game: this, player, cards, targetIds, action, options: { ...options, resolutionCards } }, "resolveAction");
     for (const id of resolutionCards) if (this.cards.get(id).location.zone === "field") this.moveCard(id, { zone: "discard" }, { animate: false });
     if (resolutionCards.length) this.recordPresentation("cleanup", { cardIds: resolutionCards, visibility: "public" });
+    yield* this.trigger(Timing.CARDS_CLEANED_UP, { playerId, cardIds: resolutionCards }, options);
     if (player.pendingOverflow) yield { type: "overflow", player };
     yield* this.present();
     yield* this.turn.endAction(options);
@@ -950,6 +961,7 @@ export class Game {
       if (this.cards.get(id).location.zone === "field") this.moveCard(id, { zone: "discard" }, { animate: false });
     }
     if (resolutionCards.length) this.recordPresentation("cleanup", { cardIds: resolutionCards, visibility: DiscardVisibility.PUBLIC });
+    yield* this.trigger(Timing.CARDS_CLEANED_UP, { playerId: actorId, cardIds: resolutionCards }, options);
     if (card.type !== "attack" && card.name !== "magicBullet") this.log.push(`${actor.name}对${this.player(targetId).name}使用${cardName(card)}`);
     if (actor.pendingOverflow) yield { type: "overflow", player: actor };
     yield* this.present();

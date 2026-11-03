@@ -1,4 +1,5 @@
 export const CARD_NAMES = {
+  windTunnel: "风穴", absoluteRealm: "绝界",
   inquisitionCourt: "异端裁决所", lawStarlight: "律法：繁星", lawMoonlight: "律法：影月", lawEclipse: "律法：蚀日", soulLink: "灵魂链接", sharedFate: "同生共死",
   roseGarden: "血蔷薇庭院",
   provocation: "挑衅", eternalMovement: "永恒乐章",

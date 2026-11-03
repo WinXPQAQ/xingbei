@@ -1,5 +1,5 @@
 import { RuleError } from "./errors.js";
-import { ELEMENT_NAMES } from "./cards.js";
+import { ELEMENT_NAMES, FATE_NAMES } from "./cards.js";
 import { Timing } from "./timing.js";
 
 export class TurnFlow {
@@ -28,19 +28,19 @@ export class TurnFlow {
   nextAction() {
     const state = this.state;
     if (!state || !state.completed) return null;
-    return [...state.pendingActions].reverse().find(action => action.element) ?? state.pendingActions[0] ?? null;
+    return [...state.pendingActions].reverse().find(action => action.element || action.fate) ?? state.pendingActions[0] ?? null;
   }
   hasExtraActions() { return !!this.nextAction(); }
   needsAction() {
     return !!this.state && !this.game.winner && !this.state.skipped && (!this.state.completed || this.hasExtraActions());
   }
   addAttackAction(options = {}) { this.addAction({ ...options, type: "attack" }); }
-  addAction({ type, element = null, sourceSkillId = null }) {
+  addAction({ type, element = null, fate = null, sourceSkillId = null }) {
     if (!["attack", "spell"].includes(type)) throw new RuleError("无效的额外行动类型");
     if (!this.state || this.game.winner) return;
-    this.state.pendingActions.push({ type, element, sourceSkillId });
+    this.state.pendingActions.push({ type, element, ...(fate ? { fate } : {}), sourceSkillId });
     const label = type === "attack" ? "攻击行动" : "法术行动";
-    this.game.logSkill(this.state.playerId, sourceSkillId ?? "额外行动", `获得1次${element ? ELEMENT_NAMES[element] + "系限定" : ""}额外${label}，可选择放弃`);
+    this.game.logSkill(this.state.playerId, sourceSkillId ?? "额外行动", `获得1次${element ? ELEMENT_NAMES[element] + "系限定" : fate ? FATE_NAMES[fate] + "命格限定" : ""}额外${label}，可选择放弃`);
     this.game.recordPresentation("extraAction", { playerId: this.state.playerId, label: `额外${label}` });
   }
   canUse(type, card = null) {
@@ -49,7 +49,7 @@ export class TurnFlow {
     if (state.skipped) return false;
     if (!state.completed) return !state.actionType && (type !== "special" || !state.activationDone);
     const action = this.nextAction();
-    return !!action && action.type === type && (!action.element || card?.getTraits({ game: this.game, playerId: state.playerId, purpose: "action" }).elements.includes(action.element));
+    return !!action && action.type === type && (!action.element || card?.getTraits({ game: this.game, playerId: state.playerId, purpose: "action" }).elements.includes(action.element)) && (!action.fate || card?.getTraits({ game: this.game, playerId: state.playerId, purpose: "action" }).fates.includes(action.fate));
   }
   *beginAction(playerId, actionType, card = null, options = {}) {
     const state = this.state;
@@ -85,7 +85,7 @@ export class TurnFlow {
     }
     state.completed = false;
     if (actionType === "attack") state.attackCount++;
-    state.route = route; state.actionType = actionType; state.skillId = null;
+    state.route = route; state.actionType = actionType; state.skillId = null; delete state.refinedStones;
     state.phase = { attack: Timing.ATTACK_ACTION_START, spell: Timing.SPELL_ACTION_START, special: Timing.SPECIAL_ACTION_START }[actionType];
     yield* this.game.trigger(state.phase, state, options);
   }

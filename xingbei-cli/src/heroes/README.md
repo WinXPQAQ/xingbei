@@ -1,6 +1,6 @@
 # 英雄实现入口
 
-当前42位已实现英雄均在本目录，每位英雄一个英文名称目录。
+当前48位已实现英雄均在本目录，每位英雄一个英文名称目录。
 
 ```text
 heroes/
@@ -94,3 +94,16 @@ heroes/
 | 圣殿骑士 | [index.js](templar/index.js) | [ai.js](templar/ai.js) |
 
 各目录提供观测声明。来源包、规则裁定、评分与验收见[第七批报告](../../docs/heroes-wave-seven.md)。
+
+## 第八批
+
+| 英雄 | 规则 | 评分 |
+| --- | --- | --- |
+| 矜贵之女 | [index.js](noble-lady/index.js) | [ai.js](noble-lady/ai.js) |
+| 女仆长 | [index.js](head-maid/index.js) | [ai.js](head-maid/ai.js) |
+| 结界师 | [index.js](barrier-master/index.js) | [ai.js](barrier-master/ai.js) |
+| 神秘学者 | [index.js](mystic/index.js) | [ai.js](mystic/ai.js) |
+| 染污者 | [index.js](defiler/index.js) | [ai.js](defiler/ai.js) |
+| 剑之魔女 | [index.js](sword-witch/index.js) | [ai.js](sword-witch/ai.js) |
+
+各目录提供观测声明。规则与验证见[第八批报告](../../docs/heroes-wave-eight.md)。神秘学者续接是立即结算的技能链，不存入额外行动队列；噬神者按用户要求留到下批。

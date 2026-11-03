@@ -15,7 +15,7 @@ export class Card {
       elements: { value: Object.freeze([...elements]), enumerable: true },
       fates: { value: Object.freeze([...fates]), enumerable: true },
     });
-    this.discardVisibility = null;
+    this.discardVisibility = null; this.coveredVisibility = null;
     this.uniqueSkills = Object.freeze([...uniqueSkills]);
     this.attachment = null; this.skills = Object.freeze([...skills]);
     this.category = "exclusive"; this.type = null;
@@ -36,7 +36,7 @@ export class Card {
   toJSON() {
     return { id: this.id, name: this.name, category: this.category, type: this.type,
       element: this.element, fate: this.fate, elements: this.elements, fates: this.fates,
-      uniqueSkills: this.uniqueSkills, location: this.location, discardVisibility: this.discardVisibility, attachment: this.attachment };
+      uniqueSkills: this.uniqueSkills, location: this.location, coveredVisibility: this.coveredVisibility, discardVisibility: this.discardVisibility, attachment: this.attachment };
   }
 }
 

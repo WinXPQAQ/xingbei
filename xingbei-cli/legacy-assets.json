@@ -89,5 +89,17 @@
   "markers/chrysalis.png": "card/zhiShiWu/hong.png",
   "markers/ruling.png": "card/zhiShiWu/hong.png",
   "markers/holySeal.png": "card/zhiShiWu/hong.png",
-  "markers/courtHealing.png": "card/zhuanShu/yiDuanCaiJueSuo.png"
+  "markers/courtHealing.png": "card/zhuanShu/yiDuanCaiJueSuo.png",
+  "character/nobleLady.jpg": "character/jinGuiZhiNv.jpg",
+  "character/headMaid.jpg": "character/nvPuZhang.jpg",
+  "character/barrierMaster.jpg": "character/jieJieShi.jpg",
+  "character/mystic.jpg": "character/shenMiXueZhe.jpg",
+  "character/defiler.jpg": "character/ranWuZhe.jpg",
+  "character/swordWitch.jpg": "character/jianZhiMoNv.jpg",
+  "card/windTunnel.png": "card/zhuanShu/fengXue.png",
+  "card/absoluteRealm.png": "card/zhuanShu/jueJie.png",
+  "markers/threads.png": "card/zhiShiWu/hong.png",
+  "markers/ritual.png": "card/zhiShiWu/hong.png",
+  "markers/sorcery.png": "card/zhiShiWu/hong.png",
+  "markers/malice.png": "card/zhiShiWu/hong.png"
 }

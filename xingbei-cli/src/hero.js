@@ -1,3 +1,9 @@
+import { NobleLady } from "./heroes/noble-lady/index.js";
+import { HeadMaid } from "./heroes/head-maid/index.js";
+import { BarrierMaster } from "./heroes/barrier-master/index.js";
+import { Mystic } from "./heroes/mystic/index.js";
+import { Defiler } from "./heroes/defiler/index.js";
+import { SwordWitch } from "./heroes/sword-witch/index.js";
 import { ButterflyDancer } from "./heroes/butterfly-dancer/index.js";
 import { BattleMage } from "./heroes/battle-mage/index.js";
 import { StarfallWitch } from "./heroes/starfall-witch/index.js";
@@ -47,6 +53,13 @@ const definitions = [
   ["swordEmperor", "剑帝"], ["priest", "神官"], ["assassin", "暗杀者"],
 ];
 export const HERO_DEFINITIONS = {
+  nobleLady: { name: "矜贵之女", HeroClass: NobleLady },
+  headMaid: { name: "女仆长", HeroClass: HeadMaid },
+  barrierMaster: { name: "结界师", HeroClass: BarrierMaster },
+  mystic: { name: "神秘学者", HeroClass: Mystic },
+  defiler: { name: "染污者", HeroClass: Defiler },
+  swordWitch: { name: "剑之魔女", HeroClass: SwordWitch },
+
   butterflyDancer: { name: "蝶舞者", HeroClass: ButterflyDancer },
   battleMage: { name: "战斗法师", HeroClass: BattleMage },
   starfallWitch: { name: "星坠女巫", HeroClass: StarfallWitch },
@@ -125,3 +138,5 @@ export const WAVE_FIVE_HERO_IDS = ["talismanMaster", "swordEmperor", "magicArche
 export const WAVE_SIX_HERO_IDS = ["elfArcher", "yinYangMaster", "soulWarlock", "bloodWitch", "moonGoddess", "holyArcher"];
 
 export const WAVE_SEVEN_HERO_IDS = ["butterflyDancer", "battleMage", "starfallWitch", "inquisitor", "witchHunter", "templar"];
+
+export const WAVE_EIGHT_HERO_IDS = ["nobleLady", "headMaid", "barrierMaster", "mystic", "defiler", "swordWitch"];

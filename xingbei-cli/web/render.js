@@ -3,8 +3,12 @@ import { UNIQUE_SKILL_NAMES } from "/src/unique-skills.js";
 // Presentation adapted from v1.6.7 UI, music and nova. See SOURCES.md.
 import { CARD_NAMES, ELEMENT_NAMES, FATE_NAMES } from "/src/cards.js";
 
-const formNames = { holyFlame: "圣炎", elfBlessing: "精灵祝福", shikigami: "式神", bleeding: "流血", darkMoon: "暗月", radiant: "圣煌", flame: "烈焰", iaido: "御魂流居合", dragonFist: "百式幻龙拳", phantom: "幻影", exhausted: "精疲力竭", boilingBlood: "热血沸腾", eternalPrisoner: "永恒囚徒", prayer: "祈祷", runeBurst: "蓄势迸发" };
+const formNames = { raging: "狂戾", shadowPrison: "影牢", glassRealm: "琉璃境", holyFlame: "圣炎", elfBlessing: "精灵祝福", shikigami: "式神", bleeding: "流血", darkMoon: "暗月", radiant: "圣煌", flame: "烈焰", iaido: "御魂流居合", dragonFist: "百式幻龙拳", phantom: "幻影", exhausted: "精疲力竭", boilingBlood: "热血沸腾", eternalPrisoner: "永恒囚徒", prayer: "祈祷", runeBurst: "蓄势迸发" };
 const heroMarkers = {
+  headMaid: [["threads", "糸", 4, "threads"]],
+  barrierMaster: [["ritual", "祭", 3, "ritual"]],
+  mystic: [["sorcery", "秘术", 4, "sorcery"]],
+  defiler: [["malice", "戾气", 2, "malice"]],
   butterflyDancer: [["chrysalises", "蛹", null, "chrysalis"]],
   inquisitor: [["courtHealing", "裁决所治疗", 4, "courtHealing"], ["rulings", "裁决", 3, "ruling"]],
   templar: [["holySeals", "圣印", 2, "holySeal"]],
@@ -82,9 +86,8 @@ export function renderPlayers(game, container, humanId, targets = null, revealHa
       marks.push(`<span class="poison-mark" data-effect-id="${id}"><img src="/assets/card/${card.name}.png" title="${label}" alt="${label}"><b>${label.startsWith("五") ? "" : label[0]}</b></span>`);
     }
     if (player.covered?.length) {
-      const label = { butterflyDancer: "茧", starfallWitch: "卢恩", witchHunter: "魔力瓶", elfArcher: "祝福", moonGoddess: "暗月", swordEmperor: "剑魂", talismanMaster: "妖力", magicArcher: "充能" }[player.hero.id] ?? "盖牌";
-      const visible = revealHands || player.id === humanId;
-      const cards = player.covered.map(card => `<span class="covered-card" title="${visible ? cardLabel(card, { game, playerId: player.id }) : '盖牌'}"><img src="${visible ? '/assets/card/' + card.name + '.png' : '/theme/cardback.png'}" alt="${visible ? cardLabel(card, { game, playerId: player.id }) : '盖牌'}">${visible ? `<small>${card.getTraits({ game, playerId: player.id }).fates.map(f => FATE_NAMES[f]).join('/')}</small>` : ''}</span>`).join('');
+      const label = { headMaid: "影", barrierMaster: "结界", mystic: "言灵", butterflyDancer: "茧", starfallWitch: "卢恩", witchHunter: "魔力瓶", elfArcher: "祝福", moonGoddess: "暗月", swordEmperor: "剑魂", talismanMaster: "妖力", magicArcher: "充能" }[player.hero.id] ?? "盖牌";
+      const cards = player.covered.map(card => { const visible = revealHands || player.id === humanId || card.coveredVisibility === 'public'; return `<span class="covered-card" title="${visible ? cardLabel(card, { game, playerId: player.id }) : '盖牌'}"><img src="${visible ? '/assets/card/' + card.name + '.png' : '/theme/cardback.png'}" alt="${visible ? cardLabel(card, { game, playerId: player.id }) : '盖牌'}">${visible ? `<small>${card.getTraits({ game, playerId: player.id }).fates.map(f => FATE_NAMES[f]).join('/')}</small>` : ''}</span>`; }).join('');
       marks.push(`<details class="covered-mark"><summary title="${label}，点击查看"><img src="/theme/cardback.png" alt="${label}"><b>${player.covered.length}</b></summary><div class="covered-cards">${cards}</div></details>`);
     }
     if (game.field?.some(card => card.name === 'roseGarden')) marks.push('<img src="/assets/card/roseGarden.png" title="血蔷薇庭院在场：不能使用治疗抵伤" alt="血蔷薇庭院">');

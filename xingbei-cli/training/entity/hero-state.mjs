@@ -1,3 +1,9 @@
+import nobleLady from '../../src/heroes/noble-lady/observation.js';
+import headMaid from '../../src/heroes/head-maid/observation.js';
+import barrierMaster from '../../src/heroes/barrier-master/observation.js';
+import mystic from '../../src/heroes/mystic/observation.js';
+import defiler from '../../src/heroes/defiler/observation.js';
+import swordWitch from '../../src/heroes/sword-witch/observation.js';
 import butterflyDancer from '../../src/heroes/butterfly-dancer/observation.js';
 import battleMage from '../../src/heroes/battle-mage/observation.js';
 import starfallWitch from '../../src/heroes/starfall-witch/observation.js';
@@ -41,7 +47,7 @@ import sage from '../../src/heroes/sage/observation.js';
 import prayer from '../../src/heroes/prayer/observation.js';
 import heroicPuppet from '../../src/heroes/heroic-puppet/observation.js';
 
-export const heroFields = Object.freeze({butterflyDancer,battleMage,starfallWitch,inquisitor,witchHunter,templar,elfArcher,yinYangMaster,soulWarlock,bloodWitch,moonGoddess,holyArcher,talismanMaster,swordEmperor,magicArcher,azureFlameWitch,bloodSwordSpirit,beastWarrior,adventurer,fighter,brave,redLotusKnight,magicLancer,bard,berserker,windSwordmaster,marksman,sealer,guardianAngel,priest,saint,holyLancer,plagueMage,elementalist,valkyrie,magicalGirl,assassin,magicSwordsman,adjudicator,sage,prayer,heroicPuppet});
+export const heroFields = Object.freeze({nobleLady,headMaid,barrierMaster,mystic,defiler,swordWitch,butterflyDancer,battleMage,starfallWitch,inquisitor,witchHunter,templar,elfArcher,yinYangMaster,soulWarlock,bloodWitch,moonGoddess,holyArcher,talismanMaster,swordEmperor,magicArcher,azureFlameWitch,bloodSwordSpirit,beastWarrior,adventurer,fighter,brave,redLotusKnight,magicLancer,bard,berserker,windSwordmaster,marksman,sealer,guardianAngel,priest,saint,holyLancer,plagueMage,elementalist,valkyrie,magicalGirl,assassin,magicSwordsman,adjudicator,sage,prayer,heroicPuppet});
 export function declaredState(player, observerId) {
   const fields = heroFields[player.hero.id];
   if (!fields) throw new Error(`Hero lacks observation contract: ${player.hero.id}`);
