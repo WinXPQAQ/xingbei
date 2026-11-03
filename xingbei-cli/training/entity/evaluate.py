@@ -23,7 +23,7 @@ def summarize(results):
                 paired_seed_interval95=[bootstrap[49], bootstrap[1949]] if bootstrap else None)
 
 
-async def evaluate(checkpoint, *, pairs=60, workers=4, device='cuda'):
+async def evaluate(checkpoint, *, pairs=60, workers=16, device='cuda'):
     model, vocabulary = EntityPolicy.restore(torch.load(checkpoint, map_location='cpu', weights_only=False))
     reports = {}
     for opponent, count, rosters, base in [('v1.8.0-preview.1', pairs, ROSTERS, 411102000),
@@ -39,7 +39,7 @@ async def evaluate(checkpoint, *, pairs=60, workers=4, device='cuda'):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('checkpoint'); parser.add_argument('output')
-    parser.add_argument('--pairs', type=int, default=60); parser.add_argument('--workers', type=int, default=4)
+    parser.add_argument('--pairs', type=int, default=60); parser.add_argument('--workers', type=int, default=16)
     parser.add_argument('--device', default='cuda')
     args = parser.parse_args()
     if args.pairs < 1: parser.error('pairs must be positive')

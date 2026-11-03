@@ -18,6 +18,9 @@ def now(): return datetime.now(timezone.utc).isoformat()
 
 def tick(directory):
     directory.mkdir(parents=True, exist_ok=True)
+    diagnostics = directory/'rule-failures'
+    diagnostics.mkdir(exist_ok=True)
+    os.environ['XINGBEI_DIAGNOSTIC_DIR'] = str(diagnostics)
     with open(directory/'lock', 'a') as lock:
         try: fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except BlockingIOError: return
@@ -50,7 +53,7 @@ def tick(directory):
                 cycle = state['cycle']+1
                 checkpoint = directory/f'cycle-{cycle:04d}.pt'
                 run([sys.executable, 'training/entity/reinforce.py', state['latest'], str(checkpoint),
-                     '--rounds', '1', '--games', '96', '--workers', '4', '--batch', '32', '--epochs', '2',
+                     '--rounds', '1', '--games', '96', '--workers', '16', '--batch', '32', '--epochs', '2',
                      '--seed', '611102000', '--device', 'cuda'])
                 save(stage='evaluate' if cycle % 5 == 0 else 'reinforce', latest=str(checkpoint), cycle=cycle, status='ready')
             if state['stage'] == 'evaluate':

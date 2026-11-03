@@ -74,9 +74,9 @@ def collate(observations, vocabulary, device='cpu'):
         if packed and observation['vocabulary'] != vocabulary.digest:
             raise ValueError('Wire/checkpoint vocabulary mismatch')
         for group, offset in [('entities', 0), ('candidates', entity_count)]:
+            mask[b, offset:offset + len(observation[group])] = False
             for i, token in enumerate(observation[group]):
                 row = b * width + offset + i
-                mask[b, offset + i] = False
                 if packed:
                     feature_ids, feature_weights, roles, pointers = token
                     if len(feature_ids) != len(feature_weights) or len(roles) != len(pointers):

@@ -57,7 +57,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('checkpoint'); parser.add_argument('output')
     parser.add_argument('--rounds', type=int, default=1, help='Additional collection/update rounds')
-    parser.add_argument('--games', type=int); parser.add_argument('--workers', type=int, default=4)
+    parser.add_argument('--games', type=int); parser.add_argument('--workers', type=int, default=16)
     parser.add_argument('--batch', type=int); parser.add_argument('--epochs', type=int)
     parser.add_argument('--seed', type=int, default=211102700)
     parser.add_argument('--device', default='cpu')

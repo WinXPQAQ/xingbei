@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import { Game } from '../src/engine.js';
 import { actionCandidates, decisionCandidates, decisionPlayer } from './candidates.mjs';
 
@@ -16,6 +17,7 @@ export async function driveGame({ seed, heroIds, start = 0, turnLimit = 500, dec
   game.automaticDecision = request => { throw new Error(`Forbidden automatic fallback: ${request.type}`); };
   let decisions = 0, turns = 0, maxCandidates = 0;
   const kinds = {};
+  const diagnosticChoices = [];
   const limit = Symbol('decisionLimit');
   async function pick(playerId, request, candidates) {
     if (decisions >= decisionLimit) throw limit;
@@ -27,6 +29,7 @@ export async function driveGame({ seed, heroIds, start = 0, turnLimit = 500, dec
     const index = await select({ game, playerId, request, candidates });
     if (profile) timings.decisionWaitMs += performance.now() - start;
     if (!Number.isInteger(index) || index < 0 || index >= candidates.length) throw new Error(`Invalid candidate index ${index}`);
+    if (process.env.XINGBEI_DIAGNOSTIC_DIR) diagnosticChoices.push({ playerId, requestType: request.type, skillId: request.skillId, candidates, index });
     return candidates[index];
   }
   async function decide(request) {
@@ -57,7 +60,10 @@ export async function driveGame({ seed, heroIds, start = 0, turnLimit = 500, dec
     }
     if (!game.winner) reason = 'turnLimit';
   } catch (error) {
-    if (error !== limit) throw error;
+    if (error !== limit) {
+      if (process.env.XINGBEI_DIAGNOSTIC_DIR) fs.writeFileSync(`${process.env.XINGBEI_DIAGNOSTIC_DIR}/failure-${seed}.json`, JSON.stringify({ seed, start, turns, decisions, error: error.stack, current: game.current, turn: game.turn.state, teams: game.teams, players: game.players.map(p => ({ id:p.id,name:p.name,team:p.team,hero:p.hero.id,state:p.hero.state,handLimit:p.handLimit,hand:p.hand,covered:p.covered,statuses:p.statuses,healing:p.healing,energy:p.energy })), choices:diagnosticChoices, deck:game.deck.map(c => c.id), discard:game.discard.map(c => c.id), cards:[...game.cards.values()], log:game.log, publicHistory:game.publicHistory }, null, 2));
+      throw error;
+    }
     reason = 'decisionLimit';
   }
   return { seed, start, turns, decisions, maxCandidates, kinds,

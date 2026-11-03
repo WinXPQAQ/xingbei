@@ -18,7 +18,7 @@ ROSTERS = [
 ]
 
 
-async def run_games(model, vocabulary, configs, *, workers=4, device='cpu', opponent=None,
+async def run_games(model, vocabulary, configs, *, workers=16, device='cpu', opponent=None,
                     sparse=True, batch_wait_ms=1, trajectory=False):
     if workers < 1 or not configs: raise ValueError('Need workers and game configs')
     jobs = asyncio.Queue()
@@ -120,7 +120,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('checkpoint')
     parser.add_argument('--games', type=int, default=12)
-    parser.add_argument('--workers', type=int, default=4)
+    parser.add_argument('--workers', type=int, default=16)
     parser.add_argument('--device', default='cpu')
     parser.add_argument('--opponent', default=None)
     parser.add_argument('--raw', action='store_true')
