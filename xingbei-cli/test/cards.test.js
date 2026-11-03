@@ -328,6 +328,15 @@ test("显式random爆牌策略兼容随机弃置并立即降低士气", () => {
 
 test("无法行动按当前合法非提炼行动判定，不使用静态技能标记或手牌上限", () => {
   const game = new Game({ heroRules: false, shuffleDeck: false });
+  assert.equal(game.player(0).hand.length, 0);
+  assert.equal(game.canDrawSpecial(0), true);
+  assert.equal(game.canRefreshUnableHand(0), false);
+  assert.throws(() => game.refreshUnableHand(0), /未满足无法行动条件/);
+  // A restricted special-action window must never turn an empty hand into refresh.
+  const originalCanDraw = game.canDrawSpecial;
+  game.canDrawSpecial = () => false;
+  assert.equal(game.canRefreshUnableHand(0), false);
+  game.canDrawSpecial = originalCanDraw;
   for (const player of game.players) {
     attach(game, player.id, card("holyShield"));
     attach(game, player.id, card("weakness"));

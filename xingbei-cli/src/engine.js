@@ -574,7 +574,7 @@ export class Game {
     if (state && (state.playerId !== actorId || state.skipped || state.completed || state.actionType || state.phase !== Timing.ACTION_PHASE_START)) return false;
     // Refinement does not prevent declaring inability. Exchange is a procedure,
     // not a special action: activation restrictions stay in force afterward.
-    return !this.legalCards(actorId).length && !this.legalSkillActions(actorId).length && !this.canDrawSpecial(actorId);
+    return this.player(actorId).hand.length > 0 && !this.legalCards(actorId).length && !this.legalSkillActions(actorId).length && !this.canDrawSpecial(actorId);
   }
 
   canDrawSpecial(actorId) {
