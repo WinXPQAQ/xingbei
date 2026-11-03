@@ -1,3 +1,9 @@
+import { ElfArcher } from "./heroes/elf-archer/index.js";
+import { YinYangMaster } from "./heroes/yin-yang-master/index.js";
+import { SoulWarlock } from "./heroes/soul-warlock/index.js";
+import { BloodWitch } from "./heroes/blood-witch/index.js";
+import { MoonGoddess } from "./heroes/moon-goddess/index.js";
+import { HolyArcher } from "./heroes/holy-archer/index.js";
 import { TalismanMaster } from "./heroes/talisman-master/index.js";
 import { SwordEmperor } from "./heroes/sword-emperor/index.js";
 import { MagicArcher } from "./heroes/magic-archer/index.js";
@@ -35,6 +41,13 @@ const definitions = [
   ["swordEmperor", "剑帝"], ["priest", "神官"], ["assassin", "暗杀者"],
 ];
 export const HERO_DEFINITIONS = {
+  elfArcher: { name: "精灵射手", HeroClass: ElfArcher },
+  yinYangMaster: { name: "阴阳师", HeroClass: YinYangMaster },
+  soulWarlock: { name: "灵魂术士", HeroClass: SoulWarlock },
+  bloodWitch: { name: "血之巫女", HeroClass: BloodWitch },
+  moonGoddess: { name: "月之女神", HeroClass: MoonGoddess },
+  holyArcher: { name: "圣弓", HeroClass: HolyArcher },
+
   talismanMaster: { name: "灵符师", HeroClass: TalismanMaster },
   swordEmperor: { name: "剑帝", HeroClass: SwordEmperor },
   magicArcher: { name: "魔弓", HeroClass: MagicArcher },
@@ -95,3 +108,5 @@ export function createHeroRoster(playerHeroId, playerSeat = 0, initialRoster = D
 export const WAVE_FOUR_HERO_IDS = ["adventurer", "fighter", "brave", "redLotusKnight", "magicLancer", "bard"];
 
 export const WAVE_FIVE_HERO_IDS = ["talismanMaster", "swordEmperor", "magicArcher", "azureFlameWitch", "bloodSwordSpirit", "beastWarrior"];
+
+export const WAVE_SIX_HERO_IDS = ["elfArcher", "yinYangMaster", "soulWarlock", "bloodWitch", "moonGoddess", "holyArcher"];

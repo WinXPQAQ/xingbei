@@ -85,9 +85,9 @@ export class Bard extends Hero {
             yield* game.damageSteps(id, 1, { ...options, sourceId: player.id, damageType: 'spell', skillId: 'sinkingConcerto' });
           }
         } },
-      { id: 'eternalPrisoner', name: '永恒囚徒形态', ...this.onDamage([Timing.DAMAGE_BEFORE], 'target', ['spell']), priority: -1,
-        filter: () => !!this.state.form,
-        resolve({ game, player, context }) { context.amount = Math.max(0, context.amount - 1); game.logSkill(player.id, 'eternalPrisoner', '承受的法术伤害−1'); } },
+      { id: 'eternalPrisoner', name: '永恒囚徒形态', ...this.onDamage([Timing.DAMAGE_ACTUAL], 'target', ['spell']), priority: -1,
+        filter: ({ context }) => this.state.form === 'eternalPrisoner' && context.actual > 0,
+        resolve({ game, player, context }) { context.actual = Math.max(0, context.actual - 1); game.logSkill(player.id, 'eternalPrisoner', '时点6承受的实际法术伤害−1'); } },
       { id: 'forbiddenPoem', name: '禁忌诗篇' },
       { id: 'dissonance', name: '不谐和弦',
         action(game, player, action = {}) {

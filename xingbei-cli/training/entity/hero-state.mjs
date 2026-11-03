@@ -1,3 +1,9 @@
+import elfArcher from '../../src/heroes/elf-archer/observation.js';
+import yinYangMaster from '../../src/heroes/yin-yang-master/observation.js';
+import soulWarlock from '../../src/heroes/soul-warlock/observation.js';
+import bloodWitch from '../../src/heroes/blood-witch/observation.js';
+import moonGoddess from '../../src/heroes/moon-goddess/observation.js';
+import holyArcher from '../../src/heroes/holy-archer/observation.js';
 import talismanMaster from '../../src/heroes/talisman-master/observation.js';
 import swordEmperor from '../../src/heroes/sword-emperor/observation.js';
 import magicArcher from '../../src/heroes/magic-archer/observation.js';
@@ -29,7 +35,7 @@ import sage from '../../src/heroes/sage/observation.js';
 import prayer from '../../src/heroes/prayer/observation.js';
 import heroicPuppet from '../../src/heroes/heroic-puppet/observation.js';
 
-export const heroFields = Object.freeze({talismanMaster,swordEmperor,magicArcher,azureFlameWitch,bloodSwordSpirit,beastWarrior,adventurer,fighter,brave,redLotusKnight,magicLancer,bard,berserker,windSwordmaster,marksman,sealer,guardianAngel,priest,saint,holyLancer,plagueMage,elementalist,valkyrie,magicalGirl,assassin,magicSwordsman,adjudicator,sage,prayer,heroicPuppet});
+export const heroFields = Object.freeze({elfArcher,yinYangMaster,soulWarlock,bloodWitch,moonGoddess,holyArcher,talismanMaster,swordEmperor,magicArcher,azureFlameWitch,bloodSwordSpirit,beastWarrior,adventurer,fighter,brave,redLotusKnight,magicLancer,bard,berserker,windSwordmaster,marksman,sealer,guardianAngel,priest,saint,holyLancer,plagueMage,elementalist,valkyrie,magicalGirl,assassin,magicSwordsman,adjudicator,sage,prayer,heroicPuppet});
 export function declaredState(player, observerId) {
   const fields = heroFields[player.hero.id];
   if (!fields) throw new Error(`Hero lacks observation contract: ${player.hero.id}`);

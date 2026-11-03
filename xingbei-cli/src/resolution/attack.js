@@ -1,3 +1,4 @@
+import { playableCards } from "../playable-cards.js";
 import { RuleError } from "../errors.js";
 import { cardName } from "../card-labels.js";
 import { Timing } from "../timing.js";
@@ -5,27 +6,31 @@ import { Timing } from "../timing.js";
 export function* attackSteps(game, actorId, handIndex, targetId, options = {}) {
   if (game.winner) throw new RuleError("游戏已经结束");
   let actor = game.player(actorId), target = game.player(targetId);
-  let attack = options.virtualAttack ?? actor.hand[handIndex], isCounter = false;
+  let attack = options.virtualAttack ?? playableCards(actor)[handIndex], isCounter = false;
   if (attack?.type !== "attack" || !game.canAttackTarget(actorId, targetId)) throw new RuleError("攻击牌只能指定对手");
   let attackTraits = attack.getTraits({ game, playerId: actor.id, purpose: "attack" });
   if (!options.virtualAttack) game.playCard(actor, handIndex, { ...options, targetId });
   yield* game.present();
-  let chainDepth = 0;
+  let chainDepth = 0, previousAttackTraits = null, requiresCounterSkill = false;
   while (true) {
     const context = { actorId: actor.id, sourceId: actor.id, targetId: target.id, card: attack, attackTraits,
-      isCounter, chainOriginId: actorId, chainDepth, amount: 2, actionSourceSkillId: isCounter ? null : (options.actionSourceSkillId ?? game.turn.state?.actionSourceSkillId), damageType: "attack", hit: true, shieldable: true, canCounter: true, canHolyLight: true, point: 1 };
+      isCounter, previousAttackTraits, requiresCounterSkill, chainOriginId: actorId, chainDepth, amount: 2, actionSourceSkillId: isCounter ? null : (options.actionSourceSkillId ?? game.turn.state?.actionSourceSkillId), damageType: "attack", hit: true, shieldable: true, canCounter: true, canHolyLight: true, point: 1 };
     game.log.push(`${actor.name}使用${isCounter ? "应战攻击" : "主动攻击"}${cardName(attack)}，目标是${target.name}`);
     game.recordPublicAction({type:'attack',actorId:actor.id,targetId:target.id,card:attack.name,elements:[...attackTraits.elements],counter:isCounter});
     yield* game.trigger(Timing.ATTACK_DECLARED, context, options);
+    target = game.player(context.targetId);
     context.point = 2;
     yield* game.trigger(Timing.ATTACK_DECISION, context, options);
     if (context.forceHitRequested) { context.forcedHit = true; context.shieldable = false; }
+    // Redirecting a teammate's response happens after force-hit/counter restrictions.
+    if (!context.forcedHit) yield* game.trigger(Timing.ATTACK_RESPONSE_BEFORE, context, options);
+    target = game.player(context.targetId);
     const counterTargets = game.players.filter(player => game.canAttackTarget(target.id, player.id, true) && player.id !== actor.id);
-    const valid = target.hand.map((card, index) => ({ card, index })).filter(item =>
+    const valid = playableCards(target).map((card, index) => ({ card, index })).filter(item =>
       game.canRespond(attack, item.card, { actorId: actor.id, targetId: target.id, attackTraits }) &&
       (item.card.name === "holyLight" ? context.canHolyLight : context.canCounter && counterTargets.length));
-    const decision = context.forcedHit ? null : yield { type: "response", actor, target, attack, attackTraits, valid, counterTargets, isCounter, chainOriginId: actorId, chainDepth, damage: context.amount, shieldable: context.shieldable,
-      canCounter: context.canCounter, canHolyLight: context.canHolyLight };
+    const decision = context.forcedHit ? null : context.boundResponse ?? (yield { type: "response", actor, target, attack, attackTraits, valid, counterTargets, isCounter, chainOriginId: actorId, chainDepth, damage: context.amount, shieldable: context.shieldable,
+      canCounter: context.canCounter, canHolyLight: context.canHolyLight });
     context.sourceHandCount = actor.hand.length; context.targetHandCount = target.hand.length;
     if (!decision) {
       yield* game.trigger(Timing.ATTACK_HIT_CHECK, context, options);
@@ -55,6 +60,8 @@ export function* attackSteps(game, actorId, handIndex, targetId, options = {}) {
       nextTarget = counterTargets.find(player => player.id === nextId);
       if (!nextTarget) throw new RuleError("应战攻击目标不合法");
     }
+    requiresCounterSkill = !attack.canRespond(picked.card, { game, actorId: actor.id, targetId: target.id, attackTraits });
+    previousAttackTraits = attackTraits;
     const nextTraits = picked.card.getTraits({ game, playerId: target.id, purpose: "attack" });
     const response = game.playCard(target, picked.index, { ...options, targetId: nextTarget?.id ?? actor.id });
     yield* game.present();

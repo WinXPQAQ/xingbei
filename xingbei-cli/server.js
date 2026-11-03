@@ -1,4 +1,4 @@
-import { WAVE_TWO_HERO_IDS, WAVE_THREE_HERO_IDS, WAVE_FOUR_HERO_IDS, WAVE_FIVE_HERO_IDS } from "./src/hero.js";
+import { WAVE_TWO_HERO_IDS, WAVE_THREE_HERO_IDS, WAVE_FOUR_HERO_IDS, WAVE_FIVE_HERO_IDS, WAVE_SIX_HERO_IDS } from "./src/hero.js";
 import { AI_POLICY_VERSION } from "./src/ai.js";
 import { createServer } from "node:http";
 import { readFile, stat } from "node:fs/promises";
@@ -18,7 +18,7 @@ const modelIdentity = modelPort ? await (async () => {
   return response.json();
 })() : null;
 if (modelIdentity && !['v1.5', 'experimental/hero-foundation-1'].includes(modelIdentity.baseline)) throw new Error('不支持的模型基础策略');
-const heroRoster = { "wave-five": WAVE_FIVE_HERO_IDS, "wave-four": WAVE_FOUR_HERO_IDS, "wave-two": WAVE_TWO_HERO_IDS, "wave-three": WAVE_THREE_HERO_IDS }[process.env.HERO_PREVIEW];
+const heroRoster = { "wave-six": WAVE_SIX_HERO_IDS, "wave-five": WAVE_FIVE_HERO_IDS, "wave-four": WAVE_FOUR_HERO_IDS, "wave-two": WAVE_TWO_HERO_IDS, "wave-three": WAVE_THREE_HERO_IDS }[process.env.HERO_PREVIEW];
 const rosterScript = testMode && heroRoster ? `<script>window.XINGBEI_HERO_ROSTER=${JSON.stringify(heroRoster)};</script>` : "";
 const modelScript = modelIdentity ? `<script>window.XINGBEI_MODEL=true;window.XINGBEI_MODEL_BASELINE=${JSON.stringify(modelIdentity.baseline)};</script>` : '';
 const aiLabel = modelIdentity ? modelIdentity.label : AI_POLICY_VERSION.replace(/^v/, "AI ");

@@ -1,3 +1,4 @@
+import { playableCards } from "../src/playable-cards.js";
 import { resolveAsync } from "/src/resolution/decisions.js";
 import { cardSets, targetCounts } from "/src/card-sets.js";
 import { modelEnabled, installModel, modelChoice } from "/web/model-ai.js";
@@ -377,7 +378,7 @@ function chooseResponseTarget(title, valid, targets, kind = "attack") {
       elements.modalActions.replaceChildren(decline);
       elements.hint.textContent = title; render();
     }
-    handChoice = { valid: pendingChoice.valid, selected, cancel: clearSelection, select(index) {
+    handChoice = { playable: true, valid: pendingChoice.valid, selected, cancel: clearSelection, select(index) {
       const next = valid.find(item => item.index === index);
       if (!next) return;
       if (picked?.index === index) { clearSelection(); return; }
@@ -433,17 +434,17 @@ async function selectCard(index) {
     if (selectedCard === index) { targetChoice.resolve(null); return; }
     if (targetChoice.skillCards) {
       if (targetChoice.skillCards.length !== 1) return;
-      const card = game.player(humanId).hand[index];
+      const card = playableCards(game.player(humanId))[index];
       if (!(targetChoice.cardFilter?.(card) ?? true)) return;
       targetChoice.skillCards[0] = card.id; selectedCard = index; render(); return;
     }
-    const card = game.player(humanId).hand[index], targets = game.legalTargets(humanId, card);
+    const card = playableCards(game.player(humanId))[index], targets = game.legalTargets(humanId, card);
     if (!targets.length) return;
     selectedCard = index; targetChoice.targets = targets;
     elements.hint.textContent = `为【${CARD_NAMES[card.name]}】选择目标`; render(); return;
   }
   if (busy) return;
-  const card = game.player(humanId).hand[index];
+  const card = playableCards(game.player(humanId))[index];
   const targets = game.legalTargets(humanId, card);
   if (!targets.length) return notify("这张牌当前不能主动使用");
   busy = true;
@@ -452,7 +453,7 @@ async function selectCard(index) {
   try {
     const target = await chooseTarget(targets, `为【${CARD_NAMES[card.name]}】选择目标`);
     if (target !== null) {
-      const chosenIndex = selectedCard, chosenCard = game.player(humanId).hand[chosenIndex];
+      const chosenIndex = selectedCard, chosenCard = playableCards(game.player(humanId))[chosenIndex];
       const action = chosenCard.type === "attack"
         ? () => resolveAttackChain(humanId, chosenIndex, target)
         : chosenCard.name === "magicBullet" ? () => resolveMagicChain(humanId, chosenIndex, target)
@@ -574,7 +575,7 @@ async function executeAi(actorId, scriptedAction = null, retried = false) {
     game.skipExtraActions(actorId);
   }
   else {
-    const card = game.player(actorId).hand[action.index];
+    const card = playableCards(game.player(actorId))[action.index];
     const options = { chooseResponse: chooseCombatResponse, overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow };
     if (card.type === "attack") await resolveAttackChain(actorId, action.index, action.targetId);
     else if (card.name === "magicBullet") await resolveMagicChain(actorId, action.index, action.targetId);
@@ -600,7 +601,7 @@ async function chooseCombatResponse(context) {
   if (!isHuman(context.target.id)) return chooseAiResponse(game, context);
   const attack = context.attack;
   const targets = attack ? context.counterTargets.map(player => player.id) : context.nextTarget ? [context.nextTarget.id] : [];
-  return chooseResponseTarget(`${context.actor.name}对你使用【${attack ? CARD_NAMES[attack.name] : "魔弹"}】`, context.valid, targets, attack ? "attack" : "magic");
+  return chooseResponseTarget(context.title ?? `${context.actor.name}对你使用【${attack ? CARD_NAMES[attack.name] : "魔弹"}】`, context.valid, targets, attack ? "attack" : "magic");
 }
 async function resolveAttackChain(actorId, handIndex, targetId) {
   return game.attackWithDecisions(actorId, handIndex, targetId, {

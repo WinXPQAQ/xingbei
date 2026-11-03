@@ -1,10 +1,11 @@
+import { playableCards } from "../playable-cards.js";
 import { RuleError } from "../errors.js";
 import { cardName } from "../card-labels.js";
 import { Timing } from "../timing.js";
 
 export function* magicSteps(game, actorId, handIndex, options = {}) {
   if (game.winner) throw new RuleError("游戏已经结束");
-  const actor = game.player(actorId), card = actor.hand[handIndex];
+  const actor = game.player(actorId), card = playableCards(actor)[handIndex];
   if (card?.name !== "magicBullet") throw new RuleError("请选择魔弹");
   if (options.targetId != null && !game.magicTargets(actorId).includes(options.targetId)) throw new RuleError("魔弹目标不合法");
   game.playCard(actor, handIndex, options);
@@ -28,7 +29,7 @@ export function* magicRelaySteps(game, actorId, options = {}) {
     game.recordPresentation("relay", { sourceId, playerId: target.id, amount: damage });
     yield* game.flushRuleEvents(options);
     yield* game.present();
-    const valid = target.hand.map((card, index) => ({ card, index })).filter(item => game.allowsCard(target.id, item.card, "response") && (item.card.name === "holyLight" || game.canRelayMagic(target.id, item.card)));
+    const valid = playableCards(target).map((card, index) => ({ card, index })).filter(item => game.allowsCard(target.id, item.card, "response") && (item.card.name === "holyLight" || game.canRelayMagic(target.id, item.card)));
     const decision = yield { type: "response", actor: game.player(sourceId), target, valid, damage,
       nextTarget: game.magicTarget(target.id, participants, options.direction ?? 1), participants: [...participants], chainOriginId: actorId, chainDepth: damage - 2, direction: options.direction ?? 1 };
     const picked = decision && valid.find(item => item.index === decision.index);

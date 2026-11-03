@@ -15,9 +15,9 @@ export function captureObservation(game, observerId, { actions = false, history 
     ...(spec.cardsFilter ? {allowedCardSets:cardSets(game.player(observerId).hand,spec).map(cards=>cards.map(c=>c.id))} : {}) });
   const skills = actions ? game.legalSkillActions(observerId).map(entry => ({ skillId: entry.skillId, spec: specData(entry.spec),
     modes: (entry.spec.modes?.map(c => c.value) ?? [null]).map(mode => ({ mode, spec: specData(game.skillActionSpec(observerId, { skillId: entry.skillId, mode: mode ?? undefined })) })) })) : [];
-  return copy({ observerId, current: game.current, cards,
+  return copy({ observerId, current: game.current, extraTurns: [...(game.turn.extraTurns ?? [])], cards,
     players: game.players.map(p => ({ id: p.id, name: p.name, team: p.team, handLimit: p.handLimit, healing: p.healing, energy: pick(p.energy,['gem','crystal']),
-      hero: { id: p.hero.id, ...(['talismanMaster','swordEmperor','magicArcher','azureFlameWitch','bloodSwordSpirit','beastWarrior','saint','holyLancer','plagueMage','elementalist','valkyrie','magicalGirl','assassin','magicSwordsman','adjudicator','sage','prayer','heroicPuppet','adventurer','fighter','brave','redLotusKnight','magicLancer','bard'].includes(p.hero.id) ? {state: pick(p.hero.state,['swordQi','charged','pierceUsed','multiShotUsed','lastTarget','rebirth','blood','gardenCardId','souls','residual','elements','form','compassion','judgment','requiredJudgment','prayerRunes','battleRunes','magicRunes','spirit','lockedTarget','rage','intellect','bloodSeals','attackBonus','released','inspiration','damagedEnemies','concertoUsed'])} : {}), skills: p.hero.skills.map(s => typeof s === 'string' ? s : s.id) },
+      hero: { id: p.hero.id, ...(['elfArcher','yinYangMaster','soulWarlock','bloodWitch','moonGoddess','holyArcher','talismanMaster','swordEmperor','magicArcher','azureFlameWitch','bloodSwordSpirit','beastWarrior','saint','holyLancer','plagueMage','elementalist','valkyrie','magicalGirl','assassin','magicSwordsman','adjudicator','sage','prayer','heroicPuppet','adventurer','fighter','brave','redLotusKnight','magicLancer','bard'].includes(p.hero.id) ? {state: pick(p.hero.state,['elementShotUsed','windArrowPending','ghostFire','yellowSoul','blueSoul','linkCardId','fateCardId','linkedPlayerId','newMoon','petrification','desecrationUsed','nextUncounterable','faith','cannon','swordQi','charged','pierceUsed','multiShotUsed','lastTarget','rebirth','blood','gardenCardId','souls','residual','elements','form','compassion','judgment','requiredJudgment','prayerRunes','battleRunes','magicRunes','spirit','lockedTarget','rage','intellect','bloodSeals','attackBonus','released','inspiration','damagedEnemies','concertoUsed'])} : {}), skills: p.hero.skills.map(s => typeof s === 'string' ? s : s.id) },
       skillIds: p.getSkills().map(({skill}) => typeof skill === 'string' ? skill : skill.id),
       handIds: p.id === observerId ? p.hand.map(c => c.id) : null, handCount: p.hand.length,
       coveredIds: p.id === observerId ? p.covered.map(c => c.id) : null, coveredCount: p.covered.length,
@@ -46,7 +46,7 @@ export function observationView(data) {
   const spec = s => s && ({ ...s, cardFilter: card => s.allowedCardIds.includes(card.id),
     ...(s.allowedCardSets ? {cardsFilter: cards => s.allowedCardSets.some(set=>set.length===cards.length&&cards.every(c=>set.includes(c.id)))} : {}) });
   return { players, player: id => players[id], cards, teams: d.teams, current: d.current, effects: new Map(d.effects), publicHistory: d.publicHistory,
-    turn: { state: d.turn, hasExtraActions: () => d.hasExtraActions },
+    turn: { state: d.turn, extraTurns: d.extraTurns ?? [], hasExtraActions: () => d.hasExtraActions },
     legalCards: () => d.legal.map(e => ({ ...e, card: cards.get(e.cardId) })),
     legalSkillActions: () => d.skills.map(e => ({ ...e, spec: spec(e.spec) })),
     skillActionSpec: (id, action) => spec(d.skills.find(e => e.skillId === action.skillId).modes.find(e => e.mode === (action.mode ?? null)).spec),
@@ -59,11 +59,11 @@ export function isolatePolicy(raw, {history = true, activation = false} = {}) {
   const view = (game, id, actions = false) => observationView(captureObservation(game, id, {actions, history, activation}));
   const requestView = (request, v) => {
     const out = {};
-    for (const key of ['type','playerId','skillId','purpose','recipientId','targetId','count','counts','validSets','optional','defaultValue','shieldable','isCounter','damage','reservedEnergy','reservedHealing','reservedCardIds','reservedSkillId','energy','choices']) if (request[key] !== undefined) out[key] = copy(request[key]);
+    for (const key of ['type','protectedTargetId','playerId','skillId','purpose','recipientId','targetId','count','counts','validSets','optional','defaultValue','shieldable','isCounter','damage','reservedEnergy','reservedHealing','reservedCardIds','reservedSkillId','energy','choices']) if (request[key] !== undefined) out[key] = copy(request[key]);
     for (const key of ['target','actor','player','nextTarget']) if (request[key]) out[key] = v.player(request[key].id);
     if (request.counterTargets) out.counterTargets = request.counterTargets.map(p => v.player(p.id));
     if (request.valid) out.valid = request.valid.map(e => typeof e === 'number' ? e : {index: e.index, card: v.cards.get(e.card.id)});
-    if (request.context) out.context = { ...copy(pick(request.context,["sourceId","actual","count","drawCount","skillId","extraSpell","purpose","sameElement","damage","moraleLoss","battleRunes","magicRunes"])), targetId: request.context.targetId, amount: request.context.amount, damageType: request.context.damageType, isCounter: request.context.isCounter, card: v.cards.get(request.context.card?.id) };
+    if (request.context) out.context = { ...copy(pick(request.context,["sourceId","actual","count","drawCount","skillId","extraSpell","purpose","sameElement","damage","moraleLoss","battleRunes","magicRunes","transferTargetId","attackTraits","team"])), targetId: request.context.targetId, amount: request.context.amount, damageType: request.context.damageType, isCounter: request.context.isCounter, card: v.cards.get(request.context.card?.id) };
     if (request.attack) {
       const traits = copy(request.attackTraits ?? request.attack.getTraits());
       out.attack = v.cards.get(request.attack.id) ?? { id: null, name: request.attack.name, type: "attack", elements: traits.elements, fates: traits.fates, uniqueSkills: [], element: traits.elements[0], getTraits: () => copy(traits), hasUniqueSkill: () => false };

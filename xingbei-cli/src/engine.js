@@ -1,3 +1,4 @@
+import { playableCards } from "./playable-cards.js";
 import { cardSets, targetCounts } from "./card-sets.js";
 import { PublicHistory } from "./ai/public-history.js";
 import { logCard, skillLabel, effectLabel } from "./action-log.js";
@@ -154,6 +155,7 @@ export class Game {
     card.discardVisibility = destination.zone === "discard" ? visibility : null;
     if (destination.zone !== "status") card.attachment = null;
     if (from.zone === "status" || destination.zone === "status") this.triggers.registerCard(card);
+    for (const location of [from, destination]) if (location.zone === "hand") (this.changedHands ??= new Set()).add(location.playerId);
     if (animate) this.recordPresentation("move", { card: card.toJSON(), from, to: card.location, reason, targetId, visibility });
     return card;
   }
@@ -230,14 +232,27 @@ export class Game {
     }
   }
 
-  coverCards(playerId, cards, pile) {
+  coverCards(playerId, cards, pile, { sources = ["hand", "field"] } = {}) {
     for (const card of cards) {
-      if (!card || !["hand", "field"].includes(card.location.zone) || (card.location.zone === "hand" && card.location.playerId !== playerId)) throw new RuleError("盖牌来源无效");
+      if (!card || !sources.includes(card.location.zone) || (card.location.zone === "hand" && card.location.playerId !== playerId)) throw new RuleError("盖牌来源无效");
     }
     const detail = this.describeCards(cards, playerId, { hidden: true });
     for (const card of cards) this.moveCard(card.id, { zone: "covered", playerId, pile }, { animate: false, covered: true });
     this.recordPublicAction({ type: "cover", playerId, count: cards.length });
     this.log.push(`${this.actorLabel(playerId)}放置${cards.length}张盖牌${detail}`);
+  }
+  coverDeck(playerId, count, pile) {
+    const cards = [];
+    for (let i = 0; i < count; i++) {
+      if (!this.deck.length) {
+        if (!this.discard.length) break;
+        for (const c of [...this.discard]) this.moveCard(c.id, { zone: "deck" }, { animate: false });
+        shuffle(this.deck, this.random);
+      }
+      const card = this.deck.at(-1);
+      this.coverCards(playerId, [card], pile, { sources: ["deck"] }); cards.push(card);
+    }
+    return cards;
   }
   *chooseCoveredCard(playerId, pile, { skillId, title = "选择盖牌", optional = false, predicate = () => true } = {}) {
     const cards = this.player(playerId).covered.filter(c => c.location.pile === pile && predicate(c));
@@ -398,13 +413,13 @@ export class Game {
     const discarded = [...indexes].sort((a, b) => b - a).map(index => this.discardCard(player, index, { animate: false, visibility: "hidden" }));
     this.recordPresentation("discard", { playerId: id, cards: discarded.map(card => card.toJSON()), visibility: "hidden", reason: "overflow" });
     delete player.pendingOverflow;
-    const context = { playerId: id, team: player.team, amount: moraleLoss ? -excess : 0, cause };
+    const context = { playerId: id, team: player.team, amount: moraleLoss ? -excess : 0, cause, discarded };
     if (context.amount) {
       yield* this.trigger(Timing.MORALE_BEFORE, context, options);
       context.amount = Math.min(0, context.amount);
       if (Number.isFinite(cause.moraleLimit)) context.amount = Math.max(context.amount, -cause.moraleLimit);
       const before = this.teams[player.team].morale;
-      this.changeMorale(player.team, context.amount);
+      this.changeMorale(player.team, context.amount, { emit: false });
       context.amount = this.teams[player.team].morale - before;
       if (context.amount) yield* this.trigger(Timing.MORALE_AFTER, context, options);
     }
@@ -419,17 +434,17 @@ export class Game {
   }
 
   playCard(player, index, options = {}) {
-    if (!Number.isInteger(index) || !player.hand[index]) throw new RuleError("无效的手牌编号");
-    const publicCard=player.hand[index];
+    if (!Number.isInteger(index) || !playableCards(player)[index]) throw new RuleError("无效的手牌编号");
+    const publicCard=playableCards(player)[index];
     this.recordPublicAction({type:'play',playerId:player.id,targetId:options.targetId,card:publicCard.name,elements:[...publicCard.getTraits({game:this,playerId:player.id}).elements],fates:[...publicCard.getTraits({game:this,playerId:player.id}).fates],uniqueSkills:[...publicCard.uniqueSkills]});
-    this.log.push(`${this.actorLabel(player.id)}出牌${this.describeCards([player.hand[index]], player.id)}`);
-    this.queueExposure(player.id, [player.hand[index]], { reason: "play" });
-    const card = this.moveCard(player.hand[index].id, { zone: "field" }, { reason: "play", targetId: options.targetId });
+    this.log.push(`${this.actorLabel(player.id)}出牌${this.describeCards([playableCards(player)[index]], player.id)}`);
+    this.queueExposure(player.id, [playableCards(player)[index]], { reason: "play" });
+    const card = this.moveCard(playableCards(player)[index].id, { zone: "field" }, { reason: "play", targetId: options.targetId });
     options.resolutionCards?.push(card.id);
     return card;
   }
 
-  changeMorale(team, amount) {
+  changeMorale(team, amount, { emit = true } = {}) {
     if (this.winner) return;
     const before = this.teams[team].morale;
     this.teams[team].morale = Math.min(15, before + amount);
@@ -437,6 +452,8 @@ export class Game {
     this.log.push(`${team === "red" ? "红" : "蓝"}方士气${this.teams[team].morale - before >= 0 ? "+" : ""}${this.teams[team].morale - before}（${before}→${this.teams[team].morale}）`);
     this.recordPresentation("morale", { team, amount });
     this.checkWinner();
+    const actual = this.teams[team].morale - before;
+    if (emit && actual && !this.winner) (this.pendingMoraleEvents ??= []).push({ team, amount: actual });
   }
 
   checkWinner() {
@@ -468,7 +485,7 @@ export class Game {
   }
 
   legalCards(actorId) {
-    return this.player(actorId).hand
+    return playableCards(this.player(actorId))
       .map((card, index) => ({ card, index, targets: this.legalTargets(actorId, card) }))
       .filter(action => action.targets.length);
   }
@@ -636,6 +653,7 @@ export class Game {
     this.recordPresentation("discard", { playerId: actorId, cards, reason: "refresh", visibility: DiscardVisibility.PUBLIC });
     yield* this.drawSteps(actorId, count, { ...options, moraleLoss: false });
     this.log.push(`${player.name}无法行动，展示并弃置全部手牌：${revealed}；重摸${count}张`);
+    if (player.hero.refreshCovered) yield* player.hero.refreshCovered(this, player, options);
     yield* this.flushRuleEvents(options);
     yield* this.present();
     if (this.player(actorId).pendingOverflow) yield { type: "overflow", player: this.player(actorId) };
@@ -649,7 +667,17 @@ export class Game {
   *flushRuleEvents(options = {}) {
     if (this.processingRuleEvents) return;
     this.processingRuleEvents = true;
-    try { while (this.pendingRuleEvents.length && !this.winner) yield* this.trigger(Timing.CARD_EXPOSED, this.pendingRuleEvents.shift(), options); }
+    try {
+      while (!this.winner && (this.pendingRuleEvents.length || this.pendingMoraleEvents?.length || this.changedHands?.size)) {
+        if (this.pendingRuleEvents.length) yield* this.trigger(Timing.CARD_EXPOSED, this.pendingRuleEvents.shift(), options);
+        else if (this.pendingMoraleEvents?.length) yield* this.trigger(Timing.MORALE_AFTER, this.pendingMoraleEvents.shift(), options);
+        else {
+          const playerId = this.changedHands.values().next().value;
+          this.changedHands.delete(playerId);
+          if (this.triggers.get(Timing.HAND_CHANGED, { playerId }).length) yield* this.trigger(Timing.HAND_CHANGED, { playerId }, options);
+        }
+      }
+    }
     finally { this.processingRuleEvents = false; }
   }
   *showCardsSteps(playerId, cards, options = {}) {
@@ -705,6 +733,7 @@ export class Game {
     const validateSelection = current => {
       if (!current || !this.allowsAction(playerId, current.type, action.skillId) ||
         (current.energy && !this.canPayEnergy(playerId, current.energy))) throw new RuleError("此技能费用或选项已不可用，请重新选择行动");
+      if (action.mode != null && !current.modes?.some(mode => mode.value === action.mode)) throw new RuleError("无效技能模式");
       if (!(current.cardCounts ?? [current.cardCount ?? 0]).includes(cards.length) || new Set(cards).size !== cards.length ||
         cards.some(card => !card || card.location.zone !== "hand" || card.location.playerId !== playerId || !(current.cardFilter?.(card) ?? true)) ||
         !(current.cardsFilter?.(cards) ?? true)) throw new RuleError("技能手牌费用无效");
@@ -830,6 +859,19 @@ export class Game {
     return actual;
   }
 
+  *adjustHandSteps(playerId, desired, options = {}) {
+    const player = this.player(playerId), count = Math.min(desired, player.handLimit);
+    if (player.hand.length > count) {
+      const cards = yield* this.chooseHandCards(playerId, player.hand.length - count, () => true, { skillId: options.skillId, title: `调整手牌至${count}张` });
+      this.discardCards(playerId, cards, { visibility: "hidden", reason: "handAdjustment" });
+    } else if (player.hand.length < count) {
+      // Hand adjustment gains cards directly; it is not a draw skill/window.
+      this.draw(playerId, count - player.hand.length, { overflow: "defer", moraleLoss: false, cause: { type: "handAdjustment", skillId: options.skillId } });
+    }
+    this.log.push(`${this.actorLabel(playerId)}将手牌调整为${player.hand.length}张`);
+    yield* this.flushRuleEvents(options); yield* this.present();
+  }
+
   *damageSteps(targetId, amount, options = {}) {
     if (this.winner) { yield* this.present(); return 0; }
     const { sourceId = null, damageType = DamageType.ATTACK, overflow = "first", useHealing, attackContext } = options;
@@ -851,31 +893,43 @@ export class Game {
     context.point = 5;
     yield* this.trigger(Timing.DAMAGE_ACTUAL_BEFORE, context, nestedOptions);
     context.actual = Math.max(0, context.actual);
+    return yield* this.damageAtPointSixSteps(context, { ...nestedOptions, overflow, moraleLoss: options.moraleLoss });
+  }
+
+  // Transfers skip points 3–5 and healing; point-6 effects (e.g. Eternal Prisoner) still apply.
+  *damageAtPointSixSteps(context, options = {}) {
     context.point = 6;
-    yield* this.trigger(Timing.DAMAGE_ACTUAL, context, nestedOptions);
-    this.recordPresentation("damage", { playerId: targetId, sourceId, amount: context.actual, damageType: context.damageType });
-    yield* this.present();
-    if (context.actual) yield* this.drawSteps(targetId, context.actual, {
-      ...nestedOptions, overflow, moraleLoss: options.moraleLoss !== false,
-      cause: { type: "damage", sourceId, damageType: context.damageType, skillId: context.skillId, moraleLimit: context.moraleLimit },
-    });
-    this.recordPublicAction({type:'damage',sourceId:context.sourceId,targetId,amount:context.actual,result:context.damageType});
-    this.log.push(`${target.name}承受${context.actual}点${context.damageType === DamageType.SPELL ? "法术" : "攻击"}伤害`);
-    yield* this.trigger(Timing.DAMAGE_AFTER, context, nestedOptions);
+    yield* this.trigger(Timing.DAMAGE_ACTUAL, context, options);
+    const pending = [context, ...(context.transfers ?? [])];
+    const first = this.turn.state?.playerId ?? this.current;
+    pending.sort((a, b) => (a.targetId - first + this.players.length) % this.players.length - (b.targetId - first + this.players.length) % this.players.length);
+    for (const part of pending) {
+      if (part !== context) { yield* this.damageAtPointSixSteps(part, { ...options, moraleLoss: true }); continue; }
+      const { targetId, sourceId } = part, target = this.player(targetId);
+      this.recordPresentation("damage", { playerId: targetId, sourceId, amount: part.actual, damageType: part.damageType });
+      yield* this.present();
+      if (part.actual) yield* this.drawSteps(targetId, part.actual, {
+        ...options, moraleLoss: options.moraleLoss !== false,
+        cause: { type: "damage", sourceId, damageType: part.damageType, skillId: part.skillId, moraleLimit: part.moraleLimit },
+      });
+      this.recordPublicAction({type:'damage',sourceId,targetId,amount:part.actual,result:part.damageType});
+      this.log.push(`${target.name}承受${part.actual}点${part.damageType === DamageType.SPELL ? "法术" : "攻击"}伤害`);
+      yield* this.trigger(Timing.DAMAGE_AFTER, part, options);
+    }
     return context.actual;
   }
   damage(targetId, amount, options = {}) { return resolveSync(this.damageSteps(targetId, amount, options), request => this.automaticDecision(request, options)); }
 
   canRespond(attack, response, context = {}) {
-    return (context.targetId == null || this.allowsCard(context.targetId, response, "response")) && attack.canRespond(response, { game: this, ...context });
+    return (context.targetId == null || this.allowsCard(context.targetId, response, "response")) && (attack.canRespond(response, { game: this, ...context }) || (context.targetId != null && attack.name !== "darkStrike" && !!this.player(context.targetId).hero.canRespond?.({ game: this, player: this.player(context.targetId), card: response, attackTraits: context.attackTraits ?? attack.getTraits({ game: this, playerId: context.actorId }) })));
   }
 
   *actionSteps(actorId, handIndex, targetId, options = {}) {
     if (this.winner) throw new RuleError("游戏已经结束");
-    const actor = this.player(actorId), card = actor.hand[handIndex];
+    const actor = this.player(actorId), card = playableCards(actor)[handIndex];
     if (!card || !this.legalTargets(actorId, card).includes(targetId)) throw new RuleError("这张牌目前不能指定该目标");
     yield* this.turn.beginAction(actorId, card.type, card, { ...options, actionCardIds: [card.id], actionTargetIds: [targetId], validateAction: () => {
-      if (!actor.hand.includes(card) || !this.legalTargets(actorId, card).includes(targetId)) throw new RuleError("启动后原出牌不再合法，请重新选择行动");
+      if (!playableCards(actor).includes(card) || !this.legalTargets(actorId, card).includes(targetId)) throw new RuleError("启动后原出牌不再合法，请重新选择行动");
     } });
     if (card.type !== 'attack' && card.name !== 'magicBullet') this.recordPublicAction({type:'spell',actorId,targetId,card:card.name,elements:[...card.getTraits({game:this,playerId:actorId}).elements]});
     const resolutionCards = [];
@@ -916,12 +970,12 @@ export class Game {
   }
 
   attack(actorId, handIndex, targetId, options = {}) {
-    if (this.player(actorId).hand[handIndex]?.type !== "attack") throw new RuleError("请选择攻击牌");
+    if (playableCards(this.player(actorId))[handIndex]?.type !== "attack") throw new RuleError("请选择攻击牌");
     return resolveSync(this.actionSteps(actorId, handIndex, targetId, options), request => this.automaticDecision(request, options));
   }
 
   attackWithDecisions(actorId, handIndex, targetId, options = {}) {
-    if (this.player(actorId).hand[handIndex]?.type !== "attack") throw new RuleError("请选择攻击牌");
+    if (playableCards(this.player(actorId))[handIndex]?.type !== "attack") throw new RuleError("请选择攻击牌");
     return resolveAsync(this.actionSteps(actorId, handIndex, targetId, options), request => this.interactiveDecision(request, options), options.onPresentation ?? this.onPresentation);
   }
 
@@ -948,7 +1002,7 @@ export class Game {
   }
 
   playMagicWithDecisions(actorId, handIndex, options = {}) {
-    if (this.player(actorId).hand[handIndex]?.name !== "magicBullet") throw new RuleError("请选择魔弹");
+    if (playableCards(this.player(actorId))[handIndex]?.name !== "magicBullet") throw new RuleError("请选择魔弹");
     return resolveAsync(this.actionSteps(actorId, handIndex, (options.targetId ?? this.nearestOpponent(actorId)?.id), options), request => this.interactiveDecision(request, options), options.onPresentation ?? this.onPresentation);
   }
 

@@ -1,4 +1,5 @@
 export const Timing = Object.freeze({
+  HAND_CHANGED: "handChanged",
   FORM_ENTERED: "formEntered",
   DRAW_BEFORE: "drawBefore",
   TURN_BEFORE: "turnBefore", BASIC_EFFECT_REMOVED: "basicEffectRemoved", SHIELD_USED: "shieldUsed", MORALE_BEFORE: "moraleBefore", MORALE_AFTER: "moraleAfter",
@@ -10,7 +11,7 @@ export const Timing = Object.freeze({
   SPECIAL_ACTION_START: "specialActionStart", SPECIAL_ACTION_END: "specialActionEnd",
   ACTION_PHASE_END: "actionPhaseEnd", TURN_END: "turnEnd",
   ATTACK_RESOLVED: "attackResolved",
-  ATTACK_DECLARED: "attackDeclared", ATTACK_DECISION: "attackDecision",
+  ATTACK_DECLARED: "attackDeclared", ATTACK_DECISION: "attackDecision", ATTACK_RESPONSE_BEFORE: "attackResponseBefore",
   HEALING_BEFORE: "healingBefore", DAMAGE_ACTUAL_BEFORE: "damageActualBefore", DAMAGE_ACTUAL: "damageActual",
   ATTACK_HIT_CHECK: "attackHitCheck", ATTACK_HIT: "attackHit", ATTACK_MISS: "attackMiss",
   MAGIC_HIT_CHECK: "magicHitCheck", DAMAGE_BEFORE: "damageBefore", DAMAGE_AFTER: "damageAfter",

@@ -1,6 +1,6 @@
 # 英雄实现入口
 
-当前30位已实现英雄均在本目录，每位英雄一个英文名称目录。
+当前36位已实现英雄均在本目录，每位英雄一个英文名称目录。
 
 ```text
 heroes/
@@ -68,3 +68,16 @@ heroes/
 第四批：`adventurer`（冒险家）、`fighter`（格斗家）、`brave`（勇者）、`red-lotus-knight`（红莲骑士）、`magic-lancer`（魔枪）、`bard`（吟游诗人）。各目录同样包含规则、AI和观测声明。规则裁定与验证见 [第四批报告](../../docs/heroes-wave-four.md)。
 
 第五批规则、AI及观测接口说明见[第五批报告](../../docs/heroes-wave-five.md)。盖牌实体共用操作位于`shared/covered.js`，各英雄的触发条件、费用与效果仍在自己的目录。
+
+## 第六批
+
+| 英雄 | 规则 | 评分 |
+| --- | --- | --- |
+| 精灵射手 | [elf-archer/index.js](elf-archer/index.js) | [ai.js](elf-archer/ai.js) |
+| 阴阳师 | [yin-yang-master/index.js](yin-yang-master/index.js) | [ai.js](yin-yang-master/ai.js) |
+| 灵魂术士 | [soul-warlock/index.js](soul-warlock/index.js) | [ai.js](soul-warlock/ai.js) |
+| 血之巫女 | [blood-witch/index.js](blood-witch/index.js) | [ai.js](blood-witch/ai.js) |
+| 月之女神 | [moon-goddess/index.js](moon-goddess/index.js) | [ai.js](moon-goddess/ai.js) |
+| 圣弓 | [holy-archer/index.js](holy-archer/index.js) | [ai.js](holy-archer/ai.js) |
+
+本批裁定、共用接口和评分说明见[第六批报告](../../docs/heroes-wave-six.md)。各目录同时提供 `observation.js`。

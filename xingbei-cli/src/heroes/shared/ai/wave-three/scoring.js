@@ -1,3 +1,4 @@
+import { playableCards } from "../../../../playable-cards.js";
 import { createDeck } from "../../../../cards.js";
 import { legalActions } from "../../../../legal-actions.js";
 import { combinations } from "../../../../card-sets.js";
@@ -34,23 +35,23 @@ export function attackOutcomes(game, id, state, card, targetId, { active = true,
   if (!alreadyPlayed) spend(next, id, [selected]);
   if (terminal(next)) return [{ probability: 1, state: next }];
   const profile = heroAi(p.hero);
-  profile.prepareAttack?.({ state: next, id, player: p, active, variant }, scoringApi);
+  profile.prepareAttack?.({ state: next, id, player: p, card, active, variant }, scoringApi);
   const target = next.players[targetId];
   let rates = probability(next, id, selected, targetId);
-  if (profile.uncounterable?.({ player: p, active, variant })) {
+  if (profile.uncounterable?.({ player: p, card, active, variant })) {
     const hit = (1 - lightRate) ** target.count;
     const shield = target.effects.some((e) => e.name === "holyShield");
     rates = { hit: shield ? 0 : hit, shield: shield ? hit : 0, light: 1 - hit, counter: 0 };
   }
   if (rates.light > 0 || rates.counter > 0) next.uncertain = true;
-  const amount = 2 + (profile.attackDamage?.({ player: p, active }, scoringApi) ?? 0), branches = [];
+  const amount = 2 + (profile.attackDamage?.({ player: p, card, active }, scoringApi) ?? 0), branches = [];
   if (rates.hit) {
     const hit = copy(next);
     profile.beforeAttackHit?.({ state: hit, id, variant }, scoringApi);
     const actual = hurt(hit, targetId, amount, "attack");
     heroAi(target.hero).afterAttackDamage?.({ state: hit, actorId: id, actual }, scoringApi);
     if (!terminal(hit)) stones(hit, p.team, active ? "gem" : "crystal", 1);
-    const bonus = profile.attackHitBonus?.({ game, id, state: next, player: p, active, targetId, amount }, scoringApi) ?? 0;
+    const bonus = profile.attackHitBonus?.({ game, id, state: next, player: p, card, active, targetId, amount }, scoringApi) ?? 0;
     branches.push({ probability: rates.hit, state: hit, bonus });
   }
   for (const kind of ["light", "shield", "counter"]) {
@@ -58,7 +59,7 @@ export function attackOutcomes(game, id, state, card, targetId, { active = true,
     const miss = copy(next);
     if (kind === "shield") miss.players[targetId].effects = target.effects.filter((e) => e.name !== "holyShield");
     else miss.players[targetId].count = Math.max(0, target.count - 1);
-    const bonus = profile.attackMissBonus?.({ game, id, state: next, player: p, active, targetId }, scoringApi) ?? 0;
+    const bonus = profile.attackMissBonus?.({ game, id, state: next, player: p, card, active, targetId }, scoringApi) ?? 0;
     if (kind === "counter") {
       // One public counter horizon, with no inspection of teammate hands.
       let worst = null;
@@ -131,7 +132,7 @@ export function preparationOptions(game, id, state, action) {
 function rawActionScore(game, id, state, action) {
   if (terminal(state)) return 0;
   if (action.type === "skill") return skillScore(game, id, state, action);
-  const card = action.type === "play" ? game.player(id).hand[action.index] : null;
+  const card = action.type === "play" ? playableCards(game.player(id))[action.index] : null;
   if (card?.type === "attack") return attackScore(game, id, state, card, action.targetId);
   const magic = evaluateMagicAction(game, id, action, state);
   if (magic) return magic.score;

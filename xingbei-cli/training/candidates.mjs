@@ -55,8 +55,7 @@ export function decisionPlayer(request) {
 export function decisionCandidates(game, request) {
   if (request.type === 'response') {
     const choices = [null];
-    for (const { index } of request.valid) {
-      const card = request.target.hand[index];
+    for (const { index, card } of request.valid) {
       if (request.attack && card.type === 'attack') {
         for (const target of request.counterTargets ?? []) choices.push({ index, targetId: target.id });
       } else choices.push({ index, targetId: card.name !== 'holyLight' && !request.attack ? request.nextTarget?.id ?? null : null });

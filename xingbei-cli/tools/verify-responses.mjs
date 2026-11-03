@@ -135,7 +135,7 @@ async function checkMagic(ctx) {
   check(`${tag}: 魔弹圣光抵消后对手未摸牌`, (await state()).game.players[1].hand.length === 1);
   const relayOwnership = await beginLinked(); await select(card(0));
   await target(1).evaluate(node => { node.click(); node.click(); });
-  await page.waitForFunction(() => window.xingbeiDev.exportState().pendingChoice === null); await settle(page);
+  await page.waitForFunction(() => window.xingbeiDev.exportState().current === 0); await settle(page);
   check(`${tag}: 六人完整传递刷新后命中蓝三`, (await state()).game.players[5].hand.length === 6 && (await state()).game.discard.filter(item => item.name === "magicBullet").map(item => relayOwnership.find(original => original.id === item.id).name).join(",") === "蓝三,红一,蓝一,红二,蓝二,红三");
   check(`${tag}: 结算无目标和选牌残留`, (await state()).selectedCard === null && (await state()).legalTargets.length === 0);
   await beginLinked(); await select(card(0)); await page.locator("#dev-reset").evaluate(button => button.click());
@@ -196,6 +196,15 @@ async function checkEmptyAndOverflow(ctx) {
 try {
   for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) {
     const page = await browser.newPage({ viewport, hasTouch: viewport.width < 500 });
+    // This fixture checks a complete relay, not whether the current AI wants one.
+    await page.route("**/web/app.js", async route => {
+      const response = await route.fetch();
+      const body = (await response.text()).replace(
+        'if (!isHuman(context.target.id)) return chooseAiResponse(game, context);',
+        'if (!isHuman(context.target.id) && sceneId === "magic-linked") { const relay = context.valid.find(entry => entry.card.name === "magicBullet"); return relay ? { index: relay.index, targetId: context.nextTarget?.id } : null; }\n  if (!isHuman(context.target.id)) return chooseAiResponse(game, context);',
+      );
+      await route.fulfill({ response, body });
+    });
     page.on("pageerror", error => issues.push(error.message));
     page.on("console", message => { if (message.type() === "error") issues.push(message.text()); });
     page.on("response", response => { if (response.status() >= 400) issues.push(response.url()); });

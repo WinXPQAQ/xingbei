@@ -208,7 +208,7 @@ export function components(s) {
 export const value=s=>Object.values(components(s)).reduce((a,b)=>a+b,0);
 export function difference(before,after) {const a=components(before),b=components(after);return Object.fromEntries(Object.keys(a).map(k=>[k,b[k]-a[k]]));}
 export function remove(s,id,cards) {
- const p=s.players[id],ids=new Set(cards.map(c=>c.id));p.hand=p.hand.filter(c=>!ids.has(c.id));p.known=p.known.filter(c=>!ids.has(c.id));p.count=Math.max(0,p.count-cards.length);
+ const p=s.players[id],ids=new Set(cards.map(c=>c.id));p.hand=p.hand.filter(c=>!ids.has(c.id));p.known=p.known.filter(c=>!ids.has(c.id));p.count=Math.max(0,p.count-cards.filter(c=>!c.reserve).length);p.coveredCount=Math.max(0,(p.coveredCount??0)-cards.filter(c=>c.reserve).length);
 }
 export function overflow(s,id,{spell=false}={}) {
  const p=s.players[id],excess=Math.max(0,p.count-p.limit);if(!excess)return;
@@ -217,8 +217,8 @@ export function overflow(s,id,{spell=false}={}) {
   const protection=Math.min(loss,angel.energy.gem+angel.energy.crystal);payEnergy(s,angel.id,protection);loss-=protection;
  }
  s.teams[p.team].morale-=loss;p.count-=excess;
- while(p.hand.length>p.count) {
-  const ranked=p.hand.map(c=>{const t=clone(s);remove(t,id,[c]);return {c,v:handValue(t,t.players[id])};}).sort((a,b)=>b.v-a.v);
+ while(p.hand.filter(c=>!c.reserve).length>p.count) {
+  const ranked=p.hand.filter(c=>!c.reserve).map(c=>{const t=clone(s);remove(t,id,[c]);return {c,v:handValue(t,t.players[id])};}).sort((a,b)=>b.v-a.v);
   p.hand=p.hand.filter(c=>c.id!==ranked[0].c.id);
  }
 }

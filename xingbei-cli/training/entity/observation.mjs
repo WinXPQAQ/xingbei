@@ -1,3 +1,4 @@
+import { playableCards } from "../../src/playable-cards.js";
 import { declaredState } from './hero-state.mjs';
 
 export const ENTITY_SCHEMA = 'entities-v3';
@@ -67,7 +68,7 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
     if (!cards.has(id)) throw new Error('Request references a non-visible card');
     return [cards.get(id)];
   };
-  const indexes = values => values.flatMap(index => cardRef(game.player(playerId).hand[index]?.id));
+  const indexes = (values, playable = false) => values.flatMap(index => cardRef((playable ? playableCards(game.player(playerId)) : game.player(playerId).hand)[index]?.id));
   const turn = game.turn.state;
   if (turn) {
     add('turn', { phase: turn.phase, route: turn.route, actionType: turn.actionType, skipped: turn.skipped,
@@ -85,15 +86,17 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
       // Keep only currently visible references; never reveal a new hidden zone.
       { cards: (turn.reservedCardIds ?? []).filter(id => cards.has(id)).flatMap(cardRef), targets: (turn.reservedTargetIds ?? []).map(seat) });
   }
+  for (const [position, id] of (game.turn.extraTurns ?? []).entries())
+    add('extraTurn', {}, { position }, { owner: playerRef(id) });
   const event = game.activeTrigger;
   const context = { ...event?.context, ...request.context };
   // Never serialize the raw context: it can contain hidden cards and callbacks.
   const flags = {};
   for (const key of ['hit','forcedHit','forceHitRequested','canCounter','canHolyLight','bloodBlade',
-    'hadesTremor','puppetMissMode','disableHolyStrike','extraSpell','moraleLoss','sameElement','specialAction'])
+    'hadesTremor','puppetMissMode','disableHolyStrike','extraSpell','moraleLoss','sameElement','specialAction','soulTransfer','requiresCounterSkill'])
     if (context[key] !== undefined || request[key] !== undefined) flags[key] = request[key] ?? context[key];
   const question = add('question', { type: request.type, stage: request.stage ?? 'complete', skill: request.skillId ?? null,
-    timing: event?.timing ?? null, ...flags,
+    timing: event?.timing ?? null, ...flags, previousAttackFates: context.previousAttackTraits?.fates ?? [],
     purpose: request.purpose ?? context.purpose ?? null, damageType: context.damageType ?? (request.type === 'response' ? request.attack ? 'attack' : 'spell' : null),
     optional: !!request.optional, counter: request.isCounter ?? context.isCounter ?? null, shieldable: request.shieldable ?? context.shieldable ?? null },
     { amount: request.damage ?? context.amount ?? 0, count: request.count ?? context.count ?? 0,
@@ -104,7 +107,7 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
     { actor: playerRef(request.actor?.id ?? context.actorId ?? context.sourceId),
       target: playerRef(request.target?.id ?? request.targetId ?? context.targetId),
       chainOrigin: playerRef(request.chainOriginId ?? context.chainOriginId),
-      recipient: playerRef(request.recipientId), nextTarget: playerRef(request.nextTarget?.id),
+      protectedTarget: playerRef(request.protectedTargetId), transferTarget: playerRef(context.transferTargetId), recipient: playerRef(request.recipientId), nextTarget: playerRef(request.nextTarget?.id),
       participants: (request.participants ?? []).map(seat),
       card: cardRef(request.attack?.id ?? (cards.has(context.card?.id) ? context.card.id : null)) });
   for (const [position, event] of (game.publicHistory?.actions ?? []).slice(-32).entries()) {
@@ -121,12 +124,12 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
     if (value == null) categorical.type = 'decline';
     else if (request.type === 'action') {
       categorical.type = value.type; categorical.skill = value.skillId ?? null; categorical.mode = value.mode ?? null;
-      refs.cards = value.cardIds?.flatMap(cardRef) ?? (value.index == null ? [] : indexes([value.index]));
+      refs.cards = value.cardIds?.flatMap(cardRef) ?? (value.index == null ? [] : indexes([value.index], true));
       refs.targets = value.targetIds?.map(seat) ?? playerRef(value.targetId);
       if (value.skillId && skills.has(`${playerId}:${value.skillId}`)) refs.skill = [skills.get(`${playerId}:${value.skillId}`)];
       numbers.gem = value.stones?.gem ?? value.gemCount ?? 0; numbers.crystal = value.stones?.crystal ?? 0;
     } else if (request.type === 'response') {
-      refs.cards = indexes([value.index]); refs.targets = playerRef(value.targetId);
+      refs.cards = indexes([value.index], true); refs.targets = playerRef(value.targetId);
     } else if (['cardChoice','overflow'].includes(request.type)) refs.cards = indexes(value);
     else if (['target','playerChoice'].includes(request.type)) refs.targets = playerRef(value);
     else if (request.type === 'effectChoice') refs.cards = cardRef(value);

@@ -1,3 +1,4 @@
+import { playableCards } from "./playable-cards.js";
 import { Timing } from "./timing.js";
 import { attackSteps } from "./resolution/attack.js";
 import { magicSteps } from "./resolution/magic.js";
@@ -56,7 +57,7 @@ export class AttackCard extends BasicCard {
     const responseTraits = response.getTraits({ ...context, playerId: context.targetId, purpose: "response" });
     return response.name === "darkStrike" || attackTraits.elements.some(element => responseTraits.elements.includes(element));
   }
-  resolve({ game, actor, targetId, options }) { return attackSteps(game, actor.id, actor.hand.indexOf(this), targetId, options); }
+  resolve({ game, actor, targetId, options }) { return attackSteps(game, actor.id, playableCards(actor).indexOf(this), targetId, options); }
 }
 export class SpellCard extends BasicCard {
   constructor(options) { super(options); this.type = "spell"; }
@@ -69,7 +70,7 @@ class EffectCard extends SpellCard {
   }
   legalTargets({ game }) { return game.players.filter(player => game.canAttach(this, player.id, this.effectDefinition.id)).map(player => player.id); }
   *resolve({ game, actor, targetId, options }) {
-    game.playCard(actor, actor.hand.indexOf(this), options);
+    game.playCard(actor, playableCards(actor).indexOf(this), options);
     game.attachCard(this.id, targetId, { effectId: this.effectDefinition.id, sourcePlayerId: actor.id });
     if (this.effectDefinition.id === "holyShield") yield* game.trigger(Timing.SHIELD_USED, { actorId: actor.id, targetId, card: this }, options);
   }
@@ -89,7 +90,7 @@ export class HolyLightCard extends SpellCard {
 export class MagicBulletCard extends SpellCard {
   legalTargets({ game, actor }) { return game.magicTargets(actor.id); }
   resolve({ game, actor, targetId, options }) {
-    return magicSteps(game, actor.id, actor.hand.indexOf(this), { ...options, targetId });
+    return magicSteps(game, actor.id, playableCards(actor).indexOf(this), { ...options, targetId });
   }
 }
 export class ExclusiveCard extends Card {

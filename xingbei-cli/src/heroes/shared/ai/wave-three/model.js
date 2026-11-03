@@ -1,3 +1,5 @@
+import { playableCards } from "../../../../playable-cards.js";
+import { cardData } from "../base/model.js";
 // Small public-state estimates. They never execute a rule or invent future cards.
 import { stateOf, clone, value, draw, heal, payEnergy, spend, remove, overflow, stones } from "../base/model.js";
 import { heroAi } from "./registry.js";
@@ -13,6 +15,8 @@ export function publicState(game, id) {
     p.healingDisabled = [...game.cards.values()].some(c => c.name === "roseGarden" && c.location.zone === "field");
     p.energyLimit = game.getEnergyLimit(p.id);
   }
+  const source = game.player(id);
+  state.players[id].hand.push(...playableCards(source).slice(source.hand.length).map(c => ({ ...cardData(c), reserve: true })));
   return state;
 }
 export function copy(state) {
@@ -33,12 +37,12 @@ export function discardEstimate(state, id, count) {
   const unknownUsed = Math.min(unknown, count);
   p.count -= unknownUsed;
   const remaining = count - unknownUsed;
-  if (remaining) remove(state, id, p.hand.slice(-remaining));
+  if (remaining) remove(state, id, p.hand.filter(c=>!c.reserve).slice(-remaining));
 }
 export function applyDamage(state, id, amount, healing, type, moraleLoss = true) {
   const p = state.players[id], before = Object.fromEntries(Object.entries(state.teams).map(([team, t]) => [team, t.morale]));
   p.healing -= healing;
-  const actual = amount - healing;
+  const actual = Math.max(0, amount - healing - (p.hero === "bard" && p.heroState.form === "eternalPrisoner" && type === "spell" ? 1 : 0));
   draw(state, id, actual, { spell: moraleLoss && type === "spell" });
   if (!moraleLoss) for (const [team, morale] of Object.entries(before)) state.teams[team].morale = morale;
   if (terminal(state)) return actual;

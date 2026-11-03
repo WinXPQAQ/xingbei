@@ -48,12 +48,15 @@ export function chooseAiRuleDecision(request, game) {
 }
 export function chooseAiResponse(game, request) {
   const id=request.target.id, state=publicState(game,id), take=copy(state);
+  const profile=heroAi(state.players[id].hero);
+  const defendedId=profile.defendedPlayer?.(request) ?? id;
+  const responseCost=profile.responseCost?.(request) ?? 0;
   const amount=request.damage??request.context?.amount??2;
-  if(request.shieldable!==false&&game.player(id).getStatus("holyShield").length)
-    take.players[id].effects=take.players[id].effects.filter((e)=>e.name!=="holyShield");
+  if(request.shieldable!==false&&game.player(defendedId).getStatus("holyShield").length)
+    take.players[defendedId].effects=take.players[defendedId].effects.filter((e)=>e.name!=="holyShield");
   else {
-    const actual=hurt(take,id,amount,request.attack?"attack":"spell");
-    if (request.attack && request.actor) heroAi(state.players[id].hero).afterAttackDamage?.({ state: take, actorId: request.actor.id, actual }, scoringApi);
+    const actual=hurt(take,defendedId,amount,request.attack?"attack":"spell");
+    if (request.attack && request.actor) heroAi(state.players[defendedId].hero).afterAttackDamage?.({ state: take, actorId: request.actor.id, actual }, scoringApi);
   }
   let best={decision:null,score:evaluate(take)-evaluate(state)};
   for(const entry of request.valid) {
@@ -61,7 +64,7 @@ export function chooseAiResponse(game, request) {
     if(request.attack&&card.type==="attack") {
       if (heroAi(state.players[id].hero).skipCounterCard?.({ game, id, card, request }, scoringApi)) continue;
       for(const target of request.counterTargets) {
-        const score=attackScore(game,id,state,card,target.id,{active:false,follow:false});
+        const score=attackScore(game,id,state,card,target.id,{active:false,follow:false})-responseCost;
         if(score>best.score)best={decision:{index:entry.index,targetId:target.id},score};
       }
     } else {

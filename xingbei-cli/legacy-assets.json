@@ -60,5 +60,20 @@
   "markers/rebirth.png": "card/zhiShiWu/hong.png",
   "markers/blood.png": "card/zhiShiWu/hong.png",
   "markers/residual.png": "card/zhiShiWu/hong.png",
-  "markers/souls.png": "card/zhiShiWu/lan.png"
+  "markers/souls.png": "card/zhiShiWu/lan.png",
+  "character/elfArcher.jpg": "character/jingLingSheShou.jpg",
+  "character/yinYangMaster.jpg": "character/yinYangShi.jpg",
+  "character/soulWarlock.jpg": "character/lingHunShuShi.jpg",
+  "character/bloodWitch.jpg": "character/xueZhiWuNv.jpg",
+  "character/moonGoddess.jpg": "character/yueZhiNvShen.jpg",
+  "character/holyArcher.jpg": "character/shengGong.jpg",
+  "card/soulLink.png": "card/zhuanShu/lingHunLianJie.png",
+  "card/sharedFate.png": "card/zhuanShu/tongShengGongSi.png",
+  "markers/ghostFire.png": "card/zhiShiWu/hong.png",
+  "markers/yellowSoul.png": "card/zhiShiWu/hong.png",
+  "markers/newMoon.png": "card/zhiShiWu/hong.png",
+  "markers/faith.png": "card/zhiShiWu/hong.png",
+  "markers/blueSoul.png": "card/zhiShiWu/lan.png",
+  "markers/petrification.png": "card/zhiShiWu/lan.png",
+  "markers/cannon.png": "card/zhiShiWu/lan.png"
 }

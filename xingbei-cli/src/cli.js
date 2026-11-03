@@ -1,3 +1,4 @@
+import { playableCards } from "./playable-cards.js";
 #!/usr/bin/env node
 import { cardSets, targetCounts } from "./card-sets.js";
 import { getAvailableHeroes } from "./hero.js";
@@ -46,7 +47,7 @@ function showState() {
     const effects = `盾:${p.getStatus("holyShield")[0] ? 1 : 0} 虚弱:${p.getStatus("weakness")[0] ? 1 : 0} 中毒:${p.getStatus("poison").length} ${p.statuses.filter(card => !["holyShield", "weakness", "poison"].includes(card.attachment.effectId)).map(card => game.effects.get(card.attachment.effectId)?.name ?? card.attachment.effectId).join("、")} 治疗:${p.healing}/${game.getHealingLimit(p.id)} 能量:${p.energy.gem}宝/${p.energy.crystal}晶`;
     if (p.id === humanId) {
       lines.push(`▶ ${p.id}:${p.name}[${p.team === "red" ? "红" : "蓝"}] 手牌(${p.hand.length}/${p.handLimit}) ${effects}`);
-      p.hand.forEach((card, i) => lines.push(`  ${i}:${cardText(card)} #${card.id}`));
+      playableCards(p).forEach((card, i) => lines.push(`  ${i}:${card.location.zone === "covered" ? "[祝福] " : ""}${cardText(card)} #${card.id}`));
     } else lines.push(`  ${p.id}:${p.name}[${p.team === "red" ? "红" : "蓝"}] 手牌(${p.hand.length}/${p.handLimit}) ${effects}`);
   }
   tui.setState(lines);
@@ -155,7 +156,7 @@ async function humanTurn() {
       else if (command === "synth") await game.executeAction(humanId, { type: "synthesize", gemCount: await chooseSynthesis(player) }, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
       else if (command === "refine") await game.executeAction(humanId, { type: "refine", stones: await chooseRefinement(player) });
       else if (command === "play") {
-        const index = Number(indexText), card = player.hand[index];
+        const index = Number(indexText), card = playableCards(player)[index];
         if (!card) throw new RuleError("无效的手牌编号");
         const targets = game.legalTargets(humanId, card);
         if (!targets.length) throw new RuleError("这张牌目前不可使用");
@@ -193,7 +194,7 @@ async function chooseResponse(context) {
   }
 }
 async function playCard(actorId, index, targetId) {
-  const card = game.player(actorId).hand[index];
+  const card = playableCards(game.player(actorId))[index];
   const options = { chooseResponse, overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow };
   if (card.type === "attack") return game.attackWithDecisions(actorId, index, targetId, options);
   if (card.name === "magicBullet") return game.playMagicWithDecisions(actorId, index, { ...options, targetId });

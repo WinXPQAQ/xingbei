@@ -3,7 +3,8 @@ import { ELEMENT_NAMES } from "./cards.js";
 import { Timing } from "./timing.js";
 
 export class TurnFlow {
-  constructor(game) { this.game = game; this.state = null; this.lastEndedPlayerId = null; }
+  constructor(game) { this.game = game; this.state = null; this.lastEndedPlayerId = null; this.extraTurns = []; }
+  addExtraTurn(playerId) { this.extraTurns.push(playerId); }
   repeatLast(playerId) {
     if (this.state || this.game.winner || this.lastEndedPlayerId !== playerId) throw new RuleError("只能重复刚结束的回合");
     this.game.current = playerId;
@@ -113,7 +114,7 @@ export class TurnFlow {
     state.phase = Timing.TURN_END;
     yield* this.game.trigger(state.phase, state, options);
     this.lastEndedPlayerId = state.playerId;
-    this.game.current = (state.playerId + 1) % this.game.players.length;
+    this.game.current = this.extraTurns.shift() ?? (state.playerId + 1) % this.game.players.length;
     this.state = null;
   }
 }
