@@ -36,3 +36,22 @@ test("测试重复回合完整经过结束和再次开始，不复制牌或复�
   assert.deepEqual([...game.cards.keys()], cards); game.assertCardLocations();
   runAiAction(game, 0); game.endTurn(); assert.equal(game.current, 1);
 });
+
+
+test("六席阵容必须完整且不重复；开发者跳过与普通回合规则隔离", async () => {
+  const { validateRoster } = await import("../web/roster-picker.js");
+  const { skipDeveloperAction } = await import("../web/developer-mode.js");
+  const { getAvailableHeroes, DEFAULT_HERO_IDS } = await import("../src/hero.js");
+  const heroes = getAvailableHeroes();
+  assert.deepEqual(validateRoster(DEFAULT_HERO_IDS, heroes), DEFAULT_HERO_IDS);
+  for (const roster of [[], [...DEFAULT_HERO_IDS.slice(0,5),""], [...DEFAULT_HERO_IDS.slice(0,5),DEFAULT_HERO_IDS[0]], [...DEFAULT_HERO_IDS.slice(0,5),"unknown"]]) assert.throws(() => validateRoster(roster, heroes));
+  const game = new Game({ seed: 13, heroRules:false }).setup();
+  game.startTurn(0);
+  for (const mode of ["normal", "test", "spectate"]) assert.throws(() => skipDeveloperAction(game, mode));
+  assert.throws(() => game.endTurn());
+  const hand = game.player(0).hand.map(card => card.id);
+  game.turn.addAttackAction({sourceSkillId:"fixture"});
+  skipDeveloperAction(game,"developer"); game.endTurn();
+  assert.equal(game.current,1); assert.deepEqual(game.player(0).hand.map(card => card.id),hand);
+  assert.equal(game.timeline.at(-1).timing,Timing.TURN_END); game.assertCardLocations();
+});

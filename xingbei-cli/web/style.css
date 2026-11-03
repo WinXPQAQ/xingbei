@@ -80,6 +80,13 @@ button:disabled { cursor: default; }
 .play-mode-controls button { font-size: 16px; padding: 4px 8px; }
 .play-mode-controls[hidden], .play-mode-controls button[hidden] { display: none; }
 #window[data-play-mode="test"] .player[data-position="0"],
-#window[data-play-mode="spectate"] .player[data-position="0"] { top: calc(100% - 280px); }
+#window[data-play-mode="spectate"] .player[data-position="0"],
+#window[data-play-mode="developer"] .player[data-position="0"] { top: calc(100% - 280px); }
 .revealed-card { position: relative; display: block; width: 26px; height: 26px; }
 .revealed-fate { position: absolute; top: 0; right: 0; padding: 0 1px; min-width: 10px; font: bold 11px/12px sans-serif; color: #fff; background: #161616d9; border-radius: 0 3px 0 3px; pointer-events: none; }
+
+.roster-picker { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 12px; text-align: left; }
+.roster-picker label { display: flex; flex-direction: column; gap: 5px; }
+.roster-picker select { min-width: 0; width: 100%; padding: 7px; font: inherit; color: #eee; background: #333; border: 1px solid #888; border-radius: 4px; }
+.controlled-seat { flex-basis: 100%; text-align: right; font-size: 16px; text-shadow: 0 1px 2px black; }
+.controlled-seat[hidden] { display: none; }

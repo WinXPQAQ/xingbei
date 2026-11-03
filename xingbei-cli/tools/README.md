@@ -7,7 +7,7 @@
 | verify-frontend-restoration.mjs | 开局、行动、状态、结束和重置的整体回归 | 输出目录 |
 | verify-responses.mjs | 应战/魔弹、圣光待确认、无牌响应、伤害类别和暗弃 | 输出目录 |
 | verify-heroes.mjs | 六英雄技能专项与直接点击角色选目标 | 英雄ID、输出目录 |
-| verify-hero-selection.mjs | 开局模式/选角、测试按钮、重复回合与观战暂停 | 输出目录 |
+| verify-hero-selection.mjs | 四模式六席不重复选角、手动全席／嵌套响应、调试隔离与观战暂停 | 输出目录 |
 | verify-animations.mjs | 实际动画、轨迹与取消，四视口专项 | 输出目录 |
 | verify-resource-cache.mjs | HTTP缓存、ETag/304和浏览器磁盘缓存 | 可选结果JSON文件 |
 | capture-original-six-player.mjs | 原版六人布局；CAPTURE_STATES=1另采集手牌/弹窗/状态 | 输出目录 |

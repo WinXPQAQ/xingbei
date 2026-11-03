@@ -3,7 +3,9 @@ import { resolveAsync } from "/src/resolution/decisions.js";
 import { cardSets, targetCounts } from "/src/card-sets.js";
 import { modelEnabled, installModel, modelChoice } from "/web/model-ai.js";
 import { PlaybackGate, createModeControls } from "/web/play-mode.js";
-import { getAvailableHeroes, createHeroRoster } from "/src/hero.js";
+import { chooseRoster, SEAT_LABELS } from "/web/roster-picker.js";
+import { skipDeveloperAction } from "/web/developer-mode.js";
+import { getAvailableHeroes } from "/src/hero.js";
 import { CARD_NAMES, ELEMENT_NAMES, FATE_NAMES } from "/src/cards.js";
 import { Game } from "/src/engine.js";
 import { chooseAiAction, chooseAiResponse, chooseAiRuleDecision } from "/src/ai.js";
@@ -13,7 +15,7 @@ import { renderTeams, renderPlayers as paintPlayers, renderHand as paintHand, re
 import { AnimationDirector, presentationView, preloadAnimationAssets } from "/web/animation.js";
 import { Session, Cancelled } from "/web/session.js";
 
-const humanId = 0;
+let humanId = 0;
 const $ = selector => document.querySelector(selector);
 const elements = {
   players: $("#players"), hand: $("#hand"), log: $("#log"), turn: $("#turn-name"), hint: $("#hint"),
@@ -29,7 +31,7 @@ elements.modal.append(elements.modalActions);
 let playMode = "normal";
 let modeReady = false;
 let playback = new PlaybackGate();
-const isHuman = id => playMode !== "spectate" && id === humanId;
+const isHuman = id => playMode === "developer" ? Number.isInteger(id) && id >= 0 && id < 6 : playMode !== "spectate" && id === humanId;
 const modeControls = createModeControls($("#window"), command => launch(() => modeCommand(command)));
 let game;
 let director = null;
@@ -61,19 +63,28 @@ function launch(task) {
   });
 }
 
+function configureDecisions() {
+  game.onDecision = chooseRuleDecision;
+  if (playMode === "developer") {
+    // Every yielded decision, including nested damage and responses, belongs to a human.
+    game.interactiveDecision = request => chooseRuleDecision(request);
+    game.automaticDecision = () => { throw new Error("开发者模式禁止AI代选"); };
+  }
+}
+
 function newGame(nextGame = null, nextSeed = Date.now(), id = null) {
   session.cancel();
   director?.dispose();
   session = new Session();
   playback = new PlaybackGate();
-  playMode = "normal"; modeReady = !!nextGame;
+  playMode = "normal"; humanId = 0; modeReady = !!nextGame;
   $("#window").dataset.playMode = playMode;
   shownGame = null; presenting = false;
   seed = nextSeed;
   sceneId = id;
   game = nextGame || new Game({ seed });
-  game.onDecision = chooseRuleDecision;
-  installModel(game, isHuman, session, playback.wait.bind(playback, session));
+  configureDecisions();
+  if (playMode !== "developer") installModel(game, isHuman, session, playback.wait.bind(playback, session));
   acceptingAction = false;
   busy = false;
   selectedCard = null;
@@ -118,15 +129,14 @@ function newGame(nextGame = null, nextSeed = Date.now(), id = null) {
   launch(async () => {
     active.assert();
     if (!nextGame) {
-      playMode = await choose("选择游玩模式", [{ value: "normal", label: "正常游玩" }, { value: "test", label: "测试游玩" }, { value: "spectate", label: "观战游玩" }]);
+      playMode = await choose("选择游玩模式", [{ value: "normal", label: "正常游玩" }, { value: "test", label: "测试游玩" }, { value: "spectate", label: "观战游玩" }, { value: "developer", label: "开发者模式" }]);
       active.assert();
       $("#window").dataset.playMode = playMode;
-      const playerHeroId = await choose(playMode === "spectate" ? "为AI选择角色" : "选择角色", getAvailableHeroes().map(hero => ({ value: hero.id, label: hero.name })));
+      const heroIds = await chooseRoster(active, getAvailableHeroes(), elements, openModal, closeModal);
       active.assert();
-      const rosterOptions = window.XINGBEI_HERO_ROSTER ? { heroIds: createHeroRoster(playerHeroId, humanId, window.XINGBEI_HERO_ROSTER) } : { playerHeroId, playerSeat: humanId };
-      game = new Game({ seed, ...rosterOptions, revealHiddenLogs: playMode !== "normal" }).setup();
-      game.onDecision = chooseRuleDecision;
-      installModel(game, isHuman, session, playback.wait.bind(playback, session));
+      game = new Game({ seed, heroIds, revealHiddenLogs: playMode !== "normal" }).setup();
+      configureDecisions();
+      if (playMode !== "developer") installModel(game, isHuman, session, playback.wait.bind(playback, session));
       game.enablePresentation(onPresentation);
       modeReady = true;
       render();
@@ -155,7 +165,7 @@ function newGame(nextGame = null, nextSeed = Date.now(), id = null) {
 
 function render() {
   const view = shownGame || game;
-  modeControls.update(playMode, { ready: modeReady, editable: canEditTest(), hasCards: game.player(humanId).hand.length > 0, paused: playback.paused, morale: { red: game.teams.red.morale, blue: game.teams.blue.morale } });
+  modeControls.update(playMode, { ready: modeReady, editable: canEditTest(), hasCards: game.player(humanId).hand.length > 0, paused: playback.paused, controlled: `${humanId + 1}号位 ${SEAT_LABELS[humanId]} · ${game.player(humanId).name}`, morale: { red: game.teams.red.morale, blue: game.teams.blue.morale } });
   renderTeams(view, { red: elements.red, blue: elements.blue }, humanId);
   elements.deck.textContent = view.deck.length;
   elements.discard.textContent = view.discard.length;
@@ -214,7 +224,7 @@ function flushLog() {
 }
 
 function canEditTest() {
-  return modeReady && playMode === "test" && acceptingAction && !game.winner && !busy && !presenting && !pendingChoice && !targetChoice;
+  return modeReady && ["test", "developer"].includes(playMode) && acceptingAction && !game.winner && !busy && !presenting && !pendingChoice && !targetChoice;
 }
 async function modeCommand(command) {
   if (command === "pause" && playMode === "spectate" && modeReady) {
@@ -225,6 +235,12 @@ async function modeCommand(command) {
   const active = session, previousHint = elements.hint.textContent;
   busy = true; render();
   try {
+    if (command === "next-turn") {
+      if (playMode !== "developer") return;
+      skipDeveloperAction(game, playMode);
+      acceptingAction = false; flushLog();
+      return;
+    }
     if (command === "draw") {
       await resolveAsync(game.drawSteps(humanId, 1, { overflow: overflowPolicy }),
         request => game.interactiveDecision(request, { resolveOverflow: resolveHumanOverflow }), game.onPresentation);
@@ -240,11 +256,13 @@ async function modeCommand(command) {
       if (!["red", "blue"].includes(team) || !["plus", "minus"].includes(sign)) return;
       game.changeMorale(team, sign === "plus" ? 1 : -1);
     }
+    const options = { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow, chooseResponse: chooseCombatResponse };
+    await resolveAsync(game.flushRuleEvents(options), request => game.interactiveDecision(request, options), game.onPresentation);
     await game.flushPresentation(); active.assert();
     await resolveHumanOverflow(); active.assert();
     game.assertCardLocations(); flushLog();
     if (game.winner) { acceptingAction = false; finishAction?.(); }
-  } finally { if (session === active) { busy = false; if (!game.winner) elements.hint.textContent = previousHint; render(); } }
+  } finally { if (session === active) { busy = false; if (!game.winner) elements.hint.textContent = previousHint; render(); if (command === "next-turn" && playMode === "developer" && !acceptingAction) finishAction?.(); } }
 }
 
 function notify(message) {
@@ -282,7 +300,25 @@ function choose(title, choices, { cancel = false, detail = "" } = {}) {
   });
 }
 
+async function withControlledSeat(playerId, task) {
+  if (playMode !== "developer") return task();
+  const active = session, previous = humanId;
+  active.assert();
+  if (!Number.isInteger(playerId) || playerId < 0 || playerId >= 6) throw new Error("开发者决策缺少有效座位");
+  humanId = playerId; shownGame = null; selectedCard = null; render();
+  try { return await task(); }
+  finally {
+    if (session === active) { humanId = previous; shownGame = null; selectedCard = null; render(); }
+  }
+}
+
 async function chooseRuleDecision(request) {
+  if (request.type === "response") return chooseCombatResponse(request);
+  if (request.type === "overflow") return resolveHumanOverflow(request);
+  return withControlledSeat(request.playerId ?? request.player?.id ?? request.actor?.id, () => chooseSeatDecision(request));
+}
+async function chooseSeatDecision(request) {
+
   const active = session;
   await playback.wait(active);
   if (request.type === "playerChoice") {
@@ -300,7 +336,12 @@ async function chooseRuleDecision(request) {
     if (!isHuman(request.playerId)) return chooseAiRuleDecision(request, game);
     return chooseHand(request.title, game.player(humanId).hand, { count: request.count, valid: request.valid, validSets: request.validSets, cancel: request.optional, confirmLabel: request.purpose === "reserve" ? "确认" : undefined });
   }
-  if (!request.choices) return null;
+  if (request.type === "weakness" && isHuman(request.player?.id ?? request.playerId)) return choose("【虚弱】触发", [{value:"draw",label:"摸3张牌并继续"},{value:"skip",label:"跳过本回合行动"}]);
+  if (request.type === "target" && isHuman(request.actor.id)) return chooseTarget(request.targets.map(player => player.id), "选择应战目标", {canCancel:false});
+  if (!request.choices) {
+    if (playMode === "developer") throw new Error(`尚未接入手动决策：${request.type}`);
+    return null;
+  }
   if (!isHuman(request.playerId)) return chooseAiRuleDecision(request, game);
   return choose(request.title, request.choices);
 }
@@ -417,18 +458,20 @@ function chooseResponseTarget(title, valid, targets, kind = "attack") {
   });
 }
 
-async function resolveHumanOverflow() {
-  if (game.winner) return;
-  if (playMode === "spectate") return;
-  const active = session;
-  const player = game.player(humanId);
-  if (player.hand.length <= player.handLimit) return;
-  const indexes = await chooseCards("爆牌", player.hand, player.hand.length - player.handLimit);
-  active.assert();
-  await game.resolveOverflowWithDecisions(humanId, indexes, player.pendingOverflow ?? {});
-  await game.flushPresentation();
-  active.assert();
-  flushLog();
+async function resolveHumanOverflow(request) {
+  if (game.winner || playMode === "spectate") return;
+  const ids = request?.player ? [request.player.id] : playMode === "developer" ? game.players.map(player => player.id) : [humanId];
+  for (const id of ids) {
+    if (!isHuman(id)) continue;
+    await withControlledSeat(id, async () => {
+      const active = session, player = game.player(id);
+      if (player.hand.length <= player.handLimit) return;
+      const indexes = await chooseCards("爆牌", player.hand, player.hand.length - player.handLimit);
+      active.assert();
+      await game.resolveOverflowWithDecisions(id, indexes, { ...player.pendingOverflow, overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow, chooseResponse: chooseCombatResponse });
+      await game.flushPresentation(); active.assert(); flushLog();
+    });
+  }
 }
 
 async function selectCard(index) {
@@ -598,6 +641,9 @@ async function executeAi(actorId, scriptedAction = null, retried = false) {
 // Skills may start the same attack/magic resolution as physical card actions.
 // Route both through one callback so AI decisions and human pending choices agree.
 async function chooseCombatResponse(context) {
+  return withControlledSeat(context.target.id, () => chooseSeatResponse(context));
+}
+async function chooseSeatResponse(context) {
   const active = session;
   await playback.wait(active);
   active.assert();
@@ -657,6 +703,7 @@ async function runTurns(active) {
     active.assert();
     if (!isHuman(game.current)) await turnGate(active);
     const player = game.player(game.current);
+    if (playMode === "developer") { humanId = player.id; shownGame = null; selectedCard = null; }
     events.push({ type: "turn-start", current: player.id });
     appendLog(`━━━━━━━━ ${player.name}回合开始 ━━━━━━━━`, true);
     elements.hint.textContent = isHuman(player.id) ? "准备行动" : "对手思考中";
@@ -682,7 +729,7 @@ async function runTurns(active) {
     if (game.winner) { shownGame = null; break; }
     events.push({ type: "turn-end", current: player.id });
     appendLog(`━━━━━━━━ ${player.name}回合结束 ━━━━━━━━`, true);
-    await game.endTurnWithDecisions({ resolveOverflow: resolveHumanOverflow });
+    await game.endTurnWithDecisions({ overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow, chooseResponse: chooseCombatResponse });
     active.assert();
     shownGame = null;
     if (playMode === "test" && player.id === humanId && !game.winner) {
