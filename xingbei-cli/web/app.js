@@ -1,3 +1,4 @@
+import { saveInabilityArchive } from './inability-archive.js';
 import { playableCards } from "../src/playable-cards.js";
 import { resolveAsync } from "/src/resolution/decisions.js";
 import { cardSets, targetCounts } from "/src/card-sets.js";
@@ -83,6 +84,7 @@ function newGame(nextGame = null, nextSeed = Date.now(), id = null) {
   seed = nextSeed;
   sceneId = id;
   game = nextGame || new Game({ seed });
+  game.onInabilityArchive = saveInabilityArchive;
   configureDecisions();
   if (playMode !== "developer") installModel(game, isHuman, session, playback.wait.bind(playback, session));
   acceptingAction = false;
@@ -135,6 +137,7 @@ function newGame(nextGame = null, nextSeed = Date.now(), id = null) {
       const heroIds = await chooseRoster(active, getAvailableHeroes(), elements, openModal, closeModal);
       active.assert();
       game = new Game({ seed, heroIds, revealHiddenLogs: playMode !== "normal" }).setup();
+      game.onInabilityArchive = saveInabilityArchive;
       configureDecisions();
       if (playMode !== "developer") installModel(game, isHuman, session, playback.wait.bind(playback, session));
       game.enablePresentation(onPresentation);
@@ -321,6 +324,7 @@ async function chooseSeatDecision(request) {
 
   const active = session;
   await playback.wait(active);
+  if (request.blockedReason) { notify(request.blockedReason); if (isHuman(request.playerId)) await choose(request.blockedReason, [{value:false,label:"返回"}]); return false; }
   if (request.type === "playerChoice") {
     if (!isHuman(request.playerId)) return chooseAiRuleDecision(request, game);
     const active = session;

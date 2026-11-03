@@ -75,6 +75,7 @@ export class TurnFlow {
       state.reservedHealing = options.actionHealingCost ?? 0;
       yield* this.game.trigger(Timing.ACTIVATION, state, options);
       delete state.reservedCardIds; delete state.reservedSkillId; delete state.reservedTargetIds;
+      yield* this.game.restoreRandomInability(playerId, options);
       delete state.reservedEnergy;
       delete state.reservedHealing;
     }

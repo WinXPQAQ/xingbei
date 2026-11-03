@@ -25,9 +25,10 @@ export class BeastWarrior extends Hero {
         filter:({player,context})=>!hero.state.form&&hero.state.souls>0&&context.actorId!==player.id,
         *resolve({game,player,options}) {
           if(!(yield* game.offerSkill(player.id,'beastVigilance','兽魂警戒：移除1兽魂并进入居合形态')))return;
+          const legalTargets=targets(game).filter(id=>!game.knownRemovalBlocked(player.id,id,1));
+          const id=yield* game.choosePlayer(player.id,legalTargets,'兽魂警戒：选择明弃1张牌的角色（不能使目标必然无法行动）',{skillId:'beastVigilance'});
           hero.spendSouls(game,player,1);hero.state.form='iaido';
-          const id=yield* game.choosePlayer(player.id,targets(game),'兽魂警戒：选择明弃1张牌的角色',{skillId:'beastVigilance'});
-          const cards=yield* discardHand(game,id,1,'beastVigilanceDiscard',options,'public');
+          const cards=yield* discardHand(game,id,1,'beastVigilanceDiscard',{...options,inabilitySourceId:player.id,preserveAction:true},'public');
           if(cards[0]?.type==='spell')hero.addSouls(game,player,1,'beastVigilance');
         }},
       {id:'beastCounter',name:'兽反',...this.onDamage([Timing.DAMAGE_BEFORE],'target',['spell']),priority:-20,

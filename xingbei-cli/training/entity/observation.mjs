@@ -43,6 +43,7 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
   if (request.playerId === playerId) (request.revealedCards ?? []).forEach(addCard);
   for (let offset = 0; offset < 6; offset++) game.player((playerId + offset) % 6).statuses.forEach(addCard);
   game.field.forEach(addCard);
+  game.discard.filter(card => card.discardVisibility === 'public').forEach(addCard);
   for (let offset = 0; offset < 6; offset++) {
     const p = game.player((playerId + offset) % 6);
     for (const { skill } of p.getSkills()) {
@@ -66,7 +67,6 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
         field.type === 'number' ? { value: field.value } : {}, refs);
     }
   }
-  game.discard.filter(card => card.discardVisibility === 'public').forEach(addCard);
   add('piles', {}, { deckCount: game.deck.length, discardCount: game.discard.length });
   const cardRef = id => {
     if (id == null) return [];

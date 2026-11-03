@@ -5,6 +5,7 @@ const canonical = value => JSON.stringify(value, (_, item) => item && typeof ite
 
 // Explicit teacher/opponent mode only. Never used as a fallback for a model.
 export function teacherIndex({ game, playerId, request, candidates }, version) {
+  if (request.blockedReason) return candidates.indexOf(false);
   const policy = getPolicy(version);
   let value;
   if (request.type === 'action') value = policy.chooseAiAction(game, playerId);

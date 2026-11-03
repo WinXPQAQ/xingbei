@@ -1,3 +1,4 @@
+import { actionRequired, canContinueWithHand, safeRemovalSets, knownRemovalBlocked } from './inability.js';
 import { rememberSelection, resolveExposureTraits } from "./resolution/card-traits.js";
 import { playableCards } from "./playable-cards.js";
 import { cardSets, targetCounts } from "./card-sets.js";
@@ -46,6 +47,9 @@ export class Game {
       try { heroIds = createHeroRoster(playerHeroId, playerSeat); }
       catch (error) { throw new RuleError(error.message); }
     }
+    this.initialConfig = {seed,names:[...names],teams:[...teams],heroIds,shuffleDeck,heroRules};
+    this.inabilityArchives = [];
+    this.auditTrail = [];
     this.random = seededRandom(seed);
     this.publicHistory = new PublicHistory();
     this.players = names.map((name, seat) => new Player({ id: seat, name, team: teams[seat], hero: heroIds ? createHero(heroIds[seat], heroRules) : createDefaultHero(seat, heroRules) }));
@@ -186,6 +190,7 @@ export class Game {
       if (!card.attachment || !this.canAttach(card, destination.playerId, card.attachment.effectId)) throw new RuleError("状态区需要合法且不重复的挂载效果");
     }
     const from = card.location;
+    this.auditTrail.push({type:"move",cardId,from:{...from},to:{...destination},visibility,skillId:this.activeTrigger?.skillId,actorId:this.activeTrigger?.ownerId});
     if (destination.zone === "deck" || from.zone === "deck") card.lastHolderId = null;
     if (from.zone === "hand" || from.zone === "covered") card.lastHolderId = from.playerId;
     const publicTraits = !covered && from.zone === "hand" && (destination.zone === "field" || (destination.zone === "discard" && visibility === "public"))
@@ -206,6 +211,17 @@ export class Game {
     if (destination.zone === "discard" && ["hand","covered","field"].includes(from.zone) && Number.isInteger(card.lastHolderId)) {
       const context = { playerId: card.lastHolderId, cards: [card], visibility, origin: from.zone };
       (this.pendingDiscardEvents ??= []).push(context);
+    }
+    if (from.zone === 'hand' && (destination.zone !== 'hand' || destination.playerId !== from.playerId) && actionRequired(this,from.playerId) && this.activeTrigger) {
+      const victim=this.player(from.playerId), selection=this.inabilitySelection;
+      const ownChoice=selection && selection.triggerOwner===this.activeTrigger.ownerId && selection.triggerSkill===this.activeTrigger.skillId && selection.cardIds.includes(card.id) && selection.unsafe && selection.hadAlternative;
+      const actorId=ownChoice ? from.playerId : this.activeTrigger.ownerId;
+      if (!canContinueWithHand(this,from.playerId,victim.hand)) {
+        const predictable=actorId===from.playerId || victim.hand.length===0;
+        this.turn.state.inabilityCause={actorId,targetId:from.playerId,skillId:this.activeTrigger.skillId,predictable,
+          basis:ownChoice?'discarderHadSafeAlternative':actorId===from.playerId?'ownKnownHand':'publicHandCount',
+          cardId:card.id,remainingCount:victim.hand.length};
+      }
     }
     if (animate) this.recordPresentation("move", { card: card.toJSON(), from, to: card.location, reason, targetId, visibility });
     return card;
@@ -425,6 +441,7 @@ export class Game {
     }
     if (count > 0) this.log.push(`${this.actorLabel(id)}摸${cards.length}张牌${this.describeCards(cards.map(card => this.cards.get(card.id)), id, { hidden: true })}${cause.type === "damage" ? "（伤害摸牌）" : "（非伤害摸牌）"}${cards.length < count ? `；牌库不足，原计划${count}张` : ""}`);
     if (cards.length) this.recordPresentation("draw", { playerId: id, cards });
+    if (cards.length && this.turn.state?.playerId === id && this.turn.state.phase === Timing.ACTIVATION) { this.turn.state.randomActivationDraw = true; this.turn.state.inabilityCause = null; }
     const excess = Math.max(0, player.hand.length - player.handLimit);
     if (excess) {
       const policy = typeof overflow === "function" ? overflow(player, excess) : overflow;
@@ -549,17 +566,31 @@ export class Game {
     return this.winner;
   }
 
-  forfeitMaliciousInability(playerId, skillId) {
-    // Explicitly invoked by a voluntary, predictable activation cost. Do not
-    // infer forfeits from arbitrary forced discards or opponent effects.
-    if (this.winner || this.player(playerId).hand.length || this.legalCards(playerId).length || this.legalSkillActions(playerId).length) return false;
-    const state = this.turn.state;
-    if (!state || state.playerId !== playerId || !state.activationDone || state.completed) return false;
+  knownRemovalBlocked(actorId, targetId, count) { return knownRemovalBlocked(this,actorId,targetId,count); }
+  forfeitMaliciousInability(playerId, skillId, targetId = playerId, evidence = {}) {
+    if (!actionRequired(this,targetId) || canContinueWithHand(this,targetId,this.player(targetId).hand)) return false;
     this.winner = this.player(playerId).team === 'red' ? 'blue' : 'red';
-    this.logSkill(playerId, skillId, '主动启动耗尽手牌且无后续合法行动，构成恶意无法行动，己方判负');
-    this.recordPublicAction({type:'forfeit',playerId,skillId,reason:'maliciousInability'});
+    this.logSkill(playerId, skillId, `造成${this.actorLabel(targetId)}必然无法行动，构成恶意无法行动，己方判负`);
+    this.recordPublicAction({type:'forfeit',playerId,targetId,skillId,reason:'maliciousInability'});
     this.recordPresentation('winner', {team:this.winner});
+    const archive=JSON.parse(JSON.stringify({version:1,initialConfig:this.initialConfig,reason:'maliciousInability',
+      responsiblePlayerId:playerId,targetId,skillId,evidence,winner:this.winner,turn:this.turn.state,
+      current:this.current,teams:this.teams,players:this.players.map(p=>p.toJSON()),cards:[...this.cards.values()],
+      deck:this.deck.map(c=>c.id),discard:this.discard.map(c=>c.id),field:this.field.map(c=>c.id),log:this.log,auditTrail:this.auditTrail,publicHistory:this.publicHistory}));
+    this.inabilityArchives.push(archive);
+    this.onInabilityArchive?.(archive);
     return true;
+  }
+  *restoreRandomInability(playerId, options = {}) {
+    const cause=this.turn.state?.inabilityCause;
+    if (cause?.predictable && this.forfeitMaliciousInability(cause.actorId,cause.skillId,playerId,cause)) return;
+    if (!this.turn.state?.randomActivationDraw && !cause) return;
+    while (actionRequired(this,playerId) && !canContinueWithHand(this,playerId,this.player(playerId).hand)) {
+      if (!this.player(playerId).hand.length) throw new RuleError('随机无法行动但空手，需要核查造成空手的责任');
+      this.turn.state.phase = Timing.ACTION_PHASE_START;
+      this.turn.state.inabilityCause = null;
+      yield* this.refreshUnableHandSteps(playerId,options);
+    }
   }
 
   allowsAction(playerId, type, skillId = null) {
@@ -872,14 +903,24 @@ export class Game {
     yield* this.turn.endAction(options);
   }
 
-  *chooseHandCards(playerId, count, predicate = () => true, { title = "选择手牌", optional = false, purpose = "discard", recipientId = null, skillId = null, context = null } = {}) {
+  *chooseHandCards(playerId, count, predicate = () => true, { title = "选择手牌", optional = false, purpose = "discard", recipientId = null, skillId = null, context = null, preserveAction = false } = {}) {
     const player = this.player(playerId);
     const valid = player.hand.flatMap((card, index) => predicate(card) ? [index] : []);
     if (valid.length < count) { if (optional) return null; throw new RuleError("没有足够的合法手牌"); }
-    const indexes = yield { type: "cardChoice", playerId, count, valid, purpose, recipientId, skillId, context, cards: player.hand, title, optional, defaultValue: optional ? null : valid.slice(0, count) };
+    const safeSets = preserveAction && purpose === 'discard' && actionRequired(this,playerId) ? safeRemovalSets(this,playerId,count,valid) : null;
+    const validSets = safeSets?.length ? safeSets : null;
+    const indexes = yield { type: "cardChoice", playerId, count, valid:validSets ? [...new Set(validSets.flat())] : valid, validSets, purpose, recipientId, skillId, context, cards: player.hand, title, optional, defaultValue: optional ? null : validSets?.[0] ?? valid.slice(0, count) };
+    if (validSets && indexes != null && !validSets.some(set=>set.length===indexes.length && set.every(i=>indexes.includes(i)))) throw new RuleError('你将无法行动');
     if (optional && indexes == null) return null;
     if (!Array.isArray(indexes) || indexes.length !== count || new Set(indexes).size !== count || indexes.some(index => !valid.includes(index))) throw new RuleError("无效的手牌选择");
     const selected = indexes.map(index => player.hand[index]);
+    this.auditTrail.push({type:'cardChoice',playerId,skillId,cardIds:selected.map(c=>c.id)});
+    if (purpose === 'discard' && actionRequired(this,playerId)) {
+      const safe=safeRemovalSets(this,playerId,count,valid);
+      this.inabilitySelection={playerId,cardIds:selected.map(c=>c.id),hadAlternative:safe.length>0,
+        unsafe:!safe.some(set=>set.length===indexes.length && set.every(i=>indexes.includes(i))),
+        triggerOwner:this.activeTrigger?.ownerId,triggerSkill:this.activeTrigger?.skillId};
+    }
     rememberSelection(this, playerId, selected, cs => cs.every(predicate));
     return selected;
   }
@@ -915,8 +956,11 @@ export class Game {
   }
 
   *offerSkill(playerId, skillId, title, context = {}) {
-    const value = yield { type: "skillChoice", playerId, skillId, title, context, energy: { ...this.player(playerId).energy }, reservedEnergy: this.turn.state?.reservedEnergy ?? 0, reservedHealing: this.turn.state?.reservedHealing ?? 0, reservedCardIds: this.turn.state?.reservedCardIds ?? [], reservedSkillId: this.turn.state?.reservedSkillId ?? null,
-      choices: [{ value: true, label: "发动" }, { value: false, label: "不发动" }], defaultValue: false };
+    const blockedReason = context.blockedReason ?? null;
+    const value = yield { type: "skillChoice", blockedReason, playerId, skillId, title:blockedReason ? `${title}：${blockedReason}` : title, context, energy: { ...this.player(playerId).energy }, reservedEnergy: this.turn.state?.reservedEnergy ?? 0, reservedHealing: this.turn.state?.reservedHealing ?? 0, reservedCardIds: this.turn.state?.reservedCardIds ?? [], reservedSkillId: this.turn.state?.reservedSkillId ?? null,
+      choices: [...(blockedReason ? [] : [{ value: true, label: "发动" }]), { value: false, label: "不发动" }], defaultValue: false };
+    this.auditTrail.push({type:'skillChoice',playerId,skillId,value,blockedReason});
+    if (blockedReason) return false;
     // Declined offers may reveal hidden eligibility (e.g. a wind attack in hand).
     if(value===true)this.recordPublicAction({type:'skillResponse',playerId,skillId,accepted:true,targetId:context.targetId});
     if (value) { this.logSkill(playerId, skillId, context.targetId != null ? `目标：${this.actorLabel(context.targetId)}` : ""); this.recordPresentation("skill", { playerId, skillId, label: title }); }

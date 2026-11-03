@@ -1,5 +1,6 @@
-import { playableCards } from "./playable-cards.js";
 #!/usr/bin/env node
+import { installInabilityArchiveWriter } from './node-archives.js';
+import { playableCards } from "./playable-cards.js";
 import { cardSets, targetCounts } from "./card-sets.js";
 import { getAvailableHeroes } from "./hero.js";
 import { cardText } from "./cards.js";
@@ -14,6 +15,7 @@ const heroes = getAvailableHeroes();
 heroes.forEach((hero, index) => tui.console(`${index}: ${hero.name}`));
 const heroIndex = await askIndex(tui, "开局选择角色> ", heroes.map((_, index) => index), { allowBlank: false });
 const game = new Game({ seed: Date.now(), playerHeroId: heroes[heroIndex].id, playerSeat: humanId }).setup();
+installInabilityArchiveWriter(game);
 const overflowPolicy = player => player.id === humanId ? "defer" : "ai";
 
 game.onDecision = async request => {

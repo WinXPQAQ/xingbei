@@ -92,6 +92,7 @@ export async function driveGame({ seed, heroIds, start = 0, turnLimit = 500, dec
     }
     reason = 'decisionLimit';
   }
+  if (process.env.XINGBEI_DIAGNOSTIC_DIR) for (const [index,archive] of game.inabilityArchives.entries()) fs.writeFileSync(`${process.env.XINGBEI_DIAGNOSTIC_DIR}/inability-forfeit-${seed}-${index}.json`,JSON.stringify({...archive,config,revision,replayPrefix:choices,choices:diagnosticChoices,reproduction:'node training/reproduce.mjs ARCHIVE.json'},null,2));
   return { seed, start, heroIds, revision, ...(capture ? {boundaries}:{}), replayedDecisions:replay?.choices.length ?? 0, turns, decisions, maxCandidates, kinds,
     ...(profile ? { profile: { ...timings, elapsedMs: performance.now()-started } } : {}), winner: game.winner, terminated: !!game.winner, truncated: !game.winner, truncationReason: reason,
     rewards: game.winner ? Object.fromEntries(game.players.map(player => [player.id, player.team === game.winner ? 1 : -1])) : null };

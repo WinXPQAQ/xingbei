@@ -42,7 +42,7 @@ test('real boundary replay restores full state before any learned decision',asyn
  await assert.rejects(driveGame({...config,replay:{...boundary,hash:'invalid'}},teacher),/boundary mismatch/);
 });
 
-test('voluntary trueShadow exhausting the last two cards forfeits instead of stalling',async()=>{
+test('trueShadow exhausting the last two cards is blocked before paying costs',async()=>{
  const ids=roster(0);ids[0]='headMaid';
  const game=new Game({seed:991103111,heroIds:ids}).setup();
  for(const c of [...game.player(0).hand])game.moveCard(c.id,{zone:'outside'});
@@ -51,6 +51,7 @@ test('voluntary trueShadow exhausting the last two cards forfeits instead of sta
  const choose=request=>request.type==='skillChoice' ? request.skillId==='trueShadow' : request.type==='cardChoice' ? request.valid.slice(0,request.count) : request.defaultValue;
  await game.beginTurn(0,{choose});
  try{await game.executeAction(0,{type:'play',index:0,targetId:1},{choose});}catch(error){assert.ok(error.actionInvalidated);}
- assert.equal(game.winner,'blue');assert.equal(game.player(0).hand.length,0);
- assert.ok(game.log.some(line=>line.includes('恶意无法行动')));
+ assert.equal(game.winner,null);assert.equal(game.player(0).energy.gem,1);
+ assert.equal(game.player(0).covered.length,0);
+ assert.ok(!game.log.some(line=>line.includes('恶意无法行动')));
 });

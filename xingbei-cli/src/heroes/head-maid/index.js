@@ -72,13 +72,14 @@ export class HeadMaid extends Hero {
               player.id,
               "trueShadow",
               "真·摹影：宝石，将2张手牌作为影",
+              {blockedReason: game.knownRemovalBlocked(player.id,player.id,2) ? "你将无法行动" : null},
             ))
           )
             return;
           if (context.usedSkills) context.usedSkills.maidActivation = true;
           yield* game.paySkillEnergy(player.id, "gem");
           const cs = yield* game.chooseHandCards(player.id, 2, () => true, {
-            skillId: "trueShadowCards",
+            skillId: "trueShadowCards", preserveAction: true,
           });
           yield* hero.addShadows(game, player, cs, options);
           game.forfeitMaliciousInability(player.id, 'trueShadow');
