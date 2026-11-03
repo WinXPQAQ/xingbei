@@ -8,6 +8,7 @@ from pathlib import Path
 import subprocess
 import sys
 import traceback
+import time
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -51,7 +52,7 @@ def tick(directory):
                 run([sys.executable, 'training/entity/reinforce.py', state['latest'], str(checkpoint),
                      '--rounds', '1', '--games', '96', '--workers', '4', '--batch', '32', '--epochs', '2',
                      '--seed', '611102000', '--device', 'cuda'])
-                save(stage='evaluate', latest=str(checkpoint), cycle=cycle)
+                save(stage='evaluate' if cycle % 5 == 0 else 'reinforce', latest=str(checkpoint), cycle=cycle, status='ready')
             if state['stage'] == 'evaluate':
                 output = directory/f"evaluation-{state['cycle']:04d}.json"
                 run([sys.executable, 'training/entity/evaluate.py', state['latest'], str(output), '--pairs', '36', '--device', 'cuda'])
@@ -74,5 +75,19 @@ def tick(directory):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('directory', type=Path)
+    parser.add_argument('--continuous', action='store_true')
+    parser.add_argument('--monitor', action='store_true')
     args = parser.parse_args()
-    tick(args.directory.resolve())
+    directory = args.directory.resolve()
+    if args.monitor:
+        state = json.loads((directory/'status.json').read_text())
+        active = subprocess.run(['systemctl', '--user', 'is-active', 'xingbei-entity-training.service'], capture_output=True, text=True).stdout.strip()
+        (directory/'monitor.json').write_text(json.dumps(dict(checked_at=now(), service=active, cycle=state['cycle'], status=state['status'])))
+        if active not in ['active', 'activating'] and state['status'] != 'error' and not (directory/'PAUSE').exists():
+            subprocess.run(['systemctl', '--user', 'start', '--no-block', 'xingbei-entity-training.service'], check=True)
+    else:
+        while True:
+            tick(directory)
+            state = json.loads((directory/'status.json').read_text())
+            if not args.continuous or state['status'] in ['paused', 'error']: break
+            time.sleep(60 if state['status'] == 'waiting_for_gpu' else 1)
