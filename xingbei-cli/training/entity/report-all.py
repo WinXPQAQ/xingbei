@@ -26,7 +26,14 @@ def report(directory):
     (directory/'latest-report.json').write_text(json.dumps(summary,indent=2))
     metrics=state.get('metrics',{})
     text=f"状态：{state.get('status')}\n阶段：{state.get('stage')}\n完成强化局数：{state.get('completed_games',0)}\n轮次：{state.get('cycle',0)}\nGPU样本：{summary['gpu']}\n开发评测：{metrics}\n"
-    if state.get('error'):text+='错误：'+state['error']+'\n'
+    if state.get('collection'):
+        c=state['collection'];text+=f"教师采集：{c['completed']}/{c['games']}局；每英雄至少{c['coverageMinimum']}次\n"
+    if state.get('rollout'):
+        r=state['rollout'];text+=f"最近采样：{r['games_per_second']:.2f}局/秒，{r['decisions_per_second']:.0f}决策/秒，平均推理批次{r['mean_batch']:.1f}\n"
+    if metrics:
+        rate=metrics['v1.9.0-preview.1']['win_rate'];best=state.get('best_score',rate)
+        text+=f"开发趋势：当前对规则胜率{rate:.1%}，历史最佳{best:.1%}；重复开发种子，不能视为独立强度验收。\n"
+    if state.get('error'):text+='异常已停训，等待判断；错误：'+state['error']+'\n'
     (directory/'latest-report.txt').write_text(text)
     return summary
 if __name__=='__main__':
