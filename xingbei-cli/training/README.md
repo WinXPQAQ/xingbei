@@ -24,3 +24,5 @@ python training/entity/play.py /tmp/round2.pt --device cpu
 
 
 实体接口当前为 `entities-v3`。超过128个候选的行动按需进行条件分步选择，其余问题保持原样；采集、推理、终局奖励训练共用适配器。v2数据/模型不直接兼容，需重新采集训练。具体约定见 [观测规范](../docs/ai-observation-schema.md#按需分步行动entities-v3)。
+
+全72英雄连续训练入口为 `entity/run-all.py`；配置、残局重放、小时报告和停止方式见 [全英雄训练协议](../docs/ai-all-heroes-training.md)。旧 `watch.py` 和固定阵容脚本保留用于旧实验复现，正式新任务不使用旧18英雄运行目录。

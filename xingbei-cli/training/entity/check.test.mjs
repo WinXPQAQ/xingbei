@@ -6,12 +6,13 @@ import { actionCandidates } from '../candidates.mjs';
 import { driveGame } from '../driver.mjs';
 import { teacherIndex } from '../teacher.mjs';
 import { encodeEntities } from './observation.mjs';
+import { roster } from './rosters.mjs';
 import { heroFields } from './hero-state.mjs';
 const rosters = [DEFAULT_HERO_IDS, WAVE_TWO_HERO_IDS, WAVE_THREE_HERO_IDS];
 
 test('entity boundary hides opponent hands/deck/logs at every seat; contracts cover registered heroes', async () => {
   assert.deepEqual(Object.keys(heroFields).sort(), Object.keys(HERO_DEFINITIONS).sort());
-  for (const heroIds of rosters) for (let playerId = 0; playerId < 6; playerId++) {
+  for (const heroIds of Array.from({length:12}, (_,i)=>roster(i))) for (let playerId = 0; playerId < 6; playerId++) {
     const game = new Game({ seed: 211102001, heroIds }).setup();
     game.current = playerId; await game.beginTurn(playerId);
     const hiddenDiscard = game.player((playerId + 1) % 6).hand[0];

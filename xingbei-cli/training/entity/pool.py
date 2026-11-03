@@ -19,15 +19,16 @@ ROSTERS = [
 
 
 async def run_games(model, vocabulary, configs, *, workers=16, device='cpu', opponent=None,
-                    sparse=True, batch_wait_ms=1, trajectory=False):
+                    sparse=True, batch_wait_ms=1, trajectory=False, models=None):
     if workers < 1 or not configs: raise ValueError('Need workers and game configs')
     jobs = asyncio.Queue()
     for index, config in enumerate(configs): jobs.put_nowait((index, config))
     pending = asyncio.Queue()
     results = [None] * len(configs)
     stats = dict(decisions=0, candidates=0, bytes=0, batches=0, max_batch=0,
-                 collate_seconds=0., infer_seconds=0., parse_seconds=0.)
-    model.to(device).eval()
+                 collate_seconds=0., infer_seconds=0., parse_seconds=0., model_decisions={})
+    networks = {'current':(model,vocabulary), **(models or {})}
+    for network,_ in networks.values(): network.to(device).eval()
     processes = []
 
     async def send(process, message):
@@ -45,9 +46,10 @@ async def run_games(model, vocabulary, configs, *, workers=16, device='cpu', opp
             # from this small throughput sample.
             moves = []
             red = index % 2 == 0
-            policies = ['model' if opponent is None or ((seat in [0,3,4]) == red) else opponent for seat in range(6)]
+            rival = config.get('opponent', opponent)
+            policies = ['model' if rival is None or rival == 'self' or ((seat in [0,3,4]) == red) else rival for seat in range(6)]
             await send(process, dict(type='start', schema=SCHEMA, config=config, seatPolicies=policies,
-                **(dict(wire='sparse-v1', vocabulary=vocabulary.symbols) if sparse else {})))
+                **(dict(wire='sparse-v1', vocabulary=vocabulary.symbols, vocabularies={key:v.symbols for key,(_,v) in networks.items()}) if sparse else {})))
             while True:
                 line = await process.stdout.readline()
                 if not line: raise RuntimeError(f'Simulator exited: {process.returncode}')
@@ -56,12 +58,13 @@ async def run_games(model, vocabulary, configs, *, workers=16, device='cpu', opp
                 if message['type'] == 'error': raise RuntimeError(message['error'])
                 if message['type'] == 'result':
                     results[index] = message['result']
+                    results[index]['learnerSeats'] = [seat for seat, policy in enumerate(policies) if policy == 'model']
                     if trajectory: results[index]['trajectory'] = moves
                     break
                 future = asyncio.get_running_loop().create_future()
-                await pending.put((message['observation'], future))
+                await pending.put((message['observation'], future, message.get('modelKey','current')))
                 selection = await future
-                if trajectory:
+                if trajectory and message.get('modelKey','current') == 'current':
                     moves.append(dict(observation=message['observation'], seat=message['seat'], **selection))
                     choice = selection['choice']
                 else: choice = selection
@@ -72,26 +75,30 @@ async def run_games(model, vocabulary, configs, *, workers=16, device='cpu', opp
             items = [await pending.get()]
             if batch_wait_ms: await asyncio.sleep(batch_wait_ms / 1000)
             while not pending.empty(): items.append(pending.get_nowait())
-            observations = [item[0] for item in items]
-            start = time.perf_counter()
-            batch = collate(observations, vocabulary, device)
-            if device == 'cuda': torch.cuda.synchronize()
-            stats['collate_seconds'] += time.perf_counter()-start
-            start = time.perf_counter()
-            with torch.inference_mode():
-                if trajectory:
-                    logits, values = model(batch)
-                    distribution = torch.distributions.Categorical(logits=logits)
-                    selected = distribution.sample()
-                    choices = [dict(choice=choice, old_log_prob=logp, old_value=value)
-                               for choice, logp, value in zip(selected.tolist(), distribution.log_prob(selected).tolist(), values.tolist())]
-                else: choices = model.policy_logits(batch).argmax(-1).tolist()
-            stats['infer_seconds'] += time.perf_counter()-start
-            stats['batches'] += 1; stats['decisions'] += len(items)
-            stats['candidates'] += sum(len(o['candidates']) for o in observations)
-            stats['max_batch'] = max(stats['max_batch'], len(items))
-            for (_, future), choice in zip(items, choices): future.set_result(choice)
-
+            grouped = {}
+            for item in items: grouped.setdefault(item[2], []).append(item)
+            for key, items in grouped.items():
+                active_model, active_vocab = networks[key]
+                observations = [item[0] for item in items]
+                start = time.perf_counter()
+                batch = collate(observations, active_vocab, device)
+                if device == 'cuda': torch.cuda.synchronize()
+                stats['collate_seconds'] += time.perf_counter()-start
+                start = time.perf_counter()
+                with torch.inference_mode():
+                    if trajectory and key == 'current':
+                        logits, values = active_model(batch)
+                        distribution = torch.distributions.Categorical(logits=logits)
+                        selected = distribution.sample()
+                        choices = [dict(choice=choice, old_log_prob=logp, old_value=value)
+                                   for choice, logp, value in zip(selected.tolist(), distribution.log_prob(selected).tolist(), values.tolist())]
+                    else: choices = active_model.policy_logits(batch).argmax(-1).tolist()
+                stats['infer_seconds'] += time.perf_counter()-start
+                stats['batches'] += 1; stats['decisions'] += len(items)
+                stats['candidates'] += sum(len(o['candidates']) for o in observations)
+                stats['max_batch'] = max(stats['max_batch'], len(items))
+                stats['model_decisions'][key] = stats['model_decisions'].get(key, 0) + len(items)
+                for (_, future, _), choice in zip(items, choices): future.set_result(choice)
     start = time.perf_counter()
     inference = asyncio.create_task(infer())
     simulations = [asyncio.create_task(simulator()) for _ in range(min(workers, len(configs)))]

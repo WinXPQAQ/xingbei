@@ -7,10 +7,12 @@ import argparse
 import asyncio
 import json
 import random
+import time
 from pathlib import Path
 import torch
 from model import EntityPolicy, collate
 from pool import run_games, ROSTERS
+from league import training_configs
 
 
 def terminal_samples(results):
@@ -21,6 +23,7 @@ def terminal_samples(results):
         if not rewards or any(value not in (-1, 1) for value in rewards.values()):
             raise ValueError('Invalid terminal team rewards')
         for decision in result.get('trajectory', []):
+            if decision['seat'] not in result.get('learnerSeats',range(6)): raise ValueError('Opponent trajectory leaked into learner')
             reward = rewards[str(decision['seat'])]
             rows.append({**decision, 'return': reward, 'advantage': reward-decision['old_value']})
     return rows
@@ -28,6 +31,7 @@ def terminal_samples(results):
 
 def update(model, vocabulary, optimizer, rows, *, batch_size, epochs, device):
     if not rows: raise ValueError('No completed trajectories; truncated games are not losses')
+    started = time.perf_counter()
     model.train(); stats = dict(updates=0, policy_loss=0., value_loss=0., entropy=0.)
     for _ in range(epochs):
         random.shuffle(rows)
@@ -50,6 +54,7 @@ def update(model, vocabulary, optimizer, rows, *, batch_size, epochs, device):
             for name, value in [('policy_loss',policy_loss),('value_loss',value_loss),('entropy',entropy)]:
                 stats[name] += float(value.detach())
     for name in ['policy_loss','value_loss','entropy']: stats[name] /= stats['updates']
+    stats['seconds'] = time.perf_counter()-started
     return stats
 
 
@@ -62,6 +67,10 @@ def main():
     parser.add_argument('--seed', type=int, default=211102700)
     parser.add_argument('--device', default='cpu')
     parser.add_argument('--opponents', nargs='+', help='Rule policy versions or self, rotated by round')
+    parser.add_argument('--league', action='store_true')
+    parser.add_argument('--positions')
+    parser.add_argument('--history')
+    parser.add_argument('--revision', default='development')
     args = parser.parse_args()
     if Path(args.output).exists() or Path(args.output+'.json').exists(): parser.error('Output exists')
     if args.rounds < 1 or args.workers < 1: parser.error('rounds and workers must be positive')
@@ -88,15 +97,32 @@ def main():
         if Path(destination).exists() or Path(destination+'.json').exists():
             raise ValueError(f'Output exists: {destination}')
     reports = []
+    positions = [json.loads(line) for line in Path(args.positions).read_text().splitlines()] if args.positions else []
+    completed = checkpoint.get('completed_games',0)
+    hero_coverage = checkpoint.get('hero_coverage',{})
+    models = {}
+    if args.history:
+        models['history'] = EntityPolicy.restore(torch.load(args.history,map_location='cpu',weights_only=False))
+    if previous:
+        torch.set_rng_state(checkpoint['torch_rng'])
+        if args.device == 'cuda' and checkpoint['cuda_rng']: torch.cuda.set_rng_state_all(checkpoint['cuda_rng'])
+    excluded = set(checkpoint.get('validation_seeds', []))
     for round_index in range(rounds, rounds+args.rounds):
         opponent = config['opponents'][round_index % len(config['opponents'])]
         configs = [dict(seed=config['seed']+round_index*config['games']+i,
                         heroIds=ROSTERS[(round_index*config['games']+i) % 3], start=i % 6) for i in range(config['games'])]
+        curriculum = None
+        if args.league:
+            configs,curriculum=training_configs(index=round_index*config['games'],count=config['games'],completed=completed,
+                revision=args.revision,positions=positions,excluded=excluded,historical='model:history' if models else None)
         rollout = asyncio.run(run_games(model, vocabulary, configs, workers=args.workers, device=args.device,
-                                       opponent=None if opponent == 'self' else opponent, trajectory=True))
+                                       opponent=None if opponent == 'self' else opponent, trajectory=True,models=models))
+        for game in rollout['results']:
+            for hero in game['heroIds']: hero_coverage[hero] = hero_coverage.get(hero,0)+1
         rows = terminal_samples(rollout['results'])
         metrics = update(model, vocabulary, optimizer, rows, batch_size=config['batch'], epochs=config['epochs'], device=args.device)
-        report = dict(round=round_index+1, opponent=opponent, decisions=len(rows),
+        completed += sum(r['terminated'] for r in rollout['results'])
+        report = dict(hero_coverage=hero_coverage, curriculum=curriculum, completed_total=completed, round=round_index+1, opponent='league-mix' if args.league else opponent, opponent_counts={key:sum(c.get('opponent')==key for c in configs) for key in ['self','v1.9.0-preview.1','model:history']}, decisions=len(rows),
                       completed=sum(r['terminated'] for r in rollout['results']),
                       truncated=sum(r['truncated'] for r in rollout['results']), rollout=rollout['stats'], update=metrics,
                       games=[{k:v for k,v in result.items() if k != 'trajectory'} for result in rollout['results']])
@@ -105,7 +131,7 @@ def main():
         # files; never overwrite a previous checkpoint or the deployed service.
         destination = args.output if args.rounds == 1 else f'{args.output}.round-{round_index+1}.pt'
         saved = model.checkpoint(vocabulary)
-        saved.update(rl=dict(rounds=round_index+1, config=config), optimizer=optimizer.state_dict(),
+        saved.update(hero_coverage=hero_coverage, completed_games=completed, revision=args.revision, validation_seeds=list(excluded), curriculum=curriculum, historical_checkpoint=args.history, rl=dict(rounds=round_index+1, config=config), optimizer=optimizer.state_dict(),
                      random_state=random.getstate(), torch_rng=torch.get_rng_state(),
                      cuda_rng=torch.cuda.get_rng_state_all() if torch.cuda.is_available() else [],
                      parent_checkpoint=args.checkpoint)

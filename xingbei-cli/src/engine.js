@@ -549,6 +549,19 @@ export class Game {
     return this.winner;
   }
 
+  forfeitMaliciousInability(playerId, skillId) {
+    // Explicitly invoked by a voluntary, predictable activation cost. Do not
+    // infer forfeits from arbitrary forced discards or opponent effects.
+    if (this.winner || this.player(playerId).hand.length || this.legalCards(playerId).length || this.legalSkillActions(playerId).length) return false;
+    const state = this.turn.state;
+    if (!state || state.playerId !== playerId || !state.activationDone || state.completed) return false;
+    this.winner = this.player(playerId).team === 'red' ? 'blue' : 'red';
+    this.logSkill(playerId, skillId, '主动启动耗尽手牌且无后续合法行动，构成恶意无法行动，己方判负');
+    this.recordPublicAction({type:'forfeit',playerId,skillId,reason:'maliciousInability'});
+    this.recordPresentation('winner', {team:this.winner});
+    return true;
+  }
+
   allowsAction(playerId, type, skillId = null) {
     const player = this.player(playerId);
     return player.hero.allowsAction({ game: this, player, type, skillId }) && player.statuses.every(card => this.effects.get(card.attachment.effectId)?.allowsAction?.({ game: this, player, type, skillId, card }) ?? true);

@@ -2,6 +2,7 @@
 import argparse
 import hashlib
 import json
+import os
 import random
 import time
 from pathlib import Path
@@ -52,6 +53,9 @@ train, valid = samples(training), samples(validation)
 if resume: model, vocab = model_class.restore(resume)
 else:
     vocab = Vocabulary.fit(row[0] for row in train)
+    if architecture == 'entity':
+        from league import catalog
+        vocab = Vocabulary(['<pad>', '<unknown>'] + sorted(set(vocab.symbols[2:]) | set(catalog()['vocabularySymbols'])))
     model = EntityPolicy(len(vocab.symbols)) if architecture == 'entity' else model_class()
 unknown, feature_total = 0, 0
 for observation, _, _ in valid:
@@ -94,7 +98,7 @@ with torch.no_grad():
             bucket['count'] += 1; bucket['predicted'] += probability; bucket['won'] += int(row[2] == 1)
 completed = (resume['steps'] if resume else 0)+args.steps
 checkpoint = model.checkpoint(vocab)
-checkpoint.update(architecture=architecture, optimizer=optimizer.state_dict(), random_state=random.getstate(), torch_rng=torch.get_rng_state(),
+checkpoint.update(revision=os.environ.get('XINGBEI_SOURCE_REVISION','development'), architecture=architecture, optimizer=optimizer.state_dict(), random_state=random.getstate(), torch_rng=torch.get_rng_state(),
                   cuda_rng=torch.cuda.get_rng_state_all() if torch.cuda.is_available() else [], steps=completed,
                   train_seeds=[g['result']['seed'] for g in training], validation_seeds=[g['result']['seed'] for g in validation],
                   teacher_versions=sorted({g['teacher'] for g in games}), trainer=dict(data_sha256=data_hash, batch=batch_size, seed=seed))

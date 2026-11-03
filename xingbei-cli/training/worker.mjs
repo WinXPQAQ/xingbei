@@ -24,12 +24,15 @@ createInterface({ input: process.stdin }).on('line', async line => {
     if (message.schema && ![2, ENTITY_SCHEMA].includes(message.schema)) throw new Error('Unsupported observation schema');
     if (message.schema === ENTITY_SCHEMA && (message.baseline || message.seatBaselines)) throw new Error('Legacy residual baseline is incompatible with entity schema');
     if (message.wire && (message.wire !== 'sparse-v1' || message.schema !== ENTITY_SCHEMA)) throw new Error('Unsupported wire format');
-    const pack = message.wire ? createWireEncoder(message.vocabulary) : value => value;
+    const encoders = Object.fromEntries(Object.entries(message.vocabularies ?? {current:message.vocabulary}).map(([key,vocabulary]) => [key,message.wire ? createWireEncoder(vocabulary) : value=>value]));
     running = true;
     try {
       const result = await driveGame(message.config, async input => {
         const policy = message.seatPolicies?.[input.playerId] ?? 'model';
-        if (policy !== 'model') return teacherIndex(input, policy);
+        if (policy !== 'model' && !policy.startsWith('model:')) return teacherIndex(input, policy);
+        const modelKey = policy === 'model' ? 'current' : policy.slice(6);
+        const pack = encoders[modelKey];
+        if (!pack) throw new Error('Unknown network route');
         const fullTeacher = message.teacher ? teacherIndex(input, message.teacher) : null;
         const query = (input, teacher) => {
           const observation = message.schema === ENTITY_SCHEMA ? encodeEntities(input) : encodeDecision(input);
@@ -40,7 +43,7 @@ createInterface({ input: process.stdin }).on('line', async line => {
           const id = ++sequence;
           return new Promise(resolve => {
             waiting = { id, resolve };
-            send({ type: 'decision', id, seat: input.playerId, observation: pack(observation), teacher, baseline });
+            send({ type: 'decision', id, seat: input.playerId, modelKey, observation: pack(observation), teacher, baseline });
           });
         };
         return message.schema === ENTITY_SCHEMA ? selectEntityDecision(input, query, { teacher: fullTeacher }) : query(input, fullTeacher);

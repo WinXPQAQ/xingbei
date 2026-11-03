@@ -81,6 +81,7 @@ export class HeadMaid extends Hero {
             skillId: "trueShadowCards",
           });
           yield* hero.addShadows(game, player, cs, options);
+          game.forfeitMaliciousInability(player.id, 'trueShadow');
         },
       },
       {
