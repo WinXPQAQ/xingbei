@@ -81,7 +81,9 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
       add('extraAction', { type: action.type, element: action.element, sourceSkill: action.sourceSkillId }, { position }, { owner: playerRef(turn.playerId) });
     if (turn.playerId === playerId) add('reservation', { skill: turn.reservedSkillId ?? null },
       { energy: turn.reservedEnergy ?? 0, healing: turn.reservedHealing ?? 0 },
-      { cards: (turn.reservedCardIds ?? []).flatMap(cardRef), targets: (turn.reservedTargetIds ?? []).map(seat) });
+      // Activation skills can move reserved cards before the action is revalidated.
+      // Keep only currently visible references; never reveal a new hidden zone.
+      { cards: (turn.reservedCardIds ?? []).filter(id => cards.has(id)).flatMap(cardRef), targets: (turn.reservedTargetIds ?? []).map(seat) });
   }
   const event = game.activeTrigger;
   const context = { ...event?.context, ...request.context };

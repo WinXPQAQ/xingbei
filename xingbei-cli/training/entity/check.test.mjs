@@ -118,3 +118,18 @@ test('conditional action selection preserves every command and teacher path with
   assert.equal(calls, 1);
   await assert.rejects(selectEntityDecision(input, () => -1), /Invalid subdecision/);
 });
+
+test('activation reservations tolerate moved hidden cards without exposing their faces', async () => {
+  const game = new Game({ seed: 211103001 }).setup();
+  await game.beginTurn(0);
+  const card = game.player(0).hand[0];
+  game.turn.state.reservedCardIds = [card.id];
+  game.moveCard(card.id, { zone: 'discard' }, { animate: false, visibility: 'hidden' });
+  const input = { game, playerId: 0, request: { type: 'action' }, candidates: [{ type: 'pass' }] };
+  const before = encodeEntities(input);
+  assert.deepEqual(before.entities.find(t => t.kind === 'reservation').refs.cards, []);
+  game.turn.state.reservedCardIds = [];
+  assert.deepEqual(encodeEntities(input), before);
+  input.candidates = [{ type: 'skill', skillId: 'probe', cardIds: [card.id] }];
+  assert.throws(() => encodeEntities(input), /non-visible card/);
+});
