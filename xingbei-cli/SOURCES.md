@@ -26,3 +26,5 @@
 动画适配来源：`noname/library/element/player.js` 的 `$draw`（12006起）、`$throwordered2`（12667起）、`$damagepop`（13660起）、`$damage`（13708起），`noname/game/index.js` 的 `linexy`（4750起），以及 `layout/default/layout.css` 的默认过渡、浮字与线条样式。新版 `web/animation.js`、`web/animation.css`复用这些行为与比例，不引入旧引擎。`/theme/cardback.png`读取随仓库提供的原版 `assets/theme/style/cardback/image/xingBei1.png`；牌背继续保留原项目版权和素材说明。
 
 英雄技能及逐牌独有技来自原项目character/shiZhouNian.js与card/xingBei.js；六判定时点遵循用户规则，.range提取layout/default/layout.css。复制与改写继续遵循本仓库GPL许可。
+
+第七批英雄增加原项目 `character/yiDuanYeHuo.js` 的战斗法师、星坠女巫、圣庭检察士、猎巫人、圣殿骑士规则参考；蝶舞者仍来自十周年包。六张头像与繁星、影月、蚀日、异端裁决所四张专属牌图片原样复制，来源路径与哈希见assets清单，继续沿用上述许可说明。

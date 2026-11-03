@@ -109,6 +109,7 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
       chainOrigin: playerRef(request.chainOriginId ?? context.chainOriginId),
       protectedTarget: playerRef(request.protectedTargetId), transferTarget: playerRef(context.transferTargetId), recipient: playerRef(request.recipientId), nextTarget: playerRef(request.nextTarget?.id),
       participants: (request.participants ?? []).map(seat),
+      selectedCards: (context.selectedCardIds ?? []).filter(id => cards.has(id)).flatMap(cardRef),
       card: cardRef(request.attack?.id ?? (cards.has(context.card?.id) ? context.card.id : null)) });
   for (const [position, event] of (game.publicHistory?.actions ?? []).slice(-32).entries()) {
     const categorical = {}, numbers = { position }, refs = {};
@@ -130,6 +131,7 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
       numbers.gem = value.stones?.gem ?? value.gemCount ?? 0; numbers.crystal = value.stones?.crystal ?? 0;
     } else if (request.type === 'response') {
       refs.cards = indexes([value.index], true); refs.targets = playerRef(value.targetId);
+      categorical.asAttack = !!request.valid?.find(item => item.index === value.index)?.asAttack;
     } else if (['cardChoice','overflow'].includes(request.type)) refs.cards = indexes(value);
     else if (['target','playerChoice'].includes(request.type)) refs.targets = playerRef(value);
     else if (request.type === 'effectChoice') refs.cards = cardRef(value);

@@ -26,7 +26,7 @@ export function* attackSteps(game, actorId, handIndex, targetId, options = {}) {
     yield* game.trigger(Timing.ATTACK_DECISION, context, options);
     if (context.forceHitRequested) { context.forcedHit = true; context.shieldable = false; }
     const counterTargets = game.players.filter(player => game.canAttackTarget(target.id, player.id, true) && player.id !== actor.id);
-    const valid = playableCards(target).map((card, index) => ({ card, index })).filter(item =>
+    const valid = playableCards(target).map((card, index) => ({ card, index, ...(target.hero.responseAttack?.(game, target, card) ? { asAttack: true } : {}) })).filter(item =>
       game.canRespond(attack, item.card, { actorId: actor.id, targetId: target.id, attackTraits }) &&
       (item.card.name === "holyLight" ? context.canHolyLight : context.canCounter && counterTargets.length));
     const decision = context.forcedHit ? null : context.boundResponse ?? (yield { type: "response", actor, target, attack, attackTraits, valid, counterTargets, isCounter, chainOriginId: actorId, chainDepth, damage: context.amount, shieldable: context.shieldable,
@@ -55,14 +55,15 @@ export function* attackSteps(game, actorId, handIndex, targetId, options = {}) {
     const picked = valid.find(item => item.index === decision.index);
     if (!picked) throw new RuleError("选择的牌不能应战此次攻击");
     let nextTarget;
-    if (picked.card.type === "attack") {
+    const responseAttack = target.hero.responseAttack?.(game, target, picked.card);
+    if (picked.card.type === "attack" || responseAttack) {
       const nextId = decision.targetId ?? (yield { type: "target", actor: target, previousActor: actor, attack: picked.card, targets: counterTargets });
       nextTarget = counterTargets.find(player => player.id === nextId);
       if (!nextTarget) throw new RuleError("应战攻击目标不合法");
     }
     requiresCounterSkill = !attack.canRespond(picked.card, { game, actorId: actor.id, targetId: target.id, attackTraits });
     previousAttackTraits = attackTraits;
-    const nextTraits = picked.card.getTraits({ game, playerId: target.id, purpose: "attack" });
+    const nextTraits = (responseAttack ?? picked.card).getTraits({ game, playerId: target.id, purpose: "attack" });
     const response = game.playCard(target, picked.index, { ...options, targetId: nextTarget?.id ?? actor.id });
     yield* game.present();
     context.hit = false; context.cause = response.name;
@@ -74,6 +75,6 @@ export function* attackSteps(game, actorId, handIndex, targetId, options = {}) {
       game.recordPresentation("miss", { playerId: target.id, cause: "holyLight" });
       yield* game.present(); break;
     }
-    actor = target; target = nextTarget; attack = response; attackTraits = nextTraits; isCounter = true; chainDepth++;
+    actor = target; target = nextTarget; attack = responseAttack ?? response; attackTraits = nextTraits; isCounter = true; chainDepth++;
   }
 }

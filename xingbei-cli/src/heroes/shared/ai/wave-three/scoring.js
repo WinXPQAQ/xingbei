@@ -118,7 +118,7 @@ export function skillScore(game, id, state, action) {
   if (spec.energy) payEnergy(next, id, 1, spec.energy);
   spend(next, id, costs);
   if (terminal(next)) return evaluate(next) - evaluate(state);
-  const extra = heroAi(p.hero).scoreSkill?.({ game, next, id, source, player: p, action, costs, targetId, skillId }, scoringApi);
+  const extra = heroAi(p.hero).scoreSkill?.({ game, state, next, id, source, player: p, action, costs, targetId, skillId }, scoringApi);
   if (extra == null) return -1e6;
   return evaluate(next) - evaluate(state) + extra - cardCost(game, id, cardObjects(game, costs));
 }

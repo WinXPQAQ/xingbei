@@ -340,6 +340,56 @@
       "path": "image/card/zhuanShu/tongShengGongSi.png",
       "bytes": 378688,
       "sha256": "b09286b26ea445ae757734fa9fc0f7b8a0abd39209be86f104c2f9e2c410fdee"
+    },
+    {
+      "path": "image/character/dieWuZhe.jpg",
+      "bytes": 105178,
+      "sha256": "cd974b899eedf1dfa14dd5ed956d9d9cd45f0825ff58691fbb5d6b340946d389"
+    },
+    {
+      "path": "image/character/lieWuRen.jpg",
+      "bytes": 104898,
+      "sha256": "73b0cf1c488101bfaf27f467ec4f43c1f1d925fbb889a9692f28a2534edbbb63"
+    },
+    {
+      "path": "image/character/shengTingJianChaShi.jpg",
+      "bytes": 114398,
+      "sha256": "359bef4f909176746b72dca8008d06a14933bd19e34667e5aa1636970dcc0d31"
+    },
+    {
+      "path": "image/card/zhuanShu/shiRi.png",
+      "bytes": 282299,
+      "sha256": "adbd87357ebf9df2305f5340f304c8c4bb8dcba6c61fba02249a4b9bef1d1318"
+    },
+    {
+      "path": "image/card/zhuanShu/yingYue.png",
+      "bytes": 574413,
+      "sha256": "3724ce2d18515f9b4ce6981aa686aca3bd6be4a8f3ac8c10763d2f4bc1792ea5"
+    },
+    {
+      "path": "image/character/zhanDouFaShi.jpg",
+      "bytes": 130644,
+      "sha256": "ab7152d8a98b4a3776694b26c422ee65b0f01252c741910b1ce80bfe5c27176f"
+    },
+    {
+      "path": "image/card/zhuanShu/yiDuanCaiJueSuo.png",
+      "bytes": 287641,
+      "sha256": "561b1525e42eeac3fb32d83afdd50f1422f0b21210bbb3a0a776ca303b4edcd1"
+    },
+    {
+      "path": "image/character/xingZhuiNvWu.jpg",
+      "bytes": 135185,
+      "sha256": "2511710933663c6fffa92ab1aec770d0ad2037ee0820af8784e5a3f20f095790"
+    },
+    {
+      "path": "image/card/zhuanShu/fanXing.png",
+      "bytes": 362557,
+      "sha256": "d861c01b57787a9196952d74c5b49193cbcfb8ad5684d5be4650287fdc65051c"
+    },
+    {
+      "path": "image/character/shengDianQiShi.jpg",
+      "bytes": 141572,
+      "sha256": "8cf1a4688c3515a6785ca867f4a0066b9757317bc9621f7a2f5f21e9db28facf"
     }
   ]
 }

@@ -60,7 +60,7 @@ export function chooseAiResponse(game, request) {
   }
   let best={decision:null,score:evaluate(take)-evaluate(state)};
   for(const entry of request.valid) {
-    const card=entry.card;
+    const card=entry.asAttack ? {...entry.card,type:'attack',name:`${entry.card.getTraits({playerId:id}).elements[0]}Strike`,uniqueSkills:[]} : entry.card;
     if(request.attack&&card.type==="attack") {
       if (heroAi(state.players[id].hero).skipCounterCard?.({ game, id, card, request }, scoringApi)) continue;
       for(const target of request.counterTargets) {

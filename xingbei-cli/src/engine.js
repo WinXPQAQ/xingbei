@@ -447,10 +447,11 @@ export class Game {
   changeMorale(team, amount, { emit = true } = {}) {
     if (this.winner) return;
     const before = this.teams[team].morale;
-    this.teams[team].morale = Math.min(15, before + amount);
+    const floor = Math.max(...this.players.map(player => player.hero.moraleFloor?.({ game: this, player, team }) ?? -Infinity));
+    this.teams[team].morale = Math.min(15, amount < 0 ? Math.max(floor, before + amount) : before + amount);
     this.recordPublicAction({type:'morale',team,amount:this.teams[team].morale-before,count:this.teams[team].morale});
     this.log.push(`${team === "red" ? "红" : "蓝"}方士气${this.teams[team].morale - before >= 0 ? "+" : ""}${this.teams[team].morale - before}（${before}→${this.teams[team].morale}）`);
-    this.recordPresentation("morale", { team, amount });
+    this.recordPresentation("morale", { team, amount: this.teams[team].morale - before });
     this.checkWinner();
     const actual = this.teams[team].morale - before;
     if (emit && actual && !this.winner) (this.pendingMoraleEvents ??= []).push({ team, amount: actual });
@@ -668,9 +669,10 @@ export class Game {
     if (this.processingRuleEvents) return;
     this.processingRuleEvents = true;
     try {
-      while (!this.winner && (this.pendingRuleEvents.length || this.pendingMoraleEvents?.length || this.changedHands?.size)) {
+      while (!this.winner && (this.pendingRuleEvents.length || this.pendingMoraleEvents?.length || this.pendingHealingEvents?.length || this.changedHands?.size)) {
         if (this.pendingRuleEvents.length) yield* this.trigger(Timing.CARD_EXPOSED, this.pendingRuleEvents.shift(), options);
         else if (this.pendingMoraleEvents?.length) yield* this.trigger(Timing.MORALE_AFTER, this.pendingMoraleEvents.shift(), options);
+        else if (this.pendingHealingEvents?.length) yield* this.trigger(Timing.HEALING_OVERFLOW, this.pendingHealingEvents.shift(), options);
         else {
           const playerId = this.changedHands.values().next().value;
           this.changedHands.delete(playerId);
@@ -850,12 +852,16 @@ export class Game {
   changeHealing(playerId, amount, { limit = this.getHealingLimit(playerId) } = {}) {
     if (this.winner) return 0;
     const player = this.player(playerId);
+    if (amount > 0 && this.players.some(owner => owner.hero.blocksHealing?.({ game: this, player: owner, targetId: playerId }))) {
+      this.log.push(`${this.actorLabel(playerId)}本回合无法获得治疗`); return 0;
+    }
     const actual = amount > 0 ? Math.max(0, Math.min(amount, limit - player.healing)) : -Math.min(-amount, player.healing);
     const before = player.healing;
     player.healing += actual;
     if(actual)this.recordPublicAction({type:'healingChange',playerId,amount:actual,count:player.healing});
     if (amount) this.log.push(`${this.actorLabel(playerId)}治疗${actual >= 0 ? "+" : ""}${actual}（${before}→${player.healing}${amount > actual && amount > 0 ? `；上限${limit}，未增加${amount - actual}` : ""}）`);
     if (actual) this.recordPresentation("healing", { playerId, amount: actual });
+    if (amount > actual && amount > 0) (this.pendingHealingEvents ??= []).push({ playerId, team: player.team, amount: amount - actual });
     return actual;
   }
 
@@ -921,6 +927,10 @@ export class Game {
   damage(targetId, amount, options = {}) { return resolveSync(this.damageSteps(targetId, amount, options), request => this.automaticDecision(request, options)); }
 
   canRespond(attack, response, context = {}) {
+    if (context.targetId != null) {
+      const player = this.player(context.targetId), converted = player.hero.responseAttack?.(this, player, response);
+      if (converted && this.allowsCard(player.id, response, "response") && attack.canRespond(converted, { game: this, ...context })) return true;
+    }
     return (context.targetId == null || this.allowsCard(context.targetId, response, "response")) && (attack.canRespond(response, { game: this, ...context }) || (context.targetId != null && attack.name !== "darkStrike" && !!this.player(context.targetId).hero.canRespond?.({ game: this, player: this.player(context.targetId), card: response, attackTraits: context.attackTraits ?? attack.getTraits({ game: this, playerId: context.actorId }) })));
   }
 

@@ -17,3 +17,7 @@ export function usefulExtra({source,player,state,id},api,selfDamage=0,cost=3){
   const harm=api.damageGain(state,id,id,selfDamage);
   return harm>=-cost && state.teams[player.team].morale>Math.max(2,player.count+selfDamage-player.limit);
 }
+export function cheapCovered({request,game,id},api){
+ const cards=request.choices.filter(c=>game.cards.has(c.value));
+ return cards.sort((a,b)=>api.cardScore(game,id,game.cards.get(a.value))-api.cardScore(game,id,game.cards.get(b.value)))[0]?.value??request.defaultValue;
+}

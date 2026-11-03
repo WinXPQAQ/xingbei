@@ -75,5 +75,19 @@
   "markers/faith.png": "card/zhiShiWu/hong.png",
   "markers/blueSoul.png": "card/zhiShiWu/lan.png",
   "markers/petrification.png": "card/zhiShiWu/lan.png",
-  "markers/cannon.png": "card/zhiShiWu/lan.png"
+  "markers/cannon.png": "card/zhiShiWu/lan.png",
+  "character/butterflyDancer.jpg": "character/dieWuZhe.jpg",
+  "character/battleMage.jpg": "character/zhanDouFaShi.jpg",
+  "character/starfallWitch.jpg": "character/xingZhuiNvWu.jpg",
+  "character/inquisitor.jpg": "character/shengTingJianChaShi.jpg",
+  "character/witchHunter.jpg": "character/lieWuRen.jpg",
+  "character/templar.jpg": "character/shengDianQiShi.jpg",
+  "card/inquisitionCourt.png": "card/zhuanShu/yiDuanCaiJueSuo.png",
+  "card/lawStarlight.png": "card/zhuanShu/fanXing.png",
+  "card/lawMoonlight.png": "card/zhuanShu/yingYue.png",
+  "card/lawEclipse.png": "card/zhuanShu/shiRi.png",
+  "markers/chrysalis.png": "card/zhiShiWu/hong.png",
+  "markers/ruling.png": "card/zhiShiWu/hong.png",
+  "markers/holySeal.png": "card/zhiShiWu/hong.png",
+  "markers/courtHealing.png": "card/zhuanShu/yiDuanCaiJueSuo.png"
 }

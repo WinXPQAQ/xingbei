@@ -1,3 +1,9 @@
+import { ButterflyDancer } from "./heroes/butterfly-dancer/index.js";
+import { BattleMage } from "./heroes/battle-mage/index.js";
+import { StarfallWitch } from "./heroes/starfall-witch/index.js";
+import { Inquisitor } from "./heroes/inquisitor/index.js";
+import { WitchHunter } from "./heroes/witch-hunter/index.js";
+import { Templar } from "./heroes/templar/index.js";
 import { ElfArcher } from "./heroes/elf-archer/index.js";
 import { YinYangMaster } from "./heroes/yin-yang-master/index.js";
 import { SoulWarlock } from "./heroes/soul-warlock/index.js";
@@ -41,6 +47,13 @@ const definitions = [
   ["swordEmperor", "剑帝"], ["priest", "神官"], ["assassin", "暗杀者"],
 ];
 export const HERO_DEFINITIONS = {
+  butterflyDancer: { name: "蝶舞者", HeroClass: ButterflyDancer },
+  battleMage: { name: "战斗法师", HeroClass: BattleMage },
+  starfallWitch: { name: "星坠女巫", HeroClass: StarfallWitch },
+  inquisitor: { name: "圣庭检察士", HeroClass: Inquisitor },
+  witchHunter: { name: "猎巫人", HeroClass: WitchHunter },
+  templar: { name: "圣殿骑士", HeroClass: Templar },
+
   elfArcher: { name: "精灵射手", HeroClass: ElfArcher },
   yinYangMaster: { name: "阴阳师", HeroClass: YinYangMaster },
   soulWarlock: { name: "灵魂术士", HeroClass: SoulWarlock },
@@ -110,3 +123,5 @@ export const WAVE_FOUR_HERO_IDS = ["adventurer", "fighter", "brave", "redLotusKn
 export const WAVE_FIVE_HERO_IDS = ["talismanMaster", "swordEmperor", "magicArcher", "azureFlameWitch", "bloodSwordSpirit", "beastWarrior"];
 
 export const WAVE_SIX_HERO_IDS = ["elfArcher", "yinYangMaster", "soulWarlock", "bloodWitch", "moonGoddess", "holyArcher"];
+
+export const WAVE_SEVEN_HERO_IDS = ["butterflyDancer", "battleMage", "starfallWitch", "inquisitor", "witchHunter", "templar"];

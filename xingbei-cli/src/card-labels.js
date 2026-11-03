@@ -1,5 +1,5 @@
 export const CARD_NAMES = {
-  soulLink: "灵魂链接", sharedFate: "同生共死",
+  inquisitionCourt: "异端裁决所", lawStarlight: "律法：繁星", lawMoonlight: "律法：影月", lawEclipse: "律法：蚀日", soulLink: "灵魂链接", sharedFate: "同生共死",
   roseGarden: "血蔷薇庭院",
   provocation: "挑衅", eternalMovement: "永恒乐章",
   darkStrike: "暗灭", waterStrike: "水涟斩", fireStrike: "火焰斩",

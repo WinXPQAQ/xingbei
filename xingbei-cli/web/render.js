@@ -3,8 +3,11 @@ import { UNIQUE_SKILL_NAMES } from "/src/unique-skills.js";
 // Presentation adapted from v1.6.7 UI, music and nova. See SOURCES.md.
 import { CARD_NAMES, ELEMENT_NAMES, FATE_NAMES } from "/src/cards.js";
 
-const formNames = { elfBlessing: "精灵祝福", shikigami: "式神", bleeding: "流血", darkMoon: "暗月", radiant: "圣煌", flame: "烈焰", iaido: "御魂流居合", dragonFist: "百式幻龙拳", phantom: "幻影", exhausted: "精疲力竭", boilingBlood: "热血沸腾", eternalPrisoner: "永恒囚徒", prayer: "祈祷", runeBurst: "蓄势迸发" };
+const formNames = { holyFlame: "圣炎", elfBlessing: "精灵祝福", shikigami: "式神", bleeding: "流血", darkMoon: "暗月", radiant: "圣煌", flame: "烈焰", iaido: "御魂流居合", dragonFist: "百式幻龙拳", phantom: "幻影", exhausted: "精疲力竭", boilingBlood: "热血沸腾", eternalPrisoner: "永恒囚徒", prayer: "祈祷", runeBurst: "蓄势迸发" };
 const heroMarkers = {
+  butterflyDancer: [["chrysalises", "蛹", null, "chrysalis"]],
+  inquisitor: [["courtHealing", "裁决所治疗", 4, "courtHealing"], ["rulings", "裁决", 3, "ruling"]],
+  templar: [["holySeals", "圣印", 2, "holySeal"]],
   yinYangMaster: [["ghostFire", "鬼火", 3, "ghostFire"]],
   soulWarlock: [["yellowSoul", "黄色灵魂", 6, "yellowSoul"], ["blueSoul", "蓝色灵魂", 6, "blueSoul"]],
   moonGoddess: [["newMoon", "新月", 2, "newMoon"], ["petrification", "石化", 3, "petrification"]],
@@ -68,7 +71,7 @@ export function renderPlayers(game, container, humanId, targets = null, revealHa
     }
     for (const [field, label, maximum, image] of heroMarkers[player.hero.id] ?? []) {
       const amount = player.hero.state?.[field] ?? 0;
-      if (amount > 0) marks.push(`<span class="element-mark" data-hero-marker="${field}" title="${label} ${amount}/${maximum}" aria-label="${label} ${amount}/${maximum}"><img src="/assets/markers/${image}.png" alt="${label}"><b>${amount}</b></span>`);
+      if (amount > 0) marks.push(`<span class="element-mark" data-hero-marker="${field}" title="${label} ${amount}${maximum == null ? "" : "/" + maximum}" aria-label="${label} ${amount}${maximum == null ? "" : "/" + maximum}"><img src="/assets/markers/${image}.png" alt="${label}"><b>${amount}</b></span>`);
     }
     node.classList.toggle("hero-transformed", !!player.hero.state?.form);
     if (player.getStatus("holyShield")[0]) marks.push('<img src="/assets/card/holyShield.png" title="圣盾" alt="圣盾">');
@@ -79,7 +82,7 @@ export function renderPlayers(game, container, humanId, targets = null, revealHa
       marks.push(`<span class="poison-mark" data-effect-id="${id}"><img src="/assets/card/${card.name}.png" title="${label}" alt="${label}"><b>${label.startsWith("五") ? "" : label[0]}</b></span>`);
     }
     if (player.covered?.length) {
-      const label = { elfArcher: "祝福", moonGoddess: "暗月", swordEmperor: "剑魂", talismanMaster: "妖力", magicArcher: "充能" }[player.hero.id] ?? "盖牌";
+      const label = { butterflyDancer: "茧", starfallWitch: "卢恩", witchHunter: "魔力瓶", elfArcher: "祝福", moonGoddess: "暗月", swordEmperor: "剑魂", talismanMaster: "妖力", magicArcher: "充能" }[player.hero.id] ?? "盖牌";
       const visible = revealHands || player.id === humanId;
       const cards = player.covered.map(card => `<span class="covered-card" title="${visible ? cardLabel(card, { game, playerId: player.id }) : '盖牌'}"><img src="${visible ? '/assets/card/' + card.name + '.png' : '/theme/cardback.png'}" alt="${visible ? cardLabel(card, { game, playerId: player.id }) : '盖牌'}">${visible ? `<small>${card.getTraits({ game, playerId: player.id }).fates.map(f => FATE_NAMES[f]).join('/')}</small>` : ''}</span>`).join('');
       marks.push(`<details class="covered-mark"><summary title="${label}，点击查看"><img src="/theme/cardback.png" alt="${label}"><b>${player.covered.length}</b></summary><div class="covered-cards">${cards}</div></details>`);

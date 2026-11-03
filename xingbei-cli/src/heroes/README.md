@@ -1,6 +1,6 @@
 # 英雄实现入口
 
-当前36位已实现英雄均在本目录，每位英雄一个英文名称目录。
+当前42位已实现英雄均在本目录，每位英雄一个英文名称目录。
 
 ```text
 heroes/
@@ -81,3 +81,16 @@ heroes/
 | 圣弓 | [holy-archer/index.js](holy-archer/index.js) | [ai.js](holy-archer/ai.js) |
 
 本批裁定、共用接口和评分说明见[第六批报告](../../docs/heroes-wave-six.md)。各目录同时提供 `observation.js`。
+
+## 第七批
+
+| 英雄 | 规则 | 评分 |
+| --- | --- | --- |
+| 蝶舞者 | [index.js](butterfly-dancer/index.js) | [ai.js](butterfly-dancer/ai.js) |
+| 战斗法师 | [index.js](battle-mage/index.js) | [ai.js](battle-mage/ai.js) |
+| 星坠女巫 | [index.js](starfall-witch/index.js) | [ai.js](starfall-witch/ai.js) |
+| 圣庭检察士 | [index.js](inquisitor/index.js) | [ai.js](inquisitor/ai.js) |
+| 猎巫人 | [index.js](witch-hunter/index.js) | [ai.js](witch-hunter/ai.js) |
+| 圣殿骑士 | [index.js](templar/index.js) | [ai.js](templar/ai.js) |
+
+各目录提供观测声明。来源包、规则裁定、评分与验收见[第七批报告](../../docs/heroes-wave-seven.md)。

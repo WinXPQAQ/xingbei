@@ -1,5 +1,6 @@
 export const Timing = Object.freeze({
   HAND_CHANGED: "handChanged",
+  HEALING_OVERFLOW: "healingOverflow",
   FORM_ENTERED: "formEntered",
   DRAW_BEFORE: "drawBefore",
   TURN_BEFORE: "turnBefore", BASIC_EFFECT_REMOVED: "basicEffectRemoved", SHIELD_USED: "shieldUsed", MORALE_BEFORE: "moraleBefore", MORALE_AFTER: "moraleAfter",
