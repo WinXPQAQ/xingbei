@@ -18,13 +18,13 @@ export function* attackSteps(game, actorId, handIndex, targetId, options = {}) {
     game.log.push(`${actor.name}使用${isCounter ? "应战攻击" : "主动攻击"}${cardName(attack)}，目标是${target.name}`);
     game.recordPublicAction({type:'attack',actorId:actor.id,targetId:target.id,card:attack.name,elements:[...attackTraits.elements],counter:isCounter});
     yield* game.trigger(Timing.ATTACK_DECLARED, context, options);
+    // Point 1: attack properties are attached before a teammate may take the response.
+    // This window closes before the original target is asked; it is never reopened.
+    if (!context.forceHitRequested && !context.forcedHit) yield* game.trigger(Timing.ATTACK_RESPONSE_BEFORE, context, options);
     target = game.player(context.targetId);
     context.point = 2;
     yield* game.trigger(Timing.ATTACK_DECISION, context, options);
     if (context.forceHitRequested) { context.forcedHit = true; context.shieldable = false; }
-    // Redirecting a teammate's response happens after force-hit/counter restrictions.
-    if (!context.forcedHit) yield* game.trigger(Timing.ATTACK_RESPONSE_BEFORE, context, options);
-    target = game.player(context.targetId);
     const counterTargets = game.players.filter(player => game.canAttackTarget(target.id, player.id, true) && player.id !== actor.id);
     const valid = playableCards(target).map((card, index) => ({ card, index })).filter(item =>
       game.canRespond(attack, item.card, { actorId: actor.id, targetId: target.id, attackTraits }) &&

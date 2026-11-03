@@ -27,7 +27,7 @@ export class YinYangMaster extends Hero {
         filter:()=>hero.state.ghostFire===3,
         *resolve({game,player,options}){hero.state.ghostFire=0;const id=yield* game.choosePlayer(player.id,targets(game),'黑暗祭礼：移除全部鬼火，选择2法伤目标',{skillId:'darkRitual'});yield* game.damageSteps(id,2,{...options,sourceId:player.id,damageType:'spell',skillId:'darkRitual'});}},
       {id:'shikigamiBinding',name:'式神咒束',...this.bind('target',[Timing.ATTACK_RESPONSE_BEFORE],'team'),priority:-100,
-        filter:({game,player,context})=>hero.isActiveAttack(context)&&context.targetId!==player.id&&context.canCounter&&!context.forcedHit&&hero.state.form&&game.stoneCounts(player.team).gem>=1&&game.stoneCounts(player.team).total>=2&&!context.boundResponse,
+        filter:({game,player,context})=>hero.isActiveAttack(context)&&context.targetId!==player.id&&context.canCounter&&!context.forceHitRequested&&!context.forcedHit&&hero.state.form&&game.stoneCounts(player.team).gem>=1&&game.stoneCounts(player.team).total>=2&&!context.boundResponse,
         *resolve({game,player,context}){
           const counterTargets=game.players.filter(p=>game.canAttackTarget(player.id,p.id,true)&&p.id!==context.actorId);
           const valid=playableCards(player).map((card,index)=>({card,index})).filter(({card})=>card.type==='attack'&&game.canRespond(context.card,card,{actorId:context.actorId,targetId:player.id,attackTraits:context.attackTraits}));

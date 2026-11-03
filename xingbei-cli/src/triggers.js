@@ -1,7 +1,7 @@
 import { Timing } from "./timing.js";
 
 const attackPoints = new Map([
-  [Timing.ATTACK_DECLARED, 1], [Timing.ATTACK_DECISION, 2], [Timing.ATTACK_RESPONSE_BEFORE, 2],
+  [Timing.ATTACK_DECLARED, 1], [Timing.ATTACK_RESPONSE_BEFORE, 1], [Timing.ATTACK_DECISION, 2],
   [Timing.ATTACK_HIT_CHECK, 2], [Timing.ATTACK_HIT, 2], [Timing.ATTACK_MISS, 2],
 ]);
 const damagePoints = new Map([

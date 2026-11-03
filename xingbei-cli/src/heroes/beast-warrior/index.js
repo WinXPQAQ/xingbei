@@ -15,7 +15,7 @@ export class BeastWarrior extends Hero {
         filter:()=>hero.state.residual>=4,
         *resolve({game,player}){if(!(yield* game.offerSkill(player.id,'thoughtlessStrike','一击无念：移除4残心，获得强化额外攻击')))return;
           hero.state.residual-=4;game.turn.addAttackAction({sourceSkillId:'thoughtlessStrike'});}},
-      {id:'thoughtlessAttack',name:'一击无念攻击',...this.onOwnAttack([Timing.ATTACK_DECISION]),priority:10,
+      {id:'thoughtlessAttack',name:'一击无念攻击',...this.onOwnAttack([Timing.ATTACK_DECLARED]),priority:10,
         filter:({context})=>hero.isActiveAttack(context)&&context.actionSourceSkillId==='thoughtlessStrike',
         resolve({context}){context.shieldable=false;context.canHolyLight=false;if(context.attackTraits.fates.includes('J'))context.forceHitRequested=true;}},
       {id:'beastIntent',name:'兽魂意念',...this.onOwnAttack([Timing.ATTACK_HIT]),priority:-30,

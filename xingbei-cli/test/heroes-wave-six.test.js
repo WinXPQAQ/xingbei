@@ -41,16 +41,19 @@ test('阴阳：同命格异系应战，转换后鬼火伤害；式神咒束两�
  const before=g.player(3).hand.length;
  run(g.actionSteps(1,0,3),r=>{
   if(r.skillId!=='shikigamiBinding')return base(r);
-  assert.equal(g.timeline.at(-1).timing,Timing.ATTACK_RESPONSE_BEFORE);assert.equal(g.timeline.at(-1).point,2);
+  assert.equal(g.timeline.at(-1).timing,Timing.ATTACK_RESPONSE_BEFORE);assert.equal(g.timeline.at(-1).point,1);
   return {index:0,targetId:2};
  });
  assert.equal(g.player(3).hand.length,before);assert.equal(counter.location.zone,'discard');assert.equal(g.stoneCounts('red').gem,1);g.assertCardLocations();
- for(const restriction of ['forceHitRequested','canCounter']){
+ for(const restriction of ['forceHitRequested','canCounter',null]){
   const h=make('yinYangMaster'),owner=h.player(0);owner.hero.state.form='shikigami';h.addStones('red','gem',2);
   take(h,1,c=>c.name==='fireStrike');const kept=take(h,0,c=>c.name==='fireStrike');
   const attacker=h.player(1).hero;
-  attacker.addSkills({id:'responseRestriction',...attacker.onOwnAttack([Timing.ATTACK_DECISION]),resolve({context}){context[restriction]=restriction==='forceHitRequested';}});
-  run(h.actionSteps(1,0,3),r=>{assert.notEqual(r.skillId,'shikigamiBinding');return base(r);});
+  if(restriction)attacker.addSkills({id:'responseRestriction',...attacker.onOwnAttack([Timing.ATTACK_DECLARED]),priority:-1000,resolve({context}){context[restriction]=restriction==='forceHitRequested';}});
+  const responses=[];
+  run(h.actionSteps(1,0,3),r=>{if(r.type==='response')responses.push(r.target.id);if(restriction)assert.notEqual(r.skillId,'shikigamiBinding');return base(r);});
+  assert.deepEqual(responses,restriction==='forceHitRequested'?[]:restriction?[3]:[0,3]);
+  assert.ok(h.timeline.some(entry=>entry.timing===Timing.ATTACK_DECISION));
   assert.equal(kept.location.zone,'hand');assert.equal(h.stoneCounts('red').gem,2);assert.equal(h.player(3).hand.length,2);h.assertCardLocations();
  }
 });
