@@ -1,3 +1,21 @@
+import { MischiefGirl } from "./heroes/mischief-girl/index.js";
+import { HolyAdjudicator } from "./heroes/holy-adjudicator/index.js";
+import { OrchestraLeader } from "./heroes/orchestra-leader/index.js";
+import { SwordChild } from "./heroes/sword-child/index.js";
+import { SlothGirl } from "./heroes/sloth-girl/index.js";
+import { SpiritTide } from "./heroes/spirit-tide/index.js";
+import { GluttonousGirl } from "./heroes/gluttonous-girl/index.js";
+import { TrickAdventurer } from "./heroes/trick-adventurer/index.js";
+import { PrimalArcher } from "./heroes/primal-archer/index.js";
+import { TrickHolyArcher } from "./heroes/trick-holy-archer/index.js";
+import { EnviousGirl } from "./heroes/envious-girl/index.js";
+import { Ranger } from "./heroes/ranger/index.js";
+import { MagicArcherEX } from "./heroes/magic-archer-ex/index.js";
+import { ApprenticeProducer } from "./heroes/apprentice-producer/index.js";
+import { DelinquentGirl } from "./heroes/delinquent-girl/index.js";
+import { CurseTalisman } from "./heroes/curse-talisman/index.js";
+import { GreedyGirl } from "./heroes/greedy-girl/index.js";
+import { HolidayMage } from "./heroes/holiday-mage/index.js";
 import { GodEater } from "./heroes/god-eater/index.js";
 import { Lawgiver } from "./heroes/lawgiver/index.js";
 import { Cardinal } from "./heroes/cardinal/index.js";
@@ -59,6 +77,24 @@ const definitions = [
   ["swordEmperor", "剑帝"], ["priest", "神官"], ["assassin", "暗杀者"],
 ];
 export const HERO_DEFINITIONS = {
+  mischiefGirl: { name: "捣蛋萝莉", HeroClass: MischiefGirl },
+  holyAdjudicator: { name: "圣仲裁者", HeroClass: HolyAdjudicator },
+  orchestraLeader: { name: "乐团首席", HeroClass: OrchestraLeader },
+  swordChild: { name: "剑之子", HeroClass: SwordChild },
+  slothGirl: { name: "怠惰少女", HeroClass: SlothGirl },
+  spiritTide: { name: "灵熙之潮", HeroClass: SpiritTide },
+  gluttonousGirl: { name: "农暴食少女", HeroClass: GluttonousGirl },
+  trickAdventurer: { name: "trick冒险家", HeroClass: TrickAdventurer },
+  primalArcher: { name: "原初之弓", HeroClass: PrimalArcher },
+  trickHolyArcher: { name: "trick圣弓", HeroClass: TrickHolyArcher },
+  enviousGirl: { name: "嫉妒少女", HeroClass: EnviousGirl },
+  ranger: { name: "游击士", HeroClass: Ranger },
+  magicArcherEX: { name: "魔弓EX", HeroClass: MagicArcherEX },
+  apprenticeProducer: { name: "见习制片", HeroClass: ApprenticeProducer },
+  delinquentGirl: { name: "萝莉番长", HeroClass: DelinquentGirl },
+  curseTalisman: { name: "咒符师", HeroClass: CurseTalisman },
+  greedyGirl: { name: "贪婪少女", HeroClass: GreedyGirl },
+  holidayMage: { name: "节日魔导", HeroClass: HolidayMage },
   godEater: { name: "噬神者", HeroClass: GodEater },
   lawgiver: { name: "铸律者", HeroClass: Lawgiver },
   cardinal: { name: "红衣主教", HeroClass: Cardinal },

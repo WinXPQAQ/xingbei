@@ -126,7 +126,10 @@ export class TurnFlow {
       if (this.resumePlayerId == null) this.resumePlayerId = this.normalNext(state.playerId);
       this.followupTurns.push(...followers);
     }
-    if (this.extraTurns.length) this.game.current = this.extraTurns.shift();
+    if (this.extraTurns.length) {
+      if (this.resumePlayerId == null) this.resumePlayerId = this.normalNext(state.playerId);
+      this.game.current = this.extraTurns.shift();
+    }
     else if (this.followupTurns.length) this.game.current = this.followupTurns.shift();
     else if (this.resumePlayerId != null) { this.game.current = this.resumePlayerId; this.resumePlayerId = null; }
     else this.game.current = this.normalNext(state.playerId);

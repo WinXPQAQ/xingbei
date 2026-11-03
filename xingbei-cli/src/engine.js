@@ -186,6 +186,8 @@ export class Game {
       if (!card.attachment || !this.canAttach(card, destination.playerId, card.attachment.effectId)) throw new RuleError("状态区需要合法且不重复的挂载效果");
     }
     const from = card.location;
+    if (destination.zone === "deck" || from.zone === "deck") card.lastHolderId = null;
+    if (from.zone === "hand" || from.zone === "covered") card.lastHolderId = from.playerId;
     const publicTraits = !covered && from.zone === "hand" && (destination.zone === "field" || (destination.zone === "discard" && visibility === "public"))
       ? card.getTraits({ game: this, playerId: from.playerId, purpose: "public-observation" }) : null;
     const index = previous.indexOf(card);
@@ -201,6 +203,10 @@ export class Game {
     for (const location of [from, destination]) if (location.zone === "hand") (this.changedHands ??= new Set()).add(location.playerId);
     card.pendingTraitSelection = null;
     card.onMoved?.(this, { from, to: card.location, removal });
+    if (destination.zone === "discard" && ["hand","covered","field"].includes(from.zone) && Number.isInteger(card.lastHolderId)) {
+      const context = { playerId: card.lastHolderId, cards: [card], visibility, origin: from.zone };
+      (this.pendingDiscardEvents ??= []).push(context);
+    }
     if (animate) this.recordPresentation("move", { card: card.toJSON(), from, to: card.location, reason, targetId, visibility });
     return card;
   }
@@ -222,6 +228,7 @@ export class Game {
 
   canAttach(card, playerId, effectId) {
     const player = this.player(playerId), definition = this.effects.get(effectId);
+    if (definition?.category === "basic" && player.hero.acceptsBasicEffect?.({game:this,player,card,effectId}) === false) return false;
     if (card.category === "basic" && (!definition || definition.category !== "basic")) return false;
     return card.category === "exclusive" || definition.stackable || !player.getStatus(effectId).some(existing => existing !== card);
   }
@@ -232,9 +239,10 @@ export class Game {
     const previous = card.attachment;
     card.attachment = { effectId, sourcePlayerId, sourceSkillId, data: { ...data } };
     try {
-      const detail = this.describeCards([card], sourcePlayerId ?? playerId);
-      const moved = this.moveCard(card.id, { zone: "status", playerId });
+      const detail = this.describeCards([card], sourcePlayerId ?? playerId, { hidden: !!data.hidden });
+      const moved = this.moveCard(card.id, { zone: "status", playerId }, { visibility: data.hidden ? "hidden" : "public" });
       this.recordPublicAction({type:'effect',sourceId:sourcePlayerId,targetId:playerId,effectId,result:'attached'});
+      if (this.effects.get(effectId)?.category === 'basic') (this.pendingEffectEvents ??= []).push({ actorId: sourcePlayerId, targetId: playerId, playerId, card, effectId });
       this.log.push(`${sourcePlayerId == null ? "" : this.actorLabel(sourcePlayerId) + "将"}${effectLabel(this, effectId)}${detail}附加到${this.actorLabel(playerId)}，作为${card.category === "basic" ? "基础效果" : "专属牌"}`);
       return moved;
     }
@@ -245,7 +253,7 @@ export class Game {
     const card = this.cards.get(cardId);
     if (card?.location.zone !== "status") throw new RuleError("这张牌没有挂载效果");
     const owner = card.location.playerId, effectId = card.attachment.effectId, name = effectLabel(this, effectId);
-    const detail = this.describeCards([card], owner);
+    const detail = this.describeCards([card], owner, { hidden: !!card.attachment.data?.hidden });
     const moved = this.moveCard(cardId, destination);
     this.recordPublicAction({type:'effect',playerId:owner,effectId,result:'removed'});
     this.log.push(`${this.actorLabel(owner)}的${name}${detail}被移除，${destination.zone === "hand" ? "收入" + this.actorLabel(destination.playerId) + "手牌" : destination.zone === "outside" ? "返回场外" : "进入弃牌堆"}`);
@@ -364,7 +372,9 @@ export class Game {
       const previousTrigger = this.activeTrigger;
       this.activeTrigger = { timing, context, ownerId: entry.player.id, skillId: entry.definition.id };
       try {
+        const basicId = entry.card?.category === "basic" ? entry.card.attachment?.effectId : null;
         yield* this.resolveSkillEffect(entry.definition, payload);
+        if (basicId && entry.card.location.zone !== "status") { const event={playerId:entry.player.id,card:entry.card,effectId:basicId}; if(this.triggers.get(Timing.BASIC_EFFECT_RESOLVED,event).length) yield* this.trigger(Timing.BASIC_EFFECT_RESOLVED,event,options); }
       } finally { this.activeTrigger = previousTrigger; }
       yield* this.present();
       if (this.winner) break;
@@ -549,7 +559,7 @@ export class Game {
   }
   canAttackTarget(actorId, targetId, isCounter = false) {
     const actor = this.player(actorId), player = this.player(targetId);
-    return actor.team !== player.team && actor.statuses.every(card => this.effects.get(card.attachment.effectId)?.allowsAttackTarget?.({ game: this, actor, targetId, isCounter, card }) ?? true) && player.hero.canBeAttackTarget({ game: this, player, actor, isCounter });
+    return actor.team !== player.team && (actor.hero.allowsAttackTarget?.({game:this,actor,targetId,isCounter}) ?? true) && actor.statuses.every(card => this.effects.get(card.attachment.effectId)?.allowsAttackTarget?.({ game: this, actor, targetId, isCounter, card }) ?? true) && player.hero.canBeAttackTarget({ game: this, player, actor, isCounter });
   }
   legalTargets(actorId, card) {
     if (!this.allowsAction(actorId, card.type) || !this.allowsCard(actorId, card)) return [];
@@ -689,7 +699,7 @@ export class Game {
   canRefine(playerId) {
     if (this.turn.state && this.turn.state.playerId !== playerId) return false;
     const player = this.player(playerId);
-    return !this.winner && this.allowsAction(playerId, "special") && this.turn.canUse("special") && player.energy.gem + player.energy.crystal < this.getEnergyLimit(playerId) && this.stoneCounts(player.team).total > 0;
+    return !this.winner && player.hero.canRefine?.() !== false && this.allowsAction(playerId, "special") && this.turn.canUse("special") && player.energy.gem + player.energy.crystal < this.getEnergyLimit(playerId) && this.stoneCounts(player.team).total > 0;
   }
 
   *refineSteps(actorId, { gem = 0, crystal = 0 }, options = {}) {
@@ -744,8 +754,14 @@ export class Game {
     if (this.processingRuleEvents) return;
     this.processingRuleEvents = true;
     try {
-      while (!this.winner && (this.pendingRuleEvents.length || this.pendingMoraleEvents?.length || this.pendingHealingEvents?.length || this.pendingHealingChanges?.length || this.changedHands?.size)) {
-        if (this.pendingRuleEvents.length) {
+      while (!this.winner && (this.pendingDiscardEvents?.length || this.pendingEffectEvents?.length || this.pendingRuleEvents.length || this.pendingMoraleEvents?.length || this.pendingHealingEvents?.length || this.pendingHealingChanges?.length || this.changedHands?.size)) {
+        if (this.pendingDiscardEvents?.length) {
+          const batch = this.pendingDiscardEvents.splice(0), groups = new Map();
+          for (const event of batch) { const key = `${event.playerId}:${event.visibility}`; const previous = groups.get(key); if (previous) previous.cards.push(...event.cards); else groups.set(key,event); }
+          for (const event of groups.values()) if (this.triggers.get(Timing.CARDS_DISCARDED,event).length) yield* this.trigger(Timing.CARDS_DISCARDED,event,options);
+        }
+        else if (this.pendingEffectEvents?.length) { const event=this.pendingEffectEvents.shift(); if (this.triggers.get(Timing.BASIC_EFFECT_ATTACHED,event).length) yield* this.trigger(Timing.BASIC_EFFECT_ATTACHED,event,options); }
+        else if (this.pendingRuleEvents.length) {
           const event = this.pendingRuleEvents.shift();
           yield* resolveExposureTraits(this, event);
           yield* this.trigger(Timing.CARD_EXPOSED, event, options);
@@ -846,7 +862,7 @@ export class Game {
   *chooseHandCards(playerId, count, predicate = () => true, { title = "选择手牌", optional = false, purpose = "discard", recipientId = null, skillId = null, context = null } = {}) {
     const player = this.player(playerId);
     const valid = player.hand.flatMap((card, index) => predicate(card) ? [index] : []);
-    if (valid.length < count) throw new RuleError("没有足够的合法手牌");
+    if (valid.length < count) { if (optional) return null; throw new RuleError("没有足够的合法手牌"); }
     const indexes = yield { type: "cardChoice", playerId, count, valid, purpose, recipientId, skillId, context, cards: player.hand, title, optional, defaultValue: optional ? null : valid.slice(0, count) };
     if (optional && indexes == null) return null;
     if (!Array.isArray(indexes) || indexes.length !== count || new Set(indexes).size !== count || indexes.some(index => !valid.includes(index))) throw new RuleError("无效的手牌选择");
@@ -995,6 +1011,7 @@ export class Game {
   // Transfers skip points 3–5 and healing; point-6 effects (e.g. Eternal Prisoner) still apply.
   *damageAtPointSixSteps(context, options = {}) {
     context.point = 6;
+    if (this.triggers.get(Timing.DAMAGE_REDIRECT,context).length) yield* this.trigger(Timing.DAMAGE_REDIRECT,context,options);
     yield* this.trigger(Timing.DAMAGE_ACTUAL, context, options);
     const pending = [context, ...(context.transfers ?? [])];
     const first = this.turn.state?.playerId ?? this.current;
@@ -1005,7 +1022,7 @@ export class Game {
       this.recordPresentation("damage", { playerId: targetId, sourceId, amount: part.actual, damageType: part.damageType });
       yield* this.present();
       if (part.actual) yield* this.drawSteps(targetId, part.actual, {
-        ...options, moraleLoss: options.moraleLoss !== false, damageContext: part,
+        ...options, moraleLoss: part.moraleLoss !== false && options.moraleLoss !== false, damageContext: part,
         cause: { type: "damage", sourceId, damageType: part.damageType, skillId: part.skillId, moraleLimit: part.moraleLimit },
       });
       this.recordPublicAction({type:'damage',sourceId,targetId,amount:part.actual,result:part.damageType});
@@ -1110,11 +1127,11 @@ export class Game {
 
   magicTargets(playerId) {
     const p = this.player(playerId), forward = this.nearestOpponent(playerId);
-    const reverse = p.getSkills().some(({skill}) => skill.id === "magicMastery") ? this.nearestOpponent(playerId, new Set(), -1) : null;
+    const reverse = (p.getSkills().some(({skill}) => skill.id === "magicMastery") || p.hero.canReverseMagic?.(this,p)) ? this.nearestOpponent(playerId, new Set(), -1) : null;
     return [...new Set([forward?.id, reverse?.id].filter(id => id != null))];
   }
   canRelayMagic(playerId, card) {
-    return card.name === "magicBullet" || (this.player(playerId).getSkills().some(({skill}) => skill.id === "magicFusion") && card.getTraits({game:this,playerId}).elements.some(element => ["fire", "earth"].includes(element)));
+    return card.name === "magicBullet" || this.player(playerId).hero.canRelayMagic?.(this, this.player(playerId), card) === true || (this.player(playerId).getSkills().some(({skill}) => skill.id === "magicFusion") && card.getTraits({game:this,playerId}).elements.some(element => ["fire", "earth"].includes(element)));
   }
   magicTarget(sourceId, participants, direction = 1) {
     return this.nearestOpponent(sourceId, participants.size === this.players.length ? new Set() : participants, direction);

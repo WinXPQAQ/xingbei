@@ -1,4 +1,5 @@
 export const Timing = Object.freeze({
+  CARDS_DISCARDED: "cardsDiscarded", BASIC_EFFECT_ATTACHED: "basicEffectAttached", BASIC_EFFECT_RESOLVED: "basicEffectResolved",
   HEALING_CHANGED: "healingChanged",
   CARDS_CLEANED_UP: "cardsCleanedUp",
   HAND_CHANGED: "handChanged",
@@ -15,7 +16,7 @@ export const Timing = Object.freeze({
   ACTION_PHASE_END: "actionPhaseEnd", TURN_END: "turnEnd",
   ATTACK_RESOLVED: "attackResolved",
   ATTACK_DECLARED: "attackDeclared", ATTACK_DECISION: "attackDecision", ATTACK_RESPONSE_BEFORE: "attackResponseBefore",
-  HEALING_BEFORE: "healingBefore", DAMAGE_ACTUAL_BEFORE: "damageActualBefore", DAMAGE_ACTUAL: "damageActual",
+  HEALING_BEFORE: "healingBefore", DAMAGE_ACTUAL_BEFORE: "damageActualBefore", DAMAGE_ACTUAL: "damageActual", DAMAGE_REDIRECT: "damageRedirect",
   ATTACK_HIT_CHECK: "attackHitCheck", ATTACK_HIT: "attackHit", ATTACK_MISS: "attackMiss",
   MAGIC_HIT_CHECK: "magicHitCheck", DAMAGE_BEFORE: "damageBefore", DAMAGE_AFTER: "damageAfter",
 });

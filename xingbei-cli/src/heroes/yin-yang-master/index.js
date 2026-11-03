@@ -30,7 +30,7 @@ export class YinYangMaster extends Hero {
         filter:({game,player,context})=>hero.isActiveAttack(context)&&context.targetId!==player.id&&context.canCounter&&!context.forceHitRequested&&!context.forcedHit&&hero.state.form&&game.stoneCounts(player.team).gem>=1&&game.stoneCounts(player.team).total>=2&&!context.boundResponse,
         *resolve({game,player,context}){
           const counterTargets=game.players.filter(p=>game.canAttackTarget(player.id,p.id,true)&&p.id!==context.actorId);
-          const valid=playableCards(player).map((card,index)=>({card,index})).filter(({card})=>card.type==='attack'&&game.canRespond(context.card,card,{actorId:context.actorId,targetId:player.id,attackTraits:context.attackTraits}));
+          const valid=playableCards(player).map((card,index)=>({card,index})).filter(({card})=>card.type==='attack'&&(context.canDarkStrike!==false||card.name!=='darkStrike')&&game.canRespond(context.card,card,{actorId:context.actorId,targetId:player.id,attackTraits:context.attackTraits}));
           if(!valid.length||!counterTargets.length)return;
           const response=yield {type:'response',skillId:'shikigamiBinding',protectedTargetId:context.targetId,title:`式神咒束：${game.actorLabel(context.targetId)}受到${game.actorLabel(context.actorId)}攻击，可代替队友应战`,actor:game.player(context.actorId),target:player,attack:context.card,attackTraits:context.attackTraits,valid,counterTargets,damage:context.amount,shieldable:context.shieldable,isCounter:false};
           if(!response)return;

@@ -77,7 +77,7 @@ export class Prayer extends Hero {
         action(game, player) {
           return {
             type: "spell", cardCount: 1, cardFilter: (card) => card.hasUniqueSkill(id),
-            targets: teammates(game, player).filter((targetId) => !game.player(targetId).getStatus(id).length),
+            targets: teammates(game, player).filter((targetId) => game.canAttach({category:"basic"},targetId,id)),
           };
         },
         *resolveAction({ game, player, cards, targetIds, options }) {

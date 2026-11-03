@@ -44,7 +44,7 @@ function createSkills(hero) {
       *resolve({ game, player }) { if (yield* game.offerSkill(player.id, "spellExcitation", "法术激荡")) game.turn.addAttackAction({ sourceSkillId: "spellExcitation" }); } },
     ...SEAL_ELEMENTS.map(element => ({
       id: `${element}Seal`, name: `${labels[element]}之封印`,
-      action(game, player) { return { type: "spell", cardCount: 1, cardFilter: card => card.hasUniqueSkill(`${element}Seal`), targets: game.players.filter(target => target.team !== player.team && !target.getStatus(`${element}Seal`).length).map(target => target.id) }; },
+      action(game, player) { return { type: "spell", cardCount: 1, cardFilter: card => card.hasUniqueSkill(`${element}Seal`), targets: game.players.filter(target => target.team !== player.team && game.canAttach({category:"basic"},target.id,`${element}Seal`)).map(target => target.id) }; },
       *resolveAction({ game, player, cards, targetIds, options }) {
         game.playCard(player, player.hand.indexOf(cards[0]), options);
         game.attachCard(cards[0].id, targetIds[0], { effectId: `${element}Seal`, sourcePlayerId: player.id, sourceSkillId: `${element}Seal` });

@@ -1,6 +1,6 @@
 # 英雄实现入口
 
-当前54位已实现英雄均在本目录，每位英雄一个英文名称目录。
+当前72位已实现英雄均在本目录，每位英雄一个英文名称目录。
 
 ```text
 heroes/
@@ -127,3 +127,30 @@ heroes/
 | 噬神者 | `god-eater/index.js` | `god-eater/ai.js` | `god-eater/observation.js` |
 
 渗蚀由卡牌移动触发，伤害来源固定为该刃所属噬神者；共用引擎只负责移牌事件与嵌套结算。双属性约束解释在`src/resolution/card-traits.js`。用户裁定、验证及评分局限见[噬神者报告](../../docs/god-eater.md)。
+
+## 特典补全（0.16.0）
+
+每个目录同时提供规则、评分和观测声明；在已有英雄上继承共用技能，变体差异留在自己的目录。
+
+| 英雄 | 目录 |
+| --- | --- |
+| 节日魔导 | [holiday-mage](holiday-mage/index.js) |
+| 贪婪少女 | [greedy-girl](greedy-girl/index.js) |
+| 咒符师 | [curse-talisman](curse-talisman/index.js) |
+| 萝莉番长 | [delinquent-girl](delinquent-girl/index.js) |
+| 见习制片 | [apprentice-producer](apprentice-producer/index.js) |
+| 魔弓EX | [magic-archer-ex](magic-archer-ex/index.js) |
+| 游击士 | [ranger](ranger/index.js) |
+| 嫉妒少女 | [envious-girl](envious-girl/index.js) |
+| trick圣弓 | [trick-holy-archer](trick-holy-archer/index.js) |
+| 原初之弓 | [primal-archer](primal-archer/index.js) |
+| trick冒险家 | [trick-adventurer](trick-adventurer/index.js) |
+| 农暴食少女 | [gluttonous-girl](gluttonous-girl/index.js) |
+| 灵熙之潮 | [spirit-tide](spirit-tide/index.js) |
+| 怠惰少女 | [sloth-girl](sloth-girl/index.js) |
+| 剑之子 | [sword-child](sword-child/index.js) |
+| 乐团首席 | [orchestra-leader](orchestra-leader/index.js) |
+| 圣仲裁者 | [holy-adjudicator](holy-adjudicator/index.js) |
+| 捣蛋萝莉 | [mischief-girl](mischief-girl/index.js) |
+
+规则裁定、三批顺序及验证见[特典报告](../../docs/special-heroes.md)。

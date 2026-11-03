@@ -30,6 +30,10 @@ export function* magicRelaySteps(game, actorId, options = {}) {
     yield* game.flushRuleEvents(options);
     yield* game.present();
     const valid = playableCards(target).map((card, index) => ({ card, index })).filter(item => game.allowsCard(target.id, item.card, "response") && (item.card.name === "holyLight" || game.canRelayMagic(target.id, item.card)));
+    if (target.hero.magicResponse && (yield* target.hero.magicResponse(game,target,{sourceId,targetId:game.magicTarget(target.id,participants,options.direction??1)?.id,amount:damage},options))) {
+      game.recordPublicAction({type:'response',actorId:target.id,sourceId,card:'magicBullet',result:'relay'});
+      damage++; sourceId=target.id; continue;
+    }
     const decision = yield { type: "response", actor: game.player(sourceId), target, valid, damage,
       nextTarget: game.magicTarget(target.id, participants, options.direction ?? 1), participants: [...participants], chainOriginId: actorId, chainDepth: damage - 2, direction: options.direction ?? 1 };
     const picked = decision && valid.find(item => item.index === decision.index);
@@ -56,7 +60,7 @@ export function* magicRelaySteps(game, actorId, options = {}) {
     yield* game.trigger(Timing.MAGIC_HIT_CHECK, context, options);
     if (!context.hit) { game.recordPresentation("miss", { playerId: target.id, cause: context.cause }); yield* game.present(); }
     game.recordPublicAction({type:'magicResult',actorId:sourceId,targetId:target.id,result:context.hit?'hit':context.cause??'blocked',amount:context.hit?context.damage:0});
-    if (context.hit) yield* game.damageSteps(target.id, context.damage, { ...options, sourceId, damageType: "spell" });
+    if (context.hit) yield* game.damageSteps(target.id, context.damage, { ...options, sourceId, damageType: "spell", skillId: "magicBullet" });
     if (target.pendingOverflow) yield { type: "overflow", player: target };
     return;
   }

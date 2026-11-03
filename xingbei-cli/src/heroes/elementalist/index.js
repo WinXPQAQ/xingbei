@@ -97,8 +97,7 @@ export class Elementalist extends Hero {
             });
             if (id === "freeze") yield* healTarget(game, player, 1, id);
             if (id === "lightning") {
-              const n = game.addStones(player.team, "gem");
-              game.logSkill(player.id, id, `战绩区获得${n}宝石`);
+              player.hero.lightningReward(game, player);
             }
             if (extra) game.turn.addAction({ type: extra, sourceSkillId: id });
           },
@@ -125,5 +124,9 @@ export class Elementalist extends Hero {
         },
       },
     ];
+  }
+  lightningReward(game, player) {
+    const n = game.addStones(player.team, "gem");
+    game.logSkill(player.id, "lightning", `战绩区获得${n}宝石`);
   }
 }

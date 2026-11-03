@@ -1,3 +1,21 @@
+import mischiefGirl from "../../src/heroes/mischief-girl/observation.js";
+import holyAdjudicator from "../../src/heroes/holy-adjudicator/observation.js";
+import orchestraLeader from "../../src/heroes/orchestra-leader/observation.js";
+import swordChild from "../../src/heroes/sword-child/observation.js";
+import slothGirl from "../../src/heroes/sloth-girl/observation.js";
+import spiritTide from "../../src/heroes/spirit-tide/observation.js";
+import gluttonousGirl from "../../src/heroes/gluttonous-girl/observation.js";
+import trickAdventurer from "../../src/heroes/trick-adventurer/observation.js";
+import primalArcher from "../../src/heroes/primal-archer/observation.js";
+import trickHolyArcher from "../../src/heroes/trick-holy-archer/observation.js";
+import enviousGirl from "../../src/heroes/envious-girl/observation.js";
+import ranger from "../../src/heroes/ranger/observation.js";
+import magicArcherEX from "../../src/heroes/magic-archer-ex/observation.js";
+import apprenticeProducer from "../../src/heroes/apprentice-producer/observation.js";
+import delinquentGirl from "../../src/heroes/delinquent-girl/observation.js";
+import curseTalisman from "../../src/heroes/curse-talisman/observation.js";
+import greedyGirl from "../../src/heroes/greedy-girl/observation.js";
+import holidayMage from "../../src/heroes/holiday-mage/observation.js";
 import godEater from "../../src/heroes/god-eater/observation.js";
 import lawgiver from '../../src/heroes/lawgiver/observation.js';
 import cardinal from '../../src/heroes/cardinal/observation.js';
@@ -53,7 +71,7 @@ import sage from '../../src/heroes/sage/observation.js';
 import prayer from '../../src/heroes/prayer/observation.js';
 import heroicPuppet from '../../src/heroes/heroic-puppet/observation.js';
 
-export const heroFields = Object.freeze({godEater,lawgiver,cardinal,chronicler,missionary,heretic,nobleLady,headMaid,barrierMaster,mystic,defiler,swordWitch,butterflyDancer,battleMage,starfallWitch,inquisitor,witchHunter,templar,elfArcher,yinYangMaster,soulWarlock,bloodWitch,moonGoddess,holyArcher,talismanMaster,swordEmperor,magicArcher,azureFlameWitch,bloodSwordSpirit,beastWarrior,adventurer,fighter,brave,redLotusKnight,magicLancer,bard,berserker,windSwordmaster,marksman,sealer,guardianAngel,priest,saint,holyLancer,plagueMage,elementalist,valkyrie,magicalGirl,assassin,magicSwordsman,adjudicator,sage,prayer,heroicPuppet});
+export const heroFields = Object.freeze({mischiefGirl,holyAdjudicator,orchestraLeader,swordChild,slothGirl,spiritTide,gluttonousGirl,trickAdventurer,primalArcher,trickHolyArcher,enviousGirl,ranger,magicArcherEX,apprenticeProducer,delinquentGirl,curseTalisman,greedyGirl,holidayMage,godEater,lawgiver,cardinal,chronicler,missionary,heretic,nobleLady,headMaid,barrierMaster,mystic,defiler,swordWitch,butterflyDancer,battleMage,starfallWitch,inquisitor,witchHunter,templar,elfArcher,yinYangMaster,soulWarlock,bloodWitch,moonGoddess,holyArcher,talismanMaster,swordEmperor,magicArcher,azureFlameWitch,bloodSwordSpirit,beastWarrior,adventurer,fighter,brave,redLotusKnight,magicLancer,bard,berserker,windSwordmaster,marksman,sealer,guardianAngel,priest,saint,holyLancer,plagueMage,elementalist,valkyrie,magicalGirl,assassin,magicSwordsman,adjudicator,sage,prayer,heroicPuppet});
 export function declaredState(player, observerId) {
   const fields = heroFields[player.hero.id];
   if (!fields) throw new Error(`Hero lacks observation contract: ${player.hero.id}`);

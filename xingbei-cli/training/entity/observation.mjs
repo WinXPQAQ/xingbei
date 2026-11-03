@@ -1,3 +1,4 @@
+import { hiddenEffectFor } from "../../src/card-visibility.js";
 import { playableCards } from "../../src/playable-cards.js";
 import { declaredState } from './hero-state.mjs';
 
@@ -27,9 +28,10 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
   const addCard = card => {
     if (cards.has(card.id)) return cards.get(card.id);
     const owner = card.location.playerId;
-    const traits = card.getTraits({ game, playerId: owner ?? playerId });
-    const index = add('card', { name: card.name, type: card.type, category: card.category,
-      zone: card.location.zone, elements: [...traits.elements], fates: [...traits.fates], uniqueSkills: [...card.uniqueSkills],
+    const hidden = hiddenEffectFor(card,playerId) && !(request.playerId===playerId && request.revealedCards?.some(c=>c.id===card.id));
+    const traits = hidden ? {elements:[],fates:[]} : card.getTraits({ game, playerId: owner ?? playerId });
+    const index = add('card', { name: hidden ? "hiddenEffect" : card.name, type: hidden ? null : card.type, category: card.category,
+      zone: card.location.zone, elements: [...traits.elements], fates: [...traits.fates], uniqueSkills: hidden ? [] : [...card.uniqueSkills],
       effect: card.attachment?.effectId ?? null, sourceSkill: card.attachment?.sourceSkillId ?? null }, {},
       { owner: playerRef(owner), source: playerRef(card.attachment?.sourcePlayerId) });
     cards.set(card.id, index); return index;
@@ -97,7 +99,7 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
   const context = { ...event?.context, ...request.context };
   // Never serialize the raw context: it can contain hidden cards and callbacks.
   const flags = {};
-  for (const key of ['hit','forcedHit','forceHitRequested','canCounter','canHolyLight','bloodBlade',
+  for (const key of ['hit','forcedHit','forceHitRequested','canCounter','canHolyLight','canDarkStrike','bloodBlade',
     'hadesTremor','puppetMissMode','disableHolyStrike','extraSpell','moraleLoss','sameElement','specialAction','soulTransfer','requiresCounterSkill'])
     if (context[key] !== undefined || request[key] !== undefined) flags[key] = request[key] ?? context[key];
   const question = add('question', { type: request.type, stage: request.stage ?? 'complete', skill: request.skillId ?? null,

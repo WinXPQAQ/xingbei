@@ -6,7 +6,7 @@ const attackPoints = new Map([
 ]);
 const damagePoints = new Map([
   [Timing.DAMAGE_BEFORE, 3], [Timing.HEALING_BEFORE, 4],
-  [Timing.DAMAGE_ACTUAL_BEFORE, 5], [Timing.DAMAGE_ACTUAL, 6], [Timing.DAMAGE_AFTER, 6],
+  [Timing.DAMAGE_ACTUAL_BEFORE, 5], [Timing.DAMAGE_ACTUAL, 6], [Timing.DAMAGE_REDIRECT, 6], [Timing.DAMAGE_AFTER, 6],
 ]);
 const key = (role, behavior, point) => `${role}:${behavior}:${point}`;
 

@@ -1,9 +1,10 @@
+import { hiddenEffectFor } from "../src/card-visibility.js";
 import { playableCards } from "../src/playable-cards.js";
 import { UNIQUE_SKILL_NAMES } from "/src/unique-skills.js";
 // Presentation adapted from v1.6.7 UI, music and nova. See SOURCES.md.
 import { CARD_NAMES, ELEMENT_NAMES, FATE_NAMES } from "/src/cards.js";
 
-const formNames = { raging: "狂戾", shadowPrison: "影牢", glassRealm: "琉璃境", holyFlame: "圣炎", elfBlessing: "精灵祝福", shikigami: "式神", bleeding: "流血", darkMoon: "暗月", radiant: "圣煌", flame: "烈焰", iaido: "御魂流居合", dragonFist: "百式幻龙拳", phantom: "幻影", exhausted: "精疲力竭", boilingBlood: "热血沸腾", eternalPrisoner: "永恒囚徒", prayer: "祈祷", runeBurst: "蓄势迸发" };
+const formNames = { heavenSin: "天罪", raging: "狂戾", shadowPrison: "影牢", glassRealm: "琉璃境", holyFlame: "圣炎", elfBlessing: "精灵祝福", shikigami: "式神", bleeding: "流血", darkMoon: "暗月", radiant: "圣煌", flame: "烈焰", iaido: "御魂流居合", dragonFist: "百式幻龙拳", phantom: "幻影", exhausted: "精疲力竭", boilingBlood: "热血沸腾", eternalPrisoner: "永恒囚徒", prayer: "祈祷", runeBurst: "蓄势迸发" };
 const heroMarkers = {
   lawgiver: [["relics", "圣遗物", 3, "relics"], ["silverBullets", "银制子弹", 3, "silverBullets"]],
   cardinal: [["relics", "圣遗物", 3, "relics"], ["silverBullets", "银制子弹", 3, "silverBullets"]],
@@ -19,6 +20,11 @@ const heroMarkers = {
   yinYangMaster: [["ghostFire", "鬼火", 3, "ghostFire"]],
   soulWarlock: [["yellowSoul", "黄色灵魂", 6, "yellowSoul"], ["blueSoul", "蓝色灵魂", 6, "blueSoul"]],
   moonGoddess: [["newMoon", "新月", 2, "newMoon"], ["petrification", "石化", 3, "petrification"]],
+  apprenticeProducer: [["atoms", "元子", 3, "atoms"]],
+  spiritTide: [["surge", "灵涌", 4, "surge"]],
+  holyAdjudicator: [["sins", "罪", 3, "sins"]],
+  primalArcher: [["faith", "信仰", 10, "faith"]],
+  trickHolyArcher: [["faith", "信仰", 10, "faith"], ["cannon", "圣煌辉光炮", null, "cannon"]],
   holyArcher: [["faith", "信仰", 10, "faith"], ["cannon", "圣煌辉光炮", 1, "cannon"]],
   swordEmperor: [["swordQi", "剑气", 5, "swordQi"]],
   azureFlameWitch: [["rebirth", "重生", 4, "rebirth"]],
@@ -86,11 +92,13 @@ export function renderPlayers(game, container, humanId, targets = null, revealHa
     if (player.getStatus("weakness")[0]) marks.push('<img src="/assets/card/weakness.png" title="虚弱" alt="虚弱">');
     if (player.getStatus("poison").length) marks.push(`<span class="poison-mark"><img src="/assets/card/poison.png" title="中毒" alt="中毒"><b>${player.getStatus("poison").length}</b></span>`);
     for (const card of player.statuses.filter(card => !["holyShield", "weakness", "poison"].includes(card.attachment.effectId))) {
-      const id = card.attachment.effectId, label = UNIQUE_SKILL_NAMES[id] ?? CARD_NAMES[id] ?? id;
-      marks.push(`<span class="poison-mark" data-effect-id="${id}"><img src="/assets/card/${card.name}.png" title="${label}" alt="${label}"><b>${label.startsWith("五") ? "" : label[0]}</b></span>`);
+      const afterglow = card.attachment.effectId === "primalCannon" && card.attachment.data?.face === "afterglow";
+      const id = card.attachment.effectId, label = afterglow ? "圣煌余辉" : game.effects?.get?.(id)?.name ?? UNIQUE_SKILL_NAMES[id] ?? CARD_NAMES[id] ?? id;
+      const image = !revealHands && hiddenEffectFor(card,humanId) ? "/theme/cardback.png" : `/assets/card/${afterglow ? "primalAfterglow" : card.name}.png`;
+      marks.push(`<span class="poison-mark" data-effect-id="${id}"><img src="${image}" title="${label}" alt="${label}"><b>${label.startsWith("五") ? "" : label[0]}</b></span>`);
     }
     if (player.covered?.length) {
-      const label = { lawgiver: "宝珠牌", cardinal: "宝珠牌", chronicler: "遗迹", heretic: "预言", headMaid: "影", barrierMaster: "结界", mystic: "言灵", butterflyDancer: "茧", starfallWitch: "卢恩", witchHunter: "魔力瓶", elfArcher: "祝福", moonGoddess: "暗月", swordEmperor: "剑魂", talismanMaster: "妖力", magicArcher: "充能" }[player.hero.id] ?? "盖牌";
+      const label = { ranger: "子弹", curseTalisman: "妖力", orchestraLeader: "音符", holyAdjudicator: "天平", lawgiver: "宝珠牌", cardinal: "宝珠牌", chronicler: "遗迹", heretic: "预言", headMaid: "影", barrierMaster: "结界", mystic: "言灵", butterflyDancer: "茧", starfallWitch: "卢恩", witchHunter: "魔力瓶", elfArcher: "祝福", moonGoddess: "暗月", swordEmperor: "剑魂", talismanMaster: "妖力", magicArcher: "充能" }[player.hero.id] ?? "盖牌";
       const cards = player.covered.map(card => { const visible = revealHands || (player.id === humanId && card.coveredVisibility !== 'concealed') || card.coveredVisibility === 'public'; return `<span class="covered-card" title="${visible ? cardLabel(card, { game, playerId: player.id }) : '盖牌'}"><img src="${visible ? '/assets/card/' + card.name + '.png' : '/theme/cardback.png'}" alt="${visible ? cardLabel(card, { game, playerId: player.id }) : '盖牌'}">${visible ? `<small>${card.getTraits({ game, playerId: player.id }).fates.map(f => FATE_NAMES[f]).join('/')}</small>` : ''}</span>`; }).join('');
       marks.push(`<details class="covered-mark"><summary title="${label}，点击查看"><img src="/theme/cardback.png" alt="${label}"><b>${player.covered.length}</b></summary><div class="covered-cards">${cards}</div></details>`);
     }

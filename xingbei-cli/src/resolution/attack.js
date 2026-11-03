@@ -30,9 +30,9 @@ export function* attackSteps(game, actorId, handIndex, targetId, options = {}) {
     const counterTargets = game.players.filter(player => game.canAttackTarget(target.id, player.id, true) && player.id !== actor.id);
     const valid = playableCards(target).map((card, index) => ({ card, index, ...(target.hero.responseAttack?.(game, target, card) ? { asAttack: true } : {}) })).filter(item =>
       game.canRespond(attack, item.card, { actorId: actor.id, targetId: target.id, attackTraits }) &&
-      (item.card.name === "holyLight" ? context.canHolyLight : context.canCounter && counterTargets.length));
+      (item.card.name === "holyLight" ? context.canHolyLight : context.canCounter && counterTargets.length && (context.canDarkStrike !== false || item.card.name !== "darkStrike")));
     const decision = context.forcedHit ? null : context.boundResponse ?? (yield { type: "response", actor, target, attack, attackTraits, valid, counterTargets, isCounter, chainOriginId: actorId, chainDepth, damage: context.amount, shieldable: context.shieldable,
-      canCounter: context.canCounter, canHolyLight: context.canHolyLight });
+      canCounter: context.canCounter, canHolyLight: context.canHolyLight, canDarkStrike: context.canDarkStrike !== false });
     context.sourceHandCount = actor.hand.length; context.targetHandCount = target.hand.length;
     if (!decision) {
       yield* game.trigger(Timing.ATTACK_HIT_CHECK, context, options);

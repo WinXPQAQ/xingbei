@@ -35,6 +35,14 @@ function createSkills(hero) {
 export class WindSwordmaster extends Hero {
   constructor(enabled = true) {
     super({ id: "windSwordmaster", name: "风之剑圣" });
-    if (enabled) this.skills = createSkills(this);
+    this.state.oathEmpowered = null;
+    if (enabled) {
+      this.skills = createSkills(this);
+      this.addSkills(
+        {id:"oathAwakening",name:"剑守誓言额外回合",...this.onOwnTurn([Timing.TURN_START]),filter:()=>this.state.oathEmpowered==="waiting",resolve:()=>{this.state.oathEmpowered="active";}},
+        {id:"oathAttackBonus",name:"剑守誓言加伤",...this.onDamage([Timing.DAMAGE_BEFORE],"actor",["attack"]),filter:()=>this.state.oathEmpowered==="active",resolve:({context})=>{context.amount++;}},
+        {id:"oathBonusEnd",name:"剑守誓言加伤结束",...this.onOwnTurn([Timing.TURN_END]),filter:()=>this.state.oathEmpowered==="active",resolve:()=>{this.state.oathEmpowered=null;}}
+      );
+    }
   }
 }
