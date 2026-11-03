@@ -83,7 +83,7 @@ export class MoonGoddess extends Hero {
   *removeMoons(game,player,cards,options,reveal=false){
     for(const card of cards)game.discardCovered(player.id,card,{reveal,skillId:'darkMoonCurse'});
     // One removal operation costs one morale, even when it removes two cards.
-    game.changeMorale(player.team,-1);yield* game.present();
+    yield* game.changeMoraleSteps(player.team,-1,{...options,skillId:"newMoon"});yield* game.present();
     if(!this.moons(player).length){this.state.form=null;game.logSkill(player.id,'darkMoonCurse','暗月耗尽，脱离暗月形态');}
     yield* game.flushRuleEvents(options);
   }

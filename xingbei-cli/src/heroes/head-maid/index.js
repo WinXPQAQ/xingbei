@@ -171,7 +171,7 @@ export class HeadMaid extends Hero {
             yield* hero.addShadows(game, player, [c], options);
           }
           if (cs.length < n)
-            game.changeMorale(game.player(context.playerId).team, -1);
+            yield* game.changeMoraleSteps(game.player(context.playerId).team, -1, {...options, skillId: "shadowStitch"});
         },
       },
       {

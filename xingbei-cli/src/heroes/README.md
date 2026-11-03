@@ -1,6 +1,6 @@
 # 英雄实现入口
 
-当前48位已实现英雄均在本目录，每位英雄一个英文名称目录。
+当前53位已实现英雄均在本目录，每位英雄一个英文名称目录。
 
 ```text
 heroes/
@@ -107,3 +107,15 @@ heroes/
 | 剑之魔女 | [index.js](sword-witch/index.js) | [ai.js](sword-witch/ai.js) |
 
 各目录提供观测声明。规则与验证见[第八批报告](../../docs/heroes-wave-eight.md)。神秘学者续接是立即结算的技能链，不存入额外行动队列；噬神者按用户要求留到下批。
+
+## 第九批：终末祷铸
+
+| 英雄 | 规则 | 评分 |
+| --- | --- | --- |
+| 铸律者 | [index.js](lawgiver/index.js) | [ai.js](lawgiver/ai.js) |
+| 红衣主教 | [index.js](cardinal/index.js) | [ai.js](cardinal/ai.js) |
+| 记录者 | [index.js](chronicler/index.js) | [ai.js](chronicler/ai.js) |
+| 传教士 | [index.js](missionary/index.js) | [ai.js](missionary/ai.js) |
+| 异教徒 | [index.js](heretic/index.js) | [ai.js](heretic/ai.js) |
+
+各目录提供观测声明，铸律者与红衣主教共享资源操作在`lawgiver/shared.js`。放逐按用户修订摸6–7张牌、选6张基础牌；噬神者仍待后续实现。规则、AI及验证见[第九批报告](../../docs/heroes-wave-nine.md)。

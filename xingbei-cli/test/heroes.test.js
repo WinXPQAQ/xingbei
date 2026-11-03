@@ -351,7 +351,7 @@ test("六英雄默认阵容完整AI对局：逐回合、额外行动、实例守
 
 test("开局自由选已实现角色：交换阵容、固定六人坐次，生成正确专属牌且拒绝非法设置", async () => {
   const { getAvailableHeroes, createHeroRoster } = await import("../src/hero.js");
-  assert.equal(getAvailableHeroes().length, 48);
+  assert.equal(getAvailableHeroes().length, 53);
   for (const { id } of getAvailableHeroes()) {
     const game = new Game({ seed: 13, playerHeroId: id }).setup();
     assert.equal(game.player(0).hero.id, id);
@@ -359,7 +359,7 @@ test("开局自由选已实现角色：交换阵容、固定六人坐次，生�
     assert.deepEqual(game.players.map(player => player.team), ["red", "blue", "blue", "red", "red", "blue"]);
     assert.ok(game.players.every(player => player.hand.length === 4));
     const sealer = game.players.find(player => player.hero.id === "sealer");
-    assert.equal(game.outside.length, id === "starfallWitch" ? 3 : ["brave", "bard", "bloodSwordSpirit", "soulWarlock", "bloodWitch", "headMaid", "barrierMaster"].includes(id) ? 2 : 1); assert.ok(game.outside.some(card => card.id === sealer.hero.state.bindingCardId));
+    assert.equal(game.outside.length, id === "starfallWitch" ? 3 : ["brave", "bard", "bloodSwordSpirit", "soulWarlock", "bloodWitch", "headMaid", "barrierMaster", "lawgiver", "cardinal", "chronicler", "missionary", "heretic"].includes(id) ? 2 : 1); assert.ok(game.outside.some(card => card.id === sealer.hero.state.bindingCardId));
     game.assertCardLocations();
   }
   assert.equal(createHeroRoster("guardianAngel", 2)[2], "guardianAngel");

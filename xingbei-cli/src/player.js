@@ -4,7 +4,10 @@ export class Player {
     this.hand = []; this.statuses = []; this.covered = []; this.handLimit = 6;
     this.healing = 0; this.energy = { gem: 0, crystal: 0 };
   }
-  get handLimit() { return this.getSkills().reduce((limit, { skill }) => skill.modifyHandLimit?.(limit, this) ?? limit, this._handLimit); }
+  get handLimit() {
+    const own = this.getSkills().reduce((limit, { skill }) => skill.modifyHandLimit?.(limit, this) ?? limit, this._handLimit);
+    return this.game?.players.reduce((limit, owner) => owner.hero.modifyOtherHandLimit?.(limit, { game: this.game, player: owner, target: this }) ?? limit, own) ?? own;
+  }
   set handLimit(value) { this._handLimit = value; }
   getBasicEffects() { return this.statuses.filter(card => card.category === "basic"); }
   getStatus(effectId) { return this.statuses.filter(card => card.attachment?.effectId === effectId); }

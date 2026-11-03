@@ -1,3 +1,8 @@
+import { lawgiverAi } from '../../../lawgiver/ai.js';
+import { cardinalAi } from '../../../cardinal/ai.js';
+import { chroniclerAi } from '../../../chronicler/ai.js';
+import { missionaryAi } from '../../../missionary/ai.js';
+import { hereticAi } from '../../../heretic/ai.js';
 import { nobleLadyAi } from '../../../noble-lady/ai.js';
 import { headMaidAi } from '../../../head-maid/ai.js';
 import { barrierMasterAi } from '../../../barrier-master/ai.js';
@@ -35,7 +40,7 @@ import { sageAi } from "../../../sage/ai.js";
 import { prayerAi } from "../../../prayer/ai.js";
 import { heroicPuppetAi } from "../../../heroic-puppet/ai.js";
 
-const profiles = [nobleLadyAi,headMaidAi,barrierMasterAi,mysticAi,defilerAi,swordWitchAi,butterflyDancerAi,battleMageAi,starfallWitchAi,inquisitorAi,witchHunterAi,templarAi,elfArcherAi,yinYangMasterAi,soulWarlockAi,bloodWitchAi,moonGoddessAi,holyArcherAi,talismanMasterAi,swordEmperorAi,magicArcherAi,azureFlameWitchAi,bloodSwordSpiritAi,beastWarriorAi,fighterAi,magicLancerAi,braveAi,adventurerAi,redLotusKnightAi,bardAi,assassinAi, magicSwordsmanAi, adjudicatorAi, sageAi, prayerAi, heroicPuppetAi];
+const profiles = [lawgiverAi,cardinalAi,chroniclerAi,missionaryAi,hereticAi,nobleLadyAi,headMaidAi,barrierMasterAi,mysticAi,defilerAi,swordWitchAi,butterflyDancerAi,battleMageAi,starfallWitchAi,inquisitorAi,witchHunterAi,templarAi,elfArcherAi,yinYangMasterAi,soulWarlockAi,bloodWitchAi,moonGoddessAi,holyArcherAi,talismanMasterAi,swordEmperorAi,magicArcherAi,azureFlameWitchAi,bloodSwordSpiritAi,beastWarriorAi,fighterAi,magicLancerAi,braveAi,adventurerAi,redLotusKnightAi,bardAi,assassinAi, magicSwordsmanAi, adjudicatorAi, sageAi, prayerAi, heroicPuppetAi];
 const byHero = new Map(profiles.map((profile) => [profile.id, profile]));
 const decisions = new Map(profiles.flatMap((profile) => Object.entries(profile.decisions ?? {})));
 const empty = Object.freeze({});

@@ -298,7 +298,7 @@ async function chooseRuleDecision(request) {
   }
   if (request.type === "cardChoice") {
     if (!isHuman(request.playerId)) return chooseAiRuleDecision(request, game);
-    return chooseHand(request.title, game.player(humanId).hand, { count: request.count, valid: request.valid, validSets: request.validSets, cancel: request.optional });
+    return chooseHand(request.title, game.player(humanId).hand, { count: request.count, valid: request.valid, validSets: request.validSets, cancel: request.optional, confirmLabel: request.purpose === "reserve" ? "确认" : undefined });
   }
   if (!request.choices) return null;
   if (!isHuman(request.playerId)) return chooseAiRuleDecision(request, game);
@@ -319,7 +319,7 @@ function closeModal() {
   if (game) render();
 }
 
-function chooseHand(title, cards, { count = 1, valid = cards.map((_, index) => index), cancel = false, cancelLabel = "不响应", validSets = null } = {}) {
+function chooseHand(title, cards, { count = 1, valid = cards.map((_, index) => index), cancel = false, cancelLabel = "不响应", validSets = null, confirmLabel = null } = {}) {
   return session.wait(resolve => {
     const previousHint = elements.hint.textContent;
     const previousFocus = document.activeElement;
@@ -328,7 +328,7 @@ function chooseHand(title, cards, { count = 1, valid = cards.map((_, index) => i
     elements.hint.textContent = title;
     elements.modalActions.replaceChildren();
     const confirm = document.createElement("button");
-    confirm.textContent = count === 1 ? "确定" : "确认弃置"; confirm.disabled = true;
+    confirm.textContent = confirmLabel ?? (count === 1 ? "确定" : "确认弃置"); confirm.disabled = true;
     handChoice = { valid, selected, select(index) {
       if (!valid.includes(index)) return;
       selected.has(index) ? selected.delete(index) : selected.add(index);

@@ -3,7 +3,14 @@ import { ELEMENT_NAMES, FATE_NAMES } from "./cards.js";
 import { Timing } from "./timing.js";
 
 export class TurnFlow {
-  constructor(game) { this.game = game; this.state = null; this.lastEndedPlayerId = null; this.extraTurns = []; }
+  constructor(game) { this.game = game; this.state = null; this.lastEndedPlayerId = null; this.extraTurns = []; this.followupTurns = []; this.resumePlayerId = null; }
+  normalNext(playerId) {
+    for (let step = 1; step <= this.game.players.length; step++) {
+      const id = (playerId + step) % this.game.players.length;
+      if (this.game.player(id).hero.followsPlayer?.(this.game) == null) return id;
+    }
+    return (playerId + 1) % this.game.players.length;
+  }
   addExtraTurn(playerId) { this.extraTurns.push(playerId); }
   repeatLast(playerId) {
     if (this.state || this.game.winner || this.lastEndedPlayerId !== playerId) throw new RuleError("只能重复刚结束的回合");
@@ -114,7 +121,15 @@ export class TurnFlow {
     state.phase = Timing.TURN_END;
     yield* this.game.trigger(state.phase, state, options);
     this.lastEndedPlayerId = state.playerId;
-    this.game.current = this.extraTurns.shift() ?? (state.playerId + 1) % this.game.players.length;
+    const followers = this.game.players.filter(p => p.id !== state.playerId && p.hero.followsPlayer?.(this.game) === state.playerId).map(p => p.id);
+    if (followers.length) {
+      if (this.resumePlayerId == null) this.resumePlayerId = this.normalNext(state.playerId);
+      this.followupTurns.push(...followers);
+    }
+    if (this.extraTurns.length) this.game.current = this.extraTurns.shift();
+    else if (this.followupTurns.length) this.game.current = this.followupTurns.shift();
+    else if (this.resumePlayerId != null) { this.game.current = this.resumePlayerId; this.resumePlayerId = null; }
+    else this.game.current = this.normalNext(state.playerId);
     this.state = null;
   }
 }

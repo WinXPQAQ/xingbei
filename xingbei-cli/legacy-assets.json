@@ -101,5 +101,20 @@
   "markers/threads.png": "card/zhiShiWu/hong.png",
   "markers/ritual.png": "card/zhiShiWu/hong.png",
   "markers/sorcery.png": "card/zhiShiWu/hong.png",
-  "markers/malice.png": "card/zhiShiWu/hong.png"
+  "markers/malice.png": "card/zhiShiWu/hong.png",
+  "character/lawgiver.jpg": "character/zhuLvZhe.jpg",
+  "character/cardinal.jpg": "character/hongYiZhuJiao.jpg",
+  "character/chronicler.jpg": "character/jiLuZhe.jpg",
+  "character/missionary.jpg": "character/chuanJiaoShi.jpg",
+  "character/heretic.jpg": "character/yiJiaoTu.jpg",
+  "card/chronicle.png": "card/shiShuCard.png",
+  "card/royalOrb.png": "card/zhuanShu/wangQuanBaoZhu.png",
+  "card/waypoint.png": "card/zhuanShu/luBiao.png",
+  "card/doomProphecy.png": "card/zhuanShu/moRiYuYan.png",
+  "card/thunderCatastrophe.png": "card/zhuanShu/tianLeiJieHuo.png",
+  "card/earthCatastrophe.png": "card/zhuanShu/diLieBoTao.png",
+  "markers/relics.png": "card/zhiShiWu/lan.png",
+  "markers/silverBullets.png": "card/zhiShiWu/hong.png",
+  "markers/archives.png": "card/zhiShiWu/hong.png",
+  "markers/devotion.png": "card/zhiShiWu/hong.png"
 }

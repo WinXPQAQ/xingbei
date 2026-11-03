@@ -430,6 +430,61 @@
       "path": "image/card/zhuanShu/jueJie.png",
       "bytes": 244561,
       "sha256": "76f497d513091a85abadd1d55e623f2db05066fd2e1a4e0d63fd624b85551165"
+    },
+    {
+      "path": "image/character/zhuLvZhe.jpg",
+      "bytes": 120253,
+      "sha256": "8cc774f1145123408b2359dfec53922a4e57244693882e209cf56a806140f991"
+    },
+    {
+      "path": "image/character/hongYiZhuJiao.jpg",
+      "bytes": 133443,
+      "sha256": "a6ae90b0fc312d142dc509b1d2b91781bafab69db5513a105a75405cd9f3f762"
+    },
+    {
+      "path": "image/character/jiLuZhe.jpg",
+      "bytes": 112866,
+      "sha256": "a42f1d96bd1bc18f25e081c6b28b7b6ec4f4faed096dfd7a7fdc3947437bac38"
+    },
+    {
+      "path": "image/character/chuanJiaoShi.jpg",
+      "bytes": 151490,
+      "sha256": "c50bc3fc2a08538fcf88e3fd316f7cfdfa74fc37d21693dde763228d4f555264"
+    },
+    {
+      "path": "image/character/yiJiaoTu.jpg",
+      "bytes": 118849,
+      "sha256": "1d3b1cba33d9bc57337ba3c9464e867116f031f7de6c9fb6d0804f2b47934e89"
+    },
+    {
+      "path": "image/card/shiShuCard.png",
+      "bytes": 312340,
+      "sha256": "ffd13ffb33a291f1ad55b8e9906a96a4bc98a935b29b30c25d6c381a04b7cc93"
+    },
+    {
+      "path": "image/card/zhuanShu/wangQuanBaoZhu.png",
+      "bytes": 294009,
+      "sha256": "6a84405e1fde88a280881bb0de3f2c7327fc014126a1a1e1179baf9ff25c7c1a"
+    },
+    {
+      "path": "image/card/zhuanShu/luBiao.png",
+      "bytes": 294176,
+      "sha256": "2a932ad5994c99d412f07b42e0dc56bb000594e7da89dddc0a81cc812b7501c3"
+    },
+    {
+      "path": "image/card/zhuanShu/moRiYuYan.png",
+      "bytes": 360010,
+      "sha256": "a4a3ea85233577799bf77f833853c512efc83e9d226447f7efd7f4ebafeb34d7"
+    },
+    {
+      "path": "image/card/zhuanShu/tianLeiJieHuo.png",
+      "bytes": 341800,
+      "sha256": "1fab240cd37914073c8b0543887be92ab432fecc168f3112c3b5b648c28cf903"
+    },
+    {
+      "path": "image/card/zhuanShu/diLieBoTao.png",
+      "bytes": 334277,
+      "sha256": "419b297e873d9ed60512ec40fd95b5b19afdf080e7dec576d1835c035a617cdf"
     }
   ]
 }

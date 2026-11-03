@@ -71,7 +71,7 @@ export class HolyArcher extends Hero {
           for(const id of seatOrder(game,player.id))yield* game.adjustHandSteps(id,4,{...options,skillId:'radiantCannon'});
           game.teams[player.team].cups++;game.logSkill(player.id,'radiantCannon','全员手牌调整至4，我方星杯+1');game.recordPresentation('cups',{team:player.team,amount:1});game.checkWinner();yield* game.present();
           const team=yield* choice(player.id,'radiantCannonMorale','选择调整士气的一方',[{value:'red',label:'红方士气调整为蓝方'},{value:'blue',label:'蓝方士气调整为红方'}],player.team);
-          game.changeMorale(team,game.teams[team==='red'?'blue':'red'].morale-game.teams[team].morale);yield* game.flushRuleEvents(options);
+          yield* game.changeMoraleSteps(team,game.teams[team==='red'?'blue':'red'].morale-game.teams[team].morale,{...options,skillId:'radiantCannon'});yield* game.flushRuleEvents(options);
         }},
       {id:'autoFill',name:'自动填充',...this.onOwnTurn([Timing.TURN_END]),
         filter:({game,player,context})=>context.route!=='special'&&game.canPayEnergy(player.id,'crystal'),

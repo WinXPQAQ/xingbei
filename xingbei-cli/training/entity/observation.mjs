@@ -35,7 +35,8 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
     cards.set(card.id, index); return index;
   };
   game.player(playerId).hand.forEach(addCard);
-  game.player(playerId).covered.forEach(addCard);
+  game.player(playerId).covered.filter(c => c.coveredVisibility !== "concealed").forEach(addCard);
+  [...game.cards.values()].filter(c => c.publicIdentity).forEach(addCard);
   for (const p of game.players) p.covered.filter(c => c.coveredVisibility === 'public').forEach(addCard);
   if (request.playerId === playerId) (request.revealedCards ?? []).forEach(addCard);
   for (let offset = 0; offset < 6; offset++) game.player((playerId + offset) % 6).statuses.forEach(addCard);
@@ -90,6 +91,8 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
   }
   for (const [position, id] of (game.turn.extraTurns ?? []).entries())
     add('extraTurn', {}, { position }, { owner: playerRef(id) });
+  for (const [position, id] of game.turn.followupTurns.entries()) add('followupTurn', {}, { position }, { owner: playerRef(id) });
+  if (game.turn.resumePlayerId != null) add('resumeTurn', {}, {}, { owner: playerRef(game.turn.resumePlayerId) });
   const event = game.activeTrigger;
   const context = { ...event?.context, ...request.context };
   // Never serialize the raw context: it can contain hidden cards and callbacks.

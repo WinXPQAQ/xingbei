@@ -60,7 +60,7 @@ export class BeastWarrior extends Hero {
             const cards=yield* discardHand(game,context.targetId,context.iaidoCost+2,'reverseIaidoDiscard',options);
             context.targetHandCount=game.player(context.targetId).hand.length;
             game.logSkill(player.id,'reverseIaido',`仍算命中，以暗弃${cards.length}张牌替代伤害`);
-            if(cards.length<context.iaidoCost+2)game.changeMorale(game.player(context.targetId).team,-1);
+            if(cards.length<context.iaidoCost+2)yield* game.changeMoraleSteps(game.player(context.targetId).team,-1,{...options,skillId:"reverseIaido"});
           }
         }},
       {id:'iaidoStance',name:'御魂流居合式',...this.onOwnTurn([Timing.ACTIVATION]),

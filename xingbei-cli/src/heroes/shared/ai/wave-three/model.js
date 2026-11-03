@@ -11,7 +11,7 @@ export function publicState(game, id) {
   const state = stateOf(game, id);
   for (const p of state.players) {
     p.heroState = { ...game.player(p.id).hero.state };
-    p.coveredCount = game.player(p.id).covered?.length ?? 0;
+    p.coveredCount = game.player(p.id).coveredCount ?? game.player(p.id).covered?.length ?? 0;
     p.healingDisabled = [...game.cards.values()].some(c => c.name === "roseGarden" && c.location.zone === "field");
     p.energyLimit = game.getEnergyLimit(p.id);
   }

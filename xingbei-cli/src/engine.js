@@ -48,6 +48,7 @@ export class Game {
     this.random = seededRandom(seed);
     this.publicHistory = new PublicHistory();
     this.players = names.map((name, seat) => new Player({ id: seat, name, team: teams[seat], hero: heroIds ? createHero(heroIds[seat], heroRules) : createDefaultHero(seat, heroRules) }));
+    for (const player of this.players) Object.defineProperty(player, "game", { value: this });
     this.teams = { red: { morale: 15, achievements: [], cups: 0 }, blue: { morale: 15, achievements: [], cups: 0 } };
     this.deck = []; this.discard = []; this.field = []; this.outside = [];
     this.cards = new Map();
@@ -71,6 +72,42 @@ export class Game {
     }
   }
 
+  replaceHero(playerId, heroId, sharedState = {}) {
+    const player = this.player(playerId), previous = player.hero;
+    previous.onSkillsChanged = null;
+    player.hero = createHero(heroId);
+    Object.assign(player.hero.state, sharedState);
+    player.hero.initialize(this, player);
+    this.triggers.registerHero(player);
+    player.hero.onSkillsChanged = () => this.triggers.registerHero(player);
+    this.log.push(`${player.name}由${previous.name}替换为${player.hero.name}`);
+    this.recordPublicAction({ type: "heroChanged", playerId, heroId });
+    this.recordPresentation("heroChanged", { playerId, heroId });
+    return player.hero;
+  }
+
+  takeDeckCard() {
+    if (!this.deck.length && this.discard.length) {
+      for (const card of [...this.discard]) this.moveCard(card.id, { zone: "deck" }, { animate: false });
+      shuffle(this.deck, this.random);
+      this.recordPresentation("shuffle");
+      this.log.push("弃牌堆洗回牌库");
+    }
+    return this.deck.at(-1) ?? null;
+  }
+
+  *changeMoraleSteps(team, amount, options = {}) {
+    const context = { team, amount, cause: options.cause ?? { type: "directMorale", skillId: options.skillId } };
+    if (amount < 0) yield* this.trigger(Timing.MORALE_BEFORE, context, options);
+    if (options.floor != null) context.amount = Math.max(context.amount, options.floor - this.teams[team].morale);
+    const before = this.teams[team].morale;
+    this.changeMorale(team, Math.min(amount < 0 ? 0 : Infinity, context.amount), { emit: false });
+    context.amount = this.teams[team].morale - before;
+    yield* this.present();
+    if (context.amount) yield* this.trigger(Timing.MORALE_AFTER, context, options);
+    return context.amount;
+  }
+
   actorLabel(playerId) { const player = this.player(playerId); return `${player.hero.name}（${player.name}）`; }
   describeCards(cards, playerId, { hidden = false } = {}) {
     return hidden && !this.revealHiddenLogs ? "" : `（${cards.map(card => logCard(card, this, playerId)).join("、")}）`;
@@ -78,7 +115,9 @@ export class Game {
   recordPublicAction(event) { this.publicHistory.action?.(event); }
   logSkill(playerId, skillId, detail) {
     this.recordPublicAction({type:'skillNote',playerId,skillId});
-    this.log.push(`${this.actorLabel(playerId)}发动【${skillLabel(this.player(playerId), skillId)}】${detail ? `：${detail}` : ""}`);
+    const ownLabel = skillLabel(this.player(playerId), skillId);
+    const label = ownLabel === skillId ? this.players.flatMap(p => p.getSkills()).find(({skill}) => skill.id === skillId)?.skill.name ?? ownLabel : ownLabel;
+    this.log.push(`${this.actorLabel(playerId)}发动【${label}】${detail ? `：${detail}` : ""}`);
   }
   giveCards(playerId, targetId, cards) {
     if (cards.some(card => card.location.zone !== "hand" || card.location.playerId !== playerId)) throw new RuleError("交出的牌必须来自本人手牌");
@@ -140,6 +179,7 @@ export class Game {
     if (!Object.values(DiscardVisibility).includes(visibility)) throw new RuleError("无效的弃牌可见性");
     const card = this.cards.get(cardId);
     if (!card) throw new RuleError(`不存在牌 ${cardId}`);
+    destination = card.destinationForMove?.(destination, this) ?? destination;
     const next = this.zone(destination), previous = this.zone(card.location);
     if (destination.zone === "status") {
       if (!card.attachment || !this.canAttach(card, destination.playerId, card.attachment.effectId)) throw new RuleError("状态区需要合法且不重复的挂载效果");
@@ -241,6 +281,7 @@ export class Game {
     if (reveal) this.queueExposure(playerId, cards.filter(c => c.location.zone === "hand"), { reason: "publicReserve" });
     for (const card of cards) {
       this.moveCard(card.id, { zone: "covered", playerId, pile }, { animate: false, covered: true });
+      if (card.location.zone !== "covered") continue;
       card.coveredVisibility = reveal ? "public" : "hidden";
       if (reveal) this.recordPublicAction({ type: "coveredReveal", playerId, card: card.name, ...card.getTraits({ game: this, playerId }) });
     }
@@ -378,11 +419,14 @@ export class Game {
   *drawSteps(playerId, count, options = {}) {
     if (this.winner) { yield* this.present(); return; }
     const cause = options.cause ?? { type: "directDraw" };
-    const context = { playerId, count, cause, specialAction: !!options.specialAction };
+    const context = { playerId, count, cause, specialAction: !!options.specialAction, damageContext: options.damageContext };
     const nestedOptions = { ...options };
     delete nestedOptions.moraleLoss; delete nestedOptions.attackContext; delete nestedOptions.useHealing;
     if (count > 0) yield* this.trigger(Timing.DRAW_BEFORE, context, nestedOptions);
-    const drawn = this.draw(playerId, Math.max(0, context.count), { ...options, cause, overflow: "defer" });
+    const supplied = context.replacementCards ?? [];
+    for (const card of supplied) this.moveCard(card.id, { zone: "hand", playerId }, { animate: false });
+    if (supplied.length) this.recordPresentation("draw", { playerId, cards: supplied.map(c => c.toJSON()) });
+    const drawn = [...supplied, ...this.draw(playerId, Math.max(0, context.count - supplied.length), { ...options, cause, overflow: "defer" })];
     yield* this.present();
     const player = this.player(playerId);
     if (!player.pendingOverflow) return drawn;
@@ -679,9 +723,10 @@ export class Game {
     if (this.processingRuleEvents) return;
     this.processingRuleEvents = true;
     try {
-      while (!this.winner && (this.pendingRuleEvents.length || this.pendingMoraleEvents?.length || this.pendingHealingEvents?.length || this.changedHands?.size)) {
+      while (!this.winner && (this.pendingRuleEvents.length || this.pendingMoraleEvents?.length || this.pendingHealingEvents?.length || this.pendingHealingChanges?.length || this.changedHands?.size)) {
         if (this.pendingRuleEvents.length) yield* this.trigger(Timing.CARD_EXPOSED, this.pendingRuleEvents.shift(), options);
         else if (this.pendingMoraleEvents?.length) yield* this.trigger(Timing.MORALE_AFTER, this.pendingMoraleEvents.shift(), options);
+        else if (this.pendingHealingChanges?.length) yield* this.trigger(Timing.HEALING_CHANGED, this.pendingHealingChanges.shift(), options);
         else if (this.pendingHealingEvents?.length) yield* this.trigger(Timing.HEALING_OVERFLOW, this.pendingHealingEvents.shift(), options);
         else {
           const playerId = this.changedHands.values().next().value;
@@ -871,7 +916,10 @@ export class Game {
     player.healing += actual;
     if(actual)this.recordPublicAction({type:'healingChange',playerId,amount:actual,count:player.healing});
     if (amount) this.log.push(`${this.actorLabel(playerId)}治疗${actual >= 0 ? "+" : ""}${actual}（${before}→${player.healing}${amount > actual && amount > 0 ? `；上限${limit}，未增加${amount - actual}` : ""}）`);
-    if (actual) this.recordPresentation("healing", { playerId, amount: actual });
+    if (actual) {
+      this.recordPresentation("healing", { playerId, amount: actual });
+      (this.pendingHealingChanges ??= []).push({ playerId, amount: actual, before, after: player.healing, heroId: player.hero.id });
+    }
     if (amount > actual && amount > 0) (this.pendingHealingEvents ??= []).push({ playerId, team: player.team, amount: amount - actual });
     return actual;
   }
@@ -926,7 +974,7 @@ export class Game {
       this.recordPresentation("damage", { playerId: targetId, sourceId, amount: part.actual, damageType: part.damageType });
       yield* this.present();
       if (part.actual) yield* this.drawSteps(targetId, part.actual, {
-        ...options, moraleLoss: options.moraleLoss !== false,
+        ...options, moraleLoss: options.moraleLoss !== false, damageContext: part,
         cause: { type: "damage", sourceId, damageType: part.damageType, skillId: part.skillId, moraleLimit: part.moraleLimit },
       });
       this.recordPublicAction({type:'damage',sourceId,targetId,amount:part.actual,result:part.damageType});

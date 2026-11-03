@@ -1,4 +1,5 @@
 export const Timing = Object.freeze({
+  HEALING_CHANGED: "healingChanged",
   CARDS_CLEANED_UP: "cardsCleanedUp",
   HAND_CHANGED: "handChanged",
   HEALING_OVERFLOW: "healingOverflow",
