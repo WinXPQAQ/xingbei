@@ -10,7 +10,7 @@ export function* discardHand(game, playerId, count, skillId, options, visibility
   const actorId=options?.inabilitySourceId ?? game.activeTrigger?.ownerId ?? playerId;
   if (options?.preserveAction && actionRequired(game,playerId) && game.knownRemovalBlocked(actorId,playerId,n)) throw new RuleError('此操作将使角色无法行动');
   const before={actorId,targetId:playerId,skillId,count:n,handCount:game.player(playerId).hand.length};
-  const cards = yield* game.chooseHandCards(playerId, n, () => true, { skillId, title: `选择${n}张弃牌`, preserveAction:options?.preserveAction });
+  const cards = yield* game.chooseHandCards(playerId, n, () => true, { skillId, title: `选择${n}张弃牌`, preserveAction:options?.preserveAction, preserveUsable:options?.preserveUsable });
   const maliciousChoice=options?.preserveAction && actionRequired(game,playerId) && safeRemovalSets(game,playerId,n).length>0 && !safeRemovalSets(game,playerId,n).some(set=>set.every(i=>cards.includes(game.player(playerId).hand[i])));
   game.discardCards(playerId, cards, { reason: skillId, visibility });
   if(maliciousChoice)game.forfeitMaliciousInability(playerId,skillId,playerId,{...before,selected:cards.map(c=>c.id)});

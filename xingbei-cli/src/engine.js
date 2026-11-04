@@ -1,7 +1,7 @@
 import { actionRequired, canContinueWithHand, safeRemovalSets, knownRemovalBlocked, canContinueAfterEnergy } from './inability.js';
 import { rememberSelection, resolveExposureTraits } from "./resolution/card-traits.js";
 import { playableCards } from "./playable-cards.js";
-import { cardSets, targetCounts } from "./card-sets.js";
+import { cardSets, targetCounts, combinations } from "./card-sets.js";
 import { PublicHistory } from "./ai/public-history.js";
 import { logCard, skillLabel, effectLabel } from "./action-log.js";
 import { chooseAiDiscard, chooseAiResponse, chooseAiRuleDecision } from "./ai.js";
@@ -585,11 +585,27 @@ export class Game {
     const cause=this.turn.state?.inabilityCause;
     if (cause?.predictable && this.forfeitMaliciousInability(cause.actorId,cause.skillId,playerId,cause)) return;
     if (!this.turn.state?.randomActivationDraw && !cause) return;
-    while (actionRequired(this,playerId) && !canContinueWithHand(this,playerId,this.player(playerId).hand)) {
-      if (!this.player(playerId).hand.length) throw new RuleError('随机无法行动但空手，需要核查造成空手的责任');
-      this.turn.state.phase = Timing.ACTION_PHASE_START;
-      this.turn.state.inabilityCause = null;
-      yield* this.refreshUnableHandSteps(playerId,options);
+    yield* this.ensureActionableHand(playerId,options);
+  }
+
+  isUsableHandCard(playerId, card) { return this.legalTargets(playerId,card).length > 0; }
+  usableHandCards(playerId) { return this.player(playerId).hand.filter(card=>this.isUsableHandCard(playerId,card)); }
+  allowActivationRefresh(playerId, skillId) {
+    if (!actionRequired(this,playerId)) return;
+    // These hero flows explicitly permit the final hand to be unusable. An
+    // intermediate discard/cover is not evidence of deliberate inability.
+    this.turn.state.inabilityCause=null;
+    this.turn.state.randomActivationDraw=true;
+    this.auditTrail.push({type:'activationRefreshAllowed',playerId,skillId});
+  }
+  *ensureActionableHand(playerId, options = {}, {handOnly=false} = {}) {
+    const actionable=()=>handOnly ? this.usableHandCards(playerId).length>0
+      : canContinueWithHand(this,playerId,this.player(playerId).hand);
+    while(actionRequired(this,playerId) && !actionable()) {
+      if (!this.player(playerId).hand.length) throw new RuleError('无法行动但空手，需要核查造成空手的责任');
+      this.turn.state.inabilityCause=null;
+      yield* this.exchangeUnableHandSteps(playerId,options);
+      this.turn.state.inabilityCause=null;
     }
   }
 
@@ -628,7 +644,7 @@ export class Game {
     if (state && (state.playerId !== actorId || state.skipped || state.completed || state.actionType || state.phase !== Timing.ACTION_PHASE_START)) return false;
     // Refinement does not prevent declaring inability. Exchange is a procedure,
     // not a special action: activation restrictions stay in force afterward.
-    return this.player(actorId).hand.length > 0 && !this.legalCards(actorId).length && !this.legalSkillActions(actorId).length && !this.canDrawSpecial(actorId);
+    return this.player(actorId).hand.length > 0 && !this.legalCards(actorId).length && !this.legalSkillActions(actorId).length && !this.canDrawSpecial(actorId) && !(state && !state.activationDone && this.activationSuppliers(actorId).length);
   }
 
   canDrawSpecial(actorId) {
@@ -677,6 +693,9 @@ export class Game {
     this.recordPresentation("stones", { team, amount: -(gem + crystal), gem, crystal });
   }
 
+  hasOrdinaryContinuation(playerId) {
+    return this.legalCards(playerId).length > 0 || this.legalSkillActions(playerId).some(entry => !entry.spec.requiresActivation);
+  }
   canActivate(playerId) {
     const state = this.turn.state;
     if (this.winner || !state || state.playerId !== playerId || state.activationDone || state.completed || state.skipped || state.actionType) return false;
@@ -794,8 +813,11 @@ export class Game {
   }
 
   *refreshUnableHandSteps(actorId, options = {}) {
-    const player = this.player(actorId);
     if (!this.canRefreshUnableHand(actorId)) throw new RuleError("未满足无法行动条件");
+    yield* this.exchangeUnableHandSteps(actorId,options);
+  }
+  *exchangeUnableHandSteps(actorId, options = {}) {
+    const player = this.player(actorId);
     if (this.winner) throw new RuleError("游戏已经结束");
     const count = player.hand.length;
     if (!count) throw new RuleError("无法行动但无手牌可换，需核查当前规则状态");
@@ -926,11 +948,14 @@ export class Game {
     yield* this.turn.endAction(options);
   }
 
-  *chooseHandCards(playerId, count, predicate = () => true, { title = "选择手牌", optional = false, purpose = "discard", recipientId = null, skillId = null, context = null, preserveAction = false } = {}) {
+  *chooseHandCards(playerId, count, predicate = () => true, { title = "选择手牌", optional = false, purpose = "discard", recipientId = null, skillId = null, context = null, preserveAction = false, preserveUsable = false } = {}) {
     const player = this.player(playerId);
     const valid = player.hand.flatMap((card, index) => predicate(card) ? [index] : []);
     if (valid.length < count) { if (optional) return null; throw new RuleError("没有足够的合法手牌"); }
-    const safeSets = preserveAction && purpose === 'discard' && actionRequired(this,playerId) ? safeRemovalSets(this,playerId,count,valid) : null;
+    const usable=preserveUsable ? this.usableHandCards(playerId) : [];
+    const keepSets=usable.length ? combinations(valid,count).filter(set=>usable.some(card=>!set.includes(player.hand.indexOf(card)))) : null;
+    if (keepSets && !keepSets.length) { if(optional)return null;throw new RuleError("必须保留至少一张可使用的手牌"); }
+    const safeSets = keepSets ?? (preserveAction && purpose === 'discard' && actionRequired(this,playerId) ? safeRemovalSets(this,playerId,count,valid) : null);
     const validSets = safeSets?.length ? safeSets : null;
     const indexes = yield { type: "cardChoice", playerId, count, valid:validSets ? [...new Set(validSets.flat())] : valid, validSets, purpose, recipientId, skillId, context, cards: player.hand, title, optional, defaultValue: optional ? null : validSets?.[0] ?? valid.slice(0, count) };
     if (validSets && indexes != null && !validSets.some(set=>set.length===indexes.length && set.every(i=>indexes.includes(i)))) throw new RuleError('你将无法行动');
@@ -980,7 +1005,7 @@ export class Game {
 
   *offerSkill(playerId, skillId, title, context = {}) {
     const blockedReason = context.blockedReason ?? null;
-    const required = !blockedReason && this.turn.state?.requiredActivationSkill === skillId && this.turn.state.playerId === playerId;
+    const required = !blockedReason && (context.required === true || (this.turn.state?.requiredActivationSkill === skillId && this.turn.state.playerId === playerId));
     const value = yield { type: "skillChoice", required, activationPlan: this.turn.state?.activationPlan ?? null, blockedReason, playerId, skillId, title:blockedReason ? `${title}：${blockedReason}` : title, context, energy: { ...this.player(playerId).energy }, reservedEnergy: this.turn.state?.reservedEnergy ?? 0, reservedHealing: this.turn.state?.reservedHealing ?? 0, reservedCardIds: this.turn.state?.reservedCardIds ?? [], reservedSkillId: this.turn.state?.reservedSkillId ?? null,
       choices: [...(blockedReason ? [] : [{ value: true, label: "发动" }]), ...(required ? [] : [{ value: false, label: "不发动" }])], defaultValue: required };
     this.auditTrail.push({type:'skillChoice',playerId,skillId,value,blockedReason});

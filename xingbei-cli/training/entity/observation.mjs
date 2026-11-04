@@ -82,6 +82,7 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
         return match ? `${match[1]}:${seat(Number(match[2]))}` : key;
       }),
       activationDone: turn.playerId === playerId ? turn.activationDone : null,
+      seekingAction: turn.playerId === playerId ? turn.seekingAction ?? false : null,
       requiredActivationSkill: turn.playerId === playerId ? turn.requiredActivationSkill ?? null : null },
       { completed: turn.completed, attackCount: turn.attackCount }, { owner: playerRef(turn.playerId) });
     for (const [position, action] of (turn.pendingActions ?? []).entries())

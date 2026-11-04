@@ -119,7 +119,8 @@ export class StarfallWitch extends Hero {
           (hero.laws().length < 3 && player.hand.length > 0) ||
           coveredCards(player, "rune").length > 0,
         *resolve({ game, player, options }) {
-          const choices = [{ value: "skip", label: "不发动" }];
+          const seeking = game.turn.state?.seekingAction || game.turn.state?.requiredActivationSkill === "stellarRevelation";
+          const choices = seeking ? [] : [{ value: "skip", label: "不发动" }];
           if (hero.laws().length < 3 && player.hand.length)
             choices.push({ value: "add", label: "手牌盖为卢恩，放置律法" });
           if (coveredCards(player, "rune").length)
@@ -129,7 +130,7 @@ export class StarfallWitch extends Hero {
             "stellarRevelation",
             "群星启示",
             choices,
-            "skip",
+            choices[0]?.value,
           );
           if (mode === "skip") return;
           if (mode === "add") {
@@ -158,10 +159,10 @@ export class StarfallWitch extends Hero {
               "revelationDraw",
               "摸0至1张牌",
               [
-                { value: 0, label: "不摸牌" },
+                ...(seeking ? [] : [{ value: 0, label: "不摸牌" }]),
                 { value: 1, label: "摸1张牌" },
               ],
-              0,
+              seeking ? 1 : 0,
             );
             if (n)
               yield* game.drawSteps(player.id, 1, {
@@ -207,6 +208,7 @@ export class StarfallWitch extends Hero {
               player.id,
               "goldenLaw",
               "黄金律：摸1牌，可交换手牌与卢恩",
+              { required: !game.usableHandCards(player.id).length },
             ))
           ) {
             yield* game.drawSteps(player.id, 1, {
@@ -245,6 +247,9 @@ export class StarfallWitch extends Hero {
               );
             }
           }
+          // Covering and the optional swap may temporarily remove every usable
+          // card. Judge only after Golden Law and the complete exchange finish.
+          game.allowActivationRefresh(player.id, "stellarRevelation");
         },
       },
       { id: "goldenLaw", name: "黄金律" },

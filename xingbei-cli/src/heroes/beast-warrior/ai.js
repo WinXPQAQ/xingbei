@@ -20,7 +20,8 @@ export const beastWarriorAi={
     },
     iaidoStance({request,player,source}){
       if(request.type==='skillChoice')return source.hand.some(c=>c.type==='attack')&&(player.heroState.souls<2||player.heroState.residual>=2);
-      return player.count<=2?'draw':player.count>=player.limit?'discard':'skip';
+      const wanted=player.count<=2?'draw':player.count>=player.limit?'discard':'skip';
+      return request.choices.some(c=>c.value===wanted)?wanted:request.choices[0].value;
     },
   },sharedDecisionSkills:['beastVigilanceDiscard','beastCounterDiscard','reverseIaidoDiscard'],
 };

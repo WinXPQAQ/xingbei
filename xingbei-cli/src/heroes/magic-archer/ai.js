@@ -25,10 +25,14 @@ export const magicArcherAi={
   attackMissBonus:({source,game,id,state,player,active,targetId},api)=>active&&!player.heroState.charged&&!player.heroState.multiShotUsed&&game.player(id).covered.some(c=>c.elements.includes('fire'))&&state.players[targetId].count<state.players[targetId].limit?Math.max(0,api.damageGain(state,id,targetId,3)-3):0,
   decisions:{
     charge:({source,player})=>source.energy.crystal>0&&player.coveredCount<3,
-    chargeDraw:({player})=>Math.min(4,Math.max(0,player.limit-player.count)),
+    // Discard-to-four has already resolved: fill only remaining capacity.
+    chargeDraw:({player,request})=>{
+      const wanted=Math.min(4,Math.max(0,player.limit-player.count));
+      return request.choices.find(c=>c.value===wanted)?.value??request.defaultValue;
+    },
     chargeCover:cover,chargeTrim:coveredCost,chargeDiscard:cheapCards,
     magicEye:({player})=>player.coveredCount<5,
-    magicEyeMode:({player})=>player.count<=2?'draw':'discard',
+    magicEyeMode:({player,request})=>player.count<=2||!request.choices.some(c=>c.value==='discard')?'draw':'discard',
     magicEyeTarget:discardTarget,magicEyeDiscard:cheapCards,
     magicPierce(a,api){return a.context.targetId!=null&&(api.damageGain(a.state,a.id,a.context.targetId,3)>2||a.player.coveredCount>=5)?coveredCost(a):null;},
     magicPierceBonus(a,api){return a.context.targetId!=null&&api.damageGain(a.state,a.id,a.context.targetId,(a.context.amount??3)+1,'attack')-api.damageGain(a.state,a.id,a.context.targetId,a.context.amount??3,'attack')>3?coveredCost(a):null;},

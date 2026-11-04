@@ -58,10 +58,16 @@ export class MagicArcher extends Hero {
           if(!(yield* game.offerSkill(player.id,'charge','充能：消耗1水晶，弃到4张后摸0至4张')))return;
           yield* game.paySkillEnergy(player.id,'crystal');hero.state.charged=true;
           yield* discardHand(game,player.id,Math.max(0,player.hand.length-4),'chargeDiscard',options);
-          const n=yield* choice(player.id,'chargeDraw','充能：摸牌数量',Array.from({length:5},(_,value)=>({value,label:`摸${value}张`})),0);
+          const n=yield* choice(player.id,'chargeDraw','充能：摸牌数量',Array.from({length:5},(_,value)=>({value,label:`摸${value}张`})).filter(c=>player.hand.length>0||c.value>0),player.hand.length?0:1);
           yield* game.drawSteps(player.id,n,{...options,cause:{type:'directDraw',skillId:'charge'}});
-          if(!n||!player.hand.length)return;
-          const cards=yield* game.chooseCardSet(player.id,{counts:Array.from({length:Math.min(n,player.hand.length)},(_,i)=>i+1),skillId:'chargeCover',title:'充能：可盖放手牌',optional:true});
+          // Resolve unusable draws before covering; a charging archer must
+          // retain a playable hand card even if covered thunder is available.
+          game.allowActivationRefresh(player.id,'charge');
+          yield* game.ensureActionableHand(player.id,options,{handOnly:true});
+          if(!n||!player.hand.length||game.winner)return;
+          const usable=new Set(game.usableHandCards(player.id).map(c=>c.id));
+          const cards=yield* game.chooseCardSet(player.id,{counts:Array.from({length:Math.min(n,player.hand.length)},(_,i)=>i+1),skillId:'chargeCover',title:'充能：盖牌后至少保留1张可用牌',optional:true,
+            cardsFilter:chosen=>player.hand.some(c=>usable.has(c.id)&&!chosen.includes(c))});
           if(cards){game.coverCards(player.id,cards,'charge');yield* game.flushCardMoves(options);yield* trimCovered(game,player,'charge',8,'chargeTrim');}
         }},
       {id:'magicEye',name:'魔眼',...this.onOwnTurn([Timing.ACTIVATION]),
@@ -70,11 +76,21 @@ export class MagicArcher extends Hero {
         *resolve({game,player,options}){
           if(!(yield* game.offerSkill(player.id,'magicEye','魔眼：消耗1宝石，弃牌或摸牌、盖1充能并获得1水晶')))return;
           yield* game.paySkillEnergy(player.id,'gem');
-          const mode=yield* choice(player.id,'magicEyeMode','魔眼：选择效果',[{value:'discard',label:'目标角色弃1张'},{value:'draw',label:'自己摸3张'}],'discard');
+          const canDiscard=!game.turn.state?.seekingAction&&player.hand.length>=3&&game.usableHandCards(player.id).length>0;
+          const mode=yield* choice(player.id,'magicEyeMode','魔眼：选择效果',[...(canDiscard?[{value:'discard',label:'目标角色弃1张'}]:[]),{value:'draw',label:'自己摸3张'}],canDiscard?'discard':'draw');
           if(mode==='draw')yield* game.drawSteps(player.id,3,{...options,cause:{type:'directDraw',skillId:'magicEye'}});
-          else {const targetId=yield* game.choosePlayer(player.id,targets(game),'魔眼：选择弃牌角色',{skillId:'magicEyeTarget'});yield* discardHand(game,targetId,1,'magicEyeDiscard',options);}
+          else {
+            const targetId=yield* game.choosePlayer(player.id,targets(game),'魔眼：选择弃牌角色',{skillId:'magicEyeTarget'});
+            if(targetId===player.id){
+              const cards=yield* game.chooseHandCards(player.id,1,()=>true,{skillId:'magicEyeDiscard',title:'魔眼：弃牌后保留可用牌',preserveUsable:true});
+              game.discardCards(player.id,cards,{reason:'magicEyeDiscard',visibility:'hidden'});yield* game.flushRuleEvents(options);
+            }else yield* discardHand(game,targetId,1,'magicEyeDiscard',options);
+          }
           if(player.hand.length){const cards=yield* game.chooseHandCards(player.id,1,()=>true,{skillId:'chargeCover',title:'魔眼：将1张手牌作为充能'});game.coverCards(player.id,cards,'charge');yield* game.flushCardMoves(options);yield* trimCovered(game,player,'charge',8,'chargeTrim');}
           game.gainEnergy(player.id,'crystal');
+          // Covering is unrestricted. At activation completion thunder scatter
+          // remains a legal continuation; otherwise refresh the unusable hand.
+          game.allowActivationRefresh(player.id,'magicEye');
         }},
     ];
   }

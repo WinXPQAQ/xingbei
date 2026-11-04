@@ -54,8 +54,9 @@ export class Missionary extends Hero {
         id: "preaching",
         name: "传道",
         ...this.onOwnTurn([Timing.ACTIVATION]),
-        activationEnablesAction: ({ game, player }) => player.hand.length > 0 || (hero.holder(game) !== player.id && game.player(hero.holder(game)).hand.length > 0),
-        filter: ({ game }) => hero.holder(game) != null,
+        activationEnablesAction: ({ game, player }) => player.hand.length > 0 || (hero.holder(game) != null && game.player(hero.holder(game)).hand.length > 0),
+        filter: ({ game, player }) => hero.holder(game) != null &&
+          (player.hand.length > 0 || game.player(hero.holder(game)).hand.length > 0),
         *resolve({ game, player, context, options }) {
           if (context.usedSkills.terminalActivation) return;
           if (
@@ -67,14 +68,17 @@ export class Missionary extends Hero {
           )
             return;
           context.usedSkills.terminalActivation = true;
+          const holderEmpty = game.player(hero.holder(game)).hand.length === 0;
+          const mustDraw = game.turn.state?.seekingAction || player.hand.length === 0 || (holderEmpty && player.hand.length === 1);
           const n = yield* choice(
             player.id,
             "preachingDraw",
             "传道：摸牌数量",
             [
-              { value: 0, label: "不摸牌" },
+              ...(mustDraw ? [] : [{ value: 0, label: "不摸牌" }]),
               { value: 1, label: "摸1张" },
             ],
+            mustDraw ? 1 : 0,
           );
           if (n) yield* game.drawSteps(player.id, n, options);
           const [mine] = yield* hero.selfDiscard(
@@ -83,17 +87,22 @@ export class Missionary extends Hero {
             "preachingCost",
             options,
             "public",
+            { preserveUsable: holderEmpty },
           );
           hero.gain(game, player, 1);
           const id = hero.holder(game);
-          const [received] = yield* discardHand(
-            game,
-            id,
-            1,
-            "preachingRecipient",
-            options,
-            "public",
-          );
+          const donor = game.player(id);
+          const usable = !player.hand.length
+            ? donor.hand.filter(card => game.isUsableHandCard(player.id, card)) : [];
+          const receivedCards = donor.hand.length ? yield* game.chooseHandCards(id, 1,
+            card => !usable.length || usable.includes(card), {
+              skillId: "preachingRecipient", title: "传道：明弃1张牌交给传教士",
+            }) : [];
+          if (receivedCards.length) {
+            game.discardCards(id, receivedCards, { reason: "preachingRecipient", visibility: "public" });
+            yield* game.flushRuleEvents(options);
+          }
+          const [received] = receivedCards;
           if (received?.location.zone === "discard") {
             const a = mine?.getTraits({ game, playerId: player.id }),
               b = received.getTraits({ game, playerId: id });
@@ -105,6 +114,9 @@ export class Missionary extends Hero {
             )
               hero.gain(game, player, 1);
           }
+          // The discard is only an intermediate cost; the donor's card and all
+          // Service effects must finish before inability is assessed.
+          game.allowActivationRefresh(player.id, "preaching");
         },
       },
       {
@@ -171,8 +183,13 @@ export class Missionary extends Hero {
       `虔诚+${this.state.devotion - old}（${this.state.devotion}/4）`,
     );
   }
-  *selfDiscard(g, p, skill, options, visibility = "hidden") {
-    const cs = yield* discardHand(g, p.id, 1, skill, options, visibility);
+  *selfDiscard(g, p, skill, options, visibility = "hidden", selection = null) {
+    let cs;
+    if (selection && p.hand.length) {
+      cs = yield* g.chooseHandCards(p.id, 1, () => true, { skillId: skill, ...selection });
+      g.discardCards(p.id, cs, { reason: skill, visibility });
+      yield* g.flushRuleEvents(options);
+    } else cs = yield* discardHand(g, p.id, 1, skill, options, visibility);
     const c = cs[0],
       id = this.holder(g);
     if (

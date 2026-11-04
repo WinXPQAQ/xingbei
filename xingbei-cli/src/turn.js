@@ -62,13 +62,14 @@ export class TurnFlow {
   *activate(playerId, options = {}, validatedAction = false) {
     if (!validatedAction && !this.game.canActivate(playerId)) throw new RuleError("当前不能启动");
     const state = this.state, plan = options.plan ?? null, action = plan?.action;
-    if (!validatedAction && !this.game.legalCards(playerId).length && !this.game.legalSkillActions(playerId).length) {
+    if (!validatedAction && !this.game.hasOrdinaryContinuation(playerId)) {
       const suppliers=this.game.activationSuppliers(playerId);
       const skillId=yield {type:"numberChoice",playerId,skillId:"activationRoute",title:"选择启动后获得行动条件的路线",
         choices:suppliers.map(skill=>({value:skill.id,label:skill.name})),defaultValue:suppliers[0]?.id};
       if(!suppliers.some(skill=>skill.id===skillId)) throw new RuleError("无效的启动路线");
       state.requiredActivationSkill=skillId;
     }
+    state.seekingAction = !this.game.hasOrdinaryContinuation(playerId);
     state.activationDone = true;
     state.route = "normal";
     state.phase = Timing.ACTIVATION;
@@ -85,7 +86,7 @@ export class TurnFlow {
       yield* this.game.trigger(Timing.ACTIVATION, state, options);
       yield* this.game.restoreRandomInability(playerId, options);
     } finally {
-      for (const key of ["requiredActivationSkill", "activationPlan", "reservedCardIds", "reservedSkillId", "reservedTargetIds", "reservedEnergy", "reservedHealing"]) delete state[key];
+      for (const key of ["seekingAction", "requiredActivationSkill", "activationPlan", "reservedCardIds", "reservedSkillId", "reservedTargetIds", "reservedEnergy", "reservedHealing"]) delete state[key];
     }
     // No ACTION_PHASE_START trigger here: it ran before activation, and firing
     // it again would reset forms (notably Magic Swordsman's shadow form).

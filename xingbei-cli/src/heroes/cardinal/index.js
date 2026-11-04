@@ -44,7 +44,9 @@ export class Cardinal extends Ecclesiastic {
           hero.state.silverBullets -= 2;
           const id = yield* game.choosePlayer(
             player.id,
-            game.players.filter((p) => p.team === player.team).map((p) => p.id),
+            game.players.filter((p) => p.team === player.team &&
+              (p.id !== player.id || p.hand.length !== 1 ||
+                p.hand[0].getTraits({ game, playerId: player.id }).fates.includes("S"))).map((p) => p.id),
             "驱魔式目标",
             { skillId: "exorcismTarget" },
           );

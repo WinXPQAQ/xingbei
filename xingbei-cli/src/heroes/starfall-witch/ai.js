@@ -46,13 +46,13 @@ export const starfallWitchAi = {
         ? "invoke"
         : player.count >= 4 && request.choices.some((c) => c.value === "add")
           ? "add"
-          : "skip",
+          : request.choices.find(c => c.value === "skip")?.value ?? request.choices[0].value,
     revelationCard: cheapCards,
     revelationLaw: ({ request }) =>
       request.choices.find((c) => c.value === "starlight")?.value ??
       request.choices.find((c) => c.value === "moonlight")?.value ??
       request.choices[0].value,
-    revelationDraw: ({ player }) => Number(player.count < player.limit),
+    revelationDraw: ({ player, request }) => request.choices.find(c => c.value === Number(player.count < player.limit))?.value ?? request.choices[0].value,
     revelationRunes: cheapCovered,
     runeOverflow: cheapCovered,
     starlight: () => true,

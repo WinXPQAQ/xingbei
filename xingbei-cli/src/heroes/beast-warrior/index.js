@@ -70,9 +70,15 @@ export class BeastWarrior extends Hero {
         *resolve({game,player,options}){
           if(!(yield* game.offerSkill(player.id,'iaidoStance','御魂流居合式：消耗1宝石，+1兽魂')))return;
           yield* game.paySkillEnergy(player.id,'gem');hero.state.souls++;game.logSkill(player.id,'iaidoStance',`无视上限获得1兽魂（${hero.state.souls}）`);
-          const mode=yield* choice(player.id,'iaidoStance','可摸或弃1张牌',[{value:'skip',label:'不摸弃'},{value:'draw',label:'摸1张'},...(player.hand.length?[{value:'discard',label:'弃1张'}]:[])],'skip');
+          const usable=!game.turn.state?.seekingAction&&game.usableHandCards(player.id).length>0;
+          const modes=usable?[{value:'skip',label:'不摸弃'},{value:'draw',label:'摸1张'},...(player.hand.length>1?[{value:'discard',label:'弃1张'}]:[])]:[{value:'draw',label:'摸1张'}];
+          const mode=yield* choice(player.id,'iaidoStance','可摸或弃1张牌',modes,usable?'skip':'draw');
           if(mode==='draw')yield* game.drawSteps(player.id,1,{...options,cause:{type:'directDraw',skillId:'iaidoStance'}});
-          if(mode==='discard')yield* discardHand(game,player.id,1,'iaidoStanceDiscard',options);
+          if(mode==='discard'){
+            const cards=yield* game.chooseHandCards(player.id,1,()=>true,{skillId:'iaidoStanceDiscard',title:'居合式：弃牌后保留可用牌',preserveUsable:true});
+            game.discardCards(player.id,cards,{reason:'iaidoStanceDiscard',visibility:'hidden'});yield* game.flushRuleEvents(options);
+          }
+          if(mode==='draw')game.allowActivationRefresh(player.id,'iaidoStance');
           if(hero.state.form)hero.addResidual(game,player,1,'iaidoStance');else hero.state.form='iaido';
         }},
     ];

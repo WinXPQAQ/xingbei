@@ -190,12 +190,13 @@ export class Defiler extends Hero {
               { value: "raging", label: "狂戾形态" },
             ],
           );
+          const canDiscard = player.hand.length > 2 && game.usableHandCards(player.id).length > 0;
           const mode = yield* choice(player.id, "twistedCards", "调整手牌", [
-            { value: "discard", label: "弃2牌" },
+            ...(canDiscard ? [{ value: "discard", label: "弃2牌" }] : []),
             { value: "draw", label: "摸2牌" },
           ]);
           if (mode === "discard")
-            yield* discardHand(game, player.id, 2, "twistedLoveCost", options);
+            yield* discardHand(game, player.id, 2, "twistedLoveCost", { ...options, preserveUsable: true });
           else
             yield* game.drawSteps(player.id, 2, {
               ...options,
@@ -207,6 +208,7 @@ export class Defiler extends Hero {
             "调整戾气",
             [0, 1, 2].map((value) => ({ value, label: `${value}戾气` })),
           );
+          if (mode === "draw") game.allowActivationRefresh(player.id, "twistedLove");
         },
       },
     ];

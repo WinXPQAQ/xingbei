@@ -9,7 +9,7 @@ export const missionaryAi = {
     crystal && !player.energy.crystal ? 7 : 0,
   decisions: {
     preaching: () => true,
-    preachingDraw: ({ player }) => (player.count < player.limit ? 1 : 0),
+    preachingDraw: ({ player, request }) => request.choices.find(c => c.value === Number(player.count < player.limit))?.value ?? request.choices[0].value,
     spiritualGift: ({ player, request }) =>
       player.energy.gem + player.energy.crystal >
         (request.reservedEnergy ?? 0) &&

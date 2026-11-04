@@ -23,8 +23,8 @@ export const defilerAi = {
       player.energy.gem > (request.reservedEnergy ?? 0) &&
       (!player.heroState.form || player.count >= player.limit),
     twistedForm: () => "raging",
-    twistedCards: ({ player }) =>
-      player.count <= player.limit - 3 ? "draw" : "discard",
+    twistedCards: ({ player, request }) =>
+      player.count <= player.limit - 3 || !request.choices.some(c => c.value === "discard") ? "draw" : "discard",
     twistedMalice: () => 2,
   },
 };
