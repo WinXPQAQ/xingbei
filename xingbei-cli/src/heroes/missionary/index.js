@@ -54,6 +54,7 @@ export class Missionary extends Hero {
         id: "preaching",
         name: "传道",
         ...this.onOwnTurn([Timing.ACTIVATION]),
+        activationEnablesAction: ({ game, player }) => player.hand.length > 0 || (hero.holder(game) !== player.id && game.player(hero.holder(game)).hand.length > 0),
         filter: ({ game }) => hero.holder(game) != null,
         *resolve({ game, player, context, options }) {
           if (context.usedSkills.terminalActivation) return;

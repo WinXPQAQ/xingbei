@@ -72,6 +72,7 @@ export async function driveGame({ seed, heroIds, start = 0, turnLimit = 500, dec
       while (game.turn.needsAction()) {
         const action = await pick(id, { type: 'action' }, timed('candidatesMs', () => actionCandidates(game, id)));
         if (action.type === 'pass') game.skipExtraActions(id);
+        else if (action.type === 'activate') await game.activateAsync(id, options);
         else {
           try { await game.executeAction(id, action, options); }
           catch (error) { if (!error.actionInvalidated) throw error; }

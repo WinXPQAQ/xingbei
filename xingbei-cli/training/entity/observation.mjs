@@ -2,7 +2,7 @@ import { hiddenEffectFor } from "../../src/card-visibility.js";
 import { playableCards } from "../../src/playable-cards.js";
 import { declaredState } from './hero-state.mjs';
 
-export const ENTITY_SCHEMA = 'entities-v3';
+export const ENTITY_SCHEMA = 'entities-v4';
 // Trusted boundary. Only explicitly visible fields leave this module. Entity
 // references are local array offsets, never engine card IDs or deck positions.
 export function encodeEntities({ game, playerId, request, candidates, continuations }) {
@@ -81,7 +81,8 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
         const match = /^(doubleEcho|manaTide):([0-5])$/.exec(key);
         return match ? `${match[1]}:${seat(Number(match[2]))}` : key;
       }),
-      activationDone: turn.playerId === playerId ? turn.activationDone : null },
+      activationDone: turn.playerId === playerId ? turn.activationDone : null,
+      requiredActivationSkill: turn.playerId === playerId ? turn.requiredActivationSkill ?? null : null },
       { completed: turn.completed, attackCount: turn.attackCount }, { owner: playerRef(turn.playerId) });
     for (const [position, action] of (turn.pendingActions ?? []).entries())
       add('extraAction', { type: action.type, element: action.element, fate: action.fate, sourceSkill: action.sourceSkillId }, { position }, { owner: playerRef(turn.playerId) });
@@ -106,7 +107,7 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
     timing: event?.timing ?? null, ...flags, previousAttackFates: context.previousAttackTraits?.fates ?? [],
     continuationStage: context.stage ?? null, triggered: context.triggered ?? null,
     purpose: request.purpose ?? context.purpose ?? null, damageType: context.damageType ?? (request.type === 'response' ? request.attack ? 'attack' : 'spell' : null),
-    optional: !!request.optional, counter: request.isCounter ?? context.isCounter ?? null, shieldable: request.shieldable ?? context.shieldable ?? null },
+    optional: !!request.optional, required: !!request.required, blocked: !!request.blockedReason, counter: request.isCounter ?? context.isCounter ?? null, shieldable: request.shieldable ?? context.shieldable ?? null },
     { amount: request.damage ?? context.amount ?? 0, count: request.count ?? context.count ?? 0,
       chainDepth: request.chainDepth ?? context.chainDepth ?? 0, direction: request.direction ?? 0,
       point: context.point ?? 0, sourceHandCount: context.sourceHandCount ?? 0, targetHandCount: context.targetHandCount ?? 0,
@@ -144,6 +145,10 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
     else if (['target','playerChoice'].includes(request.type)) refs.targets = playerRef(value);
     else if (request.type === 'effectChoice') refs.cards = cardRef(value);
     else if (request.type === 'energyChoice') { numbers.gem = value.gem; numbers.crystal = value.crystal; }
+    else if (request.skillId === 'activationRoute') {
+      categorical.skill = value;
+      if (skills.has(`${playerId}:${value}`)) refs.skill = [skills.get(`${playerId}:${value}`)];
+    }
     else if (typeof value === 'number') numbers.value = value;
     else if (['string','boolean'].includes(typeof value)) categorical.value = value;
     else throw new Error(`Unsupported candidate ${request.type}`);

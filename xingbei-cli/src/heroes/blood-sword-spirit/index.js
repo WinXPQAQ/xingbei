@@ -44,6 +44,7 @@ export class BloodSwordSpirit extends Hero {
         filter:({game})=>hero.gardenActive(game),
         resolve({game,player}) {game.moveCard(hero.state.gardenCardId,{zone:'outside'});game.logSkill(player.id,'roseGarden','回合结束，庭院返回场外');}},
       {id:'petalDance',name:'散华轮舞',...this.onOwnTurn([Timing.ACTIVATION]),
+        activationEnablesAction: () => true,
         filter:({game,player})=>game.canPayEnergy(player.id,'crystal'),
         *resolve({game,player,options}) {
           const choices=[{value:'skip',label:'不发动'},{value:'crystal',label:'水晶：放置庭院，+2鲜血'}];

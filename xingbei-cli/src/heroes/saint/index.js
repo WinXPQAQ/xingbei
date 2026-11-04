@@ -50,6 +50,7 @@ export class Saint extends Hero {
         id: "compassion",
         name: "怜悯",
         ...this.onOwnTurn([Timing.ACTIVATION]),
+        activationEnablesAction: ({ game }) => !game.turn.state?.usedSkills.holyCure,
         filter: ({ game, player }) => game.canPayEnergy(player.id, "gem"),
         modifyHandLimit: (limit) => (this.state.compassion ? 7 : limit),
         *resolve({ game, player }) {

@@ -52,3 +52,33 @@ test('recorded ownership attributes an unsafe personal discard to the chooser, n
  const steps=game.restoreRandomInability(0);let step=steps.next();while(!step.done)step=steps.next();
  assert.equal(game.winner,'blue');assert.equal(game.inabilityArchives[0].responsiblePlayerId,0);
 });
+
+test('explicit activation blocks spending the sole action energy, then permits a fresh spell choice',async()=>{
+ const g=new Game({heroIds:['inquisitor','none','none','none','none','none']});
+ const p=g.player(0);p.hero.state.rulings=2;p.energy.crystal=1;
+ g.startTurn(0);
+ let offered=false;
+ await g.executeAction(0,{type:'activate'},{choose:r=>{
+   if(r.skillId==='adjudicate'){offered=true;assert.equal(r.blockedReason,'你将无法行动');assert.deepEqual(r.choices.map(c=>c.value),[false]);return true;}
+   return r.defaultValue;
+ }});
+ assert.ok(offered);assert.equal(p.energy.crystal,1);assert.equal(p.hero.state.rulings,2);
+ assert.equal(g.turn.state.activationDone,true);assert.equal(g.turn.state.actionType,null);
+ assert.ok(g.legalSkillActions(0).some(x=>x.skillId==='divineSpur'));
+ assert.equal(g.canDrawSpecial(0),false);assert.equal(g.canActivate(0),false);
+ assert.equal(g.winner,null);g.assertCardLocations();
+});
+
+test('activation requires an ordinary continuation or an explicitly declared supplying route',()=>{
+ const priest=new Game({heroIds:['priest','none','none','none','none','none']});
+ priest.player(0).energy.crystal=1;priest.player(0).healing=1;priest.startTurn(0);
+ assert.equal(priest.canActivate(0),false);assert.equal(priest.canDrawSpecial(0),true);
+ const swordsman=new Game({heroIds:['magicSwordsman','none','none','none','none','none']});swordsman.startTurn(0);
+ assert.equal(swordsman.canActivate(0),true);
+ const steps=swordsman.activateSteps(0),route=steps.next().value;
+ assert.equal(route.skillId,'activationRoute');assert.deepEqual(route.choices.map(c=>c.value),['shadowGathering']);
+ let step=steps.next('shadowGathering');
+ while(!step.done&&step.value.type==='presentation')step=steps.next();
+ assert.equal(step.value.skillId,'shadowGathering');assert.equal(step.value.required,true);
+ assert.deepEqual(step.value.choices.map(c=>c.value),[true]);steps.return();
+});

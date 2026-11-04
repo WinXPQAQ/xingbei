@@ -18,6 +18,7 @@ export class RedLotusKnight extends Hero {
           game.changeHealing(player.id, 1); game.logSkill(player.id, 'scarletCovenant', '获得1治疗');
         } },
       { id: 'bloodPrayer', name: '血腥祷言', ...this.onOwnTurn([Timing.ACTIVATION]),
+        activationEnablesAction: ({ player }) => player.healing > 0,
         *resolve({ game, player, options }) {
           if (!(yield* game.offerSkill(player.id, 'bloodPrayer', '血腥祷言'))) return;
           const count = yield* choice(player.id, 'bloodPrayer', '移除X治疗并承受X法伤',

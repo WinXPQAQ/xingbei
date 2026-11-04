@@ -14,7 +14,11 @@ const revision=process.env.XINGBEI_SOURCE_REVISION??'development';
 const coverage=Object.fromEntries(HERO_IDS.map(id=>[id,0]));
 for(let i=0;i<count;i++) {
   const file=path.join(directory,'games',`${i}.json`), heroIds=roster(i);
-  if (!fs.existsSync(file)) {
+  if (fs.existsSync(file)) {
+    const previous = JSON.parse(fs.readFileSync(file, 'utf8'));
+    if (previous.schema !== ENTITY_SCHEMA || previous.result.revision !== revision || JSON.stringify(previous.heroIds) !== JSON.stringify(heroIds))
+      throw new Error(`Incompatible resumed corpus: ${file}`);
+  } else {
     const retained=Array(6).fill(null), seen=Array(6).fill(0);
     const result=await driveGame({seed:731103000+i,heroIds,start:i%6,capture:true,revision},input=>{
       const choice=teacherIndex(input,'v1.9.0-preview.1');

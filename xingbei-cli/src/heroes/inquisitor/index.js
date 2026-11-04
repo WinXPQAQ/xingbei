@@ -274,6 +274,7 @@ export class Inquisitor extends Hero {
               player.id,
               "adjudicate",
               "裁决者：1水晶，裁决+1，裁决所治疗+2",
+              { blockedReason: game.wouldLoseActionAfterEnergy(player.id, "crystal") ? "你将无法行动" : null },
             ))
           )
             return;

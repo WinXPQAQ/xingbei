@@ -169,6 +169,7 @@ export class Defiler extends Hero {
         id: "twistedLove",
         name: "扭曲之爱",
         ...this.onOwnTurn([Timing.ACTIVATION]),
+        activationEnablesAction: () => true,
         filter: ({ game, player }) => game.canPayEnergy(player.id, "gem"),
         *resolve({ game, player, options }) {
           if (

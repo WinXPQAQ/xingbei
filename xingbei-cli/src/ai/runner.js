@@ -16,7 +16,13 @@ export function runPolicyAction(policy, game, actorId, { autoRespond = true, ret
     return policy.chooseAiRuleDecision(request,game);
   };
   try {
-    if (action.type === 'refresh') game.refreshUnableHand(actorId, options);
+    if (action.type === 'activate') {
+      resolveSync(game.activateSteps(actorId, { ...options, plan: action.plan }), request => game.automaticDecision(request, options));
+      // This convenience API completes the ordinary action. Browser/training
+      // callers use activateAsync directly and observe the separate decision.
+      if (game.turn.needsAction()) return runPolicyAction(policy, game, actorId, { autoRespond, retried });
+    }
+    else if (action.type === 'refresh') game.refreshUnableHand(actorId, options);
     else if (action.type === 'purchase') game.purchase(actorId, options);
     else if (action.type === 'refine') game.refine(actorId, action.stones, options);
     else if (action.type === 'synthesize') game.synthesize(actorId, action.gemCount, options);

@@ -5,10 +5,17 @@ const canonical = value => JSON.stringify(value, (_, item) => item && typeof ite
 
 // Explicit teacher/opponent mode only. Never used as a fallback for a model.
 export function teacherIndex({ game, playerId, request, candidates }, version) {
+  if (request.required && candidates.length === 1) return 0;
+  if (request.skillId === 'activationRoute') return candidates.indexOf(request.defaultValue);
   if (request.blockedReason) return candidates.indexOf(false);
   const policy = getPolicy(version);
   let value;
-  if (request.type === 'action') value = policy.chooseAiAction(game, playerId);
+  if (request.type === 'action') {
+    value = policy.chooseAiAction(game, playerId);
+    // Frozen opponents planned a concrete normal action before activation.
+    // Preserve their route preference, then ask them again after activation.
+    if (candidates.some(c => c.type === 'activate') && ['play', 'skill', 'activate'].includes(value?.type)) value = { type: 'activate' };
+  }
   else if (request.type === 'response') value = policy.chooseAiResponse(game, request);
   else if (request.type === 'overflow') value = policy.chooseAiDiscard(game, playerId, game.player(playerId).hand.length - game.player(playerId).handLimit);
   else value = policy.chooseAiRuleDecision(request, game);

@@ -339,7 +339,7 @@ test("六英雄默认阵容完整AI对局：逐回合、额外行动、实例守
           if (action.type !== "pass") await game.executeAction(id, action, options);
           else if (game.turn.hasExtraActions()) game.skipExtraActions(id);
           game.assertCardLocations();
-        } while (game.turn.hasExtraActions() && !game.winner);
+        } while (game.turn.needsAction() && !game.winner);
       }
       await game.endTurnWithDecisions(options); game.assertCardLocations();
       assert.equal(game.cards.size, 151);

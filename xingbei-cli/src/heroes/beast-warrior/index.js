@@ -65,6 +65,7 @@ export class BeastWarrior extends Hero {
           }
         }},
       {id:'iaidoStance',name:'御魂流居合式',...this.onOwnTurn([Timing.ACTIVATION]),
+        activationEnablesAction: () => true,
         filter:({game,player})=>game.canPayEnergy(player.id,'gem'),
         *resolve({game,player,options}){
           if(!(yield* game.offerSkill(player.id,'iaidoStance','御魂流居合式：消耗1宝石，+1兽魂')))return;

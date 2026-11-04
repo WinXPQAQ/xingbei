@@ -12,15 +12,21 @@ function reservedAttack(game, id, request) {
   return card && targets.length ? { type: "play", index: game.player(id).hand.indexOf(card), targetId: targets[0] } : null;
 }
 function activationUseful(game, id, state, request, skillId) {
-  const action = reservedAttack(game,id,request);
-  if (!action) return false;
-  const card = game.player(id).hand[action.index];
-  const before = attackScore(game,id,state,card,action.targetId);
-  const prepared = preparationOptions(game,id,{...state,turn:{...state.turn,activationDone:false}},action)
-    .find((entry)=>entry.activated===skillId)?.state;
-  if (!prepared || terminal(prepared)) return false;
-  return evaluate(prepared)-evaluate(state)+attackScore(game,id,prepared,card,action.targetId)>before+0.5;
+  const reserved = reservedAttack(game,id,request);
+  const actions = reserved ? [reserved] : game.player(id).hand.flatMap((card,index) => card.type === 'attack'
+    ? state.players.filter(p=>p.team!==state.players[id].team).map(p=>({type:'play',index,targetId:p.id})) : []);
+  let without=-Infinity, withSkill=-Infinity;
+  for (const action of actions) {
+    const card = game.player(id).hand[action.index];
+    without=Math.max(without,attackScore(game,id,state,card,action.targetId));
+    const prepared = preparationOptions(game,id,{...state,turn:{...state.turn,activationDone:false}},action)
+      .find(entry=>entry.activated===skillId)?.state;
+    if (prepared && !terminal(prepared)) withSkill=Math.max(withSkill,
+      evaluate(prepared)-evaluate(state)+attackScore(game,id,prepared,card,action.targetId));
+  }
+  return withSkill>without+0.5;
 }
+
 export function chooseAiRuleDecision(request, game) {
   const id=request.playerId??request.player?.id, player=game.player(id), state=publicState(game,id), p=state.players[id];
   const ctx=request.context??{}, skill=request.skillId;

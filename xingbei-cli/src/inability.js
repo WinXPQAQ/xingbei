@@ -26,3 +26,15 @@ export function knownRemovalBlocked(game, actorId, targetId, count) {
   if(actorId===targetId)return safeRemovalSets(game,targetId,Math.min(count,player.hand.length)).length===0;
   return !canContinueWithHand(game,targetId,[]);
 }
+
+// Only use for a known deterministic energy-only adjustment, not skills which
+// subsequently draw cards or grant actions. The query cannot inspect the deck.
+export function canContinueAfterEnergy(game, playerId, kind, count = 1) {
+  const view=Object.create(game), player=Object.create(game.player(playerId));
+  player.energy={...player.energy};
+  const crystals=kind==='gem'?0:Math.min(count,player.energy.crystal);
+  player.energy.crystal-=crystals;player.energy.gem-=count-crystals;
+  view.players=game.players.map(p=>p.id===playerId?player:p);
+  view.turn=Object.create(game.turn);view.turn.game=view;
+  return view.legalCards(playerId).length>0 || view.legalSkillActions(playerId).length>0;
+}

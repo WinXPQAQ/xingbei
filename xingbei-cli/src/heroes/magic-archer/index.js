@@ -52,6 +52,7 @@ export class MagicArcher extends Hero {
         action(game,player){return (game.turn.nextAction()?.sourceSkillId==='multiShot'||(game.turn.state?.actionSourceSkillId==='multiShot'&&!game.turn.state.completed))?{type:'attack',targets:enemies(game,player).filter(id=>id!==hero.state.lastTarget&&game.canAttackTarget(player.id,id))}:null;},
         *resolveAction({game,player,targetIds,options}){yield* attackSteps(game,player.id,-1,targetIds[0],{...options,virtualAttack:darkAttack,actionSourceSkillId:'multiShot'});}},
       {id:'charge',name:'充能',...this.onOwnTurn([Timing.ACTIVATION]),
+        activationEnablesAction: () => true,
         filter:({game,player})=>game.canPayEnergy(player.id,'crystal'),
         *resolve({game,player,options}){
           if(!(yield* game.offerSkill(player.id,'charge','充能：消耗1水晶，弃到4张后摸0至4张')))return;
@@ -64,6 +65,7 @@ export class MagicArcher extends Hero {
           if(cards){game.coverCards(player.id,cards,'charge');yield* game.flushCardMoves(options);yield* trimCovered(game,player,'charge',8,'chargeTrim');}
         }},
       {id:'magicEye',name:'魔眼',...this.onOwnTurn([Timing.ACTIVATION]),
+        activationEnablesAction: () => true,
         filter:({game,player})=>!hero.state.charged&&game.canPayEnergy(player.id,'gem'),
         *resolve({game,player,options}){
           if(!(yield* game.offerSkill(player.id,'magicEye','魔眼：消耗1宝石，弃牌或摸牌、盖1充能并获得1水晶')))return;

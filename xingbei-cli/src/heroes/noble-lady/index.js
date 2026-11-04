@@ -184,6 +184,7 @@ export class NobleLady extends Hero {
         id: "wishFulfillment",
         name: "强予愿行",
         ...this.onOwnTurn([Timing.ACTIVATION]),
+        activationEnablesAction: ({ player }) => player.hand.length < 4,
         filter: ({ game, player }) => game.canPayEnergy(player.id, "crystal"),
         *resolve({ game, player, options }) {
           if (

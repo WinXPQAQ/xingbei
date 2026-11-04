@@ -84,6 +84,7 @@ test('nested trigger context reaches decisions and is restored after cancellatio
 test('training enumerates both target orders and uses relative per-seat skill markers', async () => {
   const game = new Game({ seed: 211102003 }).setup();
   game.current = 4; await game.beginTurn(4);
+  await game.activateAsync(4, {choose: request => request.defaultValue});
   game.turn.state.usedSkills['doubleEcho:5'] = true;
   const spec = { targets: [1, 2], targetCount: 2, cardCount: 0 };
   game.legalSkillActions = () => [{ skillId: 'orderedProbe', spec }];
@@ -133,4 +134,39 @@ test('activation reservations tolerate moved hidden cards without exposing their
   assert.deepEqual(encodeEntities(input), before);
   input.candidates = [{ type: 'skill', skillId: 'probe', cardIds: [card.id] }];
   assert.throws(() => encodeEntities(input), /non-visible card/);
+});
+
+test('normal route is chosen before activation; cards are offered again after its draw', async () => {
+  const game = new Game({ seed: 211104001, heroRules: false }).setup();
+  const player = game.player(0);
+  for (const card of [...player.hand]) game.moveCard(card.id, { zone: 'outside' });
+  const fire = game.deck.find(c => c.type === 'attack' && c.element === 'fire');
+  const water = game.deck.find(c => c.type === 'attack' && c.element === 'water');
+  game.moveCard(fire.id, { zone: 'hand', playerId: 0 });
+  game.moveCard(water.id, { zone: 'outside' });
+  game.moveCard(water.id, { zone: 'deck' });
+  let activations = 0;
+  player.hero.addSkills({ id: 'activationDrawProbe', ...player.hero.onOwnTurn([Timing.ACTIVATION]),
+    *resolve({ game, player, options }) {
+      activations++;
+      yield* game.drawSteps(player.id, 1, options);
+    } });
+  await game.beginTurn(0);
+  const before = actionCandidates(game, 0);
+  assert.ok(before.some(c => c.type === 'activate'));
+  assert.ok(before.some(c => c.type === 'purchase'));
+  assert.ok(!before.some(c => ['play', 'skill'].includes(c.type)));
+  const encoded = encodeEntities({ game, playerId: 0, request: { type: 'action' }, candidates: before });
+  assert.ok(encoded.candidates.some(c => c.categorical.type === 'activate'));
+  assert.equal(encoded.entities.find(t => t.kind === 'turn').categorical.activationDone, false);
+  await game.activateAsync(0);
+  assert.equal(activations, 1);
+  assert.equal(game.turn.state.completed, false);
+  const after = actionCandidates(game, 0);
+  assert.ok(after.some(c => c.type === 'play' && player.hand[c.index]?.id === water.id));
+  assert.ok(!after.some(c => ['activate', 'purchase', 'synthesize', 'refine'].includes(c.type)));
+  const selected = after.find(c => c.type === 'play' && player.hand[c.index]?.id === water.id);
+  await game.executeAction(0, selected, {chooseResponse: () => null, choose: request => request.defaultValue});
+  assert.equal(activations, 1);
+  assert.ok(player.hand.some(c => c.id === fire.id));
 });

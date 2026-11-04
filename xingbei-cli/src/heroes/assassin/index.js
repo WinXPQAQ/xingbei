@@ -60,6 +60,7 @@ export class Assassin extends Hero {
         id: "stealth",
         name: "潜行",
         ...this.onOwnTurn([Timing.ACTIVATION]),
+        activationEnablesAction: () => true,
         filter: ({ game, player }) => game.canPayEnergy(player.id, "gem"),
         modifyHandLimit: (limit) => limit - Number(!!this.state.form),
         *resolve({ game, player, options }) {

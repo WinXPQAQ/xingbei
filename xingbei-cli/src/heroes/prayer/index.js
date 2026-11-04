@@ -90,6 +90,7 @@ export class Prayer extends Hero {
       {
         id: "prayer", name: "祈祷",
         ...this.onOwnTurn([Timing.ACTIVATION]),
+        activationEnablesAction: ({ player }) => player.hero.state.prayerRunes > 0,
         filter: ({ game, player }) => !this.state.form && game.canPayEnergy(player.id, "gem"),
         *resolve({ game, player }) {
           if (!(yield* game.offerSkill(player.id, "prayer", "祈祷"))) return;

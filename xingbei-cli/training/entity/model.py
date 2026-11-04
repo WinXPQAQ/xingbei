@@ -9,7 +9,7 @@ import json
 import torch
 from torch import nn
 
-SCHEMA = 'entities-v3'
+SCHEMA = 'entities-v4'
 
 
 def features(token):

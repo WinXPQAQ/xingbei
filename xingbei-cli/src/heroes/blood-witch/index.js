@@ -19,6 +19,7 @@ export class BloodWitch extends Hero {
         filter:()=>!!hero.state.form,
         *resolve({game,player,options}){yield* game.damageSteps(player.id,1,{...options,sourceId:player.id,damageType:'spell',skillId:'bleeding'});}},
       {id:'bloodSorrow',name:'血之哀伤',...this.onOwnTurn([Timing.ACTIVATION]),
+        activationEnablesAction: () => true,
         filter:({game})=>game.cards.get(hero.state.fateCardId)?.location.zone==='status',
         *resolve({game,player,options}){
           if(!(yield* game.offerSkill(player.id,'bloodSorrow','血之哀伤：自受2法伤，转移或移除同生共死')))return;

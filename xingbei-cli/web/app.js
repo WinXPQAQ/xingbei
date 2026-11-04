@@ -176,13 +176,14 @@ function render() {
   elements.handCount.textContent = `${view.player(humanId).hand.length} / ${view.player(humanId).handLimit}`;
   renderPlayers(view);
   paintHand(view, elements.hand, humanId, {
-    acceptingAction: !presenting && (acceptingAction || !!handChoice), selectedCard, locked: presenting || (busy && !targetChoice && !handChoice), handChoice, restrictToLegal: game.turn.hasExtraActions(),
+    acceptingAction: !presenting && ((acceptingAction && (!!game.turn.state?.activationDone || !!targetChoice?.skillCards)) || !!handChoice), selectedCard, locked: presenting || (busy && !targetChoice && !handChoice), handChoice, restrictToLegal: game.turn.hasExtraActions(),
     onSelect: index => handChoice ? handChoice.select(index) : launch(() => selectCard(index)),
   });
   const player = game.player(humanId), stones = game.stoneCounts(player.team);
   $("#sort-hand").disabled = playMode === "spectate" || presenting || busy || !!targetChoice || !!pendingChoice;
   const locked = presenting || !acceptingAction || busy || !!targetChoice;
   endExtra.hidden = !game.turn.hasExtraActions(); endExtra.disabled = locked;
+  activateTurn.hidden = !game.canActivate(humanId) || !!targetChoice; activateTurn.disabled = locked;
   refreshHand.hidden = !game.canRefreshUnableHand(humanId); refreshHand.disabled = locked;
   elements.buy.disabled = locked || !game.canDrawSpecial(humanId);
   elements.synth.disabled = locked || !game.canDrawSpecial(humanId) || stones.total < 3;
@@ -479,7 +480,7 @@ async function resolveHumanOverflow(request) {
 }
 
 async function selectCard(index) {
-  if (!acceptingAction) return;
+  if (!acceptingAction || (!game.turn.state?.activationDone && !targetChoice?.skillCards)) return;
   if (targetChoice) {
     if (selectedCard === index) { targetChoice.resolve(null); return; }
     if (targetChoice.skillCards) {
@@ -553,7 +554,7 @@ async function completeHumanAction(action) {
 }
 
 function renderSkillControls(locked) {
-  const entries = game.legalSkillActions(humanId);
+  const entries = game.legalSkillActions(humanId).filter(entry => game.turn.state?.activationDone || entry.spec.type === "special");
   for (const node of document.querySelectorAll(".hero-action")) if (!entries.some(entry => entry.skillId === node.dataset.skill)) node.remove();
   for (const entry of entries) {
     let button = document.querySelector(`.hero-action[data-skill="${entry.skillId}"]`);
@@ -568,7 +569,7 @@ function renderSkillControls(locked) {
 async function selectSkillAction(skillId) {
   if (!acceptingAction || busy) return;
   const entry = game.legalSkillActions(humanId).find(entry => entry.skillId === skillId);
-  if (!entry) return;
+  if (!entry || (!game.turn.state?.activationDone && entry.spec.type !== "special")) return;
   const active = session;
   busy = true; render();
   try {
@@ -604,9 +605,9 @@ async function selectSkillAction(skillId) {
 
 async function waitForHumanAction() {
   acceptingAction = true;
-  elements.hint.textContent = game.canRefreshUnableHand(humanId) ? "除提炼外无合法行动，可申请换全手；换后仍须行动" : game.turn.hasExtraActions() ? "额外行动，或结束回合" : "[攻击行动]或者[法术行动]";
+  elements.hint.textContent = game.canActivate(humanId) ? "选择启动，再进行攻击／法术行动；也可直接选择特殊行动" : game.canRefreshUnableHand(humanId) ? "除提炼外无合法行动，可申请换全手；换后仍须行动" : game.turn.hasExtraActions() ? "额外行动，或结束回合" : "[攻击行动]或者[法术行动]";
   render();
-  if (keyboardMode) elements.hand.querySelector("button:enabled")?.focus();
+  if (keyboardMode) (game.canActivate(humanId) ? activateTurn : elements.hand.querySelector("button:enabled"))?.focus();
   return session.wait(resolve => { finishAction = resolve; return () => { finishAction = null; }; });
 }
 
@@ -616,7 +617,8 @@ async function executeAi(actorId, scriptedAction = null, retried = false) {
   const action = scriptedAction || (modelEnabled ? await modelChoice(game, actorId) : chooseAiAction(game, actorId));
   active.assert();
   try {
-  if (action.type === "refresh") await game.executeAction(actorId, action, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
+  if (action.type === "activate") await game.executeAction(actorId, action, { chooseResponse: chooseCombatResponse, overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
+  else if (action.type === "refresh") await game.executeAction(actorId, action, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
   else if (action.type === "purchase") await game.executeAction(actorId, action, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
   else if (action.type === "synthesize") await game.executeAction(actorId, action, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
   else if (action.type === "refine") await game.executeAction(actorId, action, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
@@ -689,6 +691,14 @@ refreshHand.addEventListener("click", () => launch(async () => {
     await game.executeAction(humanId, { type: "refresh" }, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
     active.assert(); flushLog(); acceptingAction = false; finishAction?.();
   } finally { if (session === active) { busy = false; render(); } }
+}));
+const activateTurn = document.createElement("button"); activateTurn.id = "activate-turn"; activateTurn.textContent = "启动";
+$("#control").prepend(activateTurn);
+activateTurn.addEventListener("click", () => launch(async () => {
+  if (!acceptingAction || busy || !game.canActivate(humanId)) return;
+  await completeHumanAction(() => game.executeAction(humanId, { type: "activate" }, {
+    chooseResponse: chooseCombatResponse, overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow,
+  }));
 }));
 const endExtra = document.createElement("button"); endExtra.id = "end-extra"; endExtra.textContent = "结束回合";
 $("#control").append(endExtra);
@@ -860,7 +870,13 @@ if (isDev) {
     newGame(createScene(id), 20260905, id);
     // Enter actual supported interactions, rather than drawing a mock modal.
     const active = session;
-    if (id === "target") launch(async () => { while (!acceptingAction) await active.delay(16); active.assert(); await selectCard(0); });
+    if (id === "target") launch(async () => {
+      while (!acceptingAction) await active.delay(16);
+      active.assert();
+      await completeHumanAction(() => game.executeAction(humanId, { type: "activate" }, { overflow: overflowPolicy }));
+      while (!acceptingAction) await active.delay(16);
+      active.assert(); await selectCard(0);
+    });
   }
   select.addEventListener("change", resetScene);
   $("#dev-reset").addEventListener("click", resetScene);

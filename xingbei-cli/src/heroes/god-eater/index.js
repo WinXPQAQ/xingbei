@@ -100,6 +100,7 @@ export class GodEater extends Hero {
         id: "bladeControl",
         name: "御刃",
         ...this.onOwnTurn([Timing.ACTIVATION]),
+        activationEnablesAction: () => true,
         filter: ({ game }) => hero.absent(game).length > 0,
         *resolve({ game, player, options }) {
           const blade = yield* hero.chooseBlade(

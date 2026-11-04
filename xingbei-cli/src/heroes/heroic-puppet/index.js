@@ -80,6 +80,7 @@ export class HeroicPuppet extends Hero {
       {
         id: "runeReconstruction", name: "符文改造",
         ...this.onOwnTurn([Timing.ACTIVATION]),
+        activationEnablesAction: () => true,
         filter: ({ game, player }) => !this.state.form && game.canPayEnergy(player.id, "gem"),
         modifyHandLimit: (limit) => limit + Number(this.state.form === "runeBurst"),
         *resolve({ game, player, options }) {

@@ -1,4 +1,4 @@
-import { actionRequired, canContinueWithHand, safeRemovalSets, knownRemovalBlocked } from './inability.js';
+import { actionRequired, canContinueWithHand, safeRemovalSets, knownRemovalBlocked, canContinueAfterEnergy } from './inability.js';
 import { rememberSelection, resolveExposureTraits } from "./resolution/card-traits.js";
 import { playableCards } from "./playable-cards.js";
 import { cardSets, targetCounts } from "./card-sets.js";
@@ -677,6 +677,28 @@ export class Game {
     this.recordPresentation("stones", { team, amount: -(gem + crystal), gem, crystal });
   }
 
+  canActivate(playerId) {
+    const state = this.turn.state;
+    if (this.winner || !state || state.playerId !== playerId || state.activationDone || state.completed || state.skipped || state.actionType) return false;
+    if (this.legalCards(playerId).length || this.legalSkillActions(playerId).length) return true;
+    // Activation may itself supply cards, energy or an action-enabling form.
+    // Do not prune those routes merely because no action is available yet.
+    return this.activationSuppliers(playerId).length > 0;
+  }
+  activationSuppliers(playerId) {
+    const context=this.turn.state, player=this.player(playerId);
+    return this.triggers.get(Timing.ACTIVATION, context).filter(entry => entry.player.id===playerId &&
+      entry.definition.activationEnablesAction?.({game:this,player,context}) &&
+      (!entry.definition.filter || entry.definition.filter({game:this,player,timing:Timing.ACTIVATION,context})))
+      .map(entry=>entry.definition);
+  }
+
+  *activateSteps(playerId, options = {}) { yield* this.turn.activate(playerId, options); }
+  activate(playerId, options = {}) { return resolveSync(this.activateSteps(playerId, options), request => this.automaticDecision(request, options)); }
+  activateAsync(playerId, options = {}) { return resolveAsync(this.activateSteps(playerId, options), request => this.interactiveDecision(request, options), options.onPresentation ?? this.onPresentation); }
+  wouldLoseActionAfterEnergy(playerId, kind, count = 1) {
+    return actionRequired(this,playerId) && !canContinueAfterEnergy(this,playerId,kind,count);
+  }
   purchase(actorId, options = {}) { return resolveSync(this.purchaseSteps(actorId, options), request => this.automaticDecision(request, options)); }
   synthesize(actorId, gemCount, options = {}) { return resolveSync(this.synthesizeSteps(actorId, gemCount, options), request => this.automaticDecision(request, options)); }
   refine(actorId, stones, options = {}) { return resolveSync(this.refineSteps(actorId, stones, options), request => this.automaticDecision(request, options)); }
@@ -687,6 +709,7 @@ export class Game {
     this.log.push(`${this.player(playerId).name}放弃剩余额外行动`);
   }
   executeAction(actorId, action, options = {}) {
+    if (action.type === "activate") return this.activateAsync(actorId, { ...options, plan: action.plan });
     if (action.type === "play") return this.playWithDecisions(actorId, action.index, action.targetId, options);
     let steps;
     if (action.type === "purchase") steps = this.purchaseSteps(actorId, options);
@@ -957,10 +980,12 @@ export class Game {
 
   *offerSkill(playerId, skillId, title, context = {}) {
     const blockedReason = context.blockedReason ?? null;
-    const value = yield { type: "skillChoice", blockedReason, playerId, skillId, title:blockedReason ? `${title}：${blockedReason}` : title, context, energy: { ...this.player(playerId).energy }, reservedEnergy: this.turn.state?.reservedEnergy ?? 0, reservedHealing: this.turn.state?.reservedHealing ?? 0, reservedCardIds: this.turn.state?.reservedCardIds ?? [], reservedSkillId: this.turn.state?.reservedSkillId ?? null,
-      choices: [...(blockedReason ? [] : [{ value: true, label: "发动" }]), { value: false, label: "不发动" }], defaultValue: false };
+    const required = !blockedReason && this.turn.state?.requiredActivationSkill === skillId && this.turn.state.playerId === playerId;
+    const value = yield { type: "skillChoice", required, activationPlan: this.turn.state?.activationPlan ?? null, blockedReason, playerId, skillId, title:blockedReason ? `${title}：${blockedReason}` : title, context, energy: { ...this.player(playerId).energy }, reservedEnergy: this.turn.state?.reservedEnergy ?? 0, reservedHealing: this.turn.state?.reservedHealing ?? 0, reservedCardIds: this.turn.state?.reservedCardIds ?? [], reservedSkillId: this.turn.state?.reservedSkillId ?? null,
+      choices: [...(blockedReason ? [] : [{ value: true, label: "发动" }]), ...(required ? [] : [{ value: false, label: "不发动" }])], defaultValue: required };
     this.auditTrail.push({type:'skillChoice',playerId,skillId,value,blockedReason});
     if (blockedReason) return false;
+    if (required && value !== true) throw new RuleError("已选择此启动路线，必须执行其供给行动条件的技能");
     // Declined offers may reveal hidden eligibility (e.g. a wind attack in hand).
     if(value===true)this.recordPublicAction({type:'skillResponse',playerId,skillId,accepted:true,targetId:context.targetId});
     if (value) { this.logSkill(playerId, skillId, context.targetId != null ? `目标：${this.actorLabel(context.targetId)}` : ""); this.recordPresentation("skill", { playerId, skillId, label: title }); }

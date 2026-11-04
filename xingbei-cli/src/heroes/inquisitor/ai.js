@@ -37,6 +37,17 @@ export const inquisitorAi = {
     }
     return null;
   },
+  preparations({ state, id, player, action, options }, { copy, payEnergy }) {
+    // Keep the complete spell cost available after paying for activation.
+    const energy = player.energy.gem + player.energy.crystal;
+    const actionCost = action.skillId === 'divineSpur' ? 1 : 0;
+    if (energy <= actionCost || player.heroState.courtHealing >= 4 && player.heroState.rulings >= 3) return options;
+    const next = copy(state); payEnergy(next, id, 1, 'crystal');
+    next.players[id].heroState.rulings = Math.min(3, (player.heroState.rulings ?? 0) + 1);
+    next.players[id].heroState.courtHealing = Math.min(4, (player.heroState.courtHealing ?? 0) + 2);
+    options.push({ state: next, activated: 'adjudicate' });
+    return options;
+  },
   decisions: {
     adjudicate: ({ player, request }) =>
       player.heroState.courtHealing <= 2 &&

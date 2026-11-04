@@ -35,6 +35,7 @@ export class MagicSwordsman extends Hero {
         id: "shadowGathering",
         name: "暗影凝聚",
         ...this.onOwnTurn([Timing.ACTIVATION]),
+        activationEnablesAction: () => true,
         filter: () => !this.state.form,
         *resolve({ game, player, options }) {
           if (!(yield* game.offerSkill(player.id, "shadowGathering", "暗影凝聚：对自身造成1法术伤害"))) return;

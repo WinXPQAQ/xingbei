@@ -1,5 +1,6 @@
 import { RuleError } from "./errors.js";
 import { ELEMENT_NAMES, FATE_NAMES } from "./cards.js";
+import { playableCards } from "./playable-cards.js";
 import { Timing } from "./timing.js";
 
 export class TurnFlow {
@@ -58,6 +59,38 @@ export class TurnFlow {
     const action = this.nextAction();
     return !!action && action.type === type && (!action.element || card?.getTraits({ game: this.game, playerId: state.playerId, purpose: "action" }).elements.includes(action.element)) && (!action.fate || card?.getTraits({ game: this.game, playerId: state.playerId, purpose: "action" }).fates.includes(action.fate));
   }
+  *activate(playerId, options = {}, validatedAction = false) {
+    if (!validatedAction && !this.game.canActivate(playerId)) throw new RuleError("当前不能启动");
+    const state = this.state, plan = options.plan ?? null, action = plan?.action;
+    if (!validatedAction && !this.game.legalCards(playerId).length && !this.game.legalSkillActions(playerId).length) {
+      const suppliers=this.game.activationSuppliers(playerId);
+      const skillId=yield {type:"numberChoice",playerId,skillId:"activationRoute",title:"选择启动后获得行动条件的路线",
+        choices:suppliers.map(skill=>({value:skill.id,label:skill.name})),defaultValue:suppliers[0]?.id};
+      if(!suppliers.some(skill=>skill.id===skillId)) throw new RuleError("无效的启动路线");
+      state.requiredActivationSkill=skillId;
+    }
+    state.activationDone = true;
+    state.route = "normal";
+    state.phase = Timing.ACTIVATION;
+    state.activationPlan = plan;
+    const spec = action?.type === "skill" ? this.game.skillActionSpec(playerId, action) : null;
+    state.reservedCardIds = action?.type === "play" ? [playableCards(this.game.player(playerId))[action.index]?.id].filter(Boolean)
+      : action?.cardIds ?? options.actionCardIds ?? [];
+    state.reservedSkillId = action?.skillId ?? options.actionSkillId ?? null;
+    state.reservedTargetIds = action?.targetIds ?? (action?.targetId != null ? [action.targetId] : options.actionTargetIds ?? []);
+    state.reservedEnergy = spec?.energy ? 1 : options.actionEnergyCost ?? 0;
+    state.reservedHealing = spec?.healingCost ?? options.actionHealingCost ?? 0;
+    this.game.recordPublicAction({type:"activation",playerId});
+    try {
+      yield* this.game.trigger(Timing.ACTIVATION, state, options);
+      yield* this.game.restoreRandomInability(playerId, options);
+    } finally {
+      for (const key of ["requiredActivationSkill", "activationPlan", "reservedCardIds", "reservedSkillId", "reservedTargetIds", "reservedEnergy", "reservedHealing"]) delete state[key];
+    }
+    // No ACTION_PHASE_START trigger here: it ran before activation, and firing
+    // it again would reset forms (notably Magic Swordsman's shadow form).
+    if (!this.game.winner && !state.skipped) state.phase = Timing.ACTION_PHASE_START;
+  }
   *beginAction(playerId, actionType, card = null, options = {}) {
     const state = this.state;
     // Standalone rule operations are allowed in fixtures; normal clients start a turn.
@@ -66,18 +99,9 @@ export class TurnFlow {
     if (state.playerId !== playerId || !this.canUse(actionType, card)) throw new RuleError("当前阶段不能执行该行动");
     const route = actionType === "special" ? "special" : "normal";
     if (route === "normal" && !state.activationDone) {
-      state.activationDone = true;
-      state.phase = Timing.ACTIVATION;
-      state.reservedCardIds = options.actionCardIds ?? [];
-      state.reservedSkillId = options.actionSkillId ?? null;
-      state.reservedTargetIds = options.actionTargetIds ?? [];
-      state.reservedEnergy = options.actionEnergyCost ?? 0;
-      state.reservedHealing = options.actionHealingCost ?? 0;
-      yield* this.game.trigger(Timing.ACTIVATION, state, options);
-      delete state.reservedCardIds; delete state.reservedSkillId; delete state.reservedTargetIds;
-      yield* this.game.restoreRandomInability(playerId, options);
-      delete state.reservedEnergy;
-      delete state.reservedHealing;
+      // Compatibility for low-level callers. Interactive/AI clients explicitly
+      // activate first, then choose again from the resulting state.
+      yield* this.activate(playerId, options, true);
     }
     if (state.skipped) {
       const error = new RuleError("行动阶段已跳过"); error.actionInvalidated = true; throw error;

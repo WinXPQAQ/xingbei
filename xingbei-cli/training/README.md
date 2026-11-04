@@ -23,6 +23,8 @@ python training/entity/play.py /tmp/round2.pt --device cpu
 当前服务器PyTorch解释器为 `/home/xp/.local/share/xingbei-ml/venv-gpu/bin/python`；数据与实验检查点位于 `/home/xp/.local/share/xingbei-ml/entity-comparison/`，不随代码提交。训练入口不会更新线上服务模型。
 
 
-实体接口当前为 `entities-v3`。超过128个候选的行动按需进行条件分步选择，其余问题保持原样；采集、推理、终局奖励训练共用适配器。v2数据/模型不直接兼容，需重新采集训练。具体约定见 [观测规范](../docs/ai-observation-schema.md#按需分步行动entities-v3)。
+实体接口当前为 `entities-v4`。初次决策比较启动与特殊行动；选择启动后完整执行启动效果，再请求新的普通行动决策。启动前不绑定具体牌或目标，模型可依据真实摸牌结果重新选择。超过128个候选的行动继续按需分步。采集、推理、终局奖励训练共用适配器；启动本身没有额外奖励或额外时间折扣。v3及更早数据、残局重放和模型不能直接混入，需重新采集并建立词表，模型加载会检查版本。结构化表示仍见 [观测规范](../docs/ai-observation-schema.md)。
 
 全72英雄连续训练入口为 `entity/run-all.py`；配置、残局重放、小时报告和停止方式见 [全英雄训练协议](../docs/ai-all-heroes-training.md)。旧 `watch.py` 和固定阵容脚本保留用于旧实验复现，正式新任务不使用旧18英雄运行目录。
+
+启动供给声明 `activationEnablesAction` 表示当前技能存在可能获得后续行动条件的路线（例如摸牌、获得能量或变身）。它不证明所有摸牌数、弃牌、盖牌、治疗抵挡等子选择都安全；未知组合仍保存完整现场并按规则异常停训，不能自动吞掉错误或随意判负。v4 本批只做小批采集与兼容性验证，正式长训保持暂停。

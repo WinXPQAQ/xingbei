@@ -118,15 +118,18 @@ async function humanTurn() {
   const player = game.player(humanId);
   while (true) {
     showState();
+    if (game.canActivate(humanId)) tui.console("activate启动（结算后再选择攻击或法术）；或直接buy购买、synth合成、refine提炼。");
     if (game.canRefreshUnableHand(humanId)) tui.console("当前阶段除提炼外无合法行动：refresh申请换全手（换后仍须行动），或refine提炼。");
     const line = (await tui.question("行动> ")).trim();
     const [command, indexText, targetText] = line.split(/\s+/);
     if (command === "quit") return false;
     if (command === "end" && game.turn.hasExtraActions()) { game.skipExtraActions(humanId); return true; }
     try {
-      if (command === "refresh") await game.executeAction(humanId, { type: "refresh" }, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
+      if (command === "activate") await game.executeAction(humanId, { type: "activate" }, { chooseResponse, overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
+      else if (command === "refresh") await game.executeAction(humanId, { type: "refresh" }, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
       else if (command === "skill") {
-        const entries = game.legalSkillActions(humanId);
+        const entries = game.legalSkillActions(humanId).filter(entry => game.turn.state?.activationDone || entry.spec.type === "special");
+        if (!entries.length) throw new RuleError("请先启动，再选择法术或攻击技能");
         entries.forEach((entry, i) => tui.console(`${i}: ${entry.name}`));
         const selected = await askIndex(tui, "技能> ", entries.map((_, i) => i));
         if (selected == null) continue;
@@ -158,6 +161,7 @@ async function humanTurn() {
       else if (command === "synth") await game.executeAction(humanId, { type: "synthesize", gemCount: await chooseSynthesis(player) }, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
       else if (command === "refine") await game.executeAction(humanId, { type: "refine", stones: await chooseRefinement(player) });
       else if (command === "play") {
+        if (!game.turn.state?.activationDone) throw new RuleError("请先输入activate启动，再选择出牌");
         const index = Number(indexText), card = playableCards(player)[index];
         if (!card) throw new RuleError("无效的手牌编号");
         const targets = game.legalTargets(humanId, card);
@@ -166,7 +170,7 @@ async function humanTurn() {
         if (!targets.includes(target)) throw new RuleError(`合法目标：${targets.join("、")}`);
         await playCard(humanId, index, target);
       } else {
-        tui.console("play 牌号 目标号；魔弹有多个方向时也需目标号；buy购买；synth合成；refine提炼；skill英雄技能；refresh申请无法行动换牌；end放弃额外行动；quit退出。Tab切换面板，PgUp/PgDn滚动。");
+        tui.console("activate启动；play 牌号 目标号；魔弹有多个方向时也需目标号；buy购买；synth合成；refine提炼；skill英雄技能；refresh申请无法行动换牌；end放弃额外行动；quit退出。Tab切换面板，PgUp/PgDn滚动。");
         continue;
       }
       await resolveHumanOverflow();
@@ -205,7 +209,7 @@ async function playCard(actorId, index, targetId) {
 async function aiTurn(actorId, retried = false) {
   const action = chooseAiAction(game, actorId);
   try {
-    if (["refresh", "purchase", "synthesize", "refine", "skill"].includes(action.type)) {
+    if (["activate", "refresh", "purchase", "synthesize", "refine", "skill"].includes(action.type)) {
       return await game.executeAction(actorId, action, { chooseResponse, overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow });
     }
     if (action.type === "pass") return game.skipExtraActions(actorId);

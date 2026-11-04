@@ -26,6 +26,7 @@ export class AzureFlameWitch extends Hero {
         },
       })),
       { id: 'witchWrath', name: '魔女之怒', ...this.onOwnTurn([Timing.ACTIVATION]),
+        activationEnablesAction: () => true,
         filter: ({ player }) => !this.state.form && player.hand.length < 4,
         *resolve({ game, player, options }) {
           if (!(yield* game.offerSkill(player.id, 'witchWrath', '魔女之怒'))) return;

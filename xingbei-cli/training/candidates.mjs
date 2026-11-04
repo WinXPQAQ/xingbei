@@ -11,17 +11,22 @@ export function actionCandidates(game, playerId) {
   // Refresh and refinement may BOTH be legal. Do not use the old policy's
   // early refresh return: deciding between them is part of the learned policy.
   if (game.canRefreshUnableHand(playerId)) actions.push({ type: 'refresh' });
-  for (const { index, targets } of game.legalCards(playerId)) {
-    for (const targetId of targets) actions.push({ type: 'play', index, targetId });
-  }
-  for (const entry of game.legalSkillActions(playerId)) {
-    for (const mode of entry.spec.modes?.map(item => item.value) ?? [undefined]) {
-      const spec = game.skillActionSpec(playerId, { skillId: entry.skillId, mode });
-      if (!spec) continue;
-      const costs = cardSets(player.hand, spec);
-      for (const cards of costs) for (const count of targetCounts(spec, cards.length)) {
-        for (const targetIds of orderedSelections(spec.targets, count)) {
-          actions.push({ type: 'skill', skillId: entry.skillId, ...(mode === undefined ? {} : { mode }), cardIds: cards.map(card => card.id), targetIds });
+  // Starting the normal route commits only to activation. Concrete cards,
+  // targets and costs are selected after every activation effect has settled.
+  if (game.canActivate(playerId)) actions.push({ type: 'activate' });
+  if (state.activationDone || state.completed) {
+    for (const { index, targets } of game.legalCards(playerId)) {
+      for (const targetId of targets) actions.push({ type: 'play', index, targetId });
+    }
+    for (const entry of game.legalSkillActions(playerId)) {
+      for (const mode of entry.spec.modes?.map(item => item.value) ?? [undefined]) {
+        const spec = game.skillActionSpec(playerId, { skillId: entry.skillId, mode });
+        if (!spec) continue;
+        const costs = cardSets(player.hand, spec);
+        for (const cards of costs) for (const count of targetCounts(spec, cards.length)) {
+          for (const targetIds of orderedSelections(spec.targets, count)) {
+            actions.push({ type: 'skill', skillId: entry.skillId, ...(mode === undefined ? {} : { mode }), cardIds: cards.map(card => card.id), targetIds });
+          }
         }
       }
     }

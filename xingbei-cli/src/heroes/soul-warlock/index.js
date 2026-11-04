@@ -57,6 +57,7 @@ export class SoulWarlock extends Hero {
           game.logSkill(player.id,'soulTransfer',`消耗${n}蓝色灵魂，${n}点实际伤害转为${game.actorLabel(targetId)}承受的法术伤害⑥`);
         }},
       {id:'soulAmplify',name:'灵魂增幅',...this.onOwnTurn([Timing.ACTIVATION]),
+        activationEnablesAction: ({ player }) => player.hand.length >= 2 || player.hand.some(c => (c.hasUniqueSkill('soulGrant') && player.hero.state.blueSoul >= 1) || (c.hasUniqueSkill('soulTreasure') && player.hero.state.yellowSoul >= 1)),
         filter:({game,player})=>game.canPayEnergy(player.id,'gem'),
         *resolve({game,player}){if(!(yield* game.offerSkill(player.id,'soulAmplify','灵魂增幅：1宝石换取黄蓝灵魂各2')))return;yield* game.paySkillEnergy(player.id,'gem');hero.gain(game,player,'yellowSoul',2,'soulAmplify');hero.gain(game,player,'blueSoul',2,'soulAmplify');}},
     ];

@@ -127,6 +127,7 @@ export class Heretic extends Hero {
         id: "sacrifice",
         name: "献祭",
         ...this.onOwnTurn([Timing.ACTIVATION]),
+        activationEnablesAction: () => true,
         filter: ({ game, player }) =>
           hero.active(game) && hero.prophecies(player).length > 0,
         *resolve({ game, player, options }) {

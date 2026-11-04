@@ -28,6 +28,7 @@ export class Cardinal extends Ecclesiastic {
         id: "exorcismRite",
         name: "驱魔式",
         ...this.onOwnTurn([Timing.ACTIVATION]),
+        activationEnablesAction: ({ game, player }) => player.hand.some(c => c.getTraits({ game, playerId: player.id }).fates.includes('S')) || game.players.some(p => p.team === player.team && p.id !== player.id && p.hand.length > 0),
         filter: () => hero.state.silverBullets >= 2,
         *resolve({ game, player, context, options }) {
           if (context.usedSkills.terminalActivation) return;

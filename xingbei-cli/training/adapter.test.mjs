@@ -26,7 +26,7 @@ test('unknown decisions fail closed; optional card selections retain all combina
 
 test('holy light has no target while magic relay retains its fixed target', () => {
   const target = { hand: [{ name: 'holyLight', type: 'spell' }, { name: 'magicBullet', type: 'spell' }] };
-  assert.deepEqual(decisionCandidates(null, { type: 'response', target, valid: [{ index: 0 }, { index: 1 }], nextTarget: { id: 4 } }),
+  assert.deepEqual(decisionCandidates(null, { type: 'response', target, valid: target.hand.map((card, index) => ({ card, index })), nextTarget: { id: 4 } }),
     [null, { index: 0, targetId: null }, { index: 1, targetId: 4 }]);
 });
 

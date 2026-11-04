@@ -114,6 +114,7 @@ export class StarfallWitch extends Hero {
         id: "stellarRevelation",
         name: "群星启示",
         ...this.onOwnTurn([Timing.ACTIVATION]),
+        activationEnablesAction: () => true,
         filter: ({ player }) =>
           (hero.laws().length < 3 && player.hand.length > 0) ||
           coveredCards(player, "rune").length > 0,

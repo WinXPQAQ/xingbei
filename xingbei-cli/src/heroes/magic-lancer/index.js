@@ -20,7 +20,8 @@ export class MagicLancer extends Hero {
           game.logSkill(player.id, 'darkRelease', '进入幻影形态，手限恒定5；本回合下次主动攻击+1，禁用漆黑之枪和充盈');
           yield* game.drawSteps(player.id, 0, { ...options, cause: { type: 'handLimit', skillId: 'darkRelease' } });
         } },
-      { id: 'phantomStars', name: '幻影星辰', ...this.onOwnTurn([Timing.ACTIVATION]), priority: 1,
+      { id: 'phantomStars', name: '幻影星辰', ...this.onOwnTurn([Timing.ACTIVATION]),
+        activationEnablesAction: () => true, priority: 1,
         filter: ({ context }) => !!this.state.form && !context.usedSkills.magicLancerActivation,
         *resolve({ game, player, context, options }) {
           if (!(yield* game.offerSkill(player.id, 'phantomStars', '幻影星辰'))) return;
