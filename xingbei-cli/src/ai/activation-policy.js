@@ -1,6 +1,6 @@
 // The evaluator returns plans; only the engine executes them. Ordinary actions
 // are tentative until all activation effects and other players' responses finish.
-const ordinary = action => action.type === 'play' || action.type === 'skill';
+const ordinary = (game,id,action) => action.type === 'play' || (action.type === 'skill' && ['attack','spell'].includes(game.skillActionSpec(id,action)?.type));
 const plannedSkills = new Set(['shadowGathering', 'stealth', 'prayer', 'runeReconstruction', 'adjudicate']);
 
 export function withActivationPlanning(policy) {
@@ -8,8 +8,8 @@ export function withActivationPlanning(policy) {
     rankAiActions(game, id) {
       const ranked = policy.rankAiActions(game, id);
       if (!game.canActivate?.(id)) return ranked;
-      const best = ranked.find(entry => ordinary(entry.action));
-      const routes = ranked.filter(entry => !ordinary(entry.action));
+      const best = ranked.find(entry => ordinary(game,id,entry.action));
+      const routes = ranked.filter(entry => !ordinary(game,id,entry.action));
       if (best) {
         const plan = { action: best.action, skillId: best.explanation?.activation ?? null,
           score: best.score, decisionAware: plannedSkills.has(best.explanation?.activation) ||

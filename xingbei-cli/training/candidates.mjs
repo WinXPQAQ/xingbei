@@ -18,7 +18,9 @@ export function actionCandidates(game, playerId) {
     for (const { index, targets } of game.legalCards(playerId)) {
       for (const targetId of targets) actions.push({ type: 'play', index, targetId });
     }
+  }
     for (const entry of game.legalSkillActions(playerId)) {
+      if (!state.activationDone && !state.completed && entry.spec.type !== "special") continue;
       for (const mode of entry.spec.modes?.map(item => item.value) ?? [undefined]) {
         const spec = game.skillActionSpec(playerId, { skillId: entry.skillId, mode });
         if (!spec) continue;
@@ -30,7 +32,6 @@ export function actionCandidates(game, playerId) {
         }
       }
     }
-  }
   const stones = game.stoneCounts(player.team);
   if (game.canDrawSpecial(playerId)) {
     actions.push({ type: 'purchase' });

@@ -694,12 +694,12 @@ export class Game {
   }
 
   hasOrdinaryContinuation(playerId) {
-    return this.legalCards(playerId).length > 0 || this.legalSkillActions(playerId).some(entry => !entry.spec.requiresActivation);
+    return this.legalCards(playerId).length > 0 || this.legalSkillActions(playerId).some(entry => ["attack", "spell"].includes(entry.spec.type) && !entry.spec.requiresActivation);
   }
   canActivate(playerId) {
     const state = this.turn.state;
     if (this.winner || !state || state.playerId !== playerId || state.activationDone || state.completed || state.skipped || state.actionType) return false;
-    if (this.legalCards(playerId).length || this.legalSkillActions(playerId).length) return true;
+    if (this.legalCards(playerId).length || this.legalSkillActions(playerId).some(entry => ["attack", "spell"].includes(entry.spec.type))) return true;
     // Activation may itself supply cards, energy or an action-enabling form.
     // Do not prune those routes merely because no action is available yet.
     return this.activationSuppliers(playerId).length > 0;

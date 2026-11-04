@@ -14,7 +14,7 @@ export function teacherIndex({ game, playerId, request, candidates }, version) {
     value = policy.chooseAiAction(game, playerId);
     // Frozen opponents planned a concrete normal action before activation.
     // Preserve their route preference, then ask them again after activation.
-    if (candidates.some(c => c.type === 'activate') && ['play', 'skill', 'activate'].includes(value?.type)) value = { type: 'activate' };
+    if (candidates.some(c => c.type === 'activate') && (['play','activate'].includes(value?.type) || (value?.type === 'skill' && game.skillActionSpec(playerId,value)?.type !== 'special'))) value = { type: 'activate' };
   }
   else if (request.type === 'response') value = policy.chooseAiResponse(game, request);
   else if (request.type === 'overflow') value = policy.chooseAiDiscard(game, playerId, game.player(playerId).hand.length - game.player(playerId).handLimit);
