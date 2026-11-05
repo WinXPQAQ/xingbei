@@ -1,7 +1,7 @@
 import { magicBranches } from "../base/planner.js";
 import { cardScore, cardCost, chooseAiDiscard } from "./cards.js";
 import { publicState, copy, evaluate, terminal, hurt, applyDamage, spend } from "./model.js";
-import { attackScore, preparationOptions, scoringApi } from "./scoring.js";
+import { attackScore, preparationOptions, scorePreparation, scoringApi } from "./scoring.js";
 import { heroAi, skillDecision } from "./registry.js";
 const sumBranches = (branches) => branches.reduce((sum, b) => sum + b.probability * evaluate(b.state), 0);
 const lowCards = (game, id, indexes) => [...indexes].sort((a,b) => cardScore(game,id,game.player(id).hand[a])-cardScore(game,id,game.player(id).hand[b]));
@@ -20,9 +20,9 @@ function activationUseful(game, id, state, request, skillId) {
     const card = game.player(id).hand[action.index];
     without=Math.max(without,attackScore(game,id,state,card,action.targetId));
     const prepared = preparationOptions(game,id,{...state,turn:{...state.turn,activationDone:false}},action)
-      .find(entry=>entry.activated===skillId)?.state;
-    if (prepared && !terminal(prepared)) withSkill=Math.max(withSkill,
-      evaluate(prepared)-evaluate(state)+attackScore(game,id,prepared,card,action.targetId));
+      .find(entry=>entry.activated===skillId);
+    if (prepared) withSkill=Math.max(withSkill,
+      scorePreparation(prepared,evaluate(state),next=>terminal(next)?0:attackScore(game,id,next,card,action.targetId)));
   }
   return withSkill>without+0.5;
 }

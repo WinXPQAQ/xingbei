@@ -20,7 +20,7 @@ for(let i=0;i<count;i++) {
       throw new Error(`Incompatible resumed corpus: ${file}`);
   } else {
     const retained=Array(6).fill(null), seen=Array(6).fill(0);
-    const result=await driveGame({seed:731103000+i,heroIds,start:i%6,capture:true,revision},input=>{
+    const result=await driveGame({seed:731103000+i,heroIds,start:i%6,capture:true,revision,decisionMode:'hierarchical-v1'},input=>{
       const choice=teacherIndex(input,'v1.9.0-preview.1');
       return selectEntityDecision(input,(step,answer)=>{
         const observation=encodeEntities(step), seat=step.playerId;

@@ -728,7 +728,7 @@ export class Game {
     this.log.push(`${this.player(playerId).name}放弃剩余额外行动`);
   }
   executeAction(actorId, action, options = {}) {
-    if (action.type === "activate") return this.activateAsync(actorId, { ...options, plan: action.plan });
+    if (action.type === "activate") return this.activateAsync(actorId, { ...options, plan: action.plan, intent:action.intent });
     if (action.type === "play") return this.playWithDecisions(actorId, action.index, action.targetId, options);
     let steps;
     if (action.type === "purchase") steps = this.purchaseSteps(actorId, options);

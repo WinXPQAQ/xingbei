@@ -40,9 +40,13 @@ export function discardEstimate(state, id, count) {
   if (remaining) remove(state, id, p.hand.filter(c=>!c.reserve).slice(-remaining));
 }
 export function applyDamage(state, id, amount, healing, type, moraleLoss = true) {
-  const p = state.players[id], before = Object.fromEntries(Object.entries(state.teams).map(([team, t]) => [team, t.morale]));
+  const p = state.players[id];
   p.healing -= healing;
   const actual = Math.max(0, amount - healing - (p.hero === "bard" && p.heroState.form === "eternalPrisoner" && type === "spell" ? 1 : 0));
+  return applyActualDamage(state, id, actual, type, moraleLoss);
+}
+export function applyActualDamage(state, id, actual, type, moraleLoss = true) {
+  const p = state.players[id], before = Object.fromEntries(Object.entries(state.teams).map(([team, t]) => [team, t.morale]));
   draw(state, id, actual, { spell: moraleLoss && type === "spell" });
   if (!moraleLoss) for (const [team, morale] of Object.entries(before)) state.teams[team].morale = morale;
   if (terminal(state)) return actual;

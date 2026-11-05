@@ -23,11 +23,12 @@ createInterface({ input: process.stdin }).on('line', async line => {
     if (message.type !== 'start' || running) throw new Error('Expected start while idle');
     if (message.schema && ![2, ENTITY_SCHEMA].includes(message.schema)) throw new Error('Unsupported observation schema');
     if (message.schema === ENTITY_SCHEMA && (message.baseline || message.seatBaselines)) throw new Error('Legacy residual baseline is incompatible with entity schema');
+    if (message.schema === ENTITY_SCHEMA && message.teacher) throw new Error('Hierarchical teacher labels require a teacher-executed path; use collect-all or teacher seat policies');
     if (message.wire && (message.wire !== 'sparse-v1' || message.schema !== ENTITY_SCHEMA)) throw new Error('Unsupported wire format');
     const encoders = Object.fromEntries(Object.entries(message.vocabularies ?? {current:message.vocabulary}).map(([key,vocabulary]) => [key,message.wire ? createWireEncoder(vocabulary) : value=>value]));
     running = true;
     try {
-      const result = await driveGame(message.config, async input => {
+      const result = await driveGame({ ...message.config, decisionMode: message.schema === ENTITY_SCHEMA ? "hierarchical-v1" : "flat" }, async input => {
         const policy = message.seatPolicies?.[input.playerId] ?? 'model';
         if (policy !== 'model' && !policy.startsWith('model:')) return teacherIndex(input, policy);
         const modelKey = policy === 'model' ? 'current' : policy.slice(6);

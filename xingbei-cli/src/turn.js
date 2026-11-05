@@ -74,6 +74,7 @@ export class TurnFlow {
     state.route = "normal";
     state.phase = Timing.ACTIVATION;
     state.activationPlan = plan;
+    state.activationIntent = options.intent ?? plan?.action ?? null;
     const spec = action?.type === "skill" ? this.game.skillActionSpec(playerId, action) : null;
     state.reservedCardIds = action?.type === "play" ? [playableCards(this.game.player(playerId))[action.index]?.id].filter(Boolean)
       : action?.cardIds ?? options.actionCardIds ?? [];
@@ -86,7 +87,7 @@ export class TurnFlow {
       yield* this.game.trigger(Timing.ACTIVATION, state, options);
       yield* this.game.restoreRandomInability(playerId, options);
     } finally {
-      for (const key of ["seekingAction", "requiredActivationSkill", "activationPlan", "reservedCardIds", "reservedSkillId", "reservedTargetIds", "reservedEnergy", "reservedHealing"]) delete state[key];
+      for (const key of ["seekingAction", "requiredActivationSkill", "activationPlan", "activationIntent", "reservedCardIds", "reservedSkillId", "reservedTargetIds", "reservedEnergy", "reservedHealing"]) delete state[key];
     }
     // No ACTION_PHASE_START trigger here: it ran before activation, and firing
     // it again would reset forms (notably Magic Swordsman's shadow form).

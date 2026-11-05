@@ -1,6 +1,11 @@
 // Shadow costs and the single fire follow-up are evaluated together.
 export const magicSwordsmanAi = {
   id: "magicSwordsman",
+  activationStateFields: ["form"],
+  activationEvents({ player, id, intent }) {
+    if (player.heroState.form || !player.skillIds.includes("shadowGathering") || ["buy", "purchase", "synthesize", "refine", "end"].includes(intent?.type)) return [];
+    return [{ kind: "damage", skillId: "shadowGathering", sourceId: id, targetId: id, damageType: "spell", amount: 1 }];
+  },
   cardBonus({ card, elements, same, retained }) {
     let extra = 0;
     if (card.type === "attack" && elements.includes("fire")) extra = same ? 16 : 30;
@@ -36,12 +41,13 @@ export const magicSwordsmanAi = {
     hurt(next, targetId, 2);
     return 0;
   },
-  preparations({ state, id, player, card, action, options }, { copy, hurt, terminal }) {
+  preparations({ state, id, player, card, action, options }, { previewActivationDamage, terminal }) {
     if (player.heroState.form) return options;
-    const prepared = copy(state); hurt(prepared, id, 1);
-    if (!terminal(prepared)) prepared.players[id].heroState.form = "暗影";
-    if (action.skillId === "shadowMeteor") return [{ state: prepared, activated: "shadowGathering" }];
-    if (card?.type === "attack") options.push({ state: prepared, activated: "shadowGathering" });
+    const prepared = previewActivationDamage(state, { kind: "damage", skillId: "shadowGathering", sourceId: id, targetId: id, damageType: "spell", amount: 1 });
+    for (const branch of prepared.branches) if (!terminal(branch.state)) branch.state.players[id].heroState.form = "暗影";
+    const option = { ...prepared, activated: "shadowGathering" };
+    if (action.skillId === "shadowMeteor") return [option];
+    if (card?.type === "attack") options.push(option);
     return options;
   },
   decisions: {

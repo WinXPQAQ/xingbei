@@ -10,6 +10,7 @@ import { aiFor } from "../base/registry.js";
 import * as model from "./model.js";
 import * as cards from "./cards.js";
 import { heroAi } from "./registry.js";
+import { previewActivationDamage } from "./activation-preview.js";
 const printed = createDeck(), lightRate = printed.filter((c) => c.name === "holyLight").length / printed.length;
 export const foes = (state, id) => state.players.filter((p) => p.team !== state.players[id].team);
 export const scoreBranches = (branches) => branches.reduce((sum, b) => sum + b.probability * evaluate(b.state), 0);
@@ -132,6 +133,11 @@ export function preparationOptions(game, id, state, action) {
   return heroAi(p.hero).preparations?.({ state, id, player: p, card, action, options: base }, scoringApi) ?? base;
 }
 
+export function scorePreparation(prepared, before, continuation) {
+  const branches = prepared.branches ?? [{ state: prepared.state, probability: 1 }];
+  return branches.reduce((sum, branch) => sum + branch.probability * (evaluate(branch.state) - before + continuation(branch.state)), 0);
+}
+
 function rawActionScore(game, id, state, action) {
   if (terminal(state)) return 0;
   if (action.type === "skill") return skillScore(game, id, state, action);
@@ -155,10 +161,10 @@ export function rankAiActions(game, id) {
   return legalActions(game, id).filter((action) => acceptsAction(game, id, action)).map((action) => {
     let best = { score: -Infinity, activated: null };
     for (const prepared of preparationOptions(game, id, state, action)) {
-      const score = evaluate(prepared.state) - before + rawActionScore(game, id, prepared.state, action);
-      if (score > best.score) best = { score, activated: prepared.activated };
+      const score = scorePreparation(prepared, before, next => rawActionScore(game, id, next, action));
+      if (score > best.score) best = { score, activated: prepared.activated, preview: prepared.preview };
     }
-    return { action, score: best.score, reason: "hero-wave-three", explanation: { hero: game.player(id).hero.id, activation: best.activated } };
+    return { action, score: best.score, reason: "hero-wave-three", explanation: { hero: game.player(id).hero.id, activation: best.activated, ...(best.preview ? { activationPreview: best.preview } : {}) } };
   }).sort((a, b) => b.score - a.score);
 }
 export function bestSpellFollow(game, id, state) {
@@ -184,4 +190,5 @@ export function bestSpellFollow(game, id, state) {
 export const scoringApi = {
   ...model, ...cards, foes, scoreBranches, bestCardSet, attackOutcomes,
   attackScore, bestAttackScore, bestSpellFollow, preparationOptions,
+  previewActivationDamage,
 };

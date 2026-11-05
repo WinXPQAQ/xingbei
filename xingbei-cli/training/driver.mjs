@@ -1,11 +1,12 @@
 import fs from 'node:fs';
+import { buildDecisionSpace } from './decision-space.mjs';
 import { boundaryState, digest, phaseClass } from './entity/replay.mjs';
 import { Game } from '../src/engine.js';
 import { actionCandidates, decisionCandidates, decisionPlayer } from './candidates.mjs';
 
 // Trusted simulator-side callback. Raw game/request never crosses into the
 // learner: a separate encoder must construct its detached observation.
-export async function driveGame({ seed, heroIds, start = 0, turnLimit = 500, decisionLimit = 10000, profile = false, replay = null, capture = false, revision = null }, select, onBoundary = null) {
+export async function driveGame({ seed, heroIds, start = 0, turnLimit = 500, decisionLimit = 10000, profile = false, replay = null, capture = false, revision = null, decisionMode = 'flat' }, select, onBoundary = null) {
   const started = performance.now();
   const timings = { candidatesMs: 0, decisionWaitMs: 0, invariantsMs: 0 };
   const timed = (key, fn) => {
@@ -22,8 +23,8 @@ export async function driveGame({ seed, heroIds, start = 0, turnLimit = 500, dec
   const choices = [], boundaries = [];
   let restored = !replay, pendingDecision = null;
   const limit = Symbol('decisionLimit');
-  async function pick(playerId, request, candidates) {
-    pendingDecision = {playerId, type:request.type, skillId:request.skillId, purpose:request.purpose, count:request.count, candidates};
+  async function pick(playerId, request, candidates, extra = {}) {
+    pendingDecision = {playerId, type:request.type, skillId:request.skillId, purpose:request.purpose, count:request.count, stage:request.stage, prefix:request.prefix, selectedIndices:request.selectedIndices, candidates};
     if (decisions >= decisionLimit) throw limit;
     if (!candidates.length) throw new Error(`Empty candidates: ${request.type}`);
     decisions++;
@@ -33,24 +34,39 @@ export async function driveGame({ seed, heroIds, start = 0, turnLimit = 500, dec
     let index;
     if (!restored) {
       const entry = replay.choices[choices.length];
-      if (!entry || entry.playerId !== playerId || entry.type !== request.type || entry.candidatesHash !== digest(candidates)) throw new Error('Replay decision diverged');
+      if (!entry || entry.playerId !== playerId || entry.type !== request.type || (entry.stage ?? null) !== (request.stage ?? null) || entry.candidatesHash !== digest(candidates)) throw new Error('Replay decision diverged');
       index = entry.index;
-    } else index = await select({ game, playerId, request, candidates });
+    } else index = await select({ game, playerId, request, candidates, ...extra });
     if (profile) timings.decisionWaitMs += performance.now() - start;
     if (!Number.isInteger(index) || index < 0 || index >= candidates.length) throw new Error(`Invalid candidate index ${index}`);
-    if (process.env.XINGBEI_DIAGNOSTIC_DIR) diagnosticChoices.push({ playerId, requestType: request.type, skillId: request.skillId, candidates, index });
-    choices.push({ playerId, type:request.type, candidatesHash:digest(candidates), index });
+    if (process.env.XINGBEI_DIAGNOSTIC_DIR) diagnosticChoices.push({ playerId, requestType: request.type, skillId: request.skillId, stage:request.stage, prefix:request.prefix, selectedIndices:request.selectedIndices, candidates, index });
+    choices.push({ playerId, type:request.type, ...(request.stage ? {stage:request.stage} : {}), candidatesHash:digest(candidates), index });
     return candidates[index];
+  }
+  async function chooseDecision(playerId, request) {
+    if (decisionMode === 'hierarchical-v1') {
+      let node=timed('candidatesMs',()=>buildDecisionSpace(game,playerId,request));
+      if(node) {
+        while(!node.done) {
+          const value=await pick(playerId,node.request,node.candidates,{summaries:node.summaries,
+            teacherIndex:node.teacherIndex, rootRequest:request});
+          node=timed('candidatesMs',()=>node.next(value));
+        }
+        return node.value;
+      }
+    }
+    return pick(playerId,request,timed('candidatesMs',()=>request.type==='action'
+      ? actionCandidates(game,playerId) : decisionCandidates(game,request)));
   }
   async function decide(request) {
     const playerId = decisionPlayer(request);
-    const value = await pick(playerId, request, timed('candidatesMs', () => decisionCandidates(game, request)));
+    const value = await chooseDecision(playerId, request);
     if (request.type === 'overflow') return game.resolveOverflowWithDecisions(playerId, value, options);
     return value;
   }
   const options = { overflow: 'defer', choose: decide, chooseResponse: decide, chooseTarget: decide, resolveOverflow: decide };
   let reason = null;
-  const config = {seed,heroIds,start,turnLimit,decisionLimit,revision};
+  const config = {seed,heroIds,start,turnLimit,decisionLimit,revision,decisionMode};
   function boundary() {
     if (game.winner || game.players.some(p=>p.pendingOverflow) || game.processingRuleEvents || game.pendingRuleEvents.length) return;
     if (!restored && turns === replay.turns) {
@@ -70,9 +86,9 @@ export async function driveGame({ seed, heroIds, start = 0, turnLimit = 500, dec
       const id = game.current;
       await game.beginTurn(id, { ...options, chooseWeakness: decide }, options);
       while (game.turn.needsAction()) {
-        const action = await pick(id, { type: 'action' }, timed('candidatesMs', () => actionCandidates(game, id)));
+        const action = await chooseDecision(id, { type: 'action' });
         if (action.type === 'pass') game.skipExtraActions(id);
-        else if (action.type === 'activate') await game.activateAsync(id, options);
+        else if (action.type === 'activate') await game.activateAsync(id, { ...options, intent:action.intent });
         else {
           try { await game.executeAction(id, action, options); }
           catch (error) { if (!error.actionInvalidated) throw error; }
@@ -88,7 +104,7 @@ export async function driveGame({ seed, heroIds, start = 0, turnLimit = 500, dec
     if (!game.winner) reason = 'turnLimit';
   } catch (error) {
     if (error !== limit) {
-      if (process.env.XINGBEI_DIAGNOSTIC_DIR) fs.writeFileSync(`${process.env.XINGBEI_DIAGNOSTIC_DIR}/failure-${seed}.json`, JSON.stringify({ seed, start, turns, decisions, error: error.stack, current: game.current, turn: game.turn.state, teams: game.teams, players: game.players.map(p => ({ id:p.id,name:p.name,team:p.team,hero:p.hero.id,state:p.hero.state,handLimit:p.handLimit,hand:p.hand,covered:p.covered,statuses:p.statuses,healing:p.healing,energy:p.energy })), config, pendingDecision, replayPrefix:choices, reproduction:"node training/reproduce.mjs FAILURE.json", choices:diagnosticChoices, deck:game.deck.map(c => c.id), discard:game.discard.map(c => c.id), cards:[...game.cards.values()], log:game.log, publicHistory:game.publicHistory }, null, 2));
+      if (process.env.XINGBEI_DIAGNOSTIC_DIR) fs.writeFileSync(`${process.env.XINGBEI_DIAGNOSTIC_DIR}/failure-${seed}-${process.pid}-${Date.now()}.json`, JSON.stringify({ seed, start, turns, decisions, error: error.stack, current: game.current, turn: game.turn.state, teams: game.teams, players: game.players.map(p => ({ id:p.id,name:p.name,team:p.team,hero:p.hero.id,state:p.hero.state,handLimit:p.handLimit,hand:p.hand,covered:p.covered,statuses:p.statuses,healing:p.healing,energy:p.energy })), config, pendingDecision, replayPrefix:choices, reproduction:"node training/reproduce.mjs FAILURE.json", choices:diagnosticChoices, deck:game.deck.map(c => c.id), discard:game.discard.map(c => c.id), cards:[...game.cards.values()], log:game.log, publicHistory:game.publicHistory }, null, 2));
       throw error;
     }
     reason = 'decisionLimit';

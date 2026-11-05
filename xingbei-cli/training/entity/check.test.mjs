@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { Game, Timing } from '../../src/engine.js';
 import { DEFAULT_HERO_IDS, WAVE_TWO_HERO_IDS, WAVE_THREE_HERO_IDS, HERO_DEFINITIONS } from '../../src/hero.js';
 import { actionCandidates } from '../candidates.mjs';
+import { buildDecisionSpace } from '../decision-space.mjs';
 import { driveGame } from '../driver.mjs';
 import { teacherIndex } from '../teacher.mjs';
 import { encodeEntities } from './observation.mjs';
@@ -35,11 +36,25 @@ test('entity boundary hides opponent hands/deck/logs at every seat; contracts co
     game.player(playerId).hero.state.undeclared = 1;
     assert.throws(encode, /Undeclared hero state/);
   }
+  const game = new Game({ seed: 211105004, heroIds: ['magicSwordsman', 'butterflyDancer', ...DEFAULT_HERO_IDS.slice(2)] }).setup();
+  await game.beginTurn(0);
+  game.coverCards(1, game.player(1).hand.slice(0, 2), 'cocoon');
+  const input = { game, playerId: 0, request: { type: 'action' }, candidates: [{ type: 'direction', direction: 'activate' }] };
+  const before = encodeEntities(input), history = structuredClone(game.publicHistory);
+  assert.ok(before.entities.some(t => t.kind === 'activationInteraction' && t.categorical.hiddenDependent));
+  assert.equal(before.entities.find(t => t.kind === 'activationPreview').categorical.coverage, 'declared-effects-only');
+  for (const card of [...game.player(1).covered]) {
+    const replacement = game.deck[0];
+    game.moveCard(card.id, { zone: 'deck' }, { animate: false });
+    game.coverCards(1, [replacement], 'cocoon', { sources: ['deck'] });
+  }
+  Object.assign(game.publicHistory, history);
+  assert.deepEqual(encodeEntities(input), before);
 });
 
 test('three rosters complete through entity interface with one reference per card', async () => {
   for (const heroIds of rosters) {
-    const result = await driveGame({ seed: 211102001, heroIds }, input => {
+    const result = await driveGame({ seed: 211102001, heroIds, decisionMode: 'hierarchical-v1' }, input => {
       const encoded = encodeEntities(input);
       assert.equal(encoded.candidates.length, input.candidates.length);
       for (const token of [...encoded.entities, ...encoded.candidates])
@@ -86,42 +101,60 @@ test('training enumerates both target orders and uses relative per-seat skill ma
   game.current = 4; await game.beginTurn(4);
   await game.activateAsync(4, {choose: request => request.defaultValue});
   game.turn.state.usedSkills['doubleEcho:5'] = true;
-  const spec = { targets: [1, 2], targetCount: 2, cardCount: 0 };
+  const spec = { targets: [1, 2], targetCounts: [1, 2], cardCount: 0 };
   game.legalSkillActions = () => [{ skillId: 'orderedProbe', spec }];
   game.skillActionSpec = () => spec;
   const candidates = actionCandidates(game, 4);
-  assert.deepEqual(candidates.filter(c => c.skillId === 'orderedProbe').map(c => c.targetIds), [[1, 2], [2, 1]]);
+  assert.deepEqual(candidates.filter(c => c.skillId === 'orderedProbe').map(c => c.targetIds), [[1], [2], [1, 2], [2, 1]]);
+  for (const command of candidates.filter(c => c.skillId === 'orderedProbe')) {
+    let branch = buildDecisionSpace(game, 4, {type:'action'});
+    while (!branch.done) {
+      if (branch.request.stage === 'targets') {
+        assert.equal(branch.request.count, command.targetIds.length);
+        assert.equal(branch.request.remainingCount, command.targetIds.length - branch.request.prefix.targetIds.length);
+      }
+      branch = branch.next(branch.candidates[branch.teacherIndex(command)]);
+    }
+    assert.deepEqual(branch.value, command);
+  }
   const o = encodeEntities({ game, playerId: 4, request: { type: 'action' }, candidates });
   assert.ok(o.entities.find(t => t.kind === 'turn').categorical.usedSkills.includes('doubleEcho:1'));
-  assert.deepEqual(o.candidates.filter(c => c.categorical.skill === 'orderedProbe').map(c => c.refs.targets), [[3, 4], [4, 3]]);
+  assert.deepEqual(o.candidates.filter(c => c.categorical.skill === 'orderedProbe').map(c => c.refs.targets), [[3], [4], [3, 4], [4, 3]]);
 });
 
-test('conditional action selection preserves every command and teacher path without mutation', async () => {
-  const { selectEntityDecision } = await import('./decisions.mjs');
-  const candidates = Array.from({ length: 144 }, (_, i) => ({ type: 'skill', skillId: `skill${i % 2}`,
-    cardIds: [Math.floor(i / 2) % 6], targetIds: [Math.floor(i / 12) % 6], stones: { gem: Math.floor(i / 72) } }));
-  const input = { request: { type: 'action' }, candidates };
-  const original = JSON.stringify(input);
-  for (let teacher = 0; teacher < candidates.length; teacher++) {
-    const steps = [];
-    const selected = await selectEntityDecision(input, (step, answer) => {
-      steps.push(step.request.stage);
-      assert.ok(answer >= 0 && answer < step.candidates.length);
-      return answer;
-    }, { teacher });
-    assert.equal(selected, teacher);
-    assert.deepEqual(steps, ['action', 'cards', 'targets', 'completion']);
+test('lazy choices preserve legal leaves and choose a large discard without combinations or mutation', async () => {
+  const game = new Game({ seed: 211105001, heroRules: false }).setup();
+  const player = game.player(0);
+  while(player.hand.length < 12) game.moveCard(game.deck[0].id, {zone:'hand',playerId:0});
+  player.handLimit = 6;
+  const before = player.hand.map(card=>card.id);
+  let node = buildDecisionSpace(game, 0, {type:'overflow',playerId:0});
+  const wanted = [1,3,5,7,9,11], sizes = [];
+  while(!node.done) {
+    sizes.push(node.candidates.length);
+    node = node.next(node.candidates[node.teacherIndex(wanted)]);
+    assert.deepEqual(player.hand.map(card=>card.id), before);
   }
-  assert.equal(JSON.stringify(input), original);
-  let calls = 0;
-  assert.equal(await selectEntityDecision({ ...input, request: { type: 'response' } }, step => {
-    calls++; assert.equal(step.candidates, candidates); return 7;
-  }), 7);
-  assert.equal(calls, 1);
-  await assert.rejects(selectEntityDecision(input, () => -1), /Invalid subdecision/);
+  assert.deepEqual(node.value, wanted);
+  assert.deepEqual(sizes, [12,11,10,9,8,7]);
+  const constrained = {type:'cardChoice',playerId:0,valid:[0,1,2,3],count:2,validSets:[[0,1],[2,3]],optional:true};
+  node = buildDecisionSpace(game,0,constrained).next([2]);
+  assert.deepEqual(node.candidates, [[3]]);
+  assert.deepEqual(node.next([3]).value, [2,3]);
+  assert.equal(buildDecisionSpace(game,0,constrained).next(null).value, null);
+  node = buildDecisionSpace(game,0,{...constrained,valid:[0,2,1],validSets:[[0,2],[1,2]]}).next([2]);
+  assert.deepEqual(node.next([1]).value, [1,2]);
+  await game.beginTurn(0);
+  await game.activateAsync(0);
+  const tree = buildDecisionSpace(game,0,{type:'action'});
+  for(const command of actionCandidates(game,0)) {
+    let branch = tree;
+    while(!branch.done) branch=branch.next(branch.candidates[branch.teacherIndex(command)]);
+    assert.deepEqual(branch.value, command);
+  }
 });
 
-test('activation reservations tolerate moved hidden cards without exposing their faces', async () => {
+test('decision prefixes and summaries reference visible entities; activation plans stay private', async () => {
   const game = new Game({ seed: 211103001 }).setup();
   await game.beginTurn(0);
   const card = game.player(0).hand[0];
@@ -134,6 +167,26 @@ test('activation reservations tolerate moved hidden cards without exposing their
   assert.deepEqual(encodeEntities(input), before);
   input.candidates = [{ type: 'skill', skillId: 'probe', cardIds: [card.id] }];
   assert.throws(() => encodeEntities(input), /non-visible card/);
+  input.candidates = [{ type: 'direction', direction: 'attack' }];
+  input.summaries = [{ cardIds: [game.player(0).hand[0].id], targetIds: [1] }];
+  const direction = encodeEntities(input);
+  assert.equal(direction.candidates[0].categorical.direction, 'attack');
+  assert.equal(direction.candidates[0].refs.availablecards.length, 1);
+  input.summaries[0].cardIds = [card.id];
+  assert.throws(() => encodeEntities(input), /non-visible card/);
+  delete input.summaries;
+  input.request = { type: 'overflow', stage: 'selectCards', prefix: [0], remainingCount: 1 };
+  input.candidates = [[1], []];
+  const sequence = encodeEntities(input);
+  assert.equal(sequence.entities[sequence.question].refs.selectedCards.length, 1);
+  assert.equal(sequence.entities[sequence.question].numbers.remainingCount, 1);
+  assert.deepEqual(sequence.candidates.map(t => t.categorical.finish), [false, true]);
+  game.turn.state.activationIntent = { type: 'attack', cardIds: [card.id], targetIds: [1] };
+  assert.deepEqual(encodeEntities(input).entities.find(t => t.kind === 'activationIntent').refs.cards, []);
+  const opponent = { ...input, playerId: 1, request: { type: 'skillChoice' }, candidates: [true, false] };
+  const privateBefore = encodeEntities(opponent);
+  game.turn.state.activationIntent = { type: 'flexible' };
+  assert.deepEqual(encodeEntities(opponent), privateBefore);
 });
 
 test('normal route is chosen before activation; cards are offered again after its draw', async () => {

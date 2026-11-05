@@ -5,7 +5,7 @@ const stages = [['type', 'skillId', 'mode'], ['index', 'cardIds'], ['targetId', 
 const subset = (value, keys) => Object.fromEntries(keys.filter(k => value[k] !== undefined).map(k => [k, value[k]]));
 export async function selectEntityDecision(input, select, { teacher = null, threshold = FACTOR_THRESHOLD } = {}) {
   const { candidates, request } = input;
-  if (request.type !== 'action' || candidates.length <= threshold) return select(input, teacher);
+  if (request.stage || request.type !== 'action' || candidates.length <= threshold) return select(input, teacher);
   let remaining = candidates.map((value, index) => ({ value, index }));
   let prefix = {};
   for (const [stage, keys] of stages.entries()) {

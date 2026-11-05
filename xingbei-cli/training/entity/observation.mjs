@@ -1,12 +1,13 @@
 import { hiddenEffectFor } from "../../src/card-visibility.js";
 import { playableCards } from "../../src/playable-cards.js";
+import { describeActivationInteractions } from "../../src/ai/activation-interactions.js";
 import { declaredState } from './hero-state.mjs';
 
-export const ENTITY_SCHEMA = 'entities-v4';
+export const ENTITY_SCHEMA = 'entities-v5';
 // Trusted boundary. Only explicitly visible fields leave this module. Entity
 // references are local array offsets, never engine card IDs or deck positions.
-export function encodeEntities({ game, playerId, request, candidates, continuations }) {
-  const entities = [], cards = new Map(), skills = new Map();
+export function encodeEntities({ game, playerId, request, candidates, continuations, summaries }) {
+  const entities = [], cards = new Map(), skills = new Map(), publicPlayers = [];
   const seat = id => (id - playerId + 6) % 6;
   const playerRef = id => id == null ? [] : [seat(id)];
   const ownTeam = game.player(playerId).team;
@@ -46,11 +47,16 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
   game.discard.filter(card => card.discardVisibility === 'public').forEach(addCard);
   for (let offset = 0; offset < 6; offset++) {
     const p = game.player((playerId + offset) % 6);
+    const skillIds = [];
     for (const { skill } of p.getSkills()) {
       const id = typeof skill === 'string' ? skill : skill.id;
+      skillIds.push(id);
       skills.set(`${p.id}:${id}`, add('skill', { skill: id }, {}, { owner: playerRef(p.id) }));
     }
-    for (const field of declaredState(p, playerId)) {
+    const fields = declaredState(p, playerId);
+    publicPlayers.push({ id: p.id, team: p.team, hero: p.hero.id, skillIds, coveredCount: p.covered.length,
+      heroState: Object.fromEntries(fields.filter(f => f.visibility === 'public' && ['number', 'enum', 'boolean'].includes(f.type)).map(f => [f.key, f.value])) });
+    for (const field of fields) {
       const refs = { owner: playerRef(p.id) };
       // Current card state reference is the publicly created fivefold binding.
       // Future private card references must declare owner visibility.
@@ -73,6 +79,7 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
     if (!cards.has(id)) throw new Error('Request references a non-visible card');
     return [cards.get(id)];
   };
+  const skillRef = (id, ownerId = playerId) => skills.has(`${ownerId}:${id}`) ? [skills.get(`${ownerId}:${id}`)] : [];
   const indexes = (values, playable = false) => values.flatMap(index => cardRef((playable ? playableCards(game.player(playerId)) : game.player(playerId).hand)[index]?.id));
   const turn = game.turn.state;
   if (turn) {
@@ -92,6 +99,15 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
       // Activation skills can move reserved cards before the action is revalidated.
       // Keep only currently visible references; never reveal a new hidden zone.
       { cards: (turn.reservedCardIds ?? []).filter(id => cards.has(id)).flatMap(cardRef), targets: (turn.reservedTargetIds ?? []).map(seat) });
+    if (turn.playerId === playerId && turn.activationIntent) {
+      const intent = turn.activationIntent;
+      add('activationIntent', { type: intent.type, skill: intent.skillId ?? null, mode: intent.mode ?? null }, {}, {
+        cards: intent.cardIds ? intent.cardIds.filter(id => cards.has(id)).flatMap(cardRef)
+          : intent.index == null ? [] : indexes([intent.index], true),
+        targets: intent.targetIds?.map(seat) ?? playerRef(intent.targetId),
+        skill: skillRef(intent.skillId),
+      });
+    }
   }
   for (const [position, id] of (game.turn.extraTurns ?? []).entries())
     add('extraTurn', {}, { position }, { owner: playerRef(id) });
@@ -104,12 +120,19 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
   for (const key of ['hit','forcedHit','forceHitRequested','canCounter','canHolyLight','canDarkStrike','bloodBlade',
     'hadesTremor','puppetMissMode','disableHolyStrike','extraSpell','moraleLoss','sameElement','specialAction','soulTransfer','requiresCounterSkill'])
     if (context[key] !== undefined || request[key] !== undefined) flags[key] = request[key] ?? context[key];
+  const selected = request.prefix ?? request.selectedIndices;
+  const intent = request.intent ?? selected?.intent ?? null;
   const question = add('question', { type: request.type, stage: request.stage ?? 'complete', skill: request.skillId ?? null,
+    intent: typeof intent === 'string' ? intent : intent?.type ?? null, intentSkill: intent?.skillId ?? null,
+    remainingCounts: request.remainingCounts ?? [],
     timing: event?.timing ?? null, ...flags, previousAttackFates: context.previousAttackTraits?.fates ?? [],
     continuationStage: context.stage ?? null, triggered: context.triggered ?? null,
     purpose: request.purpose ?? context.purpose ?? null, damageType: context.damageType ?? (request.type === 'response' ? request.attack ? 'attack' : 'spell' : null),
     optional: !!request.optional, required: !!request.required, blocked: !!request.blockedReason, counter: request.isCounter ?? context.isCounter ?? null, shieldable: request.shieldable ?? context.shieldable ?? null },
     { amount: request.damage ?? context.amount ?? 0, count: request.count ?? context.count ?? 0,
+      selectedCount: Array.isArray(selected) ? selected.length : (selected?.selectedCardIds ?? selected?.cardIds ?? []).length,
+      remainingCount: request.remainingCount ?? null,
+      remainingMin: request.remainingMin ?? null, remainingMax: request.remainingMax ?? null,
       chainDepth: request.chainDepth ?? context.chainDepth ?? 0, direction: request.direction ?? 0,
       point: context.point ?? 0, sourceHandCount: context.sourceHandCount ?? 0, targetHandCount: context.targetHandCount ?? 0,
       battleRunes: context.battleRunes ?? 0, magicRunes: context.magicRunes ?? 0,
@@ -119,7 +142,9 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
       chainOrigin: playerRef(request.chainOriginId ?? context.chainOriginId),
       protectedTarget: playerRef(request.protectedTargetId), transferTarget: playerRef(context.transferTargetId), recipient: playerRef(request.recipientId), nextTarget: playerRef(request.nextTarget?.id),
       participants: (request.participants ?? []).map(seat),
-      selectedCards: (context.selectedCardIds ?? []).filter(id => cards.has(id)).flatMap(cardRef),
+      selectedCards: Array.isArray(selected) ? indexes(selected)
+        : (selected?.selectedCardIds ?? selected?.cardIds ?? (context.selectedCardIds ?? []).filter(id => cards.has(id))).flatMap(cardRef),
+      selectedTargets: (selected?.selectedTargetIds ?? selected?.targetIds ?? []).map(seat),
       card: cardRef(request.attack?.id ?? (cards.has(context.card?.id) ? context.card.id : null)) });
   for (const [position, event] of (game.publicHistory?.actions ?? []).slice(-32).entries()) {
     const categorical = {}, numbers = { position }, refs = {};
@@ -135,14 +160,25 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
     if (value == null) categorical.type = 'decline';
     else if (request.type === 'action') {
       categorical.type = value.type; categorical.skill = value.skillId ?? null; categorical.mode = value.mode ?? null;
-      refs.cards = value.cardIds?.flatMap(cardRef) ?? (value.index == null ? [] : indexes([value.index], true));
-      refs.targets = value.targetIds?.map(seat) ?? playerRef(value.targetId);
+      categorical.direction = value.direction ?? null;
+      categorical.intent = typeof value.intent === 'string' ? value.intent : value.intent?.type ?? null;
+      categorical.intentSkill = value.intent?.skillId ?? null;
+      if (value.intent?.skillId) refs.intentSkill = skillRef(value.intent.skillId);
+      if (value.complete != null) categorical.finish = !!value.complete;
+      numbers.selectedCount = (value.selectedCardIds ?? value.cardIds ?? []).length;
+      if (value.count != null) numbers.count = value.count;
+      if (value.targetCount != null) numbers.targetCount = value.targetCount;
+      refs.cards = (value.selectedCardIds ?? value.cardIds)?.flatMap(cardRef) ?? (value.index == null ? [] : indexes([value.index], true));
+      refs.targets = (value.selectedTargetIds ?? value.targetIds)?.map(seat) ?? playerRef(value.targetId);
       if (value.skillId && skills.has(`${playerId}:${value.skillId}`)) refs.skill = [skills.get(`${playerId}:${value.skillId}`)];
       numbers.gem = value.stones?.gem ?? value.gemCount ?? 0; numbers.crystal = value.stones?.crystal ?? 0;
     } else if (request.type === 'response') {
       refs.cards = indexes([value.index], true); refs.targets = playerRef(value.targetId);
       categorical.asAttack = !!request.valid?.find(item => item.index === value.index)?.asAttack;
-    } else if (['cardChoice','overflow'].includes(request.type)) refs.cards = indexes(value);
+    } else if (['cardChoice','overflow'].includes(request.type)) {
+      refs.cards = indexes(value);
+      if (request.stage === 'selectCards') categorical.finish = value.length === 0;
+    }
     else if (['target','playerChoice'].includes(request.type)) refs.targets = playerRef(value);
     else if (request.type === 'effectChoice') refs.cards = cardRef(value);
     else if (request.type === 'energyChoice') { numbers.gem = value.gem; numbers.crystal = value.crystal; }
@@ -169,5 +205,56 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
     for (const role of ['cards', 'targets']) encoded[index].refs['available' + role] =
       [...new Set(tokens.flatMap(token => token.refs[role] ?? []))];
   });
+  // Summaries enumerate available entities, never Cartesian products of full
+  // commands. The high-level policy can inspect its continuations without
+  // paying the cost of materializing every card/target/fee combination.
+  summaries?.forEach((summary, index) => {
+    if (!encoded[index]) throw new Error('Summary without candidate');
+    const token = encoded[index];
+    token.refs.availablecards = [...new Set((summary.cardIds ?? []).flatMap(cardRef))];
+    token.refs.availableskills = [...new Set((summary.skillIds ?? []).flatMap(id => skillRef(id)))];
+    token.refs.availabletargets = [...new Set((summary.targetIds ?? []).map(seat))];
+    if (summary.count != null) token.numbers.continuations = summary.count;
+    if (summary.intent != null) {
+      token.categorical.intent = typeof summary.intent === 'string' ? summary.intent : summary.intent.type;
+      token.categorical.intentSkill = summary.intent?.skillId ?? null;
+    }
+  });
+  // Describe public opportunities, not predicted choices or heuristic scores.
+  // Missing declarations remain explicitly incomplete, never "no interaction".
+  const previews = new Map();
+  const activationPreview = (actorId, intent) => {
+    const description = describeActivationInteractions({ players: publicPlayers }, actorId, intent);
+    const key = JSON.stringify([actorId, description]);
+    if (previews.has(key)) return previews.get(key);
+    const refs = [add('activationPreview', { coverage: description.coverage },
+      { schemaVersion: description.schemaVersion }, { actor: playerRef(actorId) })];
+    const events = description.events.map(event => add('activationEvent', {
+      type: event.kind, skill: event.skillId, damageType: event.damageType ?? null, potential: true,
+      optional: event.optional ?? null,
+    }, { amount: event.amount ?? null }, {
+      actor: playerRef(event.sourceId), target: playerRef(event.targetId), skill: skillRef(event.skillId, event.sourceId),
+    }));
+    refs.push(...events);
+    for (const reaction of description.interactions) {
+      const numbers = { coveredCount: publicPlayers.find(p => p.id === reaction.ownerId)?.coveredCount ?? 0 };
+      for (const field of ['priority', 'whenActual', 'coveredCost', 'actualDelta'])
+        if (Number.isFinite(reaction[field])) numbers[field] = reaction[field];
+      refs.push(add('activationInteraction', { skill: reaction.skillId, timing: reaction.timing,
+        condition: reaction.condition, modeled: reaction.modeled === true, optional: reaction.optional === true,
+        hiddenDependent: reaction.hiddenCondition === true }, numbers, {
+        owner: playerRef(reaction.ownerId), actor: playerRef(actorId), target: playerRef(reaction.targetId),
+        skill: skillRef(reaction.skillId, reaction.ownerId), event: events[reaction.eventIndex] == null ? [] : [events[reaction.eventIndex]],
+      }));
+    }
+    previews.set(key, refs);
+    return refs;
+  };
+  candidates.forEach((value, index) => {
+    if (request.type === 'action' && (value?.type === 'activate' || value?.direction === 'activate'))
+      encoded[index].refs.activationPreview = activationPreview(playerId, value.intent ?? null);
+  });
+  if (turn?.phase === 'activation') entities[question].refs.activationPreview =
+    activationPreview(turn.playerId, turn.playerId === playerId ? turn.activationIntent ?? null : null);
   return { schema: ENTITY_SCHEMA, question, entities, candidates: encoded };
 }

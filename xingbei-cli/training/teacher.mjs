@@ -4,7 +4,18 @@ const canonical = value => JSON.stringify(value, (_, item) => item && typeof ite
   ? Object.fromEntries(Object.keys(item).sort().filter(key => item[key] !== undefined).map(key => [key, item[key]])) : item);
 
 // Explicit teacher/opponent mode only. Never used as a fallback for a model.
-export function teacherIndex({ game, playerId, request, candidates }, version) {
+export function teacherIndex(input, version) {
+  const {game,playerId,request,candidates}=input;
+  if(input.teacherIndex) {
+    const root=input.rootRequest, policy=getPolicy(version);
+    let command;
+    if(root.type==='action') command=policy.chooseAiAction(game,playerId);
+    else if(root.type==='overflow') command=policy.chooseAiDiscard(game,playerId,game.player(playerId).hand.length-game.player(playerId).handLimit);
+    else command=policy.chooseAiRuleDecision(root,game);
+    const index=input.teacherIndex(command);
+    if(!Number.isInteger(index)||index<0||index>=candidates.length) throw new Error(`Teacher ${version} cannot complete ${request.type}/${request.stage}`);
+    return index;
+  }
   if (request.required && candidates.length === 1) return 0;
   if (request.skillId === 'activationRoute') return candidates.indexOf(request.defaultValue);
   if (request.blockedReason) return candidates.indexOf(false);
