@@ -49,12 +49,17 @@ export function attackOutcomes(game, id, state, card, targetId, { active = true,
   }
   if (rates.light > 0 || rates.counter > 0) next.uncertain = true;
   const amount = 2 + (profile.attackDamage?.({ player: p, card, active }, scoringApi) ?? 0), branches = [];
+  const attackContext = (branch) => ({ game, state: branch, id, player: branch.players[id], card, targetId, active, variant });
   if (rates.hit) {
     const hit = copy(next);
-    profile.beforeAttackHit?.({ state: hit, id, variant }, scoringApi);
-    const actual = hurt(hit, targetId, amount, "attack");
-    heroAi(target.hero).afterAttackDamage?.({ state: hit, actorId: id, actual }, scoringApi);
-    if (!terminal(hit)) stones(hit, p.team, active ? "gem" : "crystal", 1);
+    // The hit reward and hit skills precede damage, as in attackSteps.
+    stones(hit, p.team, active ? "gem" : "crystal", 1);
+    profile.beforeAttackHit?.(attackContext(hit), scoringApi);
+    if (!terminal(hit)) {
+      const actual = hurt(hit, targetId, amount, "attack");
+      if (!terminal(hit)) heroAi(target.hero).afterAttackDamage?.({ state: hit, actorId: id, actual }, scoringApi);
+    }
+    if (!terminal(hit)) profile.afterAttackResolved?.({ ...attackContext(hit), hit: true }, scoringApi);
     const bonus = profile.attackHitBonus?.({ game, id, state: next, player: p, card, active, targetId, amount }, scoringApi) ?? 0;
     branches.push({ probability: rates.hit, state: hit, bonus });
   }
@@ -63,8 +68,10 @@ export function attackOutcomes(game, id, state, card, targetId, { active = true,
     const miss = copy(next);
     if (kind === "shield") miss.players[targetId].effects = target.effects.filter((e) => e.name !== "holyShield");
     else miss.players[targetId].count = Math.max(0, target.count - 1);
+    profile.afterAttackMiss?.({ ...attackContext(miss), kind }, scoringApi);
+    if (!terminal(miss)) profile.afterAttackResolved?.({ ...attackContext(miss), hit: false, kind }, scoringApi);
     const bonus = profile.attackMissBonus?.({ game, id, state: next, player: p, card, active, targetId }, scoringApi) ?? 0;
-    if (kind === "counter") {
+    if (kind === "counter" && !terminal(miss)) {
       // One public counter horizon, with no inspection of teammate hands.
       let worst = null;
       for (const ally of miss.players.filter((t) => t.team === p.team && t.id !== id)) {
@@ -130,7 +137,7 @@ export function preparationOptions(game, id, state, action) {
   const p = state.players[id], card = action.type === "play" ? p.hand[action.index] : null;
   const base = [{ state, activated: null }];
   if (state.turn?.activationDone || !["play", "skill"].includes(action.type)) return base;
-  return heroAi(p.hero).preparations?.({ state, id, player: p, card, action, options: base }, scoringApi) ?? base;
+  return heroAi(p.hero).preparations?.({ game, state, id, player: p, card, action, options: base }, scoringApi) ?? base;
 }
 
 export function scorePreparation(prepared, before, continuation) {

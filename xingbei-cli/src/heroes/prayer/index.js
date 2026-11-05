@@ -66,10 +66,12 @@ export class Prayer extends Hero {
         *resolveAction({ game, player, targetIds, options }) {
           player.hero.state.prayerRunes--;
           game.logSkill(player.id, "darkCurse", `移除1祈祷符文（剩余${player.hero.state.prayerRunes}），先目标后自身各2法术伤害`);
-          for (const targetId of [targetIds[0], player.id])
+          for (const targetId of [targetIds[0], player.id]) {
+            if (game.winner) return;
             yield* game.damageSteps(targetId, 2, {
               ...options, sourceId: player.id, damageType: "spell", skillId: "darkCurse",
             });
+          }
         },
       },
       ...["powerBlessing", "speedBlessing"].map((id) => ({

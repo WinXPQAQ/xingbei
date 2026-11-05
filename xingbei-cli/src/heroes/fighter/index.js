@@ -47,13 +47,19 @@ export class Fighter extends Hero {
           player.hero.state.spirit++; context.chargedStrike = true; context.amount++;
           game.logSkill(player.id, 'chargedStrike', `斗气+1（${player.hero.state.spirit}/6），攻击+1；未命中则承受斗气数量的法伤`);
         } },
-      { id: 'stunningBlow', name: '气绝崩击', ...this.onOwnAttack([Timing.ATTACK_DECLARED]), priority: -1,
-        filter: ({ context }) => this.isActiveAttack(context) && this.state.spirit > 0 && !context.chargedStrike,
-        *resolve({ game, player, context, options }) {
+      { id: 'stunningBlow', name: '气绝崩击', ...this.onOwnAttack([Timing.ATTACK_DECLARED, Timing.ATTACK_RESOLVED]), priority: -1,
+        filter: ({ timing, context }) => timing === Timing.ATTACK_RESOLVED ? !!context.stunningBlow :
+          this.isActiveAttack(context) && this.state.spirit > 0 && !context.chargedStrike,
+        *resolve({ game, player, timing, context, options }) {
+          if (timing === Timing.ATTACK_RESOLVED) {
+            if (game.winner) return;
+            game.logSkill(player.id, 'stunningBlow', `攻击结算结束，自身承受${player.hero.state.spirit}法术伤害`);
+            yield* game.damageSteps(player.id, player.hero.state.spirit, { ...options, sourceId: player.id, damageType: 'spell', skillId: 'stunningBlow' });
+            return;
+          }
           if (!(yield* game.offerSkill(player.id, 'stunningBlow', '气绝崩击', context))) return;
           player.hero.state.spirit--; context.stunningBlow = true; context.canCounter = false;
-          game.logSkill(player.id, 'stunningBlow', `移除1斗气，攻击无法应战；立即承受${player.hero.state.spirit}法术伤害`);
-          yield* game.damageSteps(player.id, player.hero.state.spirit, { ...options, sourceId: player.id, damageType: 'spell', skillId: 'stunningBlow' });
+          game.logSkill(player.id, 'stunningBlow', '移除1斗气，攻击无法应战；本次攻击结算后承受剩余斗气数量的法术伤害');
         } },
       { id: 'spiritBullet', name: '念弹', ...this.onOwnTurn([Timing.SPELL_ACTION_END]),
         filter: () => this.state.spirit < 6,

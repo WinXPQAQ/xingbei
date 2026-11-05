@@ -51,6 +51,16 @@ test('苍炎：属性覆盖仅自己；先中毒虚弱再重置；法伤实际�
  assert.equal(p.hero.state.form,null);assert.equal(p.hand.length,6);assert.equal(g.teams.red.morale,13);
  p.hero.state.rebirth=0;run(g.damageSteps(0,1,{sourceId:1,damageType:'spell'}));assert.equal(p.hero.state.rebirth,1);
  run(g.damageSteps(0,1,{sourceId:1,damageType:'attack'}));assert.equal(p.hero.state.rebirth,1);g.assertCardLocations();
+ for(const lethal of [false,true]) {
+  const h=make('azureFlameWitch'),cost=take(h,0,c=>c.element==='fire');
+  if(lethal){h.player(1).handLimit=0;h.teams.blue.morale=1;}
+  run(h.skillActionSteps(0,{skillId:'azureCodex',cardIds:[cost.id],targetIds:[1]}));
+  const damageTargets=h.timeline.filter(e=>e.timing===Timing.DAMAGE_BEFORE).map(e=>e.playerId);
+  assert.deepEqual(damageTargets,lethal?[1]:[1,0]);
+  assert.equal(h.player(0).hand.length,lethal?0:2);
+  if(lethal)assert.equal(h.winner,'red');
+  h.assertCardLocations();
+ }
 });
 
 test('血剑：庭院独立场外实体，禁止双方治疗抵伤；结束移除及鲜血超限保留',()=>{

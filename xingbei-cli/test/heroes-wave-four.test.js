@@ -7,15 +7,28 @@ const take = (g,id,predicate) => {const c=g.deck.find(predicate);assert.ok(c);g.
 const base = r => r.type==='response'?null:r.defaultValue;
 const run = (steps,choose=base) => resolveSync(steps,choose);
 
-test('格斗家：气绝在攻击前自伤，伤害上限4，仍保留圣光响应',()=>{
- const g=make('fighter');g.player(0).hero.state.spirit=6;
- const card=take(g,0,c=>c.type==='attack');take(g,1,c=>c.name==='holyLight');
- run(g.actionSteps(0,0,1),r=>{
-  if(r.type==='skillChoice')return r.skillId==='stunningBlow';
-  if(r.type==='response'){assert.equal(g.player(0).hand.length,4);assert.deepEqual(r.valid.map(v=>v.card.name),['holyLight']);}
-  return base(r);
- });
- assert.equal(g.player(0).hero.state.spirit,5);assert.equal(card.location.zone,'discard');g.assertCardLocations();
+test('格斗家：气绝先攻击后自伤，圣光后仍自伤、致胜后停止，伤害上限4',()=>{
+ for(const answer of ['hit','holyLight','win']) {
+  const g=make('fighter');g.player(0).hero.state.spirit=6;
+  const card=take(g,0,c=>c.type==='attack');take(g,1,c=>c.name==='holyLight');
+  if(answer==='win'){g.player(1).handLimit=1;g.teams.blue.morale=1;}
+  run(g.actionSteps(0,0,1),r=>{
+   if(r.type==='skillChoice')return r.skillId==='stunningBlow';
+   if(r.type==='response'){
+    assert.equal(g.player(0).hand.length,0,'响应前尚未自伤');
+    assert.deepEqual(r.valid.map(v=>v.card.name),['holyLight']);
+    if(answer==='holyLight')return {index:r.valid[0].index};
+   }
+   return base(r);
+  });
+  assert.equal(g.player(0).hero.state.spirit,5);
+  const damageTargets=g.timeline.filter(e=>e.timing===Timing.DAMAGE_BEFORE).map(e=>e.playerId);
+  assert.deepEqual(damageTargets,answer==='hit'?[1,0]:answer==='holyLight'?[0]:[1]);
+  assert.equal(g.player(0).hand.length,answer==='win'?0:4,'未获胜的命中与未命中均结算自伤，念气立场封顶4');
+  assert.equal(g.winner,answer==='win'?'red':null);
+  if(answer!=='win')assert.equal(card.location.zone,'discard');
+  g.assertCardLocations();
+ }
 });
 test('魔枪：禁用圣光，暗之障壁整组弃牌，形态手限及启动互斥',()=>{
  const g=make('magicLancer');const light=take(g,0,c=>c.name==='holyLight');const spell=take(g,0,c=>c.type==='spell'&&c.element!=='thunder');const thunder=take(g,0,c=>c.type==='attack'&&c.element==='thunder');
