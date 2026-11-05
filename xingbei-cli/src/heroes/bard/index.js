@@ -26,15 +26,15 @@ function* forbiddenPoem(game, bard, card, options) {
 const songSkills = [
   { id: 'passionateRhapsody', name: '激昂狂想曲', timings: [Timing.TURN_START], bindings: [{ role: 'player', players: 'self' }],
     *resolve({ game, player, sourceCard, options }) {
-      if (!(yield* game.offerSkill(player.id, 'passionateRhapsody', '激昂狂想曲'))) return;
       const bard = game.player(sourceCard.attachment.sourcePlayerId);
+      if (!(yield* game.offerSkill(player.id, 'passionateRhapsody', '激昂狂想曲', { sourceId: bard.id }))) return;
       const mode = yield* choice(player.id, 'passionateRhapsody', '激昂狂想曲：选择效果', [
         { value: 'damage', label: '吟游诗人对两名对手各造成1法伤' }, { value: 'discard', label: '你暗弃2张牌' },
-      ], 'damage');
+      ], 'damage', { sourceId: bard.id });
       if (mode === 'discard') yield* discardUpTo(game, player, 2, 'passionateRhapsody', options);
       else {
         const choices = enemies(game, bard), selected = [];
-        for (let i = 0; i < 2; i++) selected.push(yield* game.choosePlayer(bard.id, choices.filter(id => !selected.includes(id)), '激昂狂想曲：选择两名不同对手', { skillId: 'passionateRhapsody' }));
+        for (let i = 0; i < 2; i++) selected.push(yield* game.choosePlayer(bard.id, choices.filter(id => !selected.includes(id)), '激昂狂想曲：选择两名不同对手', { skillId: 'passionateRhapsody', context: { sourceId: bard.id } }));
         selected.sort((a, b) => (a - player.id + 6) % 6 - (b - player.id + 6) % 6);
         for (const id of selected) if (!game.winner) yield* game.damageSteps(id, 1, { ...options, sourceId: bard.id, damageType: 'spell', skillId: 'passionateRhapsody' });
       }
@@ -42,13 +42,13 @@ const songSkills = [
     } },
   { id: 'victorySymphony', name: '胜利交响诗', timings: [Timing.TURN_END], bindings: [{ role: 'player', players: 'self' }],
     *resolve({ game, player, sourceCard, options }) {
-      if (!(yield* game.offerSkill(player.id, 'victorySymphony', '胜利交响诗'))) return;
       const bard = game.player(sourceCard.attachment.sourcePlayerId), counts = game.stoneCounts(player.team);
+      if (!(yield* game.offerSkill(player.id, 'victorySymphony', '胜利交响诗', { sourceId: bard.id }))) return;
       const room = player.energy.gem + player.energy.crystal < game.getEnergyLimit(player.id);
       const mode = yield* choice(player.id, 'victorySymphony', '胜利交响诗：选择效果', [
         { value: 'gain', label: '战绩区+1宝石，你+1治疗' },
         ...(['gem', 'crystal'].filter(kind => room && counts[kind]).map(value => ({ value, label: `移除战绩区1${value === 'gem' ? '宝石' : '水晶'}，你获得1宝石` }))),
-      ], 'gain');
+      ], 'gain', { sourceId: bard.id });
       if (mode === 'gain') { game.addStones(player.team, 'gem'); game.changeHealing(player.id, 1); }
       else { game.removeStones(player.team, { gem: Number(mode === 'gem'), crystal: Number(mode === 'crystal') }); game.gainEnergy(player.id, 'gem'); }
       game.logSkill(player.id, 'victorySymphony', mode === 'gain' ? '战绩区+1宝石，自身+1治疗' : '移除1战绩星石，自身获得1宝石');

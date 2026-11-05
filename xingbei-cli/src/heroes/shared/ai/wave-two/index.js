@@ -6,7 +6,7 @@ import { moraleLoss } from "./healing.js";
 import { magicBurstDiscard } from "../../../magical-girl/ai.js";
 import { isolatePolicy, captureObservation, observationView } from "../../../../ai/observation.js";
 import { legalActions } from "../../../../legal-actions.js";
-import { stateOf, clone, value, spend, damage, payEnergy } from "../base/model.js";
+import { stateOf, clone, value, spend, damage, payEnergy, hasActiveEffect } from "../base/model.js";
 import { actionPlan, magicBranches, expected, attackBranches } from "../base/planner.js";
 import { cardScore, keepCards, chooseAiDiscard, retentionBonus } from "./cards.js";
 export { moraleLoss } from "./healing.js";
@@ -87,11 +87,11 @@ function chooseAiResponse(g, r) {
     s = stateOf(g, id),
     take = clone(s),
     amount = r.damage ?? r.context?.amount ?? 2;
-  if (r.shieldable !== false && g.player(id).getStatus("holyShield").length)
+  if (r.shieldable !== false && hasActiveEffect(take.players[id],"holyShield"))
     take.players[id].effects = take.players[id].effects.filter(
       (e) => e.name !== "holyShield",
     );
-  else damage(take, id, amount, r.attack ? "attack" : "spell");
+  else damage(take, id, amount, r.attack ? "attack" : "spell", {sourceId:r.actor?.id??r.context?.sourceId});
   let best = { decision: null, score: value(take) };
   for (const e of r.valid) {
     const c = s.players[id].hand[e.index],

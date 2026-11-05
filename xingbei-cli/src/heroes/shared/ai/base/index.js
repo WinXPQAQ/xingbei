@@ -4,7 +4,7 @@ import {aiFor,aiForSkill,attackAmount} from './registry.js';
 import {bindingDrawAmount} from '../../../sealer/ai.js';
 export {planWindAttacks};
 import {captureObservation,observationView,isolatePolicy} from '../../../../ai/observation.js';
-import {stateOf,clone,value,cardData,spend,remove,draw,damage,heal,payEnergy,transfer,overflow,components,synthesisHealing} from './model.js';
+import {stateOf,clone,value,cardData,spend,remove,draw,damage,heal,payEnergy,transfer,overflow,components,synthesisHealing,hasActiveEffect} from './model.js';
 import {actionPlan,contractOption,explain,piercingOptions,giftOptions,bestAttack,attackBranches,magicBranches,expected,removeEffectOptions} from './planner.js';
 import {requestData,requestFromData} from './trace.js';
 
@@ -38,7 +38,7 @@ export function createEconomyPolicy({sequence=true,economy=true,ownership=true,e
   giftScore(g,id,target,c) {return giftOptions(state(g,id),id,target,[c])[0].score;},
   chooseAiResponse(g,r) {
    const id=r.target.id,s=state(g,id),attacker=r.actor,amount=r.damage??r.context?.amount??(attacker?attackAmount({hero:attacker.hero.id,count:attacker.hand.length}):2);
-   const take=clone(s);if(r.shieldable!==false&&take.players[id].effects.some(e=>e.name==='holyShield'))take.players[id].effects=take.players[id].effects.filter(e=>e.name!=='holyShield');else damage(take,id,amount,r.attack?.type==='attack'?'attack':'spell');
+   const take=clone(s);if(r.shieldable!==false&&hasActiveEffect(take.players[id],'holyShield'))take.players[id].effects=take.players[id].effects.filter(e=>e.name!=='holyShield');else damage(take,id,amount,r.attack?.type==='attack'?'attack':'spell',{sourceId:r.actor?.id??r.context?.sourceId});
    let best={value:null,score:value(take)};
    for(const entry of r.valid??[]) {
     const c=s.players[id].hand[entry.index];if(!c)continue;
@@ -66,9 +66,9 @@ export function createEconomyPolicy({sequence=true,economy=true,ownership=true,e
     return this.chooseAiDiscard(g,id,r.count,r.valid);
    }
    if(r.type==='healing') {
-    const preserve=synthesisHealing(s,id,context.amount??0);
+    const preserve=synthesisHealing(s,id,context.amount??0,context.damageType,context.sourceId);
     if(preserve!==null&&r.choices.some(c=>c.value===preserve))return preserve;
-    let best=null;for(const choice of r.choices){const next=clone(s);next.players[id].healing-=choice.value;draw(next,id,Math.max(0,(context.amount??0)-choice.value),{spell:context.damageType==='spell'});const score=value(next);if(!best||score>best.score)best={value:choice.value,score};}return best?.value??0;
+    let best=null;for(const choice of r.choices){const next=clone(s);next.players[id].healing-=choice.value;draw(next,id,Math.max(0,(context.amount??0)-choice.value),{spell:context.damageType==='spell',damage:true});const score=value(next);if(!best||score>best.score)best={value:choice.value,score};}return best?.value??0;
    }
    if(r.type==='weakness'||r.type==='bindingChoice') {
     const amount=r.type==='weakness'?3:bindingDrawAmount(s,p);

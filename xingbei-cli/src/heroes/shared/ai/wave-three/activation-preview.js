@@ -6,7 +6,7 @@ import { copy, evaluate, terminal, applyActualDamage } from "./model.js";
 // Undeclared triggers and private cocoon-dependent chains remain explicit gaps.
 export function previewActivationDamage(state, event) {
   const target = state.players[event.targetId];
-  const maxHealing = target.healingDisabled ? 0 : damageHealing(target, event.amount, event.damageType);
+  const maxHealing = target.healingDisabled ? 0 : damageHealing(target, event.amount, event.damageType, event.sourceId);
   const amounts = event.targetId === state.observer
     ? Array.from({ length: maxHealing + 1 }, (_, i) => i)
     : [Math.min(maxHealing, Math.max(0, target.count + event.amount - target.limit))];

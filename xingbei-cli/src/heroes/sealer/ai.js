@@ -44,6 +44,12 @@ export const heroAI = {
     return next;
   },
   followsSpell(spell) { return spell; },
+  actionBonus({ action, plan }) {
+    // The normal planner already pays the spell and evaluates its extra attack.
+    // Prefer that executable two-action route when immediate utilities are close.
+    return (action.type === "skill" || plan.branches?.some(b => b.steps?.[0]?.card && b.steps[0].type === "play")) &&
+      plan.branches?.some(b => b.steps?.length > 1 && b.steps.some(step => step.type === "attack")) ? 1.5 : 0;
+  },
   decide({ request: r, state: s, id, sequence }) {
     if (r.type === "skillChoice" && r.skillId === "spellExcitation") {
       const next = clone(s); next.turn ??= { usedSkills: {} }; next.turn.usedSkills ??= {}; next.turn.usedSkills[r.skillId] = true;

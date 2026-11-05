@@ -1,4 +1,17 @@
 // Shadow costs and the single fire follow-up are evaluated together.
+function fireFollow(game,id,state,api) {
+  if(api.terminal(state)||state.turn?.usedSkills?.asuraCombo)return 0;
+  const player=state.players[id],fires=player.hand.filter(c=>c.type==='attack'&&(c.traits?.[id]?.elements??c.elements).includes('fire'));
+  if(!fires.length)return 0;
+  const best=api.bestAttackScore(game,id,state,{element:'fire'});
+  // Spending the only fire leaves a real response gap. This small opportunity
+  // cost never overrides a winning attack and vanishes with another fire left.
+  const gap=fires.length===1&&!player.hand.some(c=>['holyLight','darkStrike'].includes(c.name))?2.5:0;
+  return Math.max(0,best.score-gap);
+}
+function fireBranches(game,id,branches,api) {
+  return branches.reduce((sum,b)=>sum+b.probability*fireFollow(game,id,b.state,api),0);
+}
 export const magicSwordsmanAi = {
   id: "magicSwordsman",
   activationStateFields: ["form"],
@@ -29,12 +42,9 @@ export const magicSwordsmanAi = {
     draw(state, id, Math.max(0, state.players[id].limit - state.players[id].count));
     discardEstimate(state, id, 2);
   },
-  followAttackScore({ game, id, state, active, branches }, { terminal, bestAttackScore }) {
+  followAttackScore({ game, id, state, active, branches }, api) {
     if (!active || state.turn?.usedSkills?.asuraCombo) return 0;
-    return branches.reduce((sum, branch) => {
-      if (terminal(branch.state)) return sum;
-      return sum + branch.probability * Math.max(0, bestAttackScore(game, id, branch.state, { element: "fire" }).score);
-    }, 0);
+    return fireBranches(game,id,branches,api);
   },
   scoreSkill({ next, player, targetId, skillId }, { hurt }) {
     if (skillId !== "shadowMeteor" || !player.heroState.form || next.players[targetId].team === player.team) return null;
@@ -44,11 +54,19 @@ export const magicSwordsmanAi = {
   preparations({ state, id, player, card, action, options }, { previewActivationDamage, terminal }) {
     if (player.heroState.form) return options;
     const prepared = previewActivationDamage(state, { kind: "damage", skillId: "shadowGathering", sourceId: id, targetId: id, damageType: "spell", amount: 1 });
-    for (const branch of prepared.branches) if (!terminal(branch.state)) branch.state.players[id].heroState.form = "暗影";
+    for (const branch of prepared.branches) if (!terminal(branch.state)) {
+      branch.state.players[id].heroState.form = "暗影";
+      branch.state.shadowGatheringLoss=state.teams[player.team].morale-branch.state.teams[player.team].morale;
+    }
     const option = { ...prepared, activated: "shadowGathering" };
     if (action.skillId === "shadowMeteor") return [option];
     if (card?.type === "attack") options.push(option);
     return options;
+  },
+  actionBonus({state,player}) {
+    if(state.shadowGatheringLoss==null)return 0;
+    const own=state.teams[player.team].morale,enemy=state.teams[player.team==='red'?'blue':'red'].morale;
+    return state.shadowGatheringLoss===0?2:own<=6&&enemy-own>=4?-6:0;
   },
   decisions: {
     shadowGathering({ game, id, state, request }, { activationUseful }) {
@@ -56,15 +74,17 @@ export const magicSwordsmanAi = {
       if ((request.reservedSkillId ?? game.turn.state?.reservedSkillId) === "shadowMeteor") return true;
       return activationUseful(game, id, state, request, "shadowGathering");
     },
-    asuraCombo({ game, id, state, request }, { bestAttackScore }) {
-      if (request.type === "skillChoice") return bestAttackScore(game, id, state, { element: "fire" }).score > 0;
+    asuraCombo({ game, id, state, request }, api) {
+      if (request.type === "skillChoice") return fireFollow(game,id,state,api)>0;
     },
-    hadesTremor({ game, id, state, request, context }, { attackOutcomes, scoreBranches }) {
+    hadesTremor({ game, id, state, request, context }, api) {
       if (request.type !== "skillChoice") return;
       if (!context.card || context.targetId == null) return false;
-      const before = attackOutcomes(game, id, state, context.card, context.targetId, { active: true, alreadyPlayed: true });
-      const after = attackOutcomes(game, id, state, context.card, context.targetId, { active: true, variant: true, alreadyPlayed: true });
-      return after.length && before.length && scoreBranches(after) > scoreBranches(before) + 0.5;
+      const before = api.attackOutcomes(game, id, state, context.card, context.targetId, { active: true, alreadyPlayed: true });
+      const after = api.attackOutcomes(game, id, state, context.card, context.targetId, { active: true, variant: true, alreadyPlayed: true });
+      return after.length && before.length &&
+        api.scoreBranches(after)+fireBranches(game,id,after,api)>
+        api.scoreBranches(before)+fireBranches(game,id,before,api)+0.5;
     },
     shadowMeteor({ game, id, state, request, player }, { energy }) {
       if (request.type !== "numberChoice") return;

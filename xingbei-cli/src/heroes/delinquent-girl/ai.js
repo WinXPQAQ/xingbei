@@ -1,3 +1,5 @@
+import { brawlHitValue, roarOpportunity } from './ai-brawl.js';
+
 export const delinquentGirlAi = {
   id: "delinquentGirl",
   energyPreference: "mixed",
@@ -7,12 +9,20 @@ export const delinquentGirlAi = {
       : card.type === "attack"
         ? 6
         : -8,
-  attackDamage: () => 2,
-  attackHitBonus: ({ card, targetId, state }) =>
-    card.uniqueSkills?.includes("bloodBlade") &&
-    [2, 3].includes(state.players[targetId].count)
-      ? 9
-      : 0,
+  // The guaranteed first reveal is damage 3; later reveals are an expected-value
+  // correction over printed frequencies instead of a fixed 4-damage claim.
+  attackDamage: () => 1,
+  attackHitBonus: ({ card, targetId, state, id, active, amount }, api) =>
+    brawlHitValue(state, id, targetId, card, active, api) - api.damageGain(state, id, targetId, amount, 'attack'),
+  refineBonus: ({ player, gem, crystal }) => {
+    const empty = player.energy.gem + player.energy.crystal === 0;
+    return (empty ? 12 : 2) + gem * 3 + crystal;
+  },
+  actionBonus({ state, id, player, action }, api) {
+    const card = action.type === 'play' ? player.hand[action.index] : null;
+    if (card?.type !== 'attack') return 0;
+    return 4 + roarOpportunity(state, id, action.targetId, card, api);
+  },
   decisions: {
     bloodBlade: () => true,
     delinquentRoar: () => true,

@@ -1,3 +1,5 @@
+import { hasActiveEffect } from './model.js';
+import { preventsDamageMoraleLoss } from '../wave-two/healing.js';
 import {aiFor,healingCap} from './registry.js';
 // Common public one-round terminal forecast, used at every evaluated state.
 // No sampled private hands or deck order. The finite DP tracks both morale
@@ -14,12 +16,12 @@ function recentTargets(actions,actorId) {
 export function terminalForecast(s) {
  if(Object.values(s.teams).some(t=>t.morale<=0||t.cups>=5))return 0;
  if(Object.values(s.teams).every(t=>t.morale>6))return 0;
- const key=JSON.stringify([s.current,s.observer,Object.values(s.teams).map(t=>t.morale),s.players.map(p=>[p.count,p.limit,p.healing,p.energy.gem,p.hero,p.effects.some(e=>e.name==='holyShield'),p.hand.length,p.hand.filter(c=>c.type==='attack').length,p.hand.some(c=>c.name==='holyLight'||c.name==='darkStrike')])]);
+ const key=JSON.stringify([s.current,s.observer,Object.values(s.teams).map(t=>t.morale),s.players.map(p=>[p.count,p.limit,p.healing,p.energy.gem,p.hero,preventsDamageMoraleLoss(p),hasActiveEffect(p,'holyShield'),p.hand.length,p.hand.filter(c=>c.type==='attack').length,p.hand.some(c=>c.name==='holyLight'||c.name==='darkStrike')])]);
  let memo=cache.get(s.beliefs);if(!memo){memo=new Map();cache.set(s.beliefs,memo);}if(memo.has(key))return memo.get(key);
  const team=s.players[s.observer].team,other=team==='red'?'blue':'red';
  let win=0,loss=0;
  const alive={};for(const side of [team,other]){alive[side]=Array(s.teams[side].morale+1).fill(0);alive[side][s.teams[side].morale]=1;}
- const counts=s.players.map(p=>p.count);
+ const counts=s.players.map(p=>p.count),guarded=s.players.map(preventsDamageMoraleLoss);
  for(let step=1;step<=s.players.length;step++) {
   const actor=s.players[(s.current+step)%s.players.length];
   const attacks=actor.hand.filter(c=>c.type==='attack');
@@ -32,8 +34,8 @@ export function terminalForecast(s) {
   for(const target of targets) {
    const damage=aiFor(actor).forecastDamage?.(actor,counts[actor.id])??2;
    const healing=Math.min(damage,healingCap(target,damage));
-   const overflow=Math.ceil(Math.max(0,counts[target.id]+damage-healing-target.limit));
-   const shield=target.effects.some(e=>e.name==='holyShield');
+   const overflow=guarded[target.id]?0:Math.ceil(Math.max(0,counts[target.id]+damage-healing-target.limit));
+   const shield=hasActiveEffect(target,'holyShield');
    const block=target.id===s.observer?(target.hand.some(c=>c.name==='holyLight'||c.name==='darkStrike')?.8:1-.75**Math.max(0,counts[target.id]-target.hand.length)):1-.75**counts[target.id];
    const hit=shield?0:1-block;
    const probability=active*aims[targets.indexOf(target)]/aimTotal;
@@ -50,6 +52,7 @@ export function terminalForecast(s) {
   const otherAlive=alive[opponent].reduce((a,b)=>a+b,0);
   if(victim===team)loss+=defeated*otherAlive;else win+=defeated*otherAlive;
   alive[victim]=next;
+  guarded[actor.id]=false; // The current form ends at this owner's turn end.
  }
  const result=(win-loss)*150;if(memo.size<4096)memo.set(key,result);return result;
 }

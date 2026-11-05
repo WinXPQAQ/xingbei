@@ -2,7 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { Game } from '../src/engine.js';
 import { chooseAiAction, runAiAction } from '../src/ai.js';
-import { captureObservation } from '../src/ai/observation.js';
+import { estimateAllHeroCapabilities, CAPABILITY_HERO_IDS } from '../src/ai/hero-capabilities.js';
+import { stateOf } from '../src/heroes/shared/ai/base/model.js';
+import { HERO_DEFINITIONS } from '../src/hero.js';
+import { captureObservation, observationView } from '../src/ai/observation.js';
 import { actionCandidates } from '../training/candidates.mjs';
 
 test('current AI uses legal routes and completes actions with card conservation',()=>{
@@ -23,6 +26,9 @@ test('current AI uses legal routes and completes actions with card conservation'
 test('current AI decision and observation ignore hidden hands and future deck order',()=>{
  const game=new Game({seed:57}).setup();game.startTurn(0);
  const observation=captureObservation(game,0,{actions:true,activation:true}),decision=chooseAiAction(game,0);
+ const capabilities=()=>estimateAllHeroCapabilities(stateOf(observationView(captureObservation(game,0)),0));
+ const beforeCapabilities=capabilities();
+ assert.deepEqual([...CAPABILITY_HERO_IDS].sort(),Object.keys(HERO_DEFINITIONS).sort());
  const history=structuredClone(game.publicHistory);
  for(const p of game.players.slice(1)){
   const count=p.hand.length;
@@ -34,4 +40,5 @@ test('current AI decision and observation ignore hidden hands and future deck or
  Object.assign(game.publicHistory,history);
  assert.deepEqual(captureObservation(game,0,{actions:true,activation:true}),observation);
  assert.deepEqual(chooseAiAction(game,0),decision);
+ assert.deepEqual(capabilities(),beforeCapabilities);
 });

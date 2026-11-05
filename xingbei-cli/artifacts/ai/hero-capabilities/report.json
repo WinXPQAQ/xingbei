@@ -1,0 +1,21 @@
+{
+  "generatedAt": "2026-11-05T09:44:43.934Z",
+  "status": "passed",
+  "genericStateCombinations": 576,
+  "coverage": {
+    "modeled": 24,
+    "baseline-only": 48
+  },
+  "checks": [
+    "registered hero IDs",
+    "finite outputs",
+    "readiness range",
+    "hidden hand/deck/prophecy invariance",
+    "reserve cards separate from hand capacity"
+  ],
+  "limitations": [
+    "not hero policy or win-rate validation",
+    "partial capability profiles",
+    "static printed-deck priors"
+  ]
+}

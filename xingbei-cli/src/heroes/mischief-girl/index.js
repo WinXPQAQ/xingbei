@@ -140,6 +140,7 @@ export class MischiefGirl extends Hero {
               skillId: "trickyCost",
               optional: true,
               title: "明弃1张同系牌，移除Tricky并造成2法伤",
+              context: { targetId },
             },
           );
           if (!cs) return;

@@ -105,7 +105,8 @@ choices['v1.17.0-preview.1'] = createHeroWaveThreePolicy(choices['v1.7.0-preview
 choices['v1.17.0-preview.2'] = createHeroWaveThreePolicy(choices['v1.7.0-preview.4']);
 choices['v1.17.0-preview.3'] = createHeroWaveThreePolicy(choices['v1.7.0-preview.4']);
 choices['v1.17.0-preview.4'] = createHeroWaveThreePolicy(choices['v1.7.0-preview.4']);
-export const policies = Object.freeze(Object.fromEntries(Object.entries(choices).map(([id, frozen]) => { const legal = legalPolicy(frozen); const policy = ['v1.17.0-preview.2','v1.17.0-preview.3','v1.17.0-preview.4'].includes(id) ? withActivationPlanning(withStrategyPreferences(legal)) : id === 'v1.17.0-preview.1' ? withActivationPlanning(legal) : legal; return [id, Object.freeze({ ...policy, runAiAction: (game, actorId, options) => runPolicyAction(policy, game, actorId, options) })]; })));
+choices['v1.17.0-preview.5'] = createHeroWaveThreePolicy(choices['v1.7.0-preview.4']);
+export const policies = Object.freeze(Object.fromEntries(Object.entries(choices).map(([id, frozen]) => { const legal = legalPolicy(frozen); const policy = ['v1.17.0-preview.2','v1.17.0-preview.3','v1.17.0-preview.4','v1.17.0-preview.5'].includes(id) ? withActivationPlanning(withStrategyPreferences(legal)) : id === 'v1.17.0-preview.1' ? withActivationPlanning(legal) : legal; return [id, Object.freeze({ ...policy, runAiAction: (game, actorId, options) => runPolicyAction(policy, game, actorId, options) })]; })));
 export function getPolicy(id) {
   if (!Object.hasOwn(policies, id)) throw new Error(`Unknown AI policy: ${id}`);
   return policies[id];

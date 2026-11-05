@@ -7,14 +7,18 @@ export function damageHealing(player, amount, type) {
 }
 function scoreSkill({ game: g, id, action, state, before, costs, spec }) {
   const skill = action.skillId;
+  const terminal = () => Object.values(state.teams).some(t => t.morale <= 0 || t.cups >= 5);
   if (skill === "plague" || skill === "toxicNova") {
-    for (const target of g.players) if (target.id !== id) damage(state, target.id, skill === "plague" ? 1 : 2, "spell");
+    for (const target of g.players) if (target.id !== id) {
+      damage(state, target.id, skill === "plague" ? 1 : 2, "spell", { sourceId: id });
+      if (terminal()) return {};
+    }
     if (skill === "toxicNova" || Object.keys(state.teams).some((team) => state.teams[team].morale < before.teams[team].morale)) heal(state, id, 1);
   }
   if (skill === "deathTouch") {
     state.players[id].healing -= spec.healingCost;
-    damage(state, action.targetIds[0], spec.healingCost + costs.length - 3, "spell");
-  } else heal(state, id, 1);
+    damage(state, action.targetIds[0], spec.healingCost + costs.length - 3, "spell", { sourceId: id });
+  } else if (!terminal()) heal(state, id, 1);
   return {};
 }
 export function magicHealingValue(g, id, afterSpend, ongoing) {

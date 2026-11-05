@@ -1,0 +1,137 @@
+{
+  "fixture": "Network-only injected magicArcher scene registration, two real hand cards, gem=1 crystal=1. No repository fixture changes.",
+  "checks": [
+    {
+      "name": "1440x900 uses actual magicArcher",
+      "passed": true
+    },
+    {
+      "name": "1440x900 energy choice unpaid",
+      "passed": true
+    },
+    {
+      "name": "1440x900 gem selection still unpaid",
+      "passed": true
+    },
+    {
+      "name": "1440x900 gem selection not charged",
+      "passed": true
+    },
+    {
+      "name": "1440x900 confirmation buttons",
+      "passed": true
+    },
+    {
+      "name": "1440x900 modal fits viewport",
+      "passed": true
+    },
+    {
+      "name": "1440x900 backtrack still unpaid",
+      "passed": true
+    },
+    {
+      "name": "1440x900 crystal directly paid",
+      "passed": true
+    },
+    {
+      "name": "1440x900 charged only after payment",
+      "passed": true
+    },
+    {
+      "name": "1440x900 reset restores energy",
+      "passed": true
+    },
+    {
+      "name": "1440x900 confirmed gem paid once",
+      "passed": true
+    },
+    {
+      "name": "1440x900 red payment activates charge",
+      "passed": true
+    },
+    {
+      "name": "390x844 uses actual magicArcher",
+      "passed": true
+    },
+    {
+      "name": "390x844 energy choice unpaid",
+      "passed": true
+    },
+    {
+      "name": "390x844 gem selection still unpaid",
+      "passed": true
+    },
+    {
+      "name": "390x844 gem selection not charged",
+      "passed": true
+    },
+    {
+      "name": "390x844 confirmation buttons",
+      "passed": true
+    },
+    {
+      "name": "390x844 modal fits viewport",
+      "passed": true
+    },
+    {
+      "name": "390x844 backtrack still unpaid",
+      "passed": true
+    },
+    {
+      "name": "390x844 crystal directly paid",
+      "passed": true
+    },
+    {
+      "name": "390x844 charged only after payment",
+      "passed": true
+    },
+    {
+      "name": "390x844 reset restores energy",
+      "passed": true
+    },
+    {
+      "name": "390x844 confirmed gem paid once",
+      "passed": true
+    },
+    {
+      "name": "390x844 red payment activates charge",
+      "passed": true
+    }
+  ],
+  "consoleErrors": [
+    {
+      "tag": "1440x900",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "tag": "390x844",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    }
+  ],
+  "pageErrors": [],
+  "httpErrors": [
+    {
+      "tag": "1440x900",
+      "url": "http://127.0.0.1:4198/assets/character/none.jpg",
+      "status": 404
+    },
+    {
+      "tag": "390x844",
+      "url": "http://127.0.0.1:4198/assets/character/none.jpg",
+      "status": 404
+    }
+  ],
+  "requestFailures": [],
+  "viewports": [
+    {
+      "tag": "1440x900",
+      "completed": true,
+      "hasTouch": false
+    },
+    {
+      "tag": "390x844",
+      "completed": true,
+      "hasTouch": true
+    }
+  ]
+}

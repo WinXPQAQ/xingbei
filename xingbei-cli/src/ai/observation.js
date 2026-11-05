@@ -70,7 +70,7 @@ export function isolatePolicy(raw, {history = true, activation = false} = {}) {
     for (const key of ['target','actor','player','nextTarget']) if (request[key]) out[key] = v.player(request[key].id);
     if (request.counterTargets) out.counterTargets = request.counterTargets.map(p => v.player(p.id));
     if (request.valid) out.valid = request.valid.map(e => typeof e === 'number' ? e : {index: e.index, card: v.cards.get(e.card.id), ...(e.asAttack ? {asAttack:true} : {})});
-    if (request.context) out.context = { ...copy(pick(request.context,["effect","element","targetIds","triggered","stage","sourceId","actual","count","drawCount","skillId","extraSpell","purpose","sameElement","damage","moraleLoss","battleRunes","magicRunes","transferTargetId","attackTraits","team"])), targetId: request.context.targetId, amount: request.context.amount, damageType: request.context.damageType, isCounter: request.context.isCounter, card: v.cards.get(request.context.card?.id) };
+    if (request.context) out.context = { ...copy(pick(request.context,["actorId","playerId","mode","effect","element","targetIds","triggered","stage","sourceId","actual","count","drawCount","skillId","extraSpell","purpose","sameElement","damage","moraleLoss","battleRunes","magicRunes","transferTargetId","attackTraits","team"])), targetId: request.context.targetId, amount: request.context.amount, damageType: request.context.damageType, isCounter: request.context.isCounter, card: v.cards.get(request.context.card?.id) };
     if (request.context?.selectedCardIds) out.context.selectedCardIds=request.context.selectedCardIds.filter(id=>v.cards.has(id));
     if (request.attack) {
       const traits = copy(request.attackTraits ?? request.attack.getTraits());

@@ -1,3 +1,24 @@
+import { estimateHeroCapabilities } from '../../ai/hero-capabilities.js';
+
+// Estimate throughput from public plays/discards over recent own turns. No
+// hero-name list and no access to the teammate's cards is needed.
+function linkValue(state,targetId,id) {
+ const target=state.players[targetId], history=state.actions??[];
+ let turns=0,left=0;
+ for(let i=history.length-1;i>=0;i--){const e=history[i];
+  if(e.playerId!==targetId)continue;
+  if(e.type==='turn'&&++turns>2)break;
+  if(['play','discard','give'].includes(e.type))left+=e.count??1;
+ }
+ const capability=estimateHeroCapabilities(state,targetId);
+ // Observed movement and available shedding both matter. Incoming draws and
+ // exchanges are throughput, not empty hand slots: do not subtract them here.
+ const flow=turns?left/Math.min(turns,2)*.6+capability.flow.outgoing*.4:capability.flow.outgoing;
+ const slow=Math.max(-1,Math.min(2,2-flow));
+ const pressure=target.count/Math.max(1,target.limit);
+ const room=Math.max(0,state.players[id].limit-state.players[id].count);
+ return slow*4+pressure*3+Math.min(2,room)*pressure;
+}
 export const soulWarlockAi={
  id:'soulWarlock',
   energyPreference: "gem",acceptsRefine:a=>a.stones.crystal===0,
@@ -13,7 +34,7 @@ export const soulWarlockAi={
  },
  decisions:{
   soulAmplify:({player})=>(player.heroState.yellowSoul<5||player.heroState.blueSoul<5),
-  soulLink({request,state,player,source}){if(request.type==='skillChoice')return !(source.hand.some(c=>c.uniqueSkills.includes('soulTreasure'))&&player.heroState.yellowSoul<=3);return [...request.choices].sort((a,b)=>(state.players[b.value].limit-state.players[b.value].count)-(state.players[a.value].limit-state.players[a.value].count))[0].value;},
+  soulLink({request,state,player,source}){if(request.type==='skillChoice')return !(source.hand.some(c=>c.uniqueSkills.includes('soulTreasure'))&&player.heroState.yellowSoul<=3);return [...request.choices].sort((a,b)=>linkValue(state,b.value,player.id)-linkValue(state,a.value,player.id))[0].value;},
   soulTransfer({request,state,context},api){
    const original=state.players[context.targetId],other=state.players[context.transferTargetId];
    const reducer=other.hero==='bard'&&other.heroState.form?1:0;

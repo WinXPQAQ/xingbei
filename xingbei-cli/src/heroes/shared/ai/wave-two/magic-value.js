@@ -1,8 +1,8 @@
 // Active magic is evaluated by consequences of this relay, not by the general
 // hand-burden/next-turn-risk potential. A non-overflow draw is not morale damage.
 import { createDeck } from "../../../../cards.js";
-import { stateOf, clone, spend } from "../base/model.js";
-import { damageHealing } from "./healing.js";
+import { stateOf, clone, spend, hasActiveEffect } from "../base/model.js";
+import { damageHealing, preventsDamageMoraleLoss } from "./healing.js";
 import { protectMagicOverflow } from "../../../guardian-angel/ai-magic.js";
 import { magicFollowUpValue } from "../../../sealer/ai-magic.js";
 import { magicHealingValue } from "../../../plague-mage/ai.js";
@@ -54,27 +54,27 @@ function scoreResources(before, after, id) {
     shields +=
       sign *
       (Number(next.effects.some((e) => e.name === "holyShield")) -
-        Number(p.effects.some((e) => e.name === "holyShield"))) *
+        Number(hasActiveEffect(p,"holyShield"))) *
       3;
   }
   return { morale, healing, shields, energy };
 }
-function hit(state, targetId, amount) {
+function hit(state, targetId, amount, sourceId) {
   const p = state.players[targetId];
-  const shield = p.effects.find((e) => e.name === "holyShield");
+  const shield = p.effects.find((e) => e.name === "holyShield" && hasActiveEffect(p,"holyShield"));
   if (shield) {
     p.effects = p.effects.filter((e) => e !== shield);
     return false;
   }
   // Spend only healing needed to avoid overflow. This matches the public
   // response rule, and avoids scoring a hypothetical choice via value().
-  const max = damageHealing(p, amount, "spell");
+  const max = damageHealing(p, amount, "spell", sourceId);
   const heal = Math.min(max, Math.max(0, p.count + amount - p.limit));
   p.healing -= heal;
   const drawn = amount - heal,
     overflow = Math.max(0, p.count + drawn - p.limit);
   p.count = Math.min(p.limit, p.count + drawn);
-  const loss = protectMagicOverflow(state, p, overflow);
+  const loss = preventsDamageMoraleLoss(p) ? 0 : protectMagicOverflow(state, p, overflow);
   state.teams[p.team].morale -= loss;
   return true;
 }
@@ -88,7 +88,7 @@ function responseProbabilities(state, targetId, observerId) {
         canRelayMagic(p, c),
     );
     // Only our own cards are known. Shield handles a passed response for free.
-    if (p.effects.some((e) => e.name === "holyShield"))
+    if (hasActiveEffect(p,"holyShield"))
       return { hit: 1, light: 0, relay: 0 };
     if (light) return { hit: 0, light: 1, relay: 0, card: light };
     if (magic) return { hit: 0, light: 0, relay: 1, card: magic };
@@ -117,7 +117,7 @@ function relayOutcomes(
   const result = [];
   if (rates.hit) {
     const next = clone(state);
-    const dealt = hit(next, targetId, amount);
+    const dealt = hit(next, targetId, amount, sourceId);
     result.push({
       probability: rates.hit,
       state: next,

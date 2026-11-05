@@ -348,6 +348,15 @@ async function chooseSeatDecision(request) {
     return null;
   }
   if (!isHuman(request.playerId)) return chooseAiRuleDecision(request, game);
+  if (request.type === "energyChoice" && request.skillId === "charge") {
+    while (true) {
+      const payment = await choose(request.title, request.choices);
+      active.assert();
+      if (!payment.gem || await choose("确定用宝石发动充能吗？", [
+        {value:true,label:"确定"}, {value:false,label:"重新选择"},
+      ])) { active.assert(); return payment; }
+    }
+  }
   return choose(request.title, request.choices);
 }
 

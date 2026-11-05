@@ -24,7 +24,9 @@ export const magicArcherAi={
   },
   attackMissBonus:({source,game,id,state,player,active,targetId},api)=>active&&!player.heroState.charged&&!player.heroState.multiShotUsed&&game.player(id).covered.some(c=>c.elements.includes('fire'))&&state.players[targetId].count<state.players[targetId].limit?Math.max(0,api.damageGain(state,id,targetId,3)-3):0,
   decisions:{
-    charge:({source,player})=>source.energy.crystal>0&&player.coveredCount<3,
+    charge:({source,player,request})=>request.type==='energyChoice'
+      ?[...request.choices].sort((a,b)=>a.value.gem-b.value.gem)[0]?.value
+      :source.energy.crystal>0&&player.coveredCount<3,
     // Discard-to-four has already resolved: fill only remaining capacity.
     chargeDraw:({player,request})=>{
       const wanted=Math.min(4,Math.max(0,player.limit-player.count));

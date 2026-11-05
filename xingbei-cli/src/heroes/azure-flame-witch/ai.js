@@ -1,3 +1,19 @@
+import {fireReadiness,isKnownFire} from './fire-forecast.js';
+
+const ownFire=player=>player.hand.filter(card=>!card.reserve&&isKnownFire(card,player.id));
+// Unknown draws may open a two-fire spell. This is a fixed-deck opportunity
+// estimate, not a guessed card or an extra simulated legal action.
+function unknownFireOption(state,id) {
+  const player=state.players[id],known=player.hand.filter(card=>!card.reserve);
+  if(ownFire(player).length>=2)return 0;
+  return 7*fireReadiness(known,Math.max(0,player.count-known.length),id,player.heroState.form);
+}
+const inversionReserve=player=>player.energy.gem+player.energy.crystal>0&&player.hand.filter(card=>!card.reserve&&card.type==='spell').length>=2?10:0;
+const incoming=(request,context,type)=>({amount:context.amount??request.damage??2,type:context.damageType??type,sourceId:context.sourceId??context.actorId});
+function takeIncoming(state,id,damage,api) {
+  if(!api.terminal(state))api.hurt(state,id,damage.amount,damage.type,{sourceId:damage.sourceId});
+}
+
 // Preview only the owner's known cards. Draws add unknown card count, never
 // inspect the deck or assume that the next card is fire.
 function wrathOptions(state, id, api) {
@@ -18,13 +34,20 @@ function wrathOptions(state, id, api) {
     return {state:next,count,activated:'witchWrath'};
   });
 }
-const outputValue=(game,id,state,api)=>api.terminal(state)?0:Math.max(api.bestAttackScore(game,id,state).score,api.bestSpellFollow(game,id,state));
+const outputValue=(game,id,state,api)=>api.terminal(state)?0:Math.max(api.bestAttackScore(game,id,state).score,api.bestSpellFollow(game,id,state))+unknownFireOption(state,id);
 
 export const azureFlameWitchAi = {
   id: 'azureFlameWitch', energyPreference: "crystal",
-  cardBonus: ({ card, elements, retained }) => elements.includes('fire') ? 18 :
-    card.type === 'spell' && retained.filter(c => c.type === 'spell').length < 2 ? 12 : 0,
-  resourceValue: p => (p.heroState.rebirth ?? 0) * 3 + p.energy.crystal * 2,
+  cardBonus: ({ card, elements, retained }) => elements.includes('fire') ? 42 :
+    card.type === 'spell' && retained.filter(c => c.type === 'spell').length < 2 ? 16 : 0,
+  resourceValue: p => [0,30,54,68,76][Math.min(4,p.heroState.rebirth??0)] + p.energy.crystal * 3 + inversionReserve(p),
+  refineBonus:({player,crystal})=>crystal&&!player.energy.crystal&&!player.energy.gem?
+    (player.hand.filter(card=>card.type==='spell').length>=2||player.count>=4?8:3):0,
+  afterDamage({player,type,moraleLost}) {
+    if(type!=='spell'||!moraleLost||(player.heroState.rebirth??0)>=4)return;
+    player.heroState.rebirth=(player.heroState.rebirth??0)+1;
+    if(player.heroState.form)player.limit++;
+  },
   preparations({state,id,options},api) {
     return [...options,...wrathOptions(state,id,api)];
   },
@@ -75,20 +98,38 @@ export const azureFlameWitchAi = {
       });
       return scores.sort((a,b)=>b.score-a.score||a.value-b.value)[0]?.value??request.defaultValue;
     },
-    substituteDoll({ request, state, player, game, id }, { cardCost }) {
-      const allies = state.players.filter(p => p.team === player.team && p.id !== id && p.count < p.limit);
-      if (request.type === 'playerChoice') return allies.sort((a,b) => a.count - b.count)[0]?.id ?? request.defaultValue;
-      if (!allies.length) return null;
-      const sorted = [...request.valid].sort((a,b) => cardCost(game,id,[game.player(id).hand[a]]) - cardCost(game,id,[game.player(id).hand[b]]));
-      return sorted.length ? [sorted[0]] : null;
+    substituteDoll({ request, state, player, game, id, context }, api) {
+      if(request.type==='playerChoice')return request.choices.map(choice=>{
+        const next=api.copy(state);api.draw(next,choice.value,1);
+        return {value:choice.value,score:api.evaluate(next)};
+      }).sort((a,b)=>b.score-a.score)[0]?.value??request.defaultValue;
+      const allies=state.players.filter(p=>p.team===player.team&&p.id!==id);
+      const damage=incoming(request,context,'attack'),baseline=api.copy(state);
+      takeIncoming(baseline,id,damage,api);
+      let best={indexes:null,score:api.evaluate(baseline)};
+      for(const index of request.valid??[])for(const ally of allies) {
+        const next=api.copy(state),card=next.players[id].hand.find(c=>c.id===game.player(id).hand[index].id);
+        api.spend(next,id,[card]);api.draw(next,ally.id,1);takeIncoming(next,id,damage,api);
+        const score=api.evaluate(next)-api.cardCost(game,id,[game.player(id).hand[index]]);
+        if(score>best.score)best={indexes:[index],score};
+      }
+      return best.indexes;
     },
-    manaInversion({ request, game, id, state, player, context }, { cardCost, damageGain }) {
-      const enemies = state.players.filter(p => p.team !== player.team);
-      if (request.type === 'playerChoice') return enemies.sort((a,b) => damageGain(state,id,b.id,context.amount??0)-damageGain(state,id,a.id,context.amount??0))[0].id;
-      let best = { indexes: null, score: 0 };
-      for (const indexes of request.validSets ?? []) {
-        const score = Math.max(...enemies.map(p => damageGain(state,id,p.id,indexes.length-1))) - cardCost(game,id,indexes.map(i=>game.player(id).hand[i])) - 3;
-        if (score > best.score) best = { indexes, score };
+    manaInversion({ request, game, id, state, player, context }, api) {
+      if(request.type==='playerChoice')return request.choices.map(choice=>({value:choice.value,
+        score:api.damageGain(state,id,choice.value,context.amount??0),
+      })).sort((a,b)=>b.score-a.score)[0]?.value??request.defaultValue;
+      const enemies=state.players.filter(p=>p.team!==player.team),damage=incoming(request,context,'spell');
+      const baseline=api.copy(state);takeIncoming(baseline,id,damage,api);
+      let best={indexes:null,score:api.evaluate(baseline)};
+      // The engine supplies legal sets; no extra subset enumeration is needed.
+      for(const indexes of request.validSets??[])for(const enemy of enemies) {
+        const next=api.copy(state),cards=indexes.map(index=>game.player(id).hand[index]);
+        api.payEnergy(next,id);api.spend(next,id,cards.map(card=>next.players[id].hand.find(c=>c.id===card.id)));
+        api.hurt(next,enemy.id,indexes.length-1,'spell',{sourceId:id});
+        takeIncoming(next,id,damage,api);
+        const score=api.evaluate(next)-api.cardCost(game,id,cards);
+        if(score>best.score)best={indexes,score};
       }
       return best.indexes;
     },

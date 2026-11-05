@@ -4,7 +4,7 @@ import {contractOption} from '../../../priest/ai.js';
 import {isBinding} from '../../../sealer/ai.js';
 export {piercingOptions,contractOption};
 import {createDeck} from '../../../../cards.js';
-import {clone,traits,value,difference,components,spend,remove,draw,damage,heal,payEnergy,stones,transfer,overflow} from './model.js';
+import {clone,traits,value,difference,components,spend,remove,draw,damage,heal,payEnergy,stones,transfer,overflow,hasActiveEffect,applyBarrierForecast} from './model.js';
 const printed=createDeck();
 const lightRate=printed.filter(c=>c.name==='holyLight').length/printed.length;
 const special=(c,id)=>c.uniqueSkills.includes(id);
@@ -17,7 +17,7 @@ export function giftOptions(s,id,targetId,cards=s.players[id].hand) {
 }
 export function probability(s,id,c,targetId,{forced=false,storm=false}={}) {
  const target=s.players[targetId];if(forced)return {hit:1,light:0,counter:0};
- const shield=target.effects.some(e=>e.name==='holyShield')&&!storm;
+ const shield=hasActiveEffect(target,'holyShield')&&!storm;
  const gaps=s.beliefs[targetId]??{},elements=traits(c,id);
  const canCounter=c.name!=='darkStrike'&&!storm&&(aiFor(s.players[id]).canCounter?.(elements)??true);
  const counter=canCounter?printed.filter(x=>x.type==='attack'&&(x.name==='darkStrike'||x.elements.some(e=>elements.includes(e)))).length/printed.length*(1-Math.min(...elements.map(e=>gaps[e]??0))):0;
@@ -31,9 +31,9 @@ function reflect(s,id,sourceId,amount) {
  const targets=s.players.filter(t=>t.team===s.players[id].team&&t.id!==id);
  const outcomes=targets.map(t=>{
   const chance=.75**t.count,hit=clone(s),response=clone(s);
-  const shield=t.effects.some(e=>e.name==='holyShield');
+  const shield=hasActiveEffect(t,'holyShield');
   if(shield)hit.players[t.id].effects=hit.players[t.id].effects.filter(e=>e.name!=='holyShield');
-  else {damage(hit,t.id,amount,'attack');stones(hit,s.players[sourceId].team,'crystal',1);}
+  else {damage(hit,t.id,amount,'attack',{sourceId});stones(hit,s.players[sourceId].team,'crystal',1);}
   response.players[t.id].count=Math.max(0,t.count-1);
   return [{probability:chance,state:hit,path:[shield?'counter-shield':'counter-hit']},{probability:1-chance,state:response,path:['counter-answered']}];
  });
@@ -47,11 +47,11 @@ export function attackBranches(input,id,c,targetId,{precision=null,active=true,c
  const forced=usePrecision||(hook.forcedHit?.(attack)??false);
  const probabilities=probability(s,id,c,targetId,{forced,storm});
  if(!forced&&(probabilities.light>0||probabilities.counter>0))s.uncertain=true;
- let amount=attackAmount(p)+(hook.attackBonus?.(attack)??0);
+ let amount=attackAmount(p)+(hook.attackBonus?.(attack)??0)+applyBarrierForecast(s,id,c,targetId,{active});
  if(usePrecision)amount--;
  const branches=[];
  if(probabilities.hit) {
-  let hit=clone(s);damage(hit,targetId,amount,'attack');
+  let hit=clone(s);damage(hit,targetId,amount,'attack',{sourceId:id});
   hit=hook.improveHit?.(s,id,targetId,amount,hit)??hit;
   stones(hit,p.team,active?'gem':'crystal',1);branches.push({probability:probabilities.hit,state:hit,path:[usePrecision?'precision-hit':'hit']});
  }
@@ -73,7 +73,7 @@ export function magicBranches(s,sourceId,targetId,amount=2,participants=[sourceI
  s=clone(s);s.uncertain=true;
  const t=s.players[targetId],rate=lightRate+printed.filter(c=>c.name==='magicBullet').length/printed.length;
  const hitChance=(1-rate)**t.count,hit=clone(s),answer=clone(s);
- if(t.effects.some(e=>e.name==='holyShield'))hit.players[targetId].effects=hit.players[targetId].effects.filter(e=>e.name!=='holyShield');else damage(hit,targetId,amount);
+ if(hasActiveEffect(t,'holyShield'))hit.players[targetId].effects=hit.players[targetId].effects.filter(e=>e.name!=='holyShield');else damage(hit,targetId,amount,'spell',{sourceId});
  answer.players[targetId].count=Math.max(0,t.count-1);
  const lightShare=lightRate/rate,branches=[{probability:hitChance,state:hit,path:['magic-hit-check']},{probability:(1-hitChance)*lightShare,state:answer,path:['magic-light']}];
  const next=Array.from({length:s.players.length},(_,i)=>s.players[(targetId+i+1)%s.players.length]).find(p=>p.team!==t.team&&!participants.includes(p.id));

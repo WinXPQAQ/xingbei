@@ -1,6 +1,6 @@
 import { magicBranches } from "../base/planner.js";
 import { cardScore, cardCost, chooseAiDiscard } from "./cards.js";
-import { publicState, copy, evaluate, terminal, hurt, applyDamage, spend } from "./model.js";
+import { publicState, copy, evaluate, terminal, hurt, applyDamage, spend, hasActiveEffect } from "./model.js";
 import { attackScore, preparationOptions, scorePreparation, scoringApi } from "./scoring.js";
 import { heroAi, skillDecision } from "./registry.js";
 const sumBranches = (branches) => branches.reduce((sum, b) => sum + b.probability * evaluate(b.state), 0);
@@ -31,6 +31,8 @@ export function chooseAiRuleDecision(request, game) {
   const id=request.playerId??request.player?.id, player=game.player(id), state=publicState(game,id), p=state.players[id];
   const ctx=request.context??{}, skill=request.skillId;
   if (request.type === "healing") {
+    const preferred=heroAi(p.hero).healingDecision?.({game,id,state,player:p,source:player,request,context:ctx},decisionApi);
+    if(preferred!==undefined&&request.choices.some(item=>item.value===preferred))return preferred;
     let best={value:0,score:-Infinity};
     for (const item of request.choices) {
       const next=copy(state);applyDamage(next,id,ctx.amount??0,item.value,ctx.damageType??"spell",ctx.moraleLoss!==false);
@@ -56,21 +58,24 @@ export function chooseAiResponse(game, request) {
   const id=request.target.id, state=publicState(game,id), take=copy(state);
   const profile=heroAi(state.players[id].hero);
   const defendedId=profile.defendedPlayer?.(request) ?? id;
-  const responseCost=profile.responseCost?.(request) ?? 0;
+  const responseCost=profile.responseCost?.(request,{game,id,state},scoringApi) ?? 0;
   const amount=request.damage??request.context?.amount??2;
-  if(request.shieldable!==false&&game.player(defendedId).getStatus("holyShield").length)
+  const shielded=request.shieldable!==false&&hasActiveEffect(take.players[defendedId],"holyShield");
+  if(shielded)
     take.players[defendedId].effects=take.players[defendedId].effects.filter((e)=>e.name!=="holyShield");
   else {
-    const actual=hurt(take,defendedId,amount,request.attack?"attack":"spell");
+    const actual=hurt(take,defendedId,amount,request.attack?"attack":"spell",{sourceId:request.actor?.id??request.context?.sourceId});
     if (request.attack && request.actor) heroAi(state.players[defendedId].hero).afterAttackDamage?.({ state: take, actorId: request.actor.id, actual }, scoringApi);
   }
-  let best={decision:null,score:evaluate(take)-evaluate(state)};
+  const defenseRisk=shielded?0:profile.defenseRisk?.({game,id,state,request},scoringApi)??0;
+  let best={decision:null,score:evaluate(take)-evaluate(state)-defenseRisk};
   for(const entry of request.valid) {
     const card=entry.asAttack ? {...entry.card,type:'attack',name:`${entry.card.getTraits({playerId:id}).elements[0]}Strike`,uniqueSkills:[]} : entry.card;
     if(request.attack&&card.type==="attack") {
       if (heroAi(state.players[id].hero).skipCounterCard?.({ game, id, card, request }, scoringApi)) continue;
       for(const target of request.counterTargets) {
-        const score=attackScore(game,id,state,card,target.id,{active:false,follow:false})-responseCost;
+        const score=attackScore(game,id,state,card,target.id,{active:false,follow:false})-responseCost+
+          (profile.responseBonus?.({game,id,state,card,targetId:target.id,request},scoringApi)??0);
         if(score>best.score)best={decision:{index:entry.index,targetId:target.id},score};
       }
     } else {

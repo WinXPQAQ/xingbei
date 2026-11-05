@@ -1,0 +1,144 @@
+{
+  "version": "v1.17.0-preview.5",
+  "results": [
+    {
+      "seed": 110580,
+      "start": 0,
+      "heroIds": [
+        "sealer",
+        "spiritTide",
+        "plagueMage",
+        "mischiefGirl",
+        "barrierMaster",
+        "berserker"
+      ],
+      "revision": null,
+      "replayedDecisions": 0,
+      "turns": 37,
+      "decisions": 266,
+      "maxCandidates": 9,
+      "kinds": {
+        "action": 167,
+        "skillChoice": 20,
+        "response": 28,
+        "weakness": 2,
+        "numberChoice": 4,
+        "playerChoice": 14,
+        "healing": 4,
+        "overflow": 19,
+        "cardChoice": 7,
+        "effectChoice": 1
+      },
+      "profile": {
+        "candidatesMs": 11.869861000001578,
+        "decisionWaitMs": 2025.9583040000007,
+        "invariantsMs": 6.896035999999356,
+        "elapsedMs": 2087.881673
+      },
+      "winner": "blue",
+      "terminated": true,
+      "truncated": false,
+      "truncationReason": null,
+      "rewards": {
+        "0": -1,
+        "1": 1,
+        "2": 1,
+        "3": -1,
+        "4": -1,
+        "5": 1
+      }
+    },
+    {
+      "seed": 110581,
+      "start": 0,
+      "heroIds": [
+        "magicLancer",
+        "magicSwordsman",
+        "magicArcher",
+        "redLotusKnight",
+        "marksman",
+        "priest"
+      ],
+      "revision": null,
+      "replayedDecisions": 0,
+      "turns": 36,
+      "decisions": 249,
+      "maxCandidates": 8,
+      "kinds": {
+        "action": 155,
+        "skillChoice": 16,
+        "response": 33,
+        "numberChoice": 6,
+        "cardChoice": 17,
+        "overflow": 19,
+        "weakness": 1,
+        "playerChoice": 1,
+        "healing": 1
+      },
+      "profile": {
+        "candidatesMs": 6.942052000003059,
+        "decisionWaitMs": 1468.8009829999987,
+        "invariantsMs": 5.753091000002769,
+        "elapsedMs": 1510.48335
+      },
+      "winner": "blue",
+      "terminated": true,
+      "truncated": false,
+      "truncationReason": null,
+      "rewards": {
+        "0": -1,
+        "1": 1,
+        "2": 1,
+        "3": -1,
+        "4": -1,
+        "5": 1
+      }
+    },
+    {
+      "seed": 110582,
+      "start": 0,
+      "heroIds": [
+        "chronicler",
+        "heretic",
+        "yinYangMaster",
+        "adventurer",
+        "bard",
+        "soulWarlock"
+      ],
+      "revision": null,
+      "replayedDecisions": 0,
+      "turns": 68,
+      "decisions": 429,
+      "maxCandidates": 10,
+      "kinds": {
+        "action": 291,
+        "effectChoice": 9,
+        "numberChoice": 16,
+        "cardChoice": 15,
+        "response": 61,
+        "skillChoice": 9,
+        "playerChoice": 8,
+        "overflow": 15,
+        "weakness": 5
+      },
+      "profile": {
+        "candidatesMs": 22.600706000009723,
+        "decisionWaitMs": 3004.6883070000013,
+        "invariantsMs": 10.106964999995853,
+        "elapsedMs": 3086.718643
+      },
+      "winner": "blue",
+      "terminated": true,
+      "truncated": false,
+      "truncationReason": null,
+      "rewards": {
+        "0": -1,
+        "1": 1,
+        "2": 1,
+        "3": -1,
+        "4": -1,
+        "5": 1
+      }
+    }
+  ]
+}

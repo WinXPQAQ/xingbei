@@ -6,6 +6,7 @@ import { heroAI as guardianAngel } from "../../../guardian-angel/ai.js";
 import { heroAI as priest } from "../../../priest/ai.js";
 import { magicArcherEXProfile } from "../../../magic-archer-ex/ai.js";
 import { swordWitchAi } from "../../../sword-witch/ai.js";
+import { damageHealing } from "../wave-two/healing.js";
 
 const heroes = Object.freeze({ berserker, windSwordmaster, marksman, sealer, guardianAngel, priest });
 export const heroPolicies = Object.freeze(Object.values(heroes));
@@ -21,7 +22,7 @@ export function aiFor(playerOrId) {
 export function aiForSkill(skillId) {
   return heroPolicies.find(policy => policy.skills?.includes(skillId) || policy.matchesSkill?.(skillId)) ?? empty;
 }
-export function healingCap(player, amount) {
-  return Math.min(player.healing, aiFor(player).healingCap ?? amount);
+export function healingCap(player, amount, type = 'attack', sourceId = null) {
+  return damageHealing(player, amount, type, sourceId);
 }
 export function attackAmount(player) { return aiFor(player).attackAmount?.(player) ?? 2; }

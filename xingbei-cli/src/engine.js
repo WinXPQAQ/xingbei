@@ -1030,13 +1030,13 @@ export class Game {
     this.log.push(`${this.actorLabel(playerId)}消耗${count - crystals}宝石、${crystals}水晶；剩余${energy.gem}宝石、${energy.crystal}水晶`);
     this.recordPresentation("energy", { playerId, gem: -(count - crystals), crystal: -crystals });
   }
-  *paySkillEnergy(playerId, kind, count = 1) {
+  *paySkillEnergy(playerId, kind, count = 1, { skillId, alwaysChoose = false } = {}) {
     if (!this.canPayEnergy(playerId, kind, count)) throw new RuleError("个人能量不足");
     if (kind === "gem") { this.payEnergy(playerId, kind, count); return; }
     const energy = this.player(playerId).energy;
     const choices = Array.from({ length: count + 1 }, (_, gem) => ({ value: { gem, crystal: count - gem }, label: `${gem}宝石 ${count - gem}水晶` }))
       .filter(choice => choice.value.gem <= energy.gem && choice.value.crystal <= energy.crystal);
-    const selected = choices.length === 1 ? choices[0].value : yield { type: "energyChoice", playerId, title: "选择个人能量支付技能费用", choices, defaultValue: choices[0].value };
+    const selected = choices.length === 1 && !alwaysChoose ? choices[0].value : yield { type: "energyChoice", playerId, skillId, title: skillId === "charge" ? "充能：选择支付的能量" : "选择个人能量支付技能费用", choices, defaultValue: choices[0].value };
     if (!choices.some(choice => choice.value.gem === selected?.gem && choice.value.crystal === selected?.crystal)) throw new RuleError("无效的能量支付方式");
     energy.gem -= selected.gem; energy.crystal -= selected.crystal;
     this.recordPublicAction({type:'energy',playerId,gem:-selected.gem,crystal:-selected.crystal});
@@ -1103,7 +1103,7 @@ export class Game {
     yield* this.trigger(Timing.DAMAGE_BEFORE, context, nestedOptions);
     context.point = 4; context.healingLimit = Math.min(Math.max(0, context.amount), target.healing);
     yield* this.trigger(Timing.HEALING_BEFORE, context, nestedOptions);
-    const requested = useHealing ?? (context.healingLimit ? yield { type: "healing", playerId: targetId, context: { amount: context.amount, damageType, moraleLoss: options.moraleLoss !== false }, title: "使用治疗抵挡伤害", choices: Array.from({ length: context.healingLimit + 1 }, (_, value) => ({ value, label: `使用${value}治疗` })), defaultValue: 0 } : 0);
+    const requested = useHealing ?? (context.healingLimit ? yield { type: "healing", playerId: targetId, context: { amount: context.amount, damageType, sourceId: context.sourceId, skillId: context.skillId, moraleLoss: options.moraleLoss !== false }, title: "使用治疗抵挡伤害", choices: Array.from({ length: context.healingLimit + 1 }, (_, value) => ({ value, label: `使用${value}治疗` })), defaultValue: 0 } : 0);
     if (!Number.isInteger(requested) || requested < 0 || requested > context.healingLimit) throw new RuleError("无效的治疗使用数量");
     this.recordPublicAction({type:'healing',playerId:targetId,amount:requested,result:'prevent'});
     if (requested) this.log.push(`${this.actorLabel(targetId)}使用${requested}治疗抵挡${requested}点${context.damageType === "attack" ? "攻击" : "法术"}伤害`);

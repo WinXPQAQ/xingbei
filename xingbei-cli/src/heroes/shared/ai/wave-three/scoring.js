@@ -5,12 +5,13 @@ import { combinations } from "../../../../card-sets.js";
 import { probability, actionPlan } from "../base/planner.js";
 import { evaluateMagicAction } from "../wave-two/magic-value.js";
 import { heroIds, acceptsAction, cardCost } from "./cards.js";
-import { publicState, copy, evaluate, terminal, hurt, payEnergy, spend, stones } from "./model.js";
+import { publicState, copy, evaluate, terminal, hurt, payEnergy, spend, stones, hasActiveEffect } from "./model.js";
 import { aiFor } from "../base/registry.js";
 import * as model from "./model.js";
 import * as cards from "./cards.js";
 import { heroAi } from "./registry.js";
 import { previewActivationDamage } from "./activation-preview.js";
+import { applyBarrierForecast } from "../base/model.js";
 const printed = createDeck(), lightRate = printed.filter((c) => c.name === "holyLight").length / printed.length;
 export const foes = (state, id) => state.players.filter((p) => p.team !== state.players[id].team);
 export const scoreBranches = (branches) => branches.reduce((sum, b) => sum + b.probability * evaluate(b.state), 0);
@@ -44,11 +45,11 @@ export function attackOutcomes(game, id, state, card, targetId, { active = true,
   let rates = probability(next, id, selected, targetId);
   if (profile.uncounterable?.({ player: p, card, active, variant })) {
     const hit = (1 - lightRate) ** target.count;
-    const shield = target.effects.some((e) => e.name === "holyShield");
+    const shield = hasActiveEffect(target,"holyShield");
     rates = { hit: shield ? 0 : hit, shield: shield ? hit : 0, light: 1 - hit, counter: 0 };
   }
   if (rates.light > 0 || rates.counter > 0) next.uncertain = true;
-  const amount = 2 + (profile.attackDamage?.({ player: p, card, active }, scoringApi) ?? 0), branches = [];
+  const amount = 2 + (profile.attackDamage?.({ player: p, card, active }, scoringApi) ?? 0)+applyBarrierForecast(next,id,card,targetId,{active}), branches = [];
   const attackContext = (branch) => ({ game, state: branch, id, player: branch.players[id], card, targetId, active, variant });
   if (rates.hit) {
     const hit = copy(next);
@@ -56,7 +57,7 @@ export function attackOutcomes(game, id, state, card, targetId, { active = true,
     stones(hit, p.team, active ? "gem" : "crystal", 1);
     profile.beforeAttackHit?.(attackContext(hit), scoringApi);
     if (!terminal(hit)) {
-      const actual = hurt(hit, targetId, amount, "attack");
+      const actual = hurt(hit, targetId, amount, "attack", {sourceId:id});
       if (!terminal(hit)) heroAi(target.hero).afterAttackDamage?.({ state: hit, actorId: id, actual }, scoringApi);
     }
     if (!terminal(hit)) profile.afterAttackResolved?.({ ...attackContext(hit), hit: true }, scoringApi);
@@ -76,10 +77,10 @@ export function attackOutcomes(game, id, state, card, targetId, { active = true,
       let worst = null;
       for (const ally of miss.players.filter((t) => t.team === p.team && t.id !== id)) {
         const hit = copy(miss);
-        if (ally.effects.some((e) => e.name === "holyShield"))
+        if (hasActiveEffect(ally,"holyShield"))
           hit.players[ally.id].effects = ally.effects.filter((e) => e.name !== "holyShield");
         else {
-          hurt(hit, ally.id, aiFor(target).estimatedCounterDamage ?? 2, "attack");
+          hurt(hit, ally.id, aiFor(target).estimatedCounterDamage ?? 2, "attack", {sourceId:targetId});
           if (!terminal(hit)) stones(hit, target.team, "crystal", 1);
         }
         const chance = 0.75 ** ally.count, score = chance * evaluate(hit) + (1 - chance) * evaluate(miss);

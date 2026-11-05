@@ -56,7 +56,7 @@ export class MagicArcher extends Hero {
         filter:({game,player})=>game.canPayEnergy(player.id,'crystal'),
         *resolve({game,player,options}){
           if(!(yield* game.offerSkill(player.id,'charge','充能：消耗1水晶，弃到4张后摸0至4张')))return;
-          yield* game.paySkillEnergy(player.id,'crystal');hero.state.charged=true;
+          yield* game.paySkillEnergy(player.id,'crystal',1,{skillId:'charge',alwaysChoose:true});hero.state.charged=true;
           yield* discardHand(game,player.id,Math.max(0,player.hand.length-4),'chargeDiscard',options);
           const n=yield* choice(player.id,'chargeDraw','充能：摸牌数量',Array.from({length:5},(_,value)=>({value,label:`摸${value}张`})).filter(c=>player.hand.length>0||c.value>0),player.hand.length?0:1);
           yield* game.drawSteps(player.id,n,{...options,cause:{type:'directDraw',skillId:'charge'}});
