@@ -5,6 +5,7 @@ import { teacherIndex } from '../teacher.mjs';
 import { encodeEntities, ENTITY_SCHEMA } from './observation.mjs';
 import { selectEntityDecision } from './decisions.mjs';
 import { HERO_IDS, roster } from './rosters.mjs';
+import { AI_POLICY_VERSION } from '../../src/ai.js';
 const directory=process.argv[2], count=Number(process.argv[3]??2400);
 if (!directory || count<1) throw new Error('collect-all.mjs DIRECTORY [GAMES=2400]');
 fs.mkdirSync(path.join(directory,'games'),{recursive:true});
@@ -16,12 +17,12 @@ for(let i=0;i<count;i++) {
   const file=path.join(directory,'games',`${i}.json`), heroIds=roster(i);
   if (fs.existsSync(file)) {
     const previous = JSON.parse(fs.readFileSync(file, 'utf8'));
-    if (previous.schema !== ENTITY_SCHEMA || previous.result.revision !== revision || JSON.stringify(previous.heroIds) !== JSON.stringify(heroIds))
+    if (previous.schema !== ENTITY_SCHEMA || previous.teacher !== AI_POLICY_VERSION || previous.result.revision !== revision || JSON.stringify(previous.heroIds) !== JSON.stringify(heroIds))
       throw new Error(`Incompatible resumed corpus: ${file}`);
   } else {
     const retained=Array(6).fill(null), seen=Array(6).fill(0);
     const result=await driveGame({seed:731103000+i,heroIds,start:i%6,capture:true,revision,decisionMode:'hierarchical-v1'},input=>{
-      const choice=teacherIndex(input,'v1.9.0-preview.1');
+      const choice=teacherIndex(input,AI_POLICY_VERSION);
       return selectEntityDecision(input,(step,answer)=>{
         const observation=encodeEntities(step), seat=step.playerId;
         // Deterministic bounded sampling, independent of the engine's RNG.
@@ -31,7 +32,7 @@ for(let i=0;i<count;i++) {
       },{teacher:choice});
     });
     if (!result.terminated) throw new Error(`Teacher game truncated: ${result.seed}`);
-    fs.writeFileSync(file+'.tmp',JSON.stringify({schema:ENTITY_SCHEMA,teacher:'v1.9.0-preview.1',heroIds,result,decisions:retained.filter(Boolean)}));
+    fs.writeFileSync(file+'.tmp',JSON.stringify({schema:ENTITY_SCHEMA,teacher:AI_POLICY_VERSION,heroIds,result,decisions:retained.filter(Boolean)}));
     fs.renameSync(file+'.tmp',file);
   }
   for (const id of heroIds) coverage[id]++;

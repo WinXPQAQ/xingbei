@@ -5,14 +5,14 @@ from pathlib import Path
 import torch
 from model import EntityPolicy
 from pool import run_games, ROSTERS
-from league import configuration
+from league import configuration, catalog
 from evaluate import summarize
 
 async def evaluate(current,best,revision,pairs=144):
     model,vocab=EntityPolicy.restore(torch.load(current,map_location='cpu',weights_only=False))
     best_model,best_vocab=EntityPolicy.restore(torch.load(best,map_location='cpu',weights_only=False))
     reports={}
-    for opponent,count in [('v1.9.0-preview.1',pairs),('model:best',pairs),('v1.5',36 if pairs==144 else 2)]:
+    for opponent,count in [(catalog()['ruleTeacher'],pairs),('model:best',pairs),('v1.5',36 if pairs==144 else 2)]:
         configs=[]
         for i in range(count):
             config=configuration(i,931103000 if opponent!='v1.5' else 941103000,revision)
@@ -26,7 +26,7 @@ async def evaluate(current,best,revision,pairs=144):
                 if (seat in [0,3,4]) != (side=='red'):continue
                 row=by_hero.setdefault(hero,dict(games=0,wins=0));row['games']+=1;row['wins']+=int(game['winner']==side)
         reports[opponent]={**summarize(result['results']),'by_hero':by_hero,**result}
-    return dict(checkpoint=current,best_opponent=best,revision=revision,development=True,opponents=reports)
+    return dict(rule_opponent=catalog()['ruleTeacher'],checkpoint=current,best_opponent=best,revision=revision,development=True,opponents=reports)
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('checkpoint');parser.add_argument('best');parser.add_argument('output')
     parser.add_argument('--revision',required=True);parser.add_argument('--pairs',type=int,default=144)

@@ -1,4 +1,4 @@
-import { aiFor, heroPolicies, healingCap } from './registry.js';
+import { aiFor, heroPolicies, healingCap, publicHandValue } from './registry.js';
 import { sealEffectValue, exposeSeals, isBinding, sealsCard } from '../../../sealer/ai.js';
 import {createDeck} from '../../../../cards.js';
 const publicDeck=createDeck(),magicRate=publicDeck.filter(c=>c.name==='magicBullet').length/publicDeck.length;
@@ -18,13 +18,14 @@ const copyCard=c=>c?{...c,elements:[...c.elements],uniqueSkills:[...c.uniqueSkil
 // over those few fields avoids structuredClone's transfer machinery per leaf.
 const copyTurn=x=>Array.isArray(x)?x.map(copyTurn):x&&typeof x==='object'?Object.fromEntries(Object.entries(x).map(([k,v])=>[k,copyTurn(v)])):x;
 export const clone=s=>({...s,turn:copyTurn(s.turn),
- players:s.players.map(p=>({...p,energy:{...p.energy},hand:p.hand.map(copyCard),known:p.known.map(copyCard),effects:p.effects.map(e=>({...e,card:copyCard(e.card)}))})),
+ players:s.players.map(p=>({...p,heroState:{...p.heroState},energy:{...p.energy},hand:p.hand.map(copyCard),known:p.known.map(copyCard),effects:p.effects.map(e=>({...e,card:copyCard(e.card)}))})),
  teams:Object.fromEntries(Object.entries(s.teams).map(([id,t])=>[id,{...t}]))});
 export const traits = (c, id) => c?.traits?.[id]?.elements ?? c?.elements ?? [];
 export const cardData = c => ({id:c.id,name:c.name,type:c.type,elements:[...c.elements],uniqueSkills:[...c.uniqueSkills],traits:immutableTraits(c)});
 export function stateOf(g, id, { economy = true, ownership = true, energy = true, healing = true } = {}) {
  return { observer: id, economy, ownership, energy, healing, current: g.current, turn: structuredClone(g.turn.state),
   players: g.players.map(p => ({ id:p.id,team:p.team,hero:p.hero.skills.length?p.hero.id:'none',limit:p.handLimit,
+   heroState:{oathEmpowered:p.hero.state?.oathEmpowered??null},
    skillIds:Object.freeze(p.getSkills().map(({skill})=>typeof skill==='string'?skill:skill.id)),
    count:p.hand.length,hand:p.id===id?p.hand.map(c=>({id:c.id,name:c.name,type:c.type,elements:[...c.elements],uniqueSkills:[...c.uniqueSkills],traits:immutableTraits(c)})):[],
    known:[],healing:p.healing,healingLimit:g.getHealingLimit(p.id),energy:{...p.energy},
@@ -191,7 +192,7 @@ export function components(s) {
  for(const p of s.players) {
   const sign=p.team===team?1:-1;
   if(s.economy&&p.id!==s.observer)out.otherTurnRisk+=sign*nextTurnRisk(s,p.id)*.5;
-  out[p.id===s.observer?'ownHand':'otherHands']+=sign*handValue(s,p);
+  out[p.id===s.observer?'ownHand':'otherHands']+=sign*(handValue(s,p)+publicHandValue(p));
   out.healing+=sign*p.healing*weights.healing;out.energy+=sign*energyPlan(s,p);
   out.effects+=sign*p.effects.reduce((sum,e)=>sum+effectValue(s,p,e),0);
   // A gifted card is known to its donor. Use public role/status/history only;

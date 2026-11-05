@@ -39,7 +39,7 @@ export function attackOutcomes(game, id, state, card, targetId, { active = true,
   }
   if (terminal(next)) return [{ probability: 1, state: next }];
   const profile = heroAi(p.hero);
-  profile.prepareAttack?.({ state: next, id, player: p, card, active, variant }, scoringApi);
+  profile.prepareAttack?.({ state: next, id, player: p, card, targetId, active, variant }, scoringApi);
   const target = next.players[targetId];
   let rates = probability(next, id, selected, targetId);
   if (profile.uncounterable?.({ player: p, card, active, variant })) {
@@ -150,7 +150,7 @@ function rawActionScore(game, id, state, action) {
   if (card) score -= cardCost(game, id, [card]);
   if (action.type === "refine") {
     const p = state.players[id], { gem, crystal } = action.stones;
-    score += heroAi(p.hero).refineBonus?.({ player: p, gem, crystal }) ?? 0;
+    score += heroAi(p.hero).refineBonus?.({ game, state, id, player: p, gem, crystal }) ?? 0;
     const team = state.teams[p.team];
     if (team.cups === 4 && team.gem + team.crystal >= 3 && team.gem + team.crystal - gem - crystal < 3) score -= 40;
   }
@@ -161,7 +161,8 @@ export function rankAiActions(game, id) {
   return legalActions(game, id).filter((action) => acceptsAction(game, id, action)).map((action) => {
     let best = { score: -Infinity, activated: null };
     for (const prepared of preparationOptions(game, id, state, action)) {
-      const score = scorePreparation(prepared, before, next => rawActionScore(game, id, next, action));
+      const score = scorePreparation(prepared, before, next => rawActionScore(game, id, next, action)
+        + (terminal(next) ? 0 : heroAi(next.players[id].hero).actionBonus?.({game,state:next,id,player:next.players[id],action},scoringApi) ?? 0));
       if (score > best.score) best = { score, activated: prepared.activated, preview: prepared.preview };
     }
     return { action, score: best.score, reason: "hero-wave-three", explanation: { hero: game.player(id).hero.id, activation: best.activated, ...(best.preview ? { activationPreview: best.preview } : {}) } };

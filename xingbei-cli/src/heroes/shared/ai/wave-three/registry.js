@@ -10,7 +10,6 @@ import { primalArcherAi } from "../../../primal-archer/ai.js";
 import { trickHolyArcherAi } from "../../../trick-holy-archer/ai.js";
 import { enviousGirlAi } from "../../../envious-girl/ai.js";
 import { rangerAi } from "../../../ranger/ai.js";
-import { magicArcherEXAi } from "../../../magic-archer-ex/ai.js";
 import { apprenticeProducerAi } from "../../../apprentice-producer/ai.js";
 import { delinquentGirlAi } from "../../../delinquent-girl/ai.js";
 import { curseTalismanAi } from "../../../curse-talisman/ai.js";
@@ -59,7 +58,7 @@ import { sageAi } from "../../../sage/ai.js";
 import { prayerAi } from "../../../prayer/ai.js";
 import { heroicPuppetAi } from "../../../heroic-puppet/ai.js";
 
-const profiles = [mischiefGirlAi,holyAdjudicatorAi,orchestraLeaderAi,swordChildAi,slothGirlAi,spiritTideAi,gluttonousGirlAi,trickAdventurerAi,primalArcherAi,trickHolyArcherAi,enviousGirlAi,rangerAi,magicArcherEXAi,apprenticeProducerAi,delinquentGirlAi,curseTalismanAi,greedyGirlAi,holidayMageAi,godEaterAi,lawgiverAi,cardinalAi,chroniclerAi,missionaryAi,hereticAi,nobleLadyAi,headMaidAi,barrierMasterAi,mysticAi,defilerAi,swordWitchAi,butterflyDancerAi,battleMageAi,starfallWitchAi,inquisitorAi,witchHunterAi,templarAi,elfArcherAi,yinYangMasterAi,soulWarlockAi,bloodWitchAi,moonGoddessAi,holyArcherAi,talismanMasterAi,swordEmperorAi,magicArcherAi,azureFlameWitchAi,bloodSwordSpiritAi,beastWarriorAi,fighterAi,magicLancerAi,braveAi,adventurerAi,redLotusKnightAi,bardAi,assassinAi, magicSwordsmanAi, adjudicatorAi, sageAi, prayerAi, heroicPuppetAi];
+const profiles = [mischiefGirlAi,holyAdjudicatorAi,orchestraLeaderAi,swordChildAi,slothGirlAi,spiritTideAi,gluttonousGirlAi,trickAdventurerAi,primalArcherAi,trickHolyArcherAi,enviousGirlAi,rangerAi,apprenticeProducerAi,delinquentGirlAi,curseTalismanAi,greedyGirlAi,holidayMageAi,godEaterAi,lawgiverAi,cardinalAi,chroniclerAi,missionaryAi,hereticAi,nobleLadyAi,headMaidAi,barrierMasterAi,mysticAi,defilerAi,swordWitchAi,butterflyDancerAi,battleMageAi,starfallWitchAi,inquisitorAi,witchHunterAi,templarAi,elfArcherAi,yinYangMasterAi,soulWarlockAi,bloodWitchAi,moonGoddessAi,holyArcherAi,talismanMasterAi,swordEmperorAi,magicArcherAi,azureFlameWitchAi,bloodSwordSpiritAi,beastWarriorAi,fighterAi,magicLancerAi,braveAi,adventurerAi,redLotusKnightAi,bardAi,assassinAi, magicSwordsmanAi, adjudicatorAi, sageAi, prayerAi, heroicPuppetAi];
 const byHero = new Map(profiles.map((profile) => [profile.id, profile]));
 const decisions = new Map(profiles.flatMap((profile) => Object.entries(profile.decisions ?? {})));
 const empty = Object.freeze({});

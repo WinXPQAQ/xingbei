@@ -1,51 +1,86 @@
-import { elementsOf } from "../shared/ai/base/evaluation.js";
+// A bounded card/resource sequence, never a list of preassigned opponents.
+// Each real attack is scored against the then-current legal targets again.
+const traits = (card, id) => card.traits?.[id] ?? card;
+const has = (card, skill) => card?.uniqueSkills?.includes(skill) ?? false;
+const wind = (card, id) => traits(card, id).elements?.includes('wind');
+const nextSlot = queue => {
+  const restricted = queue.findLastIndex(action => action.element || action.fate);
+  return restricted < 0 ? 0 : restricted;
+};
 
-// Search own cards and the real extra-action queue, stopping at the third attack.
-// No Game mutation, random sampling or prediction of opponents' private cards.
-export function planWindAttacks(game, playerId, { offer = null, card = null, energy = null } = {}) {
-  const player = game.player(playerId), turn = game.turn.state;
-  const skills = new Set(player.getSkills().map(({ skill }) => typeof skill === "string" ? skill : skill.id));
-  const cards = player.hand.filter(card => card.type === "attack");
-  const wind = card => elementsOf(game, playerId, card).includes("wind");
-  const startCount = turn?.attackCount ?? 0;
-  const pending = (turn?.pendingActions ?? []).map(action => action.element ?? null);
+export function planWindSequence(player, turn = null, {
+  offer = null, card = null, energy = null, firstCardId = null, teamStones = 0,
+} = {}) {
+  const skills = new Set(player.skillIds ?? []), id = player.id;
+  const cards = player.hand.filter(card => card.type === 'attack');
+  const startCount = turn?.attackCount ?? 0, used = turn?.usedSkills ?? {};
+  const pending = (turn?.pendingActions ?? []).map(action => ({ ...action }));
   const availableEnergy = energy ?? player.energy.gem + player.energy.crystal;
-  const used = turn?.usedSkills ?? {};
-  let best = { count: startCount, score: -Infinity, steps: [], offers: [] };
-  function finish(count, cost, order, steps, offers) {
-    const score = count * 1000 - cost * 50 + order;
-    if (score > best.score) best = { count, score, steps, offers };
+  const child = skills.has('windSword');
+  const shadowSkill = child ? 'swordAfterimage' : 'swordShadow';
+  const shadowUsed = child ? player.heroState?.residualUsed : used.swordShadow;
+  let best = { count:startCount, score:-Infinity, steps:[], offers:[], energyCost:0, stoneCost:0, preference:0 };
+  function finish(count, energyCost, stoneCost, preference, steps, offers) {
+    const score = count * 1000 - energyCost * 50 - stoneCost * 55 + preference;
+    if (score > best.score) best = { count, score, steps, offers, energyCost, stoneCost, preference };
   }
-  function ready(hand, count, queue, windUsed, shadowUsed, energyLeft, cost, order, steps, offers, initial = false) {
-    finish(count, cost, order, steps, offers);
+  function ready(hand, count, queue, furyUsed, extraUsed, energyLeft, stonesLeft, energyCost, stoneCost, preference, steps, offers, initial = false) {
+    finish(count, energyCost, stoneCost, preference, steps, offers);
     if (count >= 3 || (!initial && !queue.length)) return;
-    const index = queue.findLastIndex(element => element != null);
-    const slot = index >= 0 ? index : 0;
-    const restriction = initial ? null : queue[slot];
+    const slot = nextSlot(queue), restriction = initial ? null : queue[slot];
+    if (restriction && restriction.type !== 'attack') return;
     for (const next of hand) {
-      if (restriction && !elementsOf(game, playerId, next).includes(restriction)) continue;
-      const rest = hand.filter(card => card !== next), restQueue = [...queue];
-      if (!initial) restQueue.splice(slot, 1);
-      const sequence = [...steps, next.id];
-      // Keep wind until it can consume Wind Fury; prefer a wind Gale Art as attack #2.
-      const preference = order + (next.hasUniqueSkill("galeArt") ? (wind(next) && count === 1 ? 15 : 4) : 0) - (count === 0 && wind(next) ? 20 : 0);
-      after(rest, count + 1, restQueue, windUsed, shadowUsed, energyLeft, cost, preference, sequence, offers, next, ["galeArt", "windFury", "swordShadow"], false);
+      if (!steps.length && firstCardId != null && next.id !== firstCardId) continue;
+      const current = traits(next, id);
+      if ((restriction?.element && !current.elements.includes(restriction.element)) ||
+          (restriction?.fate && !current.fates.includes(restriction.fate))) continue;
+      const rest = hand.filter(card => card !== next), nextQueue = [...queue];
+      if (!initial) nextQueue.splice(slot, 1);
+      const order = preference + (has(next,'galeArt') ? (wind(next,id) && count === 1 ? 15 : 4) : 0)
+        - (count === 0 && wind(next,id) ? 12 : 0);
+      after(rest, count + 1, nextQueue, furyUsed, extraUsed, energyLeft, stonesLeft, energyCost, stoneCost, order,
+        [...steps,next.id], offers, next, null, false);
     }
   }
-  function after(hand, count, queue, windUsed, shadowUsed, energyLeft, cost, order, steps, offers, played, allowed, root) {
-    const candidates = [];
-    if (skills.has("galeArt") && allowed.includes("galeArt") && played?.hasUniqueSkill("galeArt")) candidates.push("galeArt");
-    if (skills.has("windFury") && allowed.includes("windFury") && !windUsed && hand.some(wind)) candidates.push("windFury");
-    if (skills.has("swordShadow") && allowed.includes("swordShadow") && !shadowUsed && energyLeft > 0) candidates.push("swordShadow");
-    for (let mask = 0; mask < (1 << candidates.length); mask++) {
-      const selected = candidates.filter((_, index) => mask & (1 << index));
-      const nextQueue = [...queue, ...selected.map(skill => skill === "windFury" ? "wind" : null)];
-      ready(hand, count, nextQueue, windUsed || selected.includes("windFury"), shadowUsed || selected.includes("swordShadow"), energyLeft - Number(selected.includes("swordShadow")), cost + Number(selected.includes("swordShadow")) + Number(selected.includes("galeArt")) * 0.1, order, steps, root ? selected : offers);
+  function after(hand, count, queue, furyUsed, extraUsed, energyLeft, stonesLeft, energyCost, stoneCost, preference, steps, offers, played, offered, root) {
+    const choices = [];
+    const allowed = skill => !offered || skill === offered ||
+      (offered === 'galeArt' && ['windFury','swordShadow'].includes(skill)) ||
+      (offered === 'windFury' && skill === 'swordShadow') ||
+      (offered === 'windSword' && skill === 'swordAfterimage');
+    if (skills.has('galeArt') && allowed('galeArt') && has(played,'galeArt'))
+      choices.push({ skill:'galeArt', action:{type:'attack',sourceSkillId:'galeArt'} });
+    if (child && allowed('windSword') && has(played,'galeArt') && traits(played,id).fates?.includes('J') && stonesLeft > 0)
+      choices.push({ skill:'windSword', stone:1, action:{type:'attack',sourceSkillId:'windSword'} });
+    if (skills.has('windFury') && allowed('windFury') && !furyUsed && hand.some(card => wind(card,id)))
+      choices.push({ skill:'windFury', action:{type:'attack',element:'wind',sourceSkillId:'windFury'} });
+    if (skills.has(shadowSkill) && allowed(shadowSkill) && !extraUsed && energyLeft > 0)
+      choices.push({ skill:shadowSkill, energy:1, action:{type:'attack',sourceSkillId:shadowSkill} });
+    for (let mask=0; mask < 2 ** choices.length; mask++) {
+      const selected = choices.filter((_,index) => mask & (1 << index));
+      const e = selected.reduce((sum,c) => sum + (c.energy ?? 0),0), t = selected.reduce((sum,c) => sum + (c.stone ?? 0),0);
+      ready(hand,count,[...queue,...selected.map(c=>c.action)],furyUsed || selected.some(c=>c.skill==='windFury'),
+        extraUsed || selected.some(c=>c.skill===shadowSkill),energyLeft-e,stonesLeft-t,energyCost+e,stoneCost+t,preference,
+        steps,root ? selected.map(c=>c.skill) : offers);
     }
   }
-  if (offer) {
-    const allowed = offer === "galeArt" ? ["galeArt", "windFury", "swordShadow"] : offer === "windFury" ? ["windFury", "swordShadow"] : ["swordShadow"];
-    after(cards, startCount, pending, !!used.windFury, !!used.swordShadow, availableEnergy, 0, 0, [], [], card, allowed, true);
-  } else ready(cards, startCount, pending, !!used.windFury, !!used.swordShadow, availableEnergy, 0, 0, [], [], !turn?.completed);
+  if (offer) after(cards,startCount,pending,!!used.windFury,!!shadowUsed,availableEnergy,teamStones,0,0,0,[],[],card,offer,true);
+  else ready(cards,startCount,pending,!!used.windFury,!!shadowUsed,availableEnergy,teamStones,0,0,0,[],[],!turn?.completed);
   return best;
+}
+
+export function planWindState(state, playerId, options = {}) {
+  const player = state.players[playerId], team = state.teams[player.team];
+  return planWindSequence(player,state.turn?.playerId === playerId ? state.turn : null,
+    { teamStones:team.gem + team.crystal,...options });
+}
+
+export function planWindAttacks(game, playerId, options = {}) {
+  const player = game.player(playerId);
+  const own = { id:playerId, energy:player.energy, heroState:player.hero.state,
+    skillIds:player.getSkills().map(({skill}) => typeof skill === 'string' ? skill : skill.id),
+    hand:player.hand.map(card => ({id:card.id,type:card.type,uniqueSkills:card.uniqueSkills,...card.getTraits({game,playerId})})) };
+  return planWindSequence(own,game.turn.state?.playerId === playerId ? game.turn.state : null,
+    {teamStones:game.stoneCounts(player.team).total,...options,
+      card:options.card ? {...options.card,...options.card.getTraits?.({game,playerId})} : null});
 }

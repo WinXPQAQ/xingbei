@@ -8,10 +8,10 @@ import { driveGame } from '../driver.mjs';
 import { teacherIndex } from '../teacher.mjs';
 import { boundaryState, digest } from './replay.mjs';
 
-test('72 heroes balanced; hidden hands and deck do not change observations',()=>{
+test('training heroes balanced; hidden hands and deck do not change observations',()=>{
  const counts=new Map(HERO_IDS.map(h=>[h,Array(6).fill(0)]));
  for(let i=0;i<2400;i++){const ids=roster(i);assert.equal(new Set(ids).size,6);ids.forEach((h,s)=>counts.get(h)[s]++);}
- for(const c of counts.values()){assert.equal(c.reduce((a,b)=>a+b),200);assert.ok(Math.max(...c)-Math.min(...c)<=1);}
+ for(const c of counts.values()){assert.ok(c.reduce((a,b)=>a+b)>=Math.floor(2400*6/HERO_IDS.length));assert.ok(Math.max(...c)-Math.min(...c)<=1);}
  for(let i=0;i<12;i++){
   const game=new Game({seed:991103000+i,heroIds:roster(i)}).setup();
   for(let seat=0;seat<6;seat++){

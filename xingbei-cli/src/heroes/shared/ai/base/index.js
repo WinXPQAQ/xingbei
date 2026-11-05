@@ -27,7 +27,7 @@ export function createEconomyPolicy({sequence=true,economy=true,ownership=true,e
  const version='experimental/plans-4'+(disabled.length?'-no-'+disabled.join('-'):'');
  const state=(g,id)=>stateOf(g,id,{economy,ownership,energy,healing});
  const raw={planWindAttacks,
-  rankAiActions(g,id) {const s=state(g,id),base=reuseBase?components(s):undefined,baseTotal=base?Object.values(base).reduce((a,b)=>a+b,0):value(s),contracts=new Map();return enumerate(g,id).map(action=>{const plan=actionPlan(s,id,action,{sequence,baseTotal,contracts});return {action,score:plan.score,reason:'expected-state-difference',explanation:explain(s,plan,base)};}).sort((a,b)=>b.score-a.score);},
+  rankAiActions(g,id) {const s=state(g,id),base=reuseBase?components(s):undefined,baseTotal=base?Object.values(base).reduce((a,b)=>a+b,0):value(s),contracts=new Map();return enumerate(g,id).map(action=>{const plan=actionPlan(s,id,action,{sequence,baseTotal,contracts});const preference=aiFor(s.players[id]).actionBonus?.({game:g,state:s,id,player:s.players[id],action,plan})??0;return {action,score:plan.score+preference,reason:'expected-state-difference',explanation:{...explain(s,plan,base),preference}};}).sort((a,b)=>b.score-a.score);},
   chooseAiDiscard(g,id,count,valid=null) {
    const s=state(g,id),hand=g.player(id).hand,allowed=valid??hand.map((_,i)=>i);let best=null;
    for(const indexes of combinations(allowed,count)){const next=clone(s);remove(next,id,indexes.map(i=>s.players[id].hand[i]));const score=value(next);if(!best||score>best.score)best={indexes,score};}

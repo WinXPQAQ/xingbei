@@ -65,6 +65,7 @@ export function isolatePolicy(raw, {history = true, activation = false} = {}) {
     if (request.counterTargets) out.counterTargets = request.counterTargets.map(p => v.player(p.id));
     if (request.valid) out.valid = request.valid.map(e => typeof e === 'number' ? e : {index: e.index, card: v.cards.get(e.card.id), ...(e.asAttack ? {asAttack:true} : {})});
     if (request.context) out.context = { ...copy(pick(request.context,["effect","element","targetIds","triggered","stage","sourceId","actual","count","drawCount","skillId","extraSpell","purpose","sameElement","damage","moraleLoss","battleRunes","magicRunes","transferTargetId","attackTraits","team"])), targetId: request.context.targetId, amount: request.context.amount, damageType: request.context.damageType, isCounter: request.context.isCounter, card: v.cards.get(request.context.card?.id) };
+    if (request.context?.selectedCardIds) out.context.selectedCardIds=request.context.selectedCardIds.filter(id=>v.cards.has(id));
     if (request.attack) {
       const traits = copy(request.attackTraits ?? request.attack.getTraits());
       out.attack = v.cards.get(request.attack.id) ?? { id: null, name: request.attack.name, type: "attack", elements: traits.elements, fates: traits.fates, uniqueSkills: [], element: traits.elements[0], getTraits: () => copy(traits), hasUniqueSkill: () => false };
@@ -79,7 +80,7 @@ export function isolatePolicy(raw, {history = true, activation = false} = {}) {
       if (!g) return r.defaultValue ?? null;
       const id = r.playerId ?? r.player?.id, v = view(g,id,false,r.revealedCards ?? []);
       if (r.type === 'overflow') return g.resolveOverflow(id,raw.chooseAiDiscard(v,id,v.player(id).hand.length-v.player(id).handLimit));
-      return raw.chooseAiRuleDecision(requestView(r,v),v);
+      return raw.chooseAiRuleDecision(requestView({...r,context:{...g.activeTrigger?.context,...r.context}},v),v);
     },
     chooseAiDiscard: (g,id,count,valid) => raw.chooseAiDiscard(view(g,id),id,count,valid),
     cardScore(g,id,card,retained=[]) { const v=view(g,id); return raw.cardScore(v,id,v.cards.get(card.id),retained.map(c=>v.cards.get(c.id))); },

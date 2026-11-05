@@ -47,7 +47,7 @@ test("暗杀者：潜行在启动后降手限和加伤，只禁止应战/主动�
   g.assertCardLocations();
 });
 
-test("暗杀者：水影先明弃水再可弃法术，特殊摸牌不触发，反噬仅实际攻击伤害后摸牌", () => {
+test("暗杀者：水影可单独弃法术但启动摸牌尚未潜行，特殊摸牌不触发，反噬仅实际攻击伤害后摸牌", () => {
   const g = make("assassin");
   const water = take(g, 0, (c) => c.element === "water");
   const spell = take(g, 0, (c) => c.type === "spell" && c.element !== "water");
@@ -75,6 +75,34 @@ test("暗杀者：水影先明弃水再可弃法术，特殊摸牌不触发，�
   assert.equal(g.player(1).hand.length, before + 1);
   assert.ok(g.timeline.some((e) => e.timing === Timing.DRAW_BEFORE));
   g.assertCardLocations();
+  for (const withWater of [false, true]) {
+    const h = make("assassin");
+    const spell = take(h, 0, c => c.type === "spell" && c.element !== "water");
+    const water = withWater ? take(h, 0, c => c.element === "water") : null;
+    h.player(0).hero.state.form = "潜行";
+    run(h.drawSteps(0, 1), r => {
+      if (r.skillId === "waterShadow" && r.type === "cardChoice") {
+        assert.equal(r.context.extraSpell, true);
+        return [h.player(0).hand.indexOf(spell)];
+      }
+      return choice(r);
+    });
+    assert.equal(spell.discardVisibility, "public", "无水或选择不弃水都可单独弃法术");
+    if (water) assert.equal(water.location.zone, "hand");
+    h.assertCardLocations();
+  }
+  const h = make("assassin");
+  take(h, 0, c => c.type === "spell" && c.element !== "water");
+  h.player(0).energy.gem = 1;
+  run(h.trigger(Timing.ACTIVATION, { playerId: 0 }), r => {
+    if (r.skillId === "stealth") return r.type === "skillChoice" ? true : 1;
+    assert.notEqual(r.skillId, "waterShadow", "启动摸1发生于潜行前，尚不能弃额外法术");
+    return choice(r);
+  });
+  assert.equal(h.player(0).hand.length, 2);
+  assert.equal(h.player(0).hero.state.form, "潜行");
+  assert.equal(h.player(0).handLimit, 5);
+  h.assertCardLocations();
 });
 
 test("魔剑士：暗影启动、火系额外攻击和黄泉命中补手，禁法术只在自己的行动阶段", () => {

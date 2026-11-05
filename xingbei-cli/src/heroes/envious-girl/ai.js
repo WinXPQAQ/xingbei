@@ -5,6 +5,7 @@ import {
 } from "../shared/ai/decisions.js";
 export const enviousGirlAi = {
   id: "enviousGirl",
+  energyPreference: "crystal",
   cardBonus: ({ card, elements }) =>
     card.type === "attack"
       ? 10

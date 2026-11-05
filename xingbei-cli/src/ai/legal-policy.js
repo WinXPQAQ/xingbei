@@ -10,8 +10,10 @@ export function legalPolicy(policy) {
     rankAiActions(game, id) {
       // A current policy may exclude useless candidates even during refresh or
       // fallback. Historical policies omit this hook and keep their full set.
-      const legal = legalActions(game,id)
-        .filter(action => policy.acceptsAction?.(game,id,action) ?? true);
+      const all = legalActions(game,id);
+      const preferred = all.filter(action => policy.acceptsAction?.(game,id,action) ?? true);
+      // Preferences cannot manufacture an inability when a legal action exists.
+      const legal = preferred.length ? preferred : all;
       const keys = new Set(legal.map(key));
       // Frozen refresh evaluators treated exchange as a completed action. Never
       // execute that obsolete model: exchange now, then ask the policy again.

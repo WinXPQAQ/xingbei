@@ -16,14 +16,15 @@ def training_configs(*, index, count, completed, revision, positions, excluded, 
     rng=random.Random(810103000+index)
     pools={k:[] for k in ['ending','middle']}
     for position in positions:
-        if position['sourceSeed'] not in excluded and position['revision']==revision:
+        if (position['sourceSeed'] not in excluded and position['revision']==revision
+            and not any(hero in catalog()['excludedTrainingHeroes'] for hero in position['config'].get('heroIds', []))):
             pools[position['category']].append(position)
     for pool in pools.values(): rng.shuffle(pool)
     used=set(); configs=[]; counts=dict(ending=0,middle=0,full=0)
     kinds=['ending']*int(count*weights[0])+['middle']*int(count*weights[1])
     kinds+=['full']*(count-len(kinds));rng.shuffle(kinds)
     # Exactly half self, quarter rule, quarter history per round, spread over sides.
-    opponents=['self']*(count//2)+['v1.9.0-preview.1']*(count//4)+[historical or 'self']*(count-count//2-count//4)
+    opponents=['self']*(count//2)+[catalog()['ruleTeacher']]*(count//4)+[historical or 'self']*(count-count//2-count//4)
     rng.shuffle(opponents)
     for i,kind in enumerate(kinds):
         config=configuration(index+i,831103000,revision)

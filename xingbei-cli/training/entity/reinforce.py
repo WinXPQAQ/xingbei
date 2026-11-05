@@ -122,7 +122,7 @@ def main():
         rows = terminal_samples(rollout['results'])
         metrics = update(model, vocabulary, optimizer, rows, batch_size=config['batch'], epochs=config['epochs'], device=args.device)
         completed += sum(r['terminated'] for r in rollout['results'])
-        report = dict(hero_coverage=hero_coverage, curriculum=curriculum, completed_total=completed, round=round_index+1, opponent='league-mix' if args.league else opponent, opponent_counts={key:sum(c.get('opponent')==key for c in configs) for key in ['self','v1.9.0-preview.1','model:history']}, decisions=len(rows),
+        report = dict(hero_coverage=hero_coverage, curriculum=curriculum, completed_total=completed, round=round_index+1, opponent='league-mix' if args.league else opponent, opponent_counts={key:sum(c.get('opponent',opponent)==key for c in configs) for key in sorted({c.get('opponent',opponent) for c in configs})}, decisions=len(rows),
                       completed=sum(r['terminated'] for r in rollout['results']),
                       truncated=sum(r['truncated'] for r in rollout['results']), rollout=rollout['stats'], update=metrics,
                       games=[{k:v for k,v in result.items() if k != 'trajectory'} for result in rollout['results']])

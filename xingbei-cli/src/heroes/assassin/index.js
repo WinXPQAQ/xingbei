@@ -25,24 +25,29 @@ export class Assassin extends Hero {
         name: "水影",
         ...this.onOwnTurn([Timing.DRAW_BEFORE]),
         filter: ({ game, player, context }) => !context.specialAction && context.count > 0 &&
-          player.hand.some((card) => hasElement(game, player, card, "water")),
+          player.hand.some((card) => hasElement(game, player, card, "water") ||
+            (player.hero.state.form && card.type === "spell")),
         *resolve({ game, player, context, options }) {
           const count = player.hand.filter((card) => hasElement(game, player, card, "water")).length;
-          const selected = yield* choice(player.id, "waterShadow", "水影：摸牌前可明弃水系牌",
-            Array.from({ length: count + 1 }, (_, value) => ({ value, label: value ? `明弃${value}张水系牌` : "不发动" })), 0,
-            { drawCount: context.count, cause: context.cause });
-          if (!selected) return;
-          const cards = yield* game.chooseHandCards(player.id, selected,
-            (card) => hasElement(game, player, card, "water"),
-            { title: "水影：选择明弃的水系牌", skillId: "waterShadow", context: { drawCount: context.count } });
-          game.logSkill(player.id, "waterShadow", `摸牌前明弃${cards.length}张水系牌`);
-          yield* discardCost(game, player, cards, "waterShadow", options);
+          const selected = count ? yield* choice(player.id, "waterShadow", "水影：摸牌前可明弃水系牌",
+            Array.from({ length: count + 1 }, (_, value) => ({ value, label: value ? `明弃${value}张水系牌` : "不弃水系牌" })), 0,
+            { drawCount: context.count, cause: context.cause }) : 0;
+          if (selected) {
+            const cards = yield* game.chooseHandCards(player.id, selected,
+              (card) => hasElement(game, player, card, "water"),
+              { title: "水影：选择明弃的水系牌", skillId: "waterShadow", context: { drawCount: context.count } });
+            game.logSkill(player.id, "waterShadow", `摸牌前明弃${cards.length}张水系牌`);
+            yield* discardCost(game, player, cards, "waterShadow", options);
+          }
           if (!player.hero.state.form || !player.hand.some((card) => card.type === "spell")) return;
           const extra = yield* game.chooseHandCards(player.id, 1, (card) => card.type === "spell", {
             title: "水影：潜行中可额外明弃1张法术牌", skillId: "waterShadow", optional: true,
             context: { drawCount: context.count, extraSpell: true },
           });
-          if (extra) yield* discardCost(game, player, extra, "waterShadow", options);
+          if (extra) {
+            game.logSkill(player.id, "waterShadow", "潜行中额外明弃1张法术牌");
+            yield* discardCost(game, player, extra, "waterShadow", options);
+          }
         },
       },
       {

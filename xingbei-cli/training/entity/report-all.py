@@ -31,7 +31,7 @@ def report(directory):
     if state.get('rollout'):
         r=state['rollout'];text+=f"最近采样：{r['games_per_second']:.2f}局/秒，{r['decisions_per_second']:.0f}决策/秒，平均推理批次{r['mean_batch']:.1f}\n"
     if metrics:
-        rate=metrics['v1.9.0-preview.1']['win_rate'];best=state.get('best_score',rate)
+        rate=metrics[state.get('rule_opponent','v1.9.0-preview.1')]['win_rate'];best=state.get('best_score',rate)
         text+=f"开发趋势：当前对规则胜率{rate:.1%}，历史最佳{best:.1%}；重复开发种子，不能视为独立强度验收。\n"
     if state.get('error'):text+='异常已停训，等待判断；错误：'+state['error']+'\n'
     (directory/'latest-report.txt').write_text(text)

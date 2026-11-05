@@ -32,6 +32,7 @@ export function cardCost(game, id, cards) {
 }
 export function acceptsAction(game, id, action) {
   if (action.type !== "refine") return true;
-  if (action.stones.gem + action.stones.crystal !== 2) return false;
-  return heroAi(game.player(id).hero.id).acceptsRefine?.(action) ?? true;
+  const player=game.player(id), profile=heroAi(player.hero.id);
+  if (action.stones.gem + action.stones.crystal !== 2 && !profile.acceptsSingleRefine?.({game,id,player,action})) return false;
+  return profile.acceptsRefine?.(action,{game,id,player}) ?? true;
 }

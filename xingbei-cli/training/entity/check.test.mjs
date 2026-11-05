@@ -7,12 +7,20 @@ import { buildDecisionSpace } from '../decision-space.mjs';
 import { driveGame } from '../driver.mjs';
 import { teacherIndex } from '../teacher.mjs';
 import { encodeEntities } from './observation.mjs';
-import { roster } from './rosters.mjs';
+import { HERO_IDS, roster } from './rosters.mjs';
 import { heroFields } from './hero-state.mjs';
 const rosters = [DEFAULT_HERO_IDS, WAVE_TWO_HERO_IDS, WAVE_THREE_HERO_IDS];
 
 test('entity boundary hides opponent hands/deck/logs at every seat; contracts cover registered heroes', async () => {
   assert.deepEqual(Object.keys(heroFields).sort(), Object.keys(HERO_DEFINITIONS).sort());
+  const seats=new Map(HERO_IDS.map(id=>[id,Array(6).fill(0)]));
+  for(let i=0;i<HERO_IDS.length;i++) {
+    const ids=roster(i);
+    assert.equal(new Set(ids).size,6);
+    assert.ok(!ids.includes('magicArcherEX'));
+    ids.forEach((id,seat)=>seats.get(id)[seat]++);
+  }
+  assert.ok([...seats.values()].every(counts=>counts.every(count=>count===1)));
   for (const heroIds of Array.from({length:12}, (_,i)=>roster(i))) for (let playerId = 0; playerId < 6; playerId++) {
     const game = new Game({ seed: 211102001, heroIds }).setup();
     game.current = playerId; await game.beginTurn(playerId);

@@ -55,9 +55,9 @@ def main():
                     run([python,'training/entity/evaluate-all.py',state['latest'],state['best'],str(output),'--revision',args.revision,'--pairs','2' if args.pilot else '144'])
                     report=json.loads(output.read_text());metrics={key:{k:r[k] for k in ['games','wins','win_rate','truncated','paired_seed_interval95']} for key,r in report['opponents'].items()}
                     if any(m['truncated'] for m in metrics.values()):raise RuntimeError('Evaluation truncated; inspect evidence')
-                    score=metrics['v1.9.0-preview.1']['win_rate']
+                    score=metrics[report['rule_opponent']]['win_rate']
                     if score>state['best_score']:state.update(best=state['latest'],best_score=score)
-                    save(metrics=metrics,last_evaluation=time.time(),evaluation=str(output));hourly.report(directory)
+                    save(metrics=metrics,rule_opponent=report['rule_opponent'],last_evaluation=time.time(),evaluation=str(output));hourly.report(directory)
                 cycle=state['cycle']+1;output=directory/f'cycle-{cycle:06d}.pt'
                 pool=history_pool(state['history']);history=pool[(cycle-1)%len(pool)] if len(pool)>1 else None
                 command=[python,'training/entity/reinforce.py',state['latest'],str(output),'--league','--positions',str(directory/'corpus/positions.jsonl'),
