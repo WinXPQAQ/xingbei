@@ -74,9 +74,19 @@ test("红衣主教：逆位保留实体与资源，王权宝珠一圈后离场�
   const offering = take(g, 0);
   g.coverCards(0, [offering], "orbOffering", { reveal: true });
   for (const q of g.players) take(g, q.id, (c) => c.type === offering.type);
-  run(p.hero.orbCircuit(g, p, offering, {}), (r) =>
-    r.skillId === "royalPressure" ? [r.valid[0]] : base(r),
-  );
+  let returnChoices = 0;
+  const bulletsBeforeReturn = p.hero.state.silverBullets;
+  run(p.hero.orbCircuit(g, p, offering, {}), (r) => {
+    if (r.skillId === "royalPressure") return [r.valid[0]];
+    if (r.skillId === "orbReturn") {
+      returnChoices++;
+      assert.equal(p.hero.state.silverBullets, bulletsBeforeReturn);
+      assert.ok(r.choices.every(c => c.value === "cardinal" || c.value > 0));
+      assert.equal(g.cards.get(orb).location.zone, "status");
+    }
+    return base(r);
+  });
+  assert.equal(returnChoices, 1);
   assert.equal(p.hero.id, "cardinal");
   assert.equal(g.cards.get(orb).location.zone, "outside");
   assert.equal(offering.location.zone, "discard");

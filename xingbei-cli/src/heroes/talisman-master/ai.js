@@ -1,6 +1,6 @@
 import {damageTarget,discardTarget,cheapCards} from '../shared/ai/decisions.js';
 export const talismanMasterAi={
-  id:'talismanMaster',acceptsRefine:()=>true,
+  id:'talismanMaster', energyPreference: "crystal",acceptsRefine:()=>true,
   cardBonus:({card,elements,same})=>elements.includes('thunder')||elements.includes('wind')?(same?6:15):elements.includes('fire')?6:0,
   resourceValue:p=>p.coveredCount*3+p.energy.crystal*2,
   scoreSkill({next,id,player,action,skillId},api){

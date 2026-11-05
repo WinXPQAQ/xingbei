@@ -1,5 +1,5 @@
 export const braveAi={
- id:'brave',resourceValue:p=>(p.heroState.rage??0)*2+(p.heroState.intellect??0)*1.5,
+ id:'brave', energyPreference: "mixed",resourceValue:p=>(p.heroState.rage??0)*2+(p.heroState.intellect??0)*1.5,
  cardBonus:({card,elements})=>card.type==='spell'?8:elements.some(e=>['fire','water'].includes(e))?12:0,
  scoreSkill({skillId,player,next,targetId},{}) {if(skillId!=='provocation')return null;player.heroState.rage--;player.heroState.intellect=Math.min(4,player.heroState.intellect+1);return next.players[targetId].count<3?4:0;},
  sharedDecisionSkills:['provocation'],

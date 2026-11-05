@@ -6,6 +6,7 @@ import {
 } from "../shared/ai/decisions.js";
 export const curseTalismanAi = {
   id: "curseTalisman",
+  energyPreference: "crystal",
   cardBonus: ({ elements, same }) =>
     elements.some((e) => ["fire", "water"].includes(e))
       ? same
@@ -34,8 +35,18 @@ export const curseTalismanAi = {
       a.request.type === "playerChoice"
         ? discardTarget(a, api, a.context.amount ?? 1)
         : cheapCards(a, api),
-    curseChant: (a, api) => (a.player.count > 2 ? cheapCards(a, api) : null),
-    ghostApparition: cheapCovered,
+    curseChant: (a, api) => {
+      if (a.player.count <= 2) return null;
+      const cost = (i) => api.cardScore(a.game, a.id, a.source.hand[i]) -
+        (a.source.hand[i].getTraits({ playerId: a.id }).elements.includes("earth") ? 12 : 0) +
+        ((a.game.turn.state?.reservedCardIds ?? []).includes(a.source.hand[i].id) ? 1000 : 0);
+      const index = [...(a.request.valid ?? [])].sort((x, y) => cost(x) - cost(y))[0];
+      return index == null ? null : [index];
+    },
+    ghostApparition: (a, api) => {
+      const earth = a.request.choices.filter((c) => a.game.cards.get(c.value)?.getTraits({ playerId: a.id }).elements.includes("earth"));
+      return cheapCovered({ ...a, request: { ...a.request, choices: earth.length ? earth : a.request.choices } }, api);
+    },
     earthCurse: () => true,
     ghostTalisman: ({ state, player }) =>
       state.players.some((p) => p.team !== player.team && p.count >= p.limit)

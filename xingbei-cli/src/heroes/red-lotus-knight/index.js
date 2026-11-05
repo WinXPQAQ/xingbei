@@ -19,10 +19,11 @@ export class RedLotusKnight extends Hero {
         } },
       { id: 'bloodPrayer', name: '血腥祷言', ...this.onOwnTurn([Timing.ACTIVATION]),
         activationEnablesAction: ({ player }) => player.healing > 0,
+        filter: ({ player }) => player.healing > 0,
         *resolve({ game, player, options }) {
           if (!(yield* game.offerSkill(player.id, 'bloodPrayer', '血腥祷言'))) return;
           const count = yield* choice(player.id, 'bloodPrayer', '移除X治疗并承受X法伤',
-            Array.from({ length: player.healing + 1 }, (_, value) => ({ value, label: `${value}治疗` })), 0);
+            Array.from({ length: player.healing }, (_, i) => ({ value: i + 1, label: `${i + 1}治疗` })), 1);
           game.changeHealing(player.id, -count);
           yield* game.damageSteps(player.id, count, { ...options, sourceId: player.id, damageType: 'spell', skillId: 'bloodPrayer' });
           if (game.winner) return;

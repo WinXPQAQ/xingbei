@@ -1,6 +1,7 @@
 import { damageTarget } from "../shared/ai/decisions.js";
 export const nobleLadyAi = {
   id: "nobleLady",
+  energyPreference: "mixed",
   cardBonus: ({ card, elements }) =>
     card.type === "spell" ||
     card.fates.includes("Y") ||
@@ -11,8 +12,9 @@ export const nobleLadyAi = {
     gem && player.energy.gem + player.energy.crystal <= 1 ? 7 : 0,
   scoreSkill({ next, id, player, skillId }, api) {
     if (skillId !== "magicLesson") return null;
+    const full = player.count >= player.limit;
     api.draw(next, id, 1);
-    return player.count <= player.limit ? 5 : -5;
+    return full ? -5 : 5;
   },
   decisions: {
     magicSpark: ({ context, player }) =>

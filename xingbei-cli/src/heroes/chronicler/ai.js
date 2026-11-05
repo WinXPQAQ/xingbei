@@ -5,6 +5,7 @@ import {
 } from "../shared/ai/decisions.js";
 export const chroniclerAi = {
   id: "chronicler",
+  energyPreference: "crystal",
   cardBonus: ({ card }) =>
     card.name === "chronicle" ? 35 : card.type === "attack" ? 7 : 0,
   resourceValue: (p) =>

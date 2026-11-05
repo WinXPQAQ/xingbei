@@ -1,5 +1,5 @@
 export const bardAi={
- id:'bard',cardBonus:({same,card})=>same?10:card.type==='spell'?5:0,
+ id:'bard', energyPreference: "crystal",cardBonus:({same,card})=>same?10:card.type==='spell'?5:0,
  resourceValue:p=>(p.heroState.inspiration??0)*2,
  scoreSkill({next,id,targetId,skillId,action,player},{draw,discardEstimate}){if(skillId!=='dissonance')return null;const[k,n]=(action.mode??'draw:2').split(':');player.heroState.inspiration-=Number(n);for(const who of[id,targetId]){if(k==='draw')draw(next,who,Number(n)-1);else discardEstimate(next,who,Number(n)-1);}return 0;},
  sharedDecisionSkills:['passionateRhapsody','victorySymphony'],

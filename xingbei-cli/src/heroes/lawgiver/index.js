@@ -155,10 +155,10 @@ export class Lawgiver extends Ecclesiastic {
       const choices = [
         { value: "cardinal", label: "替换为红衣主教" },
         ...Array.from(
-          { length: Math.min(2, this.state.silverBullets) + 1 },
-          (_, value) => ({
-            value,
-            label: `移除${value}银制子弹，使目标摸${value}牌`,
+          { length: Math.min(2, this.state.silverBullets) },
+          (_, index) => ({
+            value: index + 1,
+            label: `移除${index + 1}银制子弹，使目标摸${index + 1}牌`,
           }),
         ),
       ];

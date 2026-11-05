@@ -41,7 +41,7 @@ function bestEcho(state, id, amount, excluded, api) {
 }
 
 export const heroicPuppetAi = {
-  id: "heroicPuppet",
+  id: "heroicPuppet", energyPreference: "mixed",
   cardBonus: ({ same, player }) => same ? ((player.hero.state?.battleRunes ?? 0) > 0 ? 22 : 0) : 12,
   resourceValue: (p) => p.energy.gem * 4 + p.energy.crystal * 2 + (p.heroState.form ? 3 : 0),
   refineBonus: ({ player, gem }) => gem && !player.energy.gem ? 8 : 0,

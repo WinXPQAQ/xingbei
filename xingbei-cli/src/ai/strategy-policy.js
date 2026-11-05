@@ -36,7 +36,9 @@ export function withStrategyPreferences(policy) {
           const {gem,crystal}=action.stones;
           if(gem+crystal===1 && !profile.acceptsSingleRefine?.({game:view,state,id,player:view.player(id),action})) adjustment-=12;
           if(preference==='gem') {
-            const useful=Math.max(0,(profile.usefulCrystals??0)-player.energy.crystal);
+            const allowance=typeof profile.usefulCrystals==='function'
+              ?profile.usefulCrystals({game:view,state,id,player,action}):profile.usefulCrystals??0;
+            const useful=Math.max(0,allowance-player.energy.crystal);
             adjustment-=Math.max(0,crystal-useful)*18;
           } else if(preference==='crystal') {
             // Flexible consumers leave red stones for allies whose skills need

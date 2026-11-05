@@ -1,0 +1,211 @@
+{
+  "version": "v1.17.0-preview.4",
+  "purpose": "Rule and policy integration checks only; not a win-rate evaluation.",
+  "core": {
+    "tests": 148,
+    "passed": 148
+  },
+  "ai": {
+    "tests": 14,
+    "passed": 14
+  },
+  "combat": {
+    "version": "v1.17.0-preview.4",
+    "note": "Three games completed; initial report write failed because the artifact directory had not yet been created. This compact report transcribes their returned results; no extra games were run.",
+    "games": [
+      {
+        "seed": 110530,
+        "heroIds": [
+          "magicLancer",
+          "azureFlameWitch",
+          "redLotusKnight",
+          "marksman",
+          "prayer",
+          "sage"
+        ],
+        "turns": 69,
+        "decisions": 497,
+        "winner": "blue",
+        "terminated": true,
+        "truncated": false,
+        "elapsedMs": 1637.809751
+      },
+      {
+        "seed": 110531,
+        "heroIds": [
+          "adjudicator",
+          "adventurer",
+          "bard",
+          "brave",
+          "heroicPuppet",
+          "talismanMaster"
+        ],
+        "turns": 56,
+        "decisions": 335,
+        "winner": "blue",
+        "terminated": true,
+        "truncated": false,
+        "elapsedMs": 899.4402609999997
+      },
+      {
+        "seed": 110532,
+        "heroIds": [
+          "magicArcher",
+          "bloodSwordSpirit",
+          "redLotusKnight",
+          "azureFlameWitch",
+          "magicLancer",
+          "marksman"
+        ],
+        "turns": 60,
+        "decisions": 404,
+        "winner": "blue",
+        "terminated": true,
+        "truncated": false,
+        "elapsedMs": 1034.6704139999997
+      }
+    ]
+  },
+  "support": {
+    "version": "v1.17.0-preview.4",
+    "result": [
+      {
+        "seed": 26110580,
+        "heroes": [
+          "yinYangMaster",
+          "soulWarlock",
+          "bloodWitch",
+          "moonGoddess",
+          "holyArcher",
+          "butterflyDancer"
+        ],
+        "turns": 18,
+        "actions": 32,
+        "winner": null,
+        "archives": 0
+      },
+      {
+        "seed": 26110581,
+        "heroes": [
+          "battleMage",
+          "starfallWitch",
+          "inquisitor",
+          "templar",
+          "nobleLady",
+          "barrierMaster"
+        ],
+        "turns": 18,
+        "actions": 29,
+        "winner": null,
+        "archives": 0
+      },
+      {
+        "seed": 26110582,
+        "heroes": [
+          "mystic",
+          "defiler",
+          "lawgiver",
+          "cardinal",
+          "chronicler",
+          "missionary"
+        ],
+        "turns": 18,
+        "actions": 34,
+        "winner": null,
+        "archives": 0
+      },
+      {
+        "seed": 26110583,
+        "heroes": [
+          "heretic",
+          "godEater",
+          "soulWarlock",
+          "bloodWitch",
+          "moonGoddess",
+          "defiler"
+        ],
+        "turns": 18,
+        "actions": 34,
+        "winner": null,
+        "archives": 0
+      }
+    ]
+  },
+  "special": {
+    "source": "special_policy natural game output",
+    "games": [
+      {
+        "seed": 27160,
+        "turns": 56,
+        "actions": 59,
+        "terminated": true
+      },
+      {
+        "seed": 27161,
+        "turns": 59,
+        "actions": 60,
+        "terminated": true
+      },
+      {
+        "seed": 27162,
+        "turns": 43,
+        "actions": 45,
+        "terminated": true
+      }
+    ],
+    "heroesCovered": 14,
+    "cardConservation": true
+  },
+  "integration": {
+    "version": "v1.17.0-preview.4",
+    "result": {
+      "seed": 110548,
+      "start": 0,
+      "heroIds": [
+        "headMaid",
+        "redLotusKnight",
+        "orchestraLeader",
+        "bloodWitch",
+        "lawgiver",
+        "moonGoddess"
+      ],
+      "revision": null,
+      "replayedDecisions": 0,
+      "turns": 50,
+      "decisions": 431,
+      "maxCandidates": 9,
+      "kinds": {
+        "action": 237,
+        "skillChoice": 52,
+        "response": 47,
+        "overflow": 18,
+        "playerChoice": 22,
+        "cardChoice": 21,
+        "healing": 10,
+        "numberChoice": 10,
+        "effectChoice": 14
+      },
+      "profile": {
+        "candidatesMs": 13.106461000002241,
+        "decisionWaitMs": 1850.4150689999983,
+        "invariantsMs": 9.631323000000322,
+        "elapsedMs": 1935.673929
+      },
+      "winner": "blue",
+      "terminated": true,
+      "truncated": false,
+      "truncationReason": null,
+      "rewards": {
+        "0": -1,
+        "1": 1,
+        "2": 1,
+        "3": -1,
+        "4": -1,
+        "5": 1
+      }
+    }
+  },
+  "finalFollowupCheck": "Follow-up attack targets obey engine restrictions even before the extra action is granted.",
+  "ruleExceptions": 0,
+  "inabilityForfeits": 0
+}

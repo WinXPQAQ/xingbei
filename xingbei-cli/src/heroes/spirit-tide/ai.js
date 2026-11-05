@@ -5,6 +5,7 @@ const unique = (c) =>
   );
 export const spiritTideAi = {
   id: "spiritTide",
+  energyPreference: "crystal",
   cardBonus: ({ card }) =>
     unique(card)
       ? 24
@@ -24,7 +25,13 @@ export const spiritTideAi = {
     spiritExorcismOffer: () => true,
     spiritExorcism: damageTarget,
     echoSpirit: () => true,
-    ragingTide: (a, api) => damageTarget(a, api, 1),
+    ragingTide: ({ request, game, state, id }, api) =>
+      [...request.choices].sort((a, b) => {
+        const gain = (targetId) => api.damageGain(
+          state, id, targetId, 1 + game.player(targetId).getBasicEffects().length,
+        );
+        return gain(b.value) - gain(a.value);
+      })[0]?.value ?? request.defaultValue,
     seaPriestess: cheapCards,
   },
 };

@@ -42,7 +42,27 @@ test('魔枪：禁用圣光，暗之障壁整组弃牌，形态手限及启动�
  g.startTurn(0);run(g.actionSteps(0,g.player(0).hand.indexOf(thunder),1),r=>r.type==='skillChoice'?r.skillId==='darkRelease':base(r));
  assert.equal(g.player(0).handLimit,5);assert.equal(g.player(0).hero.state.form,'phantom');g.assertCardLocations();
 });
-test('红莲：只能治疗自身伤害，首次爆牌进入热血，后续伤害不降士气',()=>{
+test('红莲：祷言须支付正数治疗，只能治疗自身伤害，热血防止后续士气损失',()=>{
+ const empty=make('redLotusKnight');
+ run(empty.trigger(Timing.ACTIVATION,{playerId:0}),r=>{assert.notEqual(r.skillId,'bloodPrayer');return base(r);});
+ assert.equal(empty.player(0).hero.state.bloodSeals,0);
+ for(const payment of [null,0,1]) {
+  const prayer=make('redLotusKnight');prayer.changeHealing(0,2);
+  const choose=r=>{
+   if(r.skillId==='bloodPrayer'&&r.type==='skillChoice')return payment!==null;
+   if(r.skillId==='bloodPrayer'&&r.type==='numberChoice'){
+    assert.deepEqual(r.choices.map(c=>c.value),[1,2]);return payment;
+   }
+   return base(r);
+  };
+  const activate=()=>run(prayer.trigger(Timing.ACTIVATION,{playerId:0}),choose);
+  if(payment===0)assert.throws(activate,/无效的技能选项/);else activate();
+  assert.equal(prayer.player(0).healing,payment===1?1:2);
+  assert.equal(prayer.player(0).hero.state.bloodSeals,payment===1?1:0);
+  assert.equal(prayer.player(0).hand.length,payment===1?1:0);
+  assert.equal(prayer.players.filter(p=>p.id!==0).reduce((sum,p)=>sum+p.healing,0),payment===1?1:0);
+  prayer.assertCardLocations();
+ }
  const g=make('redLotusKnight');g.player(0).handLimit=0;g.changeHealing(0,4);
  run(g.damageSteps(0,2,{sourceId:1,damageType:'attack'}));assert.equal(g.teams.red.morale,13);assert.equal(g.player(0).healing,4);
  run(g.damageSteps(0,2,{sourceId:1,damageType:'spell'}));assert.equal(g.teams.red.morale,13);

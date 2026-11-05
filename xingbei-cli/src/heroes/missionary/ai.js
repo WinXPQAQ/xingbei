@@ -1,6 +1,7 @@
 import { cheapCards, discardTarget } from "../shared/ai/decisions.js";
 export const missionaryAi = {
   id: "missionary",
+  energyPreference: "crystal",
   sharedDecisionSkills: ["confession"],
   cardBonus: ({ card }) =>
     card.type === "spell" || card.fates.includes("S") ? 7 : 0,

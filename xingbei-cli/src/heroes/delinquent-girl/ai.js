@@ -1,5 +1,6 @@
 export const delinquentGirlAi = {
   id: "delinquentGirl",
+  energyPreference: "mixed",
   cardBonus: ({ card }) =>
     card.uniqueSkills?.some((s) => ["bloodBlade", "bloodyRoar"].includes(s))
       ? 25
@@ -26,8 +27,9 @@ export const delinquentGirlAi = {
               id,
               context.targetId,
               context.amount + (c.value === "gem" ? 2 : 1),
+              "attack",
             ) -
-            api.damageGain(state, id, context.targetId, context.amount) -
+            api.damageGain(state, id, context.targetId, context.amount, "attack") -
             (c.value === "gem" ? 5 : 3),
         }))
         .sort((a, b) => b.gain - a.gain)[0];

@@ -1,6 +1,7 @@
 import { discardTarget } from "../shared/ai/decisions.js";
 export const cardinalAi = {
   id: "cardinal",
+  energyPreference: "crystal",
   cardBonus: ({ card }) =>
     card.type === "attack" ? 8 : card.fates.includes("S") ? 6 : 0,
   resourceValue: (p) =>

@@ -9,7 +9,7 @@ function cover(a,api){
 }
 const coveredCost=({request,game})=>request.choices.filter(c=>c.value!=null).sort((a,b)=>chargeValue(game.cards.get(a.value))-chargeValue(game.cards.get(b.value)))[0]?.value??null;
 export const magicArcherAi={
-  id:'magicArcher',acceptsRefine:()=>true,
+  id:'magicArcher', energyPreference: "mixed",acceptsRefine:()=>true,
   cardBonus:({elements,same})=>elements.some(e=>['fire','wind','thunder'].includes(e))?(same?6:10):0,
   resourceValue:p=>p.coveredCount*3,
   refineBonus:({player})=>player.coveredCount<2&&player.energy.gem+player.energy.crystal===0?8:0,

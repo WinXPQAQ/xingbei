@@ -85,6 +85,7 @@ export class OrchestraLeader extends Hero {
           for (let i = 0; i < n; i++) {
             const c = yield* game.chooseCoveredCard(player.id, "notes", {
               skillId: "concertoNote",
+              context: { count: n - i, drawCount: n - 1 },
             });
             game.discardCovered(player.id, c, {
               reveal: true,
@@ -119,6 +120,7 @@ export class OrchestraLeader extends Hero {
         p.id,
         "naplesSolo",
         "那不勒斯独奏：1水晶，用手牌替换新音符，本回合不能再增加音符",
+        { card, count: game.activeTrigger?.timing === Timing.ATTACK_HIT ? 1 : 0 },
       ))
     ) {
       yield* game.paySkillEnergy(p.id, "crystal");

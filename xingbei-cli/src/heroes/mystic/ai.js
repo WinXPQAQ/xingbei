@@ -6,6 +6,7 @@ import {
 } from "../shared/ai/decisions.js";
 export const mysticAi = {
   id: "mystic",
+  energyPreference: "crystal",
   cardBonus: ({ card }) =>
     card.fates.includes("Y") ? 12 : card.type === "spell" ? 7 : 0,
   resourceValue: (p) =>
@@ -14,9 +15,11 @@ export const mysticAi = {
     crystal && !player.energy.crystal ? 7 : 0,
   scoreSkill({ next, id, player, skillId, costs }, api) {
     if (skillId === "wordSpirit") {
+      const existing = player.coveredCount;
       player.coveredCount = Math.min(3, player.coveredCount + costs.length);
       api.draw(next, id, 1);
-      return 1;
+      // Light remains useful in hand but cannot be cast by True Word.
+      return (existing < 2 ? 1 : 0) - costs.filter(c => c.traits[id]?.elements.includes("light")).length * 12;
     }
     if (skillId === "trueWord") {
       player.coveredCount--;

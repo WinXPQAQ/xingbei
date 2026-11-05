@@ -5,6 +5,7 @@ import {
 } from "../shared/ai/decisions.js";
 export const barrierMasterAi = {
   id: "barrierMaster",
+  energyPreference: "crystal",
   sharedDecisionSkills: ["whiteKarma", "karmaCard"],
   cardBonus: ({ card, elements, same }) =>
     card.type === "attack" && !same ? 5 : 0,

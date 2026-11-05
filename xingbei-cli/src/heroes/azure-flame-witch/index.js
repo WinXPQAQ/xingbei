@@ -87,7 +87,7 @@ export class AzureFlameWitch extends Hero {
           const cards = yield* game.chooseCardSet(player.id, { counts: Array.from({ length: max - 1 }, (_, i) => i + 2), cardsFilter: cs => cs.every(c => c.type === 'spell'),
             skillId: 'manaInversion', title: '魔能反转：可明弃至少2张法术牌', optional: true });
           if (!cards) return;
-          const targetId = yield* game.choosePlayer(player.id, enemies(game, player), '魔能反转：选择法伤目标', { skillId: 'manaInversion' });
+          const targetId = yield* game.choosePlayer(player.id, enemies(game, player), '魔能反转：选择法伤目标', { skillId: 'manaInversion', context: { amount: cards.length - 1 } });
           yield* game.paySkillEnergy(player.id, 'crystal');
           yield* discardCost(game, player, cards, 'manaInversion', options);
           game.logSkill(player.id, 'manaInversion', `对${game.actorLabel(targetId)}造成${cards.length - 1}法伤，原伤害不变`);

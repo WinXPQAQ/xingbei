@@ -1,6 +1,7 @@
 import { damageTarget, cheapCovered } from "../shared/ai/decisions.js";
 export const butterflyDancerAi = {
   id: "butterflyDancer",
+  energyPreference: "mixed",
   activationReactions({ player, event }) {
     if (event.kind !== "damage" || event.damageType !== "spell" || !player.coveredCount) return [];
     const reactions = [];
@@ -42,7 +43,7 @@ export const butterflyDancerAi = {
         return player.heroState.chrysalises > 0 && player.coveredCount >= 2
           ? 3
           : -30;
-      api.hurt(next, targetId, 1);
+      api.applyActualDamage(next, targetId, 1, "spell");
       return 0;
     }
     return null;

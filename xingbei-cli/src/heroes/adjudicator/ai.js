@@ -1,5 +1,5 @@
 export const adjudicatorAi = {
-  id: "adjudicator",
+  id: "adjudicator", energyPreference: "mixed",
   resourceValue: (p) => p.energy.gem * 3 + p.energy.crystal * 4 + (p.heroState.judgment ?? 0) * 3 + (p.heroState.form ? 3 : 0),
   refineBonus: ({ player, gem }) => gem && !player.energy.gem ? 3 : 0,
   afterDamage({ player, actual }) {

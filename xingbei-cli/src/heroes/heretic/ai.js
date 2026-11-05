@@ -5,11 +5,14 @@ import {
 } from "../shared/ai/decisions.js";
 export const hereticAi = {
   id: "heretic",
+  energyPreference: "crystal",
   sharedDecisionSkills: ["calamityDefense"],
   cardBonus: ({ card }) => (card.type === "spell" ? 7 : 0),
   resourceValue: (p) => (p.heroState.prophecyFace ? 4 : 0),
   refineBonus: ({ player, crystal }) =>
-    crystal && !player.energy.crystal ? 10 : 0,
+    crystal && !player.energy.gem && !player.energy.crystal
+      ? (player.coveredCount ?? 0) <= 1 ? 10 : 6
+      : 0,
   scoreSkill({ player, skillId }) {
     if (skillId !== "banishment") return null;
     return player.count <= 3 ? 10 : 3;

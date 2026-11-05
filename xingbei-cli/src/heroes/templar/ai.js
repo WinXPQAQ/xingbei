@@ -1,6 +1,7 @@
 import { damageTarget, usefulExtra } from "../shared/ai/decisions.js";
 export const templarAi = {
   id: "templar",
+  energyPreference: "crystal",
   cardBonus: ({ card }) =>
     card.type === "attack" && card.fates.includes("S")
       ? 18

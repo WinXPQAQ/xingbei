@@ -8,7 +8,7 @@ function supportTargetBonus(state, id, targetId, skillId) {
 const hasBlessing = (card) => ["powerBlessing", "speedBlessing"].some((skill) => card.hasUniqueSkill(skill));
 
 export const prayerAi = {
-  id: "prayer",
+  id: "prayer", energyPreference: "mixed",
   sharedDecisionSkills: ["powerBlessing", "speedBlessing"],
   cardBonus({ card, same, player }) {
     if (hasBlessing(card)) return same ? 25 : 43;

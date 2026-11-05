@@ -1,6 +1,7 @@
 import { damageTarget } from '../shared/ai/decisions.js';
 export const yinYangMasterAi={
  id:'yinYangMaster',
+  energyPreference: "crystal",
  defendedPlayer:r=>r.protectedTargetId,
  responseCost:r=>r.skillId==='shikigamiBinding'?10:0,
  cardBonus:({card,player,retained})=>card.type==='attack'&&!retained.some(c=>c.fates.some(f=>card.fates.includes(f)))?10:0,

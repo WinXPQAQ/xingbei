@@ -1,6 +1,7 @@
 import { damageTarget } from "../shared/ai/decisions.js";
 export const battleMageAi = {
   id: "battleMage",
+  energyPreference: "crystal",
   cardBonus: ({ card, retained }) =>
     card.fates.includes("Y")
       ? 14
@@ -30,7 +31,7 @@ export const battleMageAi = {
       request.choices.find((c) => String(c.value).endsWith(":crystal"))
         ?.value ?? request.choices[0].value,
     manaEntropy: ({ player, state }) =>
-      state.teams[player.team].total < 5 ||
+      state.teams[player.team].gem + state.teams[player.team].crystal < 5 ||
       state.players.some((p) => p.team !== player.team && p.count >= p.limit),
     manaEntropyTarget: damageTarget,
   },

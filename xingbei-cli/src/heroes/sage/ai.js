@@ -14,7 +14,7 @@ function reboundScore(game, id, state, indexes, targetId, api) {
 }
 
 export const sageAi = {
-  id: "sage",
+  id: "sage", energyPreference: "gem",
   cardBonus: ({ same }) => same ? 3 : 16,
   acceptsRefine: (action) => action.stones.crystal === 0,
   resourceValue: (p) => Math.min(3, p.energy.gem) * 5 + Math.max(0, p.energy.gem - 3) * 2,

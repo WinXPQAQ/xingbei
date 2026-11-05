@@ -2,6 +2,7 @@ import { cheapCards, damageTarget } from "../shared/ai/decisions.js";
 const blade = (c) => ["demonBlade", "alienBlade"].includes(c.name);
 export const godEaterAi = {
   id: "godEater",
+  energyPreference: "mixed",
   sharedDecisionSkills: ["bladeElement"],
   cardBonus: ({ card }) => (blade(card) ? 14 : card.type === "attack" ? 4 : 0),
   refineBonus: ({ player, gem, crystal }) =>

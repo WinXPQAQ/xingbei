@@ -5,6 +5,7 @@ import {
 } from "../shared/ai/decisions.js";
 export const starfallWitchAi = {
   id: "starfallWitch",
+  energyPreference: "gem",
   cardBonus: ({ card, elements, retained }) =>
     elements.includes("earth")
       ? 20

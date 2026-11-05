@@ -1,6 +1,6 @@
 import {damageTarget,usefulExtra,cheapCards} from '../shared/ai/decisions.js';
 export const bloodSwordSpiritAi={
-  id:'bloodSwordSpirit',acceptsRefine:()=>true,
+  id:'bloodSwordSpirit', energyPreference: "mixed",acceptsRefine:()=>true,
   cardBonus:({card,same})=>card.type==='attack'?(same?2:9):0,
   resourceValue:p=>(p.heroState.blood??0)*4,
   attackHitBonus:({player})=>player.heroState.blood<3?4:0,

@@ -341,12 +341,12 @@ export class Game {
     }
     return cards;
   }
-  *chooseCoveredCard(playerId, pile, { skillId, title = "选择盖牌", optional = false, predicate = () => true } = {}) {
+  *chooseCoveredCard(playerId, pile, { skillId, title = "选择盖牌", optional = false, predicate = () => true, context = {} } = {}) {
     const cards = this.player(playerId).covered.filter(c => c.location.pile === pile && predicate(c));
     if (!cards.length) { if (optional) return null; throw new RuleError("没有可选盖牌"); }
     const choices = cards.map(c => ({ value: c.id, label: logCard(c, this, playerId) }));
     if (optional) choices.push({ value: null, label: "不发动" });
-    const id = yield { type: "effectChoice", playerId, skillId, title, choices, optional, context: this.activeTrigger?.context ?? null, defaultValue: optional ? null : cards[0].id };
+    const id = yield { type: "effectChoice", playerId, skillId, title, choices, optional, context: { ...this.activeTrigger?.context, ...context }, defaultValue: optional ? null : cards[0].id };
     if (optional && id === null) return null;
     const card = cards.find(c => c.id === id);
     if (!card) throw new RuleError("无效盖牌选择");

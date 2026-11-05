@@ -5,6 +5,7 @@ import {
 } from "../shared/ai/decisions.js";
 export const inquisitorAi = {
   id: "inquisitor",
+  energyPreference: "crystal",
   cardBonus: ({ card, retained }) =>
     card.type === "spell" &&
     retained.filter((c) => c.type === "spell").length < 2

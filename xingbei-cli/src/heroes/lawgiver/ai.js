@@ -1,6 +1,7 @@
 import { cheapCards, damageTarget } from "../shared/ai/decisions.js";
 export const lawgiverAi = {
   id: "lawgiver",
+  energyPreference: "crystal",
   sharedDecisionSkills: ["royalPressure"],
   cardBonus: ({ card }) => (card.type === "attack" ? 10 : 0),
   resourceValue: (p) =>

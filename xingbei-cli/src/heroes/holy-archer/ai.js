@@ -1,6 +1,7 @@
 import { discardTarget } from '../shared/ai/decisions.js';
 export const holyArcherAi={
  id:'holyArcher',
+  energyPreference: "mixed",
  cardBonus:({card,retained})=>card.type==='attack'?(card.fates.includes('S')?23:retained.some(c=>c.type==='attack'&&c.elements.some(e=>card.elements.includes(e)))?7:0):5,
  resourceValue:p=>(p.heroState.faith??0)*4+(p.heroState.cannon??0)*2+(p.heroState.form?5:0)+p.energy.gem*3+p.energy.crystal*2,
  attackDamage:({active,card,player})=>active&&!(card.getTraits?.({playerId:player.id}).fates??card.traits?.[player.id]?.fates??card.fates??[]).includes('S')?-1:0,

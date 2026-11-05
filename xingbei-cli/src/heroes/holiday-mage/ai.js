@@ -1,6 +1,7 @@
 import { cheapCards } from "../shared/ai/decisions.js";
 export const holidayMageAi = {
   id: "holidayMage",
+  energyPreference: "gem",
   acceptsRefine: (a) => !a.stones.crystal,
   cardBonus: ({ card, elements }) =>
     card.type === "spell"

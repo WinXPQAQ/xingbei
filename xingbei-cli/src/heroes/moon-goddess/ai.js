@@ -1,8 +1,10 @@
 import { damageTarget } from '../shared/ai/decisions.js';
 export const moonGoddessAi={
  id:'moonGoddess',
+  energyPreference: "mixed",
  cardBonus:({card,same})=>card.type==='attack'&&!same?4:0,
- resourceValue:p=>(p.heroState.newMoon??0)*3+(p.heroState.petrification??0)*5+p.energy.gem*3,
+ // Dark moons delay a morale payment; keeping them is not a free resource.
+ resourceValue:p=>(p.heroState.newMoon??0)*3+(p.heroState.petrification??0)*5+p.energy.gem*3-(p.coveredCount??0)*20,
  refineBonus:({player,gem})=>gem&&!player.energy.gem?5:0,
  uncounterable:({player,active})=>active&&player.heroState.nextUncounterable,
  scoreSkill({game,next,id,player,skillId,action,targetId},api){
@@ -14,8 +16,33 @@ export const moonGoddessAi={
   newMoonShelter:({context})=>context.amount<0,
   medusaEye:({request,state,player})=>request.type==='cardChoice'?undefined:state.teams[player.team].morale>6&&player.heroState.petrification===2&&player.energy.gem>0?request.choices.find(c=>c.value!=null)?.value??null:null,
   medusaDamage:(a,api)=>damageTarget(a,api,1),
-  moonCycle({request,player}){if(request.type==='effectChoice')return request.defaultValue;if(request.type==='playerChoice')return undefined;return player.healing>0&&player.heroState.newMoon<2?'healing':'skip';},
+  moonCycle({request,game,id,state,player,source},api){
+   if(request.type==='effectChoice')return request.choices.find(c=>game.cards.get(c.value)?.type==='attack')?.value??request.defaultValue;
+   if(request.type==='playerChoice'){
+    return [...request.choices].map(c=>{const next=api.copy(state);api.heal(next,c.value,1);return {...c,score:api.evaluate(next)+(next.players[c.value].team===player.team?0.1:0)};}).sort((a,b)=>b.score-a.score)[0]?.value??request.defaultValue;
+   }
+   const moons=source.covered.filter(c=>c.location.pile==='darkMoon');
+   const canGrow=player.healing>0&&player.heroState.newMoon<2;
+   if(moons.length&&state.teams[player.team].morale>moons.length){
+    // Spell moons still have Medusa's discard/damage use. With a charged gem,
+    // turning spare healing into new moon can prepare the spell route first.
+    if(canGrow&&player.energy.gem>0&&moons.every(c=>c.type==='spell'))return 'healing';
+    return 'moon';
+   }
+   return canGrow?'healing':'skip';
+  },
   moonDesecration(a,api){if(a.request.type==='playerChoice')return damageTarget(a,api,1);return a.state.players.some(p=>p.team!==a.player.team&&api.damageGain(a.state,a.id,p.id,1)>3);},
-  darkMoonSlash({request,state,id,context,player},api){let best={value:0,score:0};for(const c of request.choices)if(c.value){const gain=api.damageGain(state,id,context.targetId,context.amount+c.value,'attack')-api.damageGain(state,id,context.targetId,context.amount,'attack')-30-4;if(gain>best.score&&state.teams[player.team].morale>1)best={value:c.value,score:gain};}return best.value;},
+  darkMoonSlash({request,state,id,context,player},api){
+   const baseline=api.copy(state);api.hurt(baseline,context.targetId,context.amount,'attack');
+   let best={value:0,score:api.evaluate(baseline)};
+   if(state.teams[player.team].morale<=1)return 0;
+   for(const c of request.choices)if(c.value){
+    const next=api.copy(state),p=next.players[id];api.payEnergy(next,id,1,'crystal');
+    next.teams[p.team].morale--;p.coveredCount-=c.value;if(!p.coveredCount)p.heroState.form=null;
+    api.hurt(next,context.targetId,context.amount+c.value,'attack');
+    const score=api.evaluate(next);if(score>best.score)best={value:c.value,score};
+   }
+   return best.value;
+  },
  },
 };
