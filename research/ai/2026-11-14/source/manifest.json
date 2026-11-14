@@ -1,0 +1,32 @@
+[
+  {
+    "name": "current",
+    "original": "/home/xp/.local/share/xingbei-ml/sage-transfer-repair-20261114/source/xingbei-cli",
+    "directory": "source/current"
+  },
+  {
+    "name": "drill-480",
+    "original": "/home/xp/.local/share/xingbei-ml/sage-pipeline-20261112/source/xingbei-cli",
+    "directory": "source/drill-480"
+  },
+  {
+    "name": "full-game-guard",
+    "original": "/home/xp/.local/share/xingbei-ml/sage-full-activation-guard-20261113/source/xingbei-cli",
+    "directory": "source/full-game-guard"
+  },
+  {
+    "name": "action-boundary",
+    "original": "/home/xp/.local/share/xingbei-ml/sage-full-action-boundary-20261114/source/xingbei-cli",
+    "directory": "source/action-boundary"
+  },
+  {
+    "name": "online-417",
+    "original": "/home/xp/.local/share/xingbei-ml/preview/releases/v6-417-human-20261110/xingbei-cli",
+    "directory": "source/online-417"
+  },
+  {
+    "name": "retained-skills",
+    "original": "/home/xp/.local/share/xingbei-ml/sage-retained-skills-20261114/source/xingbei-cli",
+    "directory": "source/retained-skills"
+  }
+]

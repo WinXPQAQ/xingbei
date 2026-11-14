@@ -1,0 +1,938 @@
+{
+  "trainingGames": 2304,
+  "learningDecisions": 205655,
+  "trainingWallSeconds": 572.827888460597,
+  "parameters": 1213826,
+  "gpu": {
+    "torch": "2.14.1+cu130",
+    "cudaRuntime": "13.0",
+    "device": "NVIDIA GeForce RTX 4090",
+    "totalMemory": 50866487296,
+    "computeCapability": [
+      8,
+      9
+    ],
+    "matmulVerified": true
+  },
+  "privacy": {
+    "games": 36,
+    "truncated": 0,
+    "comparisons": 228,
+    "counts": {
+      "0:action": 4,
+      "2:response": 4,
+      "2:overflow": 4,
+      "1:action": 4,
+      "4:response": 4,
+      "2:action": 4,
+      "4:overflow": 4,
+      "3:action": 4,
+      "5:response": 4,
+      "4:action": 4,
+      "0:cardChoice": 4,
+      "4:cardChoice": 4,
+      "5:action": 4,
+      "3:response": 4,
+      "2:skillChoice": 4,
+      "1:cardChoice": 4,
+      "3:cardChoice": 4,
+      "0:response": 4,
+      "1:response": 4,
+      "1:overflow": 4,
+      "0:skillChoice": 4,
+      "1:skillChoice": 4,
+      "1:numberChoice": 4,
+      "5:skillChoice": 4,
+      "2:weakness": 4,
+      "5:energyChoice": 4,
+      "1:healing": 4,
+      "5:healing": 4,
+      "5:overflow": 4,
+      "5:playerChoice": 4,
+      "5:numberChoice": 4,
+      "3:skillChoice": 4,
+      "3:overflow": 4,
+      "2:cardChoice": 4,
+      "0:overflow": 4,
+      "4:playerChoice": 4,
+      "0:healing": 4,
+      "4:skillChoice": 4,
+      "3:weakness": 4,
+      "5:cardChoice": 4,
+      "2:healing": 4,
+      "4:healing": 4,
+      "1:energyChoice": 4,
+      "4:effectChoice": 4,
+      "4:energyChoice": 4,
+      "2:energyChoice": 4,
+      "1:weakness": 4,
+      "3:energyChoice": 4,
+      "5:bindingChoice": 4,
+      "5:weakness": 4,
+      "3:healing": 4,
+      "1:bindingChoice": 4,
+      "3:effectChoice": 4,
+      "0:weakness": 4,
+      "4:numberChoice": 4,
+      "2:bindingChoice": 4,
+      "4:weakness": 4
+    }
+  },
+  "final": {
+    "41": {
+      "team": {
+        "games": 336,
+        "seedClusters": 12,
+        "wins": 45,
+        "losses": 291,
+        "truncated": 0,
+        "resolvedWinRate": 0.13392857142857142,
+        "allGameWinRateBounds": [
+          0.13392857142857142,
+          0.13392857142857142
+        ],
+        "seedCluster95": [
+          0.08928571428571429,
+          0.1755952380952381
+        ],
+        "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+      },
+      "mixed": {
+        "games": 336,
+        "seedClusters": 12,
+        "wins": 106,
+        "losses": 230,
+        "truncated": 0,
+        "resolvedWinRate": 0.31547619047619047,
+        "allGameWinRateBounds": [
+          0.31547619047619047,
+          0.31547619047619047
+        ],
+        "seedCluster95": [
+          0.25297619047619047,
+          0.3898809523809524
+        ],
+        "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+      },
+      "mixedPaired": {
+        "pairs": 336,
+        "unresolvedPairs": 0,
+        "resolvedMeanWinRateDifference": -0.18452380952380953,
+        "resolvedSeedCluster95": [
+          -0.24702380952380953,
+          -0.11011904761904762
+        ],
+        "confirmatory": true
+      },
+      "byLineup": {
+        "default": {
+          "games": 96,
+          "seedClusters": 12,
+          "wins": 13,
+          "losses": 83,
+          "truncated": 0,
+          "resolvedWinRate": 0.13541666666666666,
+          "allGameWinRateBounds": [
+            0.13541666666666666,
+            0.13541666666666666
+          ],
+          "seedCluster95": [
+            0.07291666666666667,
+            0.19791666666666666
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "assault": {
+          "games": 96,
+          "seedClusters": 12,
+          "wins": 14,
+          "losses": 82,
+          "truncated": 0,
+          "resolvedWinRate": 0.14583333333333334,
+          "allGameWinRateBounds": [
+            0.14583333333333334,
+            0.14583333333333334
+          ],
+          "seedCluster95": [
+            0.08333333333333333,
+            0.20833333333333334
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "spell": {
+          "games": 96,
+          "seedClusters": 12,
+          "wins": 19,
+          "losses": 77,
+          "truncated": 0,
+          "resolvedWinRate": 0.19791666666666666,
+          "allGameWinRateBounds": [
+            0.19791666666666666,
+            0.19791666666666666
+          ],
+          "seedCluster95": [
+            0.125,
+            0.2708333333333333
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "support": {
+          "games": 96,
+          "seedClusters": 12,
+          "wins": 33,
+          "losses": 63,
+          "truncated": 0,
+          "resolvedWinRate": 0.34375,
+          "allGameWinRateBounds": [
+            0.34375,
+            0.34375
+          ],
+          "seedCluster95": [
+            0.25,
+            0.4375
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "mixed": {
+          "games": 96,
+          "seedClusters": 12,
+          "wins": 29,
+          "losses": 67,
+          "truncated": 0,
+          "resolvedWinRate": 0.3020833333333333,
+          "allGameWinRateBounds": [
+            0.3020833333333333,
+            0.3020833333333333
+          ],
+          "seedCluster95": [
+            0.22916666666666666,
+            0.375
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "tempo": {
+          "games": 96,
+          "seedClusters": 12,
+          "wins": 26,
+          "losses": 70,
+          "truncated": 0,
+          "resolvedWinRate": 0.2708333333333333,
+          "allGameWinRateBounds": [
+            0.2708333333333333,
+            0.2708333333333333
+          ],
+          "seedCluster95": [
+            0.17708333333333334,
+            0.375
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "pressure": {
+          "games": 96,
+          "seedClusters": 12,
+          "wins": 17,
+          "losses": 79,
+          "truncated": 0,
+          "resolvedWinRate": 0.17708333333333334,
+          "allGameWinRateBounds": [
+            0.17708333333333334,
+            0.17708333333333334
+          ],
+          "seedCluster95": [
+            0.125,
+            0.22916666666666666
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        }
+      },
+      "knownDiagnosticsNotHoldout": [
+        {
+          "name": "preserve-water-seal",
+          "reversedHand": false,
+          "preferredProbability": 0.5786919593811035,
+          "argmaxPreferred": true,
+          "argmaxCandidate": {
+            "type": "response",
+            "card": {
+              "name": "waterStrike",
+              "type": "attack",
+              "category": "basic",
+              "elements": [
+                "water"
+              ],
+              "fates": [
+                "X"
+              ],
+              "uniqueSkills": [
+                "bloodBlade",
+                "bloodLament"
+              ],
+              "effect": null,
+              "source": null,
+              "zone": "hand",
+              "owner": 0
+            },
+            "target": 2
+          }
+        },
+        {
+          "name": "preserve-water-seal",
+          "reversedHand": true,
+          "preferredProbability": 0.5786919593811035,
+          "argmaxPreferred": true,
+          "argmaxCandidate": {
+            "type": "response",
+            "card": {
+              "name": "waterStrike",
+              "type": "attack",
+              "category": "basic",
+              "elements": [
+                "water"
+              ],
+              "fates": [
+                "X"
+              ],
+              "uniqueSkills": [
+                "bloodBlade",
+                "bloodLament"
+              ],
+              "effect": null,
+              "source": null,
+              "zone": "hand",
+              "owner": 0
+            },
+            "target": 2
+          }
+        },
+        {
+          "name": "spend-only-water-seal-to-survive",
+          "reversedHand": false,
+          "preferredProbability": 0.9906857013702393,
+          "argmaxPreferred": true,
+          "argmaxCandidate": {
+            "type": "response",
+            "card": {
+              "name": "waterStrike",
+              "type": "attack",
+              "category": "basic",
+              "elements": [
+                "water"
+              ],
+              "fates": [
+                "H"
+              ],
+              "uniqueSkills": [
+                "waterSeal",
+                "soulTreasure"
+              ],
+              "effect": null,
+              "source": null,
+              "zone": "hand",
+              "owner": 0
+            },
+            "target": 2
+          }
+        },
+        {
+          "name": "spend-only-water-seal-to-survive",
+          "reversedHand": true,
+          "preferredProbability": 0.9906857013702393,
+          "argmaxPreferred": true,
+          "argmaxCandidate": {
+            "type": "response",
+            "card": {
+              "name": "waterStrike",
+              "type": "attack",
+              "category": "basic",
+              "elements": [
+                "water"
+              ],
+              "fates": [
+                "H"
+              ],
+              "uniqueSkills": [
+                "waterSeal",
+                "soulTreasure"
+              ],
+              "effect": null,
+              "source": null,
+              "zone": "hand",
+              "owner": 0
+            },
+            "target": 2
+          }
+        }
+      ]
+    },
+    "73": {
+      "team": {
+        "games": 336,
+        "seedClusters": 12,
+        "wins": 26,
+        "losses": 310,
+        "truncated": 0,
+        "resolvedWinRate": 0.07738095238095238,
+        "allGameWinRateBounds": [
+          0.07738095238095238,
+          0.07738095238095238
+        ],
+        "seedCluster95": [
+          0.05357142857142857,
+          0.10119047619047618
+        ],
+        "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+      },
+      "mixed": {
+        "games": 336,
+        "seedClusters": 12,
+        "wins": 94,
+        "losses": 242,
+        "truncated": 0,
+        "resolvedWinRate": 0.27976190476190477,
+        "allGameWinRateBounds": [
+          0.27976190476190477,
+          0.27976190476190477
+        ],
+        "seedCluster95": [
+          0.23214285714285712,
+          0.3244047619047619
+        ],
+        "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+      },
+      "mixedPaired": {
+        "pairs": 336,
+        "unresolvedPairs": 0,
+        "resolvedMeanWinRateDifference": -0.22023809523809523,
+        "resolvedSeedCluster95": [
+          -0.26785714285714285,
+          -0.1755952380952381
+        ],
+        "confirmatory": true
+      },
+      "byLineup": {
+        "default": {
+          "games": 96,
+          "seedClusters": 12,
+          "wins": 17,
+          "losses": 79,
+          "truncated": 0,
+          "resolvedWinRate": 0.17708333333333334,
+          "allGameWinRateBounds": [
+            0.17708333333333334,
+            0.17708333333333334
+          ],
+          "seedCluster95": [
+            0.09375,
+            0.2604166666666667
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "assault": {
+          "games": 96,
+          "seedClusters": 12,
+          "wins": 13,
+          "losses": 83,
+          "truncated": 0,
+          "resolvedWinRate": 0.13541666666666666,
+          "allGameWinRateBounds": [
+            0.13541666666666666,
+            0.13541666666666666
+          ],
+          "seedCluster95": [
+            0.08333333333333333,
+            0.1875
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "spell": {
+          "games": 96,
+          "seedClusters": 12,
+          "wins": 15,
+          "losses": 81,
+          "truncated": 0,
+          "resolvedWinRate": 0.15625,
+          "allGameWinRateBounds": [
+            0.15625,
+            0.15625
+          ],
+          "seedCluster95": [
+            0.11458333333333333,
+            0.19791666666666666
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "support": {
+          "games": 96,
+          "seedClusters": 12,
+          "wins": 21,
+          "losses": 75,
+          "truncated": 0,
+          "resolvedWinRate": 0.21875,
+          "allGameWinRateBounds": [
+            0.21875,
+            0.21875
+          ],
+          "seedCluster95": [
+            0.16666666666666666,
+            0.2708333333333333
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "mixed": {
+          "games": 96,
+          "seedClusters": 12,
+          "wins": 19,
+          "losses": 77,
+          "truncated": 0,
+          "resolvedWinRate": 0.19791666666666666,
+          "allGameWinRateBounds": [
+            0.19791666666666666,
+            0.19791666666666666
+          ],
+          "seedCluster95": [
+            0.11458333333333333,
+            0.28125
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "tempo": {
+          "games": 96,
+          "seedClusters": 12,
+          "wins": 15,
+          "losses": 81,
+          "truncated": 0,
+          "resolvedWinRate": 0.15625,
+          "allGameWinRateBounds": [
+            0.15625,
+            0.15625
+          ],
+          "seedCluster95": [
+            0.09375,
+            0.21875
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "pressure": {
+          "games": 96,
+          "seedClusters": 12,
+          "wins": 20,
+          "losses": 76,
+          "truncated": 0,
+          "resolvedWinRate": 0.20833333333333334,
+          "allGameWinRateBounds": [
+            0.20833333333333334,
+            0.20833333333333334
+          ],
+          "seedCluster95": [
+            0.125,
+            0.2916666666666667
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        }
+      },
+      "knownDiagnosticsNotHoldout": [
+        {
+          "name": "preserve-water-seal",
+          "reversedHand": false,
+          "preferredProbability": 0.41763415932655334,
+          "argmaxPreferred": false,
+          "argmaxCandidate": {
+            "type": "response",
+            "card": {
+              "name": "waterStrike",
+              "type": "attack",
+              "category": "basic",
+              "elements": [
+                "water"
+              ],
+              "fates": [
+                "H"
+              ],
+              "uniqueSkills": [
+                "waterSeal",
+                "soulTreasure"
+              ],
+              "effect": null,
+              "source": null,
+              "zone": "hand",
+              "owner": 0
+            },
+            "target": 2
+          }
+        },
+        {
+          "name": "preserve-water-seal",
+          "reversedHand": true,
+          "preferredProbability": 0.41763418912887573,
+          "argmaxPreferred": false,
+          "argmaxCandidate": {
+            "type": "response",
+            "card": {
+              "name": "waterStrike",
+              "type": "attack",
+              "category": "basic",
+              "elements": [
+                "water"
+              ],
+              "fates": [
+                "H"
+              ],
+              "uniqueSkills": [
+                "waterSeal",
+                "soulTreasure"
+              ],
+              "effect": null,
+              "source": null,
+              "zone": "hand",
+              "owner": 0
+            },
+            "target": 2
+          }
+        },
+        {
+          "name": "spend-only-water-seal-to-survive",
+          "reversedHand": false,
+          "preferredProbability": 0.9955487251281738,
+          "argmaxPreferred": true,
+          "argmaxCandidate": {
+            "type": "response",
+            "card": {
+              "name": "waterStrike",
+              "type": "attack",
+              "category": "basic",
+              "elements": [
+                "water"
+              ],
+              "fates": [
+                "H"
+              ],
+              "uniqueSkills": [
+                "waterSeal",
+                "soulTreasure"
+              ],
+              "effect": null,
+              "source": null,
+              "zone": "hand",
+              "owner": 0
+            },
+            "target": 2
+          }
+        },
+        {
+          "name": "spend-only-water-seal-to-survive",
+          "reversedHand": true,
+          "preferredProbability": 0.9955487251281738,
+          "argmaxPreferred": true,
+          "argmaxCandidate": {
+            "type": "response",
+            "card": {
+              "name": "waterStrike",
+              "type": "attack",
+              "category": "basic",
+              "elements": [
+                "water"
+              ],
+              "fates": [
+                "H"
+              ],
+              "uniqueSkills": [
+                "waterSeal",
+                "soulTreasure"
+              ],
+              "effect": null,
+              "source": null,
+              "zone": "hand",
+              "owner": 0
+            },
+            "target": 2
+          }
+        }
+      ]
+    },
+    "107": {
+      "team": {
+        "games": 336,
+        "seedClusters": 12,
+        "wins": 36,
+        "losses": 300,
+        "truncated": 0,
+        "resolvedWinRate": 0.10714285714285714,
+        "allGameWinRateBounds": [
+          0.10714285714285714,
+          0.10714285714285714
+        ],
+        "seedCluster95": [
+          0.06547619047619048,
+          0.15178571428571427
+        ],
+        "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+      },
+      "mixed": {
+        "games": 336,
+        "seedClusters": 12,
+        "wins": 109,
+        "losses": 227,
+        "truncated": 0,
+        "resolvedWinRate": 0.3244047619047619,
+        "allGameWinRateBounds": [
+          0.3244047619047619,
+          0.3244047619047619
+        ],
+        "seedCluster95": [
+          0.2619047619047619,
+          0.39285714285714285
+        ],
+        "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+      },
+      "mixedPaired": {
+        "pairs": 336,
+        "unresolvedPairs": 0,
+        "resolvedMeanWinRateDifference": -0.1755952380952381,
+        "resolvedSeedCluster95": [
+          -0.2380952380952381,
+          -0.10714285714285715
+        ],
+        "confirmatory": true
+      },
+      "byLineup": {
+        "default": {
+          "games": 96,
+          "seedClusters": 12,
+          "wins": 18,
+          "losses": 78,
+          "truncated": 0,
+          "resolvedWinRate": 0.1875,
+          "allGameWinRateBounds": [
+            0.1875,
+            0.1875
+          ],
+          "seedCluster95": [
+            0.09375,
+            0.2916666666666667
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "assault": {
+          "games": 96,
+          "seedClusters": 12,
+          "wins": 12,
+          "losses": 84,
+          "truncated": 0,
+          "resolvedWinRate": 0.125,
+          "allGameWinRateBounds": [
+            0.125,
+            0.125
+          ],
+          "seedCluster95": [
+            0.0625,
+            0.1875
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "spell": {
+          "games": 96,
+          "seedClusters": 12,
+          "wins": 15,
+          "losses": 81,
+          "truncated": 0,
+          "resolvedWinRate": 0.15625,
+          "allGameWinRateBounds": [
+            0.15625,
+            0.15625
+          ],
+          "seedCluster95": [
+            0.0625,
+            0.2604166666666667
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "support": {
+          "games": 96,
+          "seedClusters": 12,
+          "wins": 29,
+          "losses": 67,
+          "truncated": 0,
+          "resolvedWinRate": 0.3020833333333333,
+          "allGameWinRateBounds": [
+            0.3020833333333333,
+            0.3020833333333333
+          ],
+          "seedCluster95": [
+            0.15625,
+            0.4583333333333333
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "mixed": {
+          "games": 96,
+          "seedClusters": 12,
+          "wins": 30,
+          "losses": 66,
+          "truncated": 0,
+          "resolvedWinRate": 0.3125,
+          "allGameWinRateBounds": [
+            0.3125,
+            0.3125
+          ],
+          "seedCluster95": [
+            0.23958333333333334,
+            0.3854166666666667
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "tempo": {
+          "games": 96,
+          "seedClusters": 12,
+          "wins": 19,
+          "losses": 77,
+          "truncated": 0,
+          "resolvedWinRate": 0.19791666666666666,
+          "allGameWinRateBounds": [
+            0.19791666666666666,
+            0.19791666666666666
+          ],
+          "seedCluster95": [
+            0.13541666666666666,
+            0.2604166666666667
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        },
+        "pressure": {
+          "games": 96,
+          "seedClusters": 12,
+          "wins": 22,
+          "losses": 74,
+          "truncated": 0,
+          "resolvedWinRate": 0.22916666666666666,
+          "allGameWinRateBounds": [
+            0.22916666666666666,
+            0.22916666666666666
+          ],
+          "seedCluster95": [
+            0.17708333333333334,
+            0.2916666666666667
+          ],
+          "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+        }
+      },
+      "knownDiagnosticsNotHoldout": [
+        {
+          "name": "preserve-water-seal",
+          "reversedHand": false,
+          "preferredProbability": 0.6911213397979736,
+          "argmaxPreferred": true,
+          "argmaxCandidate": {
+            "type": "response",
+            "card": {
+              "name": "waterStrike",
+              "type": "attack",
+              "category": "basic",
+              "elements": [
+                "water"
+              ],
+              "fates": [
+                "X"
+              ],
+              "uniqueSkills": [
+                "bloodBlade",
+                "bloodLament"
+              ],
+              "effect": null,
+              "source": null,
+              "zone": "hand",
+              "owner": 0
+            },
+            "target": 2
+          }
+        },
+        {
+          "name": "preserve-water-seal",
+          "reversedHand": true,
+          "preferredProbability": 0.6911213397979736,
+          "argmaxPreferred": true,
+          "argmaxCandidate": {
+            "type": "response",
+            "card": {
+              "name": "waterStrike",
+              "type": "attack",
+              "category": "basic",
+              "elements": [
+                "water"
+              ],
+              "fates": [
+                "X"
+              ],
+              "uniqueSkills": [
+                "bloodBlade",
+                "bloodLament"
+              ],
+              "effect": null,
+              "source": null,
+              "zone": "hand",
+              "owner": 0
+            },
+            "target": 2
+          }
+        },
+        {
+          "name": "spend-only-water-seal-to-survive",
+          "reversedHand": false,
+          "preferredProbability": 0.9998244047164917,
+          "argmaxPreferred": true,
+          "argmaxCandidate": {
+            "type": "response",
+            "card": {
+              "name": "waterStrike",
+              "type": "attack",
+              "category": "basic",
+              "elements": [
+                "water"
+              ],
+              "fates": [
+                "H"
+              ],
+              "uniqueSkills": [
+                "waterSeal",
+                "soulTreasure"
+              ],
+              "effect": null,
+              "source": null,
+              "zone": "hand",
+              "owner": 0
+            },
+            "target": 2
+          }
+        },
+        {
+          "name": "spend-only-water-seal-to-survive",
+          "reversedHand": true,
+          "preferredProbability": 0.9998244047164917,
+          "argmaxPreferred": true,
+          "argmaxCandidate": {
+            "type": "response",
+            "card": {
+              "name": "waterStrike",
+              "type": "attack",
+              "category": "basic",
+              "elements": [
+                "water"
+              ],
+              "fates": [
+                "H"
+              ],
+              "uniqueSkills": [
+                "waterSeal",
+                "soulTreasure"
+              ],
+              "effect": null,
+              "source": null,
+              "zone": "hand",
+              "owner": 0
+            },
+            "target": 2
+          }
+        }
+      ]
+    }
+  }
+}

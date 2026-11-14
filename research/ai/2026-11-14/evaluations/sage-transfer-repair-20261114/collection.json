@@ -1,0 +1,66 @@
+{
+  "summary": {
+    "games": 96,
+    "completed": 96,
+    "wins": 30,
+    "truncated": 0,
+    "win_rate": 0.3125,
+    "seed_cluster_interval95": [
+      0.21875,
+      0.40625
+    ],
+    "inability_forfeits": 0,
+    "victory_routes": {
+      "cups": 36,
+      "morale": 60
+    },
+    "behavior": {
+      "turns": 867,
+      "coveredAdded": 0,
+      "enemyAttackDamage": 443,
+      "enemySpellDamage": 293,
+      "refineGem": 73,
+      "refineCrystal": 59
+    },
+    "skill_notes": {
+      "spellRebound": 92,
+      "arcaneCodex": 118,
+      "wisdomCodex": 5,
+      "wayOfService": 3,
+      "calmWind": 4,
+      "powerBlessing": 6,
+      "speedBlessing": 4,
+      "confession": 3,
+      "whiteKarma": 2
+    },
+    "root_actions": {
+      "activate": 575,
+      "play": 518,
+      "synthesize": 78,
+      "purchase": 75,
+      "refine": 97,
+      "arcaneCodex": 59
+    },
+    "opponents": {
+      "model:frozenCurrent": {
+        "wins": 8,
+        "completed": 24
+      },
+      "model:anchor417": {
+        "wins": 4,
+        "completed": 24
+      },
+      "v1.17.0-preview.5": {
+        "wins": 5,
+        "completed": 24
+      },
+      "legacy-score-partial-v1": {
+        "wins": 13,
+        "completed": 24
+      }
+    },
+    "behavior_note": "Public event totals, not rewards. Skill notes can include multiple notes per activation; damage is not morale loss."
+  },
+  "root_samples": 2773,
+  "all_samples": 3977
+}

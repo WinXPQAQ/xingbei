@@ -1,0 +1,16 @@
+{
+  "parent_rules": "/home/xp/.local/share/xingbei-ml/sage-full-action-boundary-20261114/source/xingbei-cli",
+  "overlays": {
+    "training/worker.mjs": "3335f8893a9fd3b04e42fb280e9a9c6e0d2f89f2c7e8b0e3909e52b70b52d510",
+    "training/entity/sage-transfer.mjs": "a47e3da7a770bd7bca4415906fc196397b38e6c9d54fc109263ad0416ad52303",
+    "training/entity/rehearsal.py": "de6e6f86be290948c4e6b3aff22ebc895c3d09828073dd2fec5c71931bfb0256",
+    "training/entity/reinforce.py": "e5bcc10f00db0b9c4f29acedbe11caa563942f63192b7202bab7595e0e6a2d2d"
+  },
+  "initial": "/home/xp/.local/share/xingbei-ml/sage-full-action-boundary-20261114/sage-initial.pt",
+  "opponents": "/home/xp/.local/share/xingbei-ml/sage-full-action-boundary-20261114",
+  "purpose": "controlled action-only interference and first-refinement experiments; same actor, independent critic; no deployment",
+  "second_phase_overlays": {
+    "training/entity/pool.py": "62bc2d5ab89e5fe7f068e95a5c6c28cff47fd5aa8c31500e9be669d9573d98b4",
+    "training/entity/reinforce.py": "f5976ddf5e9b5af95e503fe28ffe8861ebacba33c9c06fc1410005ca1c4fab0d"
+  }
+}

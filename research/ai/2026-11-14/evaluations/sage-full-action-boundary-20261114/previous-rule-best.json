@@ -1,0 +1,168 @@
+{
+  "hero": "sage",
+  "round": 285,
+  "checkpoint": "/home/xp/.local/share/xingbei-ml/sage-full-activation-guard-20261113/sage/round-000285.pt",
+  "control": {
+    "games": 144,
+    "completed": 144,
+    "wins": 66,
+    "truncated": 0,
+    "win_rate": 0.4583333333333333,
+    "seed_cluster_interval95": [
+      0.3819444444444444,
+      0.5347222222222222
+    ],
+    "inability_forfeits": 0,
+    "victory_routes": {
+      "cups": 66,
+      "morale": 78
+    },
+    "behavior": {
+      "turns": 1299,
+      "coveredAdded": 0,
+      "enemyAttackDamage": 697,
+      "enemySpellDamage": 318,
+      "refineGem": 1,
+      "refineCrystal": 0
+    },
+    "skill_notes": {
+      "spellRebound": 112,
+      "wisdomCodex": 7,
+      "arcaneCodex": 24,
+      "whiteKarma": 2,
+      "wayOfService": 2,
+      "heresyJudgment": 1,
+      "passionateRhapsody": 3,
+      "service": 8
+    },
+    "root_actions": {
+      "activate": 978,
+      "play": 966,
+      "synthesize": 202,
+      "purchase": 50,
+      "arcaneCodex": 12,
+      "refine": 1
+    },
+    "opponents": {
+      "model:frozenCurrent": {
+        "wins": 16,
+        "completed": 36
+      },
+      "model:anchor417": {
+        "wins": 13,
+        "completed": 36
+      },
+      "v1.17.0-preview.5": {
+        "wins": 19,
+        "completed": 36
+      },
+      "legacy-score-partial-v1": {
+        "wins": 18,
+        "completed": 36
+      }
+    },
+    "behavior_note": "Public event totals, not rewards. Skill notes can include multiple notes per activation; damage is not morale loss."
+  },
+  "specialist": {
+    "games": 144,
+    "completed": 144,
+    "wins": 85,
+    "truncated": 0,
+    "win_rate": 0.5902777777777778,
+    "seed_cluster_interval95": [
+      0.5069444444444444,
+      0.6805555555555555
+    ],
+    "inability_forfeits": 0,
+    "victory_routes": {
+      "morale": 76,
+      "cups": 68
+    },
+    "behavior": {
+      "turns": 1317,
+      "coveredAdded": 0,
+      "enemyAttackDamage": 905,
+      "enemySpellDamage": 376,
+      "refineGem": 0,
+      "refineCrystal": 0
+    },
+    "skill_notes": {
+      "spellRebound": 115,
+      "wisdomCodex": 10,
+      "arcaneCodex": 38,
+      "heresyJudgment": 1,
+      "wayOfService": 1,
+      "passionateRhapsody": 3,
+      "confession": 4,
+      "powerBlessing": 2,
+      "service": 3
+    },
+    "root_actions": {
+      "activate": 921,
+      "play": 902,
+      "purchase": 165,
+      "synthesize": 167,
+      "arcaneCodex": 19
+    },
+    "opponents": {
+      "model:frozenCurrent": {
+        "wins": 26,
+        "completed": 36
+      },
+      "model:anchor417": {
+        "wins": 19,
+        "completed": 36
+      },
+      "v1.17.0-preview.5": {
+        "wins": 19,
+        "completed": 36
+      },
+      "legacy-score-partial-v1": {
+        "wins": 21,
+        "completed": 36
+      }
+    },
+    "behavior_note": "Public event totals, not rewards. Skill notes can include multiple notes per activation; damage is not morale loss."
+  },
+  "paired": {
+    "paired_completed": 144,
+    "difference": 0.13194444444444445,
+    "seed_cluster_interval95": [
+      0.048611111111111105,
+      0.21527777777777776
+    ]
+  },
+  "stats": {
+    "decisions": 22438,
+    "candidates": 72486,
+    "bytes": 140950317,
+    "batches": 9984,
+    "max_batch": 7,
+    "collate_seconds": 8.800952911376953,
+    "infer_seconds": 18.318891109665856,
+    "collate_infer_seconds": 27.28221491887234,
+    "parse_seconds": 1.2741054228972644,
+    "decode_seconds": 6.095180397387594,
+    "binary_read_seconds": 0.7818323504179716,
+    "queue_wait_seconds": 132.2730226276908,
+    "decode_cpu_seconds": 4.148850171994127,
+    "collate_cpu_seconds": 7.500765794995914,
+    "infer_cpu_seconds": 15.048024949010141,
+    "reused_prefixes": 0,
+    "model_decisions": {
+      "frozenCurrent": 8007,
+      "anchor417": 8748,
+      "current": 5683
+    },
+    "workers_started": 0,
+    "workers_reused": 16,
+    "timing_semantics": "Host wall-clock phases. Combined collation and inference ends after results return to CPU.",
+    "seconds": 43.316732347011566,
+    "games_per_second": 3.324350480696742,
+    "decisions_per_second": 517.9984450407882,
+    "fresh_engine_requests": 30101,
+    "engine_requests_per_second": 694.9046793017543,
+    "mean_batch": 2.2473958333333335,
+    "forced_choices": 6652
+  }
+}

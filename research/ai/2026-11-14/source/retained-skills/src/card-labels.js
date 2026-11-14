@@ -1,0 +1,18 @@
+export const CARD_NAMES = {
+  demonBlade: "魔刃", alienBlade: "异刃",
+  royalOrb: "王权宝珠", chronicle: "史书", waypoint: "路标", doomProphecy: "末日预言", thunderCatastrophe: "天雷劫火", earthCatastrophe: "地裂波涛",
+  windTunnel: "风穴", absoluteRealm: "绝界",
+  inquisitionCourt: "异端裁决所", lawStarlight: "律法：繁星", lawMoonlight: "律法：影月", lawEclipse: "律法：蚀日", soulLink: "灵魂链接", sharedFate: "同生共死",
+  roseGarden: "血蔷薇庭院",
+  provocation: "挑衅", eternalMovement: "永恒乐章",
+  darkStrike: "暗灭", waterStrike: "水涟斩", fireStrike: "火焰斩",
+  windStrike: "风神斩", thunderStrike: "雷光斩", earthStrike: "地裂斩",
+  holyLight: "圣光", holyShield: "圣盾", weakness: "虚弱",
+  fivefoldBinding: "五系束缚",
+  poison: "中毒", magicBullet: "魔弹",
+};
+
+export function cardName(cardOrName) {
+  const name = typeof cardOrName === "string" ? cardOrName : cardOrName.name;
+  return `【${CARD_NAMES[name] ?? name}】`;
+}

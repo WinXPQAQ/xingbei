@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "authorization": "User approved retaining v1.5 as the decision baseline and learning corrections; supersedes independent-policy/no-baseline restriction only.",
+  "baseline": "v1.5 at d1560abd1be87b1aa5a56a33f550903508d23ac2",
+  "initialPolicy": "Exact baseline candidate receives prior mass .95; other legal candidates share .05. Zero neural correction. Greedy exactly selects baseline; sampled exploration is explicitly different.",
+  "reward": "Terminal team win/loss +1/-1 only; no intermediate/entropy reward",
+  "architecture": "decision-context-v6; separate critic; zero final action layer; no pruning; baseline choice required at inference; missing baseline fails closed",
+  "preview": "v1: detached-observation local checkpoints for response hand consumption, overflow hand removal, refinement resources and extra-action pass. All remaining resolutions explicitly unresolved. No hidden-card rollout or predicted damage.",
+  "equivalenceSeeds": "251001000..251001041: 7 lineups x 6 starting seats, paired exact v1.5 decisions and games",
+  "pilot": {"name": "residual-v1-211", "seed": 211, "firstSeed": 251100000, "updates": 24, "gamesPerUpdate": 24, "warmup": 0, "learningRate": 0.0001, "batchSize": 512, "epochs": 3, "workers": 4, "device": "cuda", "maximumMinutes": 30},
+  "developmentEvaluation": {"firstSeed": 231000000, "seeds": 6, "selection": "greedy", "balancedMixed": true, "checkpoints": ["initial.pt", "checkpoint.pt"], "note": "Reused development seeds, NOT independent holdout. Pair final with zero correction. No claim of improvement on small pilot alone."},
+  "acceptance": "Retain independent final seed range 241000000..241000119 unused until candidate frozen; team seed-cluster 95% lower bound > .50; report lineups, seats, mixed controls and truncation.",
+  "deployment": "Local isolated worktree only. No push/main/online changes. No guarantee against post-training regression; keep initial checkpoint."
+}

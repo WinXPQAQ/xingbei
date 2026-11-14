@@ -1,0 +1,757 @@
+{
+  "schema": 1,
+  "license": "GPL-3.0; original xingbei-1.6.7-source/LICENSE",
+  "scope": "Only unambiguous numeric ai.order; dynamic order and embedded callbacks are NOT migrated",
+  "sources": {
+    "character/shiZhouNian.js": "b478cca81e0fd04c99c14c868195213a989e2d9caccaf08b71ab3d5beee76b59",
+    "character/yiDuanYeHuo.js": "46ac6f2e6ff2b7465bdef575b23373e798e09cc98cd2a7e051c31e511b35bfdc",
+    "character/zhongMoDaoZhu.js": "ff9ff152712d682276d08ab713b77ec262e100803f62f16b73dc01234aed7319",
+    "character/shenZiChuangLin.js": "69140e6aa3a206895501634a71e17fb6433f40d253bc8a15ed7bd5cda4f81e30",
+    "character/teDian.js": "eba06ebf1105f28cf34fb18e0bceb0459f7e966c7f701f93c3ccf3dd1568805d"
+  },
+  "heroes": {
+    "mischiefGirl": {
+      "rebelliousWall": {
+        "order": 3.25,
+        "sources": [
+          {
+            "id": "panNiZhiQiang",
+            "file": "character/teDian.js"
+          }
+        ]
+      }
+    },
+    "holyAdjudicator": {},
+    "orchestraLeader": {},
+    "swordChild": {},
+    "slothGirl": {
+      "leaveMeAlone": {
+        "order": 3.2,
+        "sources": [
+          {
+            "id": "bieFanWo",
+            "file": "character/teDian.js"
+          }
+        ]
+      },
+      "wantMagicBullet": {
+        "order": 3.1,
+        "sources": [
+          {
+            "id": "xiangYongMoDan",
+            "file": "character/teDian.js"
+          }
+        ]
+      }
+    },
+    "spiritTide": {},
+    "gluttonousGirl": {
+      "deliciousFusion": {
+        "order": 3.5,
+        "sources": [
+          {
+            "id": "meiWeiRongHe",
+            "file": "character/teDian.js"
+          }
+        ]
+      }
+    },
+    "trickAdventurer": {
+      "deception": {
+        "order": 3.7,
+        "sources": [
+          {
+            "id": "qiZha",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      },
+      "sleightOfHand": {
+        "order": 3.8,
+        "sources": [
+          {
+            "id": "touTianHuanRi",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      }
+    },
+    "primalArcher": {
+      "holyHurricane": {
+        "order": 3.4,
+        "sources": [
+          {
+            "id": "shengXieJuBao",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      },
+      "radiantDescent": {
+        "order": 7,
+        "sources": [
+          {
+            "id": "shengHuangJiangLin",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      }
+    },
+    "trickHolyArcher": {
+      "holyHurricane": {
+        "order": 3.4,
+        "sources": [
+          {
+            "id": "shengXieJuBao",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      },
+      "radiantDescent": {
+        "order": 7,
+        "sources": [
+          {
+            "id": "shengHuangJiangLin",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      }
+    },
+    "enviousGirl": {
+      "lovesickness": {
+        "order": 3.2,
+        "sources": [
+          {
+            "id": "xiangSiBing",
+            "file": "character/teDian.js"
+          }
+        ]
+      }
+    },
+    "ranger": {
+      "elfSwordDance": {
+        "order": 3.2,
+        "sources": [
+          {
+            "id": "jingLingDeJianWu",
+            "file": "character/teDian.js"
+          }
+        ]
+      }
+    },
+    "magicArcherEX": {
+      "snipe": {
+        "order": 3.8,
+        "sources": [
+          {
+            "id": "juJi",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      }
+    },
+    "apprenticeProducer": {},
+    "delinquentGirl": {},
+    "curseTalisman": {
+      "fireTalisman": {
+        "order": 3.3,
+        "sources": [
+          {
+            "id": "zhouFuHuoLi",
+            "file": "character/teDian.js"
+          }
+        ]
+      }
+    },
+    "greedyGirl": {
+      "greedBlackHole": {
+        "order": 3.5,
+        "sources": [
+          {
+            "id": "tanYuHeiDong",
+            "file": "character/teDian.js"
+          }
+        ]
+      },
+      "alchemy": {
+        "order": 3.2,
+        "sources": [
+          {
+            "id": "lianJinShu",
+            "file": "character/teDian.js"
+          }
+        ]
+      },
+      "deadGirlsVault": {
+        "order": 3.8,
+        "sources": [
+          {
+            "id": "wangNvJinKu",
+            "file": "character/teDian.js"
+          }
+        ]
+      }
+    },
+    "holidayMage": {
+      "magicFusion": {
+        "order": 3.5,
+        "sources": [
+          {
+            "id": "moDanRongHe",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      },
+      "magicBurst": {
+        "order": 3.5,
+        "sources": [
+          {
+            "id": "moBaoChongJi",
+            "file": "character/shiZhouNian.js"
+          },
+          {
+            "id": "jiRi_moBaoChongJie",
+            "file": "character/teDian.js"
+          }
+        ]
+      },
+      "destructionStorm": {
+        "order": 3.8,
+        "sources": [
+          {
+            "id": "huiMieFengBao",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      }
+    },
+    "godEater": {},
+    "lawgiver": {
+      "castling": {
+        "order": 3.1,
+        "sources": [
+          {
+            "id": "wangCheYiWei",
+            "file": "character/zhongMoDaoZhu.js"
+          }
+        ]
+      }
+    },
+    "cardinal": {
+      "authorityReversal": {
+        "order": 3.1,
+        "sources": [
+          {
+            "id": "quanNengNiWei",
+            "file": "character/zhongMoDaoZhu.js"
+          }
+        ]
+      }
+    },
+    "chronicler": {
+      "unityOfKnowledge": {
+        "order": 3.4,
+        "sources": [
+          {
+            "id": "zhiXingHeYi",
+            "file": "character/zhongMoDaoZhu.js"
+          }
+        ]
+      },
+      "myriadRuins": {
+        "order": 3.4,
+        "sources": [
+          {
+            "id": "miJingWanXiang",
+            "file": "character/zhongMoDaoZhu.js"
+          }
+        ]
+      }
+    },
+    "missionary": {},
+    "heretic": {},
+    "nobleLady": {},
+    "headMaid": {},
+    "barrierMaster": {
+      "barrierRitual": {
+        "order": 4,
+        "sources": [
+          {
+            "id": "jieJieYiShi",
+            "file": "character/shenZiChuangLin.js"
+          }
+        ]
+      },
+      "forbiddenRealm": {
+        "order": 3.6,
+        "sources": [
+          {
+            "id": "jinMoJing",
+            "file": "character/shenZiChuangLin.js"
+          }
+        ]
+      }
+    },
+    "mystic": {
+      "wordSpirit": {
+        "order": 3.8,
+        "sources": [
+          {
+            "id": "yanLingShu",
+            "file": "character/shenZiChuangLin.js"
+          }
+        ]
+      },
+      "trueWord": {
+        "order": 3.9,
+        "sources": [
+          {
+            "id": "zhenYanShu",
+            "file": "character/shenZiChuangLin.js"
+          }
+        ]
+      }
+    },
+    "defiler": {},
+    "swordWitch": {},
+    "butterflyDancer": {
+      "butterflyDance": {
+        "order": 3.4,
+        "sources": [
+          {
+            "id": "wuDong",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      },
+      "reverseButterfly": {
+        "order": 3.3,
+        "sources": [
+          {
+            "id": "daoNiZhiDie",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      }
+    },
+    "battleMage": {
+      "runeExchange": {
+        "order": 3.8,
+        "sources": [
+          {
+            "id": "fuWenZhiHuan",
+            "file": "character/yiDuanYeHuo.js"
+          }
+        ]
+      }
+    },
+    "starfallWitch": {
+      "creationRhythm": {
+        "order": 3.8,
+        "sources": [
+          {
+            "id": "chuangKeLvDong",
+            "file": "character/yiDuanYeHuo.js"
+          }
+        ]
+      }
+    },
+    "inquisitor": {
+      "graceBestowal": {
+        "order": 3.6,
+        "sources": [
+          {
+            "id": "enDianShenShou",
+            "file": "character/yiDuanYeHuo.js"
+          }
+        ]
+      }
+    },
+    "witchHunter": {
+      "spellConversion": {
+        "order": 3.5,
+        "sources": [
+          {
+            "id": "zhuanHuan",
+            "file": "character/yiDuanYeHuo.js"
+          }
+        ]
+      }
+    },
+    "templar": {},
+    "elfArcher": {},
+    "yinYangMaster": {
+      "shikigamiDescent": {
+        "order": 4,
+        "sources": [
+          {
+            "id": "shiShenJiangLin",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      },
+      "yinYangConvert": {
+        "order": 5,
+        "sources": [
+          {
+            "id": "yinYangZhanHuan",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      },
+      "lifeBarrier": {
+        "order": 3.8,
+        "sources": [
+          {
+            "id": "shengMingJieJie",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      }
+    },
+    "soulWarlock": {},
+    "bloodWitch": {
+      "reverseFlow": {
+        "order": 3.6,
+        "sources": [
+          {
+            "id": "niLiu",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      }
+    },
+    "moonGoddess": {
+      "paleMoon": {
+        "order": 4,
+        "sources": [
+          {
+            "id": "cangBaiZhiYue",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      }
+    },
+    "holyArcher": {
+      "holyHurricane": {
+        "order": 3.4,
+        "sources": [
+          {
+            "id": "shengXieJuBao",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      },
+      "radiantDescent": {
+        "order": 7,
+        "sources": [
+          {
+            "id": "shengHuangJiangLin",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      }
+    },
+    "talismanMaster": {},
+    "swordEmperor": {},
+    "magicArcher": {},
+    "azureFlameWitch": {
+      "azureCodex": {
+        "order": 3.6,
+        "sources": [
+          {
+            "id": "cangYanFaDian",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      },
+      "skyfireRift": {
+        "order": 3.7,
+        "sources": [
+          {
+            "id": "tianHuoDuanKong",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      },
+      "painLink": {
+        "order": 3.6,
+        "sources": [
+          {
+            "id": "tongKuLianJie",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      }
+    },
+    "bloodSwordSpirit": {},
+    "beastWarrior": {},
+    "adventurer": {
+      "deception": {
+        "order": 3.7,
+        "sources": [
+          {
+            "id": "qiZha",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      },
+      "sleightOfHand": {
+        "order": 3.8,
+        "sources": [
+          {
+            "id": "touTianHuanRi",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      }
+    },
+    "fighter": {},
+    "brave": {},
+    "redLotusKnight": {},
+    "magicLancer": {
+      "abundance": {
+        "order": 4,
+        "sources": [
+          {
+            "id": "chongYing",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      }
+    },
+    "bard": {},
+    "assassin": {},
+    "magicSwordsman": {},
+    "adjudicator": {
+      "judgmentBalance": {
+        "order": 3.6,
+        "sources": [
+          {
+            "id": "panJueTianPing",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      }
+    },
+    "sage": {
+      "arcaneCodex": {
+        "order": 3.5,
+        "sources": [
+          {
+            "id": "moDaoFaDian",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      },
+      "holyCodex": {
+        "order": 3.3,
+        "sources": [
+          {
+            "id": "shengJieFaDian",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      }
+    },
+    "prayer": {
+      "radiantFaith": {
+        "order": 3.6,
+        "sources": [
+          {
+            "id": "guangHuiXinYang",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      },
+      "darkCurse": {
+        "order": 3.7,
+        "sources": [
+          {
+            "id": "heiAnZuZhou",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      }
+    },
+    "heroicPuppet": {},
+    "saint": {
+      "holyCure": {
+        "order": 3.5,
+        "sources": [
+          {
+            "id": "shengLiao",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      }
+    },
+    "holyLancer": {
+      "radiance": {
+        "order": 3.6,
+        "sources": [
+          {
+            "id": "huiYao",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      },
+      "chastisement": {
+        "order": 3.8,
+        "sources": [
+          {
+            "id": "chengJie",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      }
+    },
+    "plagueMage": {
+      "plague": {
+        "order": 3.6,
+        "sources": [
+          {
+            "id": "wenYi",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      },
+      "toxicNova": {
+        "order": 3.7,
+        "sources": [
+          {
+            "id": "juDuXinXing",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      }
+    },
+    "elementalist": {
+      "elementIgnition": {
+        "order": 3.7,
+        "sources": [
+          {
+            "id": "yuanSuDianRan",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      }
+    },
+    "valkyrie": {
+      "orderSigil": {
+        "order": 4,
+        "sources": [
+          {
+            "id": "zhiXuZhiYin",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      }
+    },
+    "magicalGirl": {
+      "magicFusion": {
+        "order": 3.5,
+        "sources": [
+          {
+            "id": "moDanRongHe",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      },
+      "magicBurst": {
+        "order": 3.5,
+        "sources": [
+          {
+            "id": "moBaoChongJi",
+            "file": "character/shiZhouNian.js"
+          },
+          {
+            "id": "jiRi_moBaoChongJie",
+            "file": "character/teDian.js"
+          }
+        ]
+      },
+      "destructionStorm": {
+        "order": 3.8,
+        "sources": [
+          {
+            "id": "huiMieFengBao",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      }
+    },
+    "priest": {
+      "prayer": {
+        "order": 3.6,
+        "sources": [
+          {
+            "id": "shenShengQiFu",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      },
+      "waterPower": {
+        "order": 3.5,
+        "sources": [
+          {
+            "id": "shuiZhiShenLi",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      },
+      "sacredDomain": {
+        "order": 3.8,
+        "sources": [
+          {
+            "id": "shenShengLingYu",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      }
+    },
+    "guardianAngel": {
+      "windCleansing": {
+        "order": 3.5,
+        "sources": [
+          {
+            "id": "fengZhiJieJing",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      },
+      "angelBlessing": {
+        "order": 3,
+        "sources": [
+          {
+            "id": "tianShiZhuFu",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      }
+    },
+    "sealer": {
+      "sealBreaking": {
+        "order": 3.5,
+        "sources": [
+          {
+            "id": "fengYinPoSui",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      }
+    },
+    "marksman": {
+      "snipe": {
+        "order": 3.8,
+        "sources": [
+          {
+            "id": "juJi",
+            "file": "character/shiZhouNian.js"
+          }
+        ]
+      }
+    },
+    "windSwordmaster": {},
+    "berserker": {}
+  }
+}

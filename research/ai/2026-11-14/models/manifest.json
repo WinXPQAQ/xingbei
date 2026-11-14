@@ -1,0 +1,110 @@
+[
+  {
+    "id": "online-v6-417",
+    "file": "models/online-v6-417.pt",
+    "description": "线上417轮基线",
+    "role": "online",
+    "original": "/home/xp/.local/share/xingbei-ml/preview/releases/v6-417-human-20261110/model.pt",
+    "bytes": 14496763,
+    "sha256": "95df6c39e6559f6faf52f8100a9b5a6c544a4b1012afe3659a2ebb19f4f07389"
+  },
+  {
+    "id": "frozen-current",
+    "file": "models/frozen-current.pt",
+    "description": "专项训练的冻结整局陪练",
+    "role": "baseline",
+    "original": "/home/xp/.local/share/xingbei-ml/sage-full-action-boundary-20261114/frozen-current.pt",
+    "bytes": 14631355,
+    "sha256": "e8ab07a3a9df27ac8496d95aa52adcfdb8ee17854672f650a7bc38da6fd02eb5"
+  },
+  {
+    "id": "sage-drill-480",
+    "file": "models/sage-drill-480.pt",
+    "description": "贤者反弹与续航专项开发最佳",
+    "role": "practice",
+    "original": "/home/xp/.local/share/xingbei-ml/sage-pipeline-20261112/round-000480.pt",
+    "bytes": 14735099,
+    "sha256": "39f807cba19bc90fed01c267532efbc2798780a69356ae39ccc2009f9ff6a16c"
+  },
+  {
+    "id": "sage-full-285",
+    "file": "models/sage-full-285.pt",
+    "description": "贤者旧规则整局开发最佳，85/144胜",
+    "role": "historical-best",
+    "original": "/home/xp/.local/share/xingbei-ml/sage-full-activation-guard-20261113/sage/round-000285.pt",
+    "bytes": 14670779,
+    "sha256": "7ff7f4afdfb3df44b5d5ba7559716e6ce20952358100d2ada10eb30dee0fabc1"
+  },
+  {
+    "id": "sage-full-451",
+    "file": "models/sage-full-451.pt",
+    "description": "贤者退化诊断对照",
+    "role": "regression-control",
+    "original": "/home/xp/.local/share/xingbei-ml/sage-full-activation-guard-20261113/sage/round-000451.pt",
+    "bytes": 14670779,
+    "sha256": "18008b93320933e27a52b5a2c49d8071312d32cd8612dc0282b909e87debf416"
+  },
+  {
+    "id": "sage-full-458",
+    "file": "models/sage-full-458.pt",
+    "description": "贤者行动边界修复后的开发最佳",
+    "role": "current-rule-best",
+    "original": "/home/xp/.local/share/xingbei-ml/sage-full-action-boundary-20261114/sage/round-000458.pt",
+    "bytes": 14671163,
+    "sha256": "195e6423d8feb71b3ae4d945fd6516fefec603572f44ddb80cfb28198abac13e"
+  },
+  {
+    "id": "sage-full-476",
+    "file": "models/sage-full-476.pt",
+    "description": "贤者当前暂停点",
+    "role": "latest-complete",
+    "original": "/home/xp/.local/share/xingbei-ml/sage-full-action-boundary-20261114/sage/round-000476.pt",
+    "bytes": 14671163,
+    "sha256": "af1c3dae4c26a3fbf238997dc5b13d39fb0e6ccac1e733f30e07aa170222d433"
+  },
+  {
+    "id": "sage-repaired-003",
+    "file": "models/sage-repaired-003.pt",
+    "description": "贤者迁移修复实验候选，完整评测另列",
+    "role": "experimental",
+    "original": "/home/xp/.local/share/xingbei-ml/sage-transfer-repair-20261114/repaired-003.pt",
+    "bytes": 14671139,
+    "sha256": "b33a6008e8634554106799dac6f0de55e85be022c38fb0e8ecfb130457f1c153"
+  },
+  {
+    "id": "magic-archer-617",
+    "file": "models/magic-archer-617.pt",
+    "description": "魔弓旧规则开发最佳",
+    "role": "historical-best",
+    "original": "/home/xp/.local/share/xingbei-ml/magic-archer-activation-guard-20261113/magicArcher/round-000617.pt",
+    "bytes": 14642427,
+    "sha256": "81d067e3359b05c3fea957c023755db8be1854455fd7f0c88c257bccdc18cb18"
+  },
+  {
+    "id": "magic-archer-944",
+    "file": "models/magic-archer-944.pt",
+    "description": "魔弓行动边界修复后的开发最佳",
+    "role": "current-rule-best",
+    "original": "/home/xp/.local/share/xingbei-ml/magic-archer-action-boundary-20261114/magicArcher/round-000944.pt",
+    "bytes": 14642811,
+    "sha256": "a2f5044178aa09082b50fd96ac82ff1d4de8c9f1d93ef74579372d4bf286e528"
+  },
+  {
+    "id": "magic-archer-995",
+    "file": "models/magic-archer-995.pt",
+    "description": "魔弓采集时最新完整检查点",
+    "role": "latest-complete",
+    "original": "/home/xp/.local/share/xingbei-ml/magic-archer-action-boundary-20261114/magicArcher/round-000995.pt",
+    "bytes": 14642811,
+    "sha256": "d187d6b0324a43694dc5da7c636f36e57f7726f4db036f3d8988d456e8cb8eec"
+  },
+  {
+    "id": "sage-retained-017",
+    "file": "models/sage-retained-017.pt",
+    "description": "主线程新启动的能力保留训练，第17轮完整检查点",
+    "role": "latest-experimental",
+    "original": "/home/xp/.local/share/xingbei-ml/sage-retained-skills-20261114/sage/round-000017.pt",
+    "bytes": 14675579,
+    "sha256": "c3261c4dabb2294fee494090f259c99235342dbfcbb096106a7ce93d0cdbea2a"
+  }
+]

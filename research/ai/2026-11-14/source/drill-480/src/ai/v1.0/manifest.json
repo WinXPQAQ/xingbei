@@ -1,0 +1,11 @@
+{
+  "sourceCommit": "31007a8d38088a6d8678587f931c45fa2d2fb96a",
+  "note": "Exact policy sources; only index relative import paths adjusted. Rules engine remains shared.",
+  "files": {
+    "actions.js": "a076a2b54159e27b0ae66cda8351c66802a227068b7e73563b9732df1da22bb4",
+    "decisions.js": "1b422689523ae7c2fdeb4df16ee275a32ac0d5359e1103a5b2e9cef3045e4e11",
+    "evaluation.js": "3ddffe24ea04591061932c1e0a72629b7de4eb07bdcdc5cdd823d792967ab56f",
+    "index.js": "f8efd742a16596b43897794393cbb4e57e634e8a7ed4bef608699fbf494ba481",
+    "wind-plan.js": "18cc8af28e5acba0b238acd3ae0b44667de296445a282034a97c65b519412a1f"
+  }
+}

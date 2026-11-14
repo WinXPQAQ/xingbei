@@ -1,0 +1,3721 @@
+{
+  "round": 480,
+  "checkpoint": "/home/xp/.local/share/xingbei-ml/sage-pipeline-20261112/round-000480.pt",
+  "selection_key": [
+    1.0,
+    8.00390625
+  ],
+  "summary": {
+    "games": 1024,
+    "eligible": 1024,
+    "ineligible": 0,
+    "truncated": 0,
+    "samples": 1024,
+    "safety_rate": 1.0,
+    "safety_interval95": [
+      0.9962624591182144,
+      1
+    ],
+    "safe_damage_standard_error": 0.04798433162335509,
+    "safe_damage_mean": 6.00390625,
+    "safe_damage_per_attempt": 6.00390625,
+    "direct_damage_mean": null,
+    "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss.",
+    "damage_mean": 5.98046875,
+    "enemy_morale_loss_mean": 6.00390625,
+    "own_morale_loss_mean": 0.0078125,
+    "root_actions": {
+      "activate": 1024,
+      "arcaneCodex": 840,
+      "play": 184
+    },
+    "return_mean": 0.4212582236842105,
+    "raw_score_mean": 8.00390625,
+    "continuation_bonus_mean": 2.0,
+    "ending_gems_mean": 2.0166015625,
+    "gem_retention_rate": 1.0,
+    "wisdom_trigger_rate": 0.65625,
+    "spent_and_recovered_rate": 0.65625,
+    "kept_without_spending_rate": 0.1796875,
+    "feasible_raw_score_per_attempt": 8.00390625,
+    "rebound_mean": 3.83984375,
+    "zero_loss_rate": 0.9921875,
+    "by_hand": {
+      "0,1,2,1,1,0,0": {
+        "samples": 16,
+        "safety_rate": 1.0,
+        "safety_interval95": [
+          0.8063865817272802,
+          1
+        ],
+        "safe_damage_standard_error": 0.128086884574495,
+        "safe_damage_mean": 5.4375,
+        "safe_damage_per_attempt": 5.4375,
+        "direct_damage_mean": null,
+        "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+      },
+      "0,0,2,2,1,0,0": {
+        "samples": 24,
+        "safety_rate": 1.0,
+        "safety_interval95": [
+          0.8620194241710247,
+          1
+        ],
+        "safe_damage_standard_error": 0.38385283009127613,
+        "safe_damage_mean": 5.666666666666667,
+        "safe_damage_per_attempt": 5.666666666666667,
+        "direct_damage_mean": null,
+        "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+      },
+      "0,0,3,1,1,0,0": {
+        "samples": 48,
+        "safety_rate": 1.0,
+        "safety_interval95": [
+          0.9258973488472576,
+          0.9999999999999999
+        ],
+        "safe_damage_standard_error": 0.22526498055783337,
+        "safe_damage_mean": 6.104166666666667,
+        "safe_damage_per_attempt": 6.104166666666667,
+        "direct_damage_mean": null,
+        "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+      },
+      "0,0,2,1,1,1,0": {
+        "samples": 24,
+        "safety_rate": 1.0,
+        "safety_interval95": [
+          0.8620194241710247,
+          1
+        ],
+        "safe_damage_standard_error": 0.17868785024753908,
+        "safe_damage_mean": 6.375,
+        "safe_damage_per_attempt": 6.375,
+        "direct_damage_mean": null,
+        "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+      },
+      "1,0,2,1,1,0,0": {
+        "samples": 472,
+        "safety_rate": 1.0,
+        "safety_interval95": [
+          0.9919267251959477,
+          1
+        ],
+        "safe_damage_standard_error": 0.07129685772256256,
+        "safe_damage_mean": 6.044491525423729,
+        "safe_damage_per_attempt": 6.044491525423729,
+        "direct_damage_mean": null,
+        "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+      },
+      "0,0,3,2,0,0,0": {
+        "samples": 16,
+        "safety_rate": 1.0,
+        "safety_interval95": [
+          0.8063865817272802,
+          1
+        ],
+        "safe_damage_standard_error": 0.0,
+        "safe_damage_mean": 8.0,
+        "safe_damage_per_attempt": 8.0,
+        "direct_damage_mean": null,
+        "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+      },
+      "1,0,1,1,1,1,0": {
+        "samples": 72,
+        "safety_rate": 1.0,
+        "safety_interval95": [
+          0.9493470601886036,
+          1
+        ],
+        "safe_damage_standard_error": 0.17040665509146338,
+        "safe_damage_mean": 5.222222222222222,
+        "safe_damage_per_attempt": 5.222222222222222,
+        "direct_damage_mean": null,
+        "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+      },
+      "0,1,1,1,1,1,0": {
+        "samples": 8,
+        "safety_rate": 1.0,
+        "safety_interval95": [
+          0.6755843804891231,
+          1
+        ],
+        "safe_damage_standard_error": 0.5261042808091513,
+        "safe_damage_mean": 5.25,
+        "safe_damage_per_attempt": 5.25,
+        "direct_damage_mean": null,
+        "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+      },
+      "0,0,1,1,1,1,1": {
+        "samples": 8,
+        "safety_rate": 1.0,
+        "safety_interval95": [
+          0.6755843804891231,
+          1
+        ],
+        "safe_damage_standard_error": 0.25,
+        "safe_damage_mean": 7.75,
+        "safe_damage_per_attempt": 7.75,
+        "direct_damage_mean": null,
+        "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+      },
+      "2,0,2,1,0,0,0": {
+        "samples": 72,
+        "safety_rate": 1.0,
+        "safety_interval95": [
+          0.9493470601886036,
+          1
+        ],
+        "safe_damage_standard_error": 0.1674148568887392,
+        "safe_damage_mean": 6.194444444444445,
+        "safe_damage_per_attempt": 6.194444444444445,
+        "direct_damage_mean": null,
+        "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+      },
+      "1,0,3,1,0,0,0": {
+        "samples": 88,
+        "safety_rate": 1.0,
+        "safety_interval95": [
+          0.9581714604275188,
+          1
+        ],
+        "safe_damage_standard_error": 0.1729785267682177,
+        "safe_damage_mean": 6.1477272727272725,
+        "safe_damage_per_attempt": 6.1477272727272725,
+        "direct_damage_mean": null,
+        "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+      },
+      "2,1,1,1,0,0,0": {
+        "samples": 40,
+        "safety_rate": 1.0,
+        "safety_interval95": [
+          0.9123754607496077,
+          1
+        ],
+        "safe_damage_standard_error": 0.143167017402036,
+        "safe_damage_mean": 6.275,
+        "safe_damage_per_attempt": 6.275,
+        "direct_damage_mean": null,
+        "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+      },
+      "2,0,1,1,1,0,0": {
+        "samples": 64,
+        "safety_rate": 1.0,
+        "safety_interval95": [
+          0.9433739770288436,
+          1
+        ],
+        "safe_damage_standard_error": 0.17956075153569473,
+        "safe_damage_mean": 5.75,
+        "safe_damage_per_attempt": 5.75,
+        "direct_damage_mean": null,
+        "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+      },
+      "1,0,2,2,0,0,0": {
+        "samples": 48,
+        "safety_rate": 1.0,
+        "safety_interval95": [
+          0.9258973488472576,
+          0.9999999999999999
+        ],
+        "safe_damage_standard_error": 0.2389513326217331,
+        "safe_damage_mean": 6.0625,
+        "safe_damage_per_attempt": 6.0625,
+        "direct_damage_mean": null,
+        "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+      },
+      "1,1,2,1,0,0,0": {
+        "samples": 16,
+        "safety_rate": 1.0,
+        "safety_interval95": [
+          0.8063865817272802,
+          1
+        ],
+        "safe_damage_standard_error": 0.4606946747394996,
+        "safe_damage_mean": 5.0625,
+        "safe_damage_per_attempt": 5.0625,
+        "direct_damage_mean": null,
+        "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+      },
+      "1,1,1,1,1,0,0": {
+        "samples": 8,
+        "safety_rate": 1.0,
+        "safety_interval95": [
+          0.6755843804891231,
+          1
+        ],
+        "safe_damage_standard_error": 0.0,
+        "safe_damage_mean": 5.0,
+        "safe_damage_per_attempt": 5.0,
+        "direct_damage_mean": null,
+        "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+      }
+    },
+    "by_budget": {
+      "0": {
+        "games": 256,
+        "eligible": 256,
+        "ineligible": 0,
+        "truncated": 0,
+        "samples": 256,
+        "safety_rate": 1.0,
+        "safety_interval95": [
+          0.9852156082782743,
+          1
+        ],
+        "safe_damage_standard_error": 0.0962639722598178,
+        "safe_damage_mean": 5.91015625,
+        "safe_damage_per_attempt": 5.91015625,
+        "direct_damage_mean": null,
+        "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss.",
+        "damage_mean": 5.88671875,
+        "enemy_morale_loss_mean": 5.91015625,
+        "own_morale_loss_mean": 0.0,
+        "root_actions": {
+          "activate": 256,
+          "arcaneCodex": 206,
+          "play": 50
+        },
+        "return_mean": 0.41632401315789475,
+        "raw_score_mean": 7.91015625,
+        "continuation_bonus_mean": 2.0,
+        "ending_gems_mean": 1.9609375,
+        "gem_retention_rate": 1.0,
+        "wisdom_trigger_rate": 0.62109375,
+        "spent_and_recovered_rate": 0.62109375,
+        "kept_without_spending_rate": 0.1953125,
+        "feasible_raw_score_per_attempt": 7.91015625,
+        "rebound_mean": 3.703125,
+        "zero_loss_rate": 1.0,
+        "by_hand": {
+          "0,1,2,1,1,0,0": {
+            "samples": 4,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.5100999795960008,
+              1
+            ],
+            "safe_damage_standard_error": 0.25,
+            "safe_damage_mean": 5.25,
+            "safe_damage_per_attempt": 5.25,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,0,2,2,1,0,0": {
+            "samples": 6,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.6096569663469354,
+              0.9999999999999999
+            ],
+            "safe_damage_standard_error": 0.8724168218868267,
+            "safe_damage_mean": 5.166666666666667,
+            "safe_damage_per_attempt": 5.166666666666667,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,0,3,1,1,0,0": {
+            "samples": 12,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.7574992425007574,
+              1
+            ],
+            "safe_damage_standard_error": 0.44381268229929727,
+            "safe_damage_mean": 6.0,
+            "safe_damage_per_attempt": 6.0,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,0,2,1,1,1,0": {
+            "samples": 6,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.6096569663469354,
+              0.9999999999999999
+            ],
+            "safe_damage_standard_error": 0.6324555320336759,
+            "safe_damage_mean": 6.0,
+            "safe_damage_per_attempt": 6.0,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,0,2,1,1,0,0": {
+            "samples": 118,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.9684705387979147,
+              1
+            ],
+            "safe_damage_standard_error": 0.14442312870652965,
+            "safe_damage_mean": 5.983050847457627,
+            "safe_damage_per_attempt": 5.983050847457627,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,0,3,2,0,0,0": {
+            "samples": 4,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.5100999795960008,
+              1
+            ],
+            "safe_damage_standard_error": 0.0,
+            "safe_damage_mean": 8.0,
+            "safe_damage_per_attempt": 8.0,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,0,1,1,1,1,0": {
+            "samples": 18,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.8241154494176252,
+              1
+            ],
+            "safe_damage_standard_error": 0.30755436548184883,
+            "safe_damage_mean": 5.055555555555555,
+            "safe_damage_per_attempt": 5.055555555555555,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,1,1,1,1,1,0": {
+            "samples": 2,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.34237195288961925,
+              1
+            ],
+            "safe_damage_standard_error": 0.5,
+            "safe_damage_mean": 4.5,
+            "safe_damage_per_attempt": 4.5,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,0,1,1,1,1,1": {
+            "samples": 2,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.34237195288961925,
+              1
+            ],
+            "safe_damage_standard_error": 1.0,
+            "safe_damage_mean": 7.0,
+            "safe_damage_per_attempt": 7.0,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "2,0,2,1,0,0,0": {
+            "samples": 18,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.8241154494176252,
+              1
+            ],
+            "safe_damage_standard_error": 0.3782388574177853,
+            "safe_damage_mean": 6.111111111111111,
+            "safe_damage_per_attempt": 6.111111111111111,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,0,3,1,0,0,0": {
+            "samples": 22,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.8513404742740388,
+              1
+            ],
+            "safe_damage_standard_error": 0.3285269377677266,
+            "safe_damage_mean": 6.2272727272727275,
+            "safe_damage_per_attempt": 6.2272727272727275,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "2,1,1,1,0,0,0": {
+            "samples": 10,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.7224598312333834,
+              1
+            ],
+            "safe_damage_standard_error": 0.2905932629027116,
+            "safe_damage_mean": 6.2,
+            "safe_damage_per_attempt": 6.2,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "2,0,1,1,1,0,0": {
+            "samples": 16,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.8063865817272802,
+              1
+            ],
+            "safe_damage_standard_error": 0.32874445495957294,
+            "safe_damage_mean": 5.5625,
+            "safe_damage_per_attempt": 5.5625,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,0,2,2,0,0,0": {
+            "samples": 12,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.7574992425007574,
+              1
+            ],
+            "safe_damage_standard_error": 0.4767312946227962,
+            "safe_damage_mean": 6.0,
+            "safe_damage_per_attempt": 6.0,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,1,2,1,0,0,0": {
+            "samples": 4,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.5100999795960008,
+              1
+            ],
+            "safe_damage_standard_error": 1.1086778913041726,
+            "safe_damage_mean": 5.25,
+            "safe_damage_per_attempt": 5.25,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,1,1,1,1,0,0": {
+            "samples": 2,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.34237195288961925,
+              1
+            ],
+            "safe_damage_standard_error": 0.0,
+            "safe_damage_mean": 5.0,
+            "safe_damage_per_attempt": 5.0,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          }
+        },
+        "budget_compliance_rate": 1.0
+      },
+      "1": {
+        "games": 256,
+        "eligible": 256,
+        "ineligible": 0,
+        "truncated": 0,
+        "samples": 256,
+        "safety_rate": 1.0,
+        "safety_interval95": [
+          0.9852156082782743,
+          1
+        ],
+        "safe_damage_standard_error": 0.09562783090052272,
+        "safe_damage_mean": 6.01171875,
+        "safe_damage_per_attempt": 6.01171875,
+        "direct_damage_mean": null,
+        "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss.",
+        "damage_mean": 5.98828125,
+        "enemy_morale_loss_mean": 6.01171875,
+        "own_morale_loss_mean": 0.0,
+        "root_actions": {
+          "activate": 256,
+          "arcaneCodex": 210,
+          "play": 46
+        },
+        "return_mean": 0.42166940789473684,
+        "raw_score_mean": 8.01171875,
+        "continuation_bonus_mean": 2.0,
+        "ending_gems_mean": 2.015625,
+        "gem_retention_rate": 1.0,
+        "wisdom_trigger_rate": 0.65625,
+        "spent_and_recovered_rate": 0.65625,
+        "kept_without_spending_rate": 0.1796875,
+        "feasible_raw_score_per_attempt": 8.01171875,
+        "rebound_mean": 3.83984375,
+        "zero_loss_rate": 1.0,
+        "by_hand": {
+          "0,1,2,1,1,0,0": {
+            "samples": 4,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.5100999795960008,
+              1
+            ],
+            "safe_damage_standard_error": 0.28867513459481287,
+            "safe_damage_mean": 5.5,
+            "safe_damage_per_attempt": 5.5,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,0,2,2,1,0,0": {
+            "samples": 6,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.6096569663469354,
+              0.9999999999999999
+            ],
+            "safe_damage_standard_error": 0.8724168218868267,
+            "safe_damage_mean": 5.166666666666667,
+            "safe_damage_per_attempt": 5.166666666666667,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,0,3,1,1,0,0": {
+            "samples": 12,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.7574992425007574,
+              1
+            ],
+            "safe_damage_standard_error": 0.4680445027619239,
+            "safe_damage_mean": 6.083333333333333,
+            "safe_damage_per_attempt": 6.083333333333333,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,0,2,1,1,1,0": {
+            "samples": 6,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.6096569663469354,
+              0.9999999999999999
+            ],
+            "safe_damage_standard_error": 0.22360679774997896,
+            "safe_damage_mean": 6.5,
+            "safe_damage_per_attempt": 6.5,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,0,2,1,1,0,0": {
+            "samples": 118,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.9684705387979147,
+              1
+            ],
+            "safe_damage_standard_error": 0.1428848503386513,
+            "safe_damage_mean": 6.033898305084746,
+            "safe_damage_per_attempt": 6.033898305084746,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,0,3,2,0,0,0": {
+            "samples": 4,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.5100999795960008,
+              1
+            ],
+            "safe_damage_standard_error": 0.0,
+            "safe_damage_mean": 8.0,
+            "safe_damage_per_attempt": 8.0,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,0,1,1,1,1,0": {
+            "samples": 18,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.8241154494176252,
+              1
+            ],
+            "safe_damage_standard_error": 0.3597889319121795,
+            "safe_damage_mean": 5.277777777777778,
+            "safe_damage_per_attempt": 5.277777777777778,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,1,1,1,1,1,0": {
+            "samples": 2,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.34237195288961925,
+              1
+            ],
+            "safe_damage_standard_error": 1.5,
+            "safe_damage_mean": 5.5,
+            "safe_damage_per_attempt": 5.5,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,0,1,1,1,1,1": {
+            "samples": 2,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.34237195288961925,
+              1
+            ],
+            "safe_damage_standard_error": 0.0,
+            "safe_damage_mean": 8.0,
+            "safe_damage_per_attempt": 8.0,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "2,0,2,1,0,0,0": {
+            "samples": 18,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.8241154494176252,
+              1
+            ],
+            "safe_damage_standard_error": 0.3333333333333333,
+            "safe_damage_mean": 6.333333333333333,
+            "safe_damage_per_attempt": 6.333333333333333,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,0,3,1,0,0,0": {
+            "samples": 22,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.8513404742740388,
+              1
+            ],
+            "safe_damage_standard_error": 0.3285269377677266,
+            "safe_damage_mean": 6.2272727272727275,
+            "safe_damage_per_attempt": 6.2272727272727275,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "2,1,1,1,0,0,0": {
+            "samples": 10,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.7224598312333834,
+              1
+            ],
+            "safe_damage_standard_error": 0.3,
+            "safe_damage_mean": 6.3,
+            "safe_damage_per_attempt": 6.3,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "2,0,1,1,1,0,0": {
+            "samples": 16,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.8063865817272802,
+              1
+            ],
+            "safe_damage_standard_error": 0.3381167204778058,
+            "safe_damage_mean": 5.6875,
+            "safe_damage_per_attempt": 5.6875,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,0,2,2,0,0,0": {
+            "samples": 12,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.7574992425007574,
+              1
+            ],
+            "safe_damage_standard_error": 0.4993682878083938,
+            "safe_damage_mean": 6.083333333333333,
+            "safe_damage_per_attempt": 6.083333333333333,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,1,2,1,0,0,0": {
+            "samples": 4,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.5100999795960008,
+              1
+            ],
+            "safe_damage_standard_error": 1.0,
+            "safe_damage_mean": 5.0,
+            "safe_damage_per_attempt": 5.0,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,1,1,1,1,0,0": {
+            "samples": 2,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.34237195288961925,
+              1
+            ],
+            "safe_damage_standard_error": 0.0,
+            "safe_damage_mean": 5.0,
+            "safe_damage_per_attempt": 5.0,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          }
+        },
+        "budget_compliance_rate": 1.0
+      },
+      "2": {
+        "games": 256,
+        "eligible": 256,
+        "ineligible": 0,
+        "truncated": 0,
+        "samples": 256,
+        "safety_rate": 1.0,
+        "safety_interval95": [
+          0.9852156082782743,
+          1
+        ],
+        "safe_damage_standard_error": 0.09626148579848083,
+        "safe_damage_mean": 6.01953125,
+        "safe_damage_per_attempt": 6.01953125,
+        "direct_damage_mean": null,
+        "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss.",
+        "damage_mean": 5.99609375,
+        "enemy_morale_loss_mean": 6.01953125,
+        "own_morale_loss_mean": 0.0078125,
+        "root_actions": {
+          "activate": 256,
+          "arcaneCodex": 211,
+          "play": 45
+        },
+        "return_mean": 0.42208059210526316,
+        "raw_score_mean": 8.01953125,
+        "continuation_bonus_mean": 2.0,
+        "ending_gems_mean": 2.03515625,
+        "gem_retention_rate": 1.0,
+        "wisdom_trigger_rate": 0.66796875,
+        "spent_and_recovered_rate": 0.66796875,
+        "kept_without_spending_rate": 0.17578125,
+        "feasible_raw_score_per_attempt": 8.01953125,
+        "rebound_mean": 3.88671875,
+        "zero_loss_rate": 0.9921875,
+        "by_hand": {
+          "0,1,2,1,1,0,0": {
+            "samples": 4,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.5100999795960008,
+              1
+            ],
+            "safe_damage_standard_error": 0.28867513459481287,
+            "safe_damage_mean": 5.5,
+            "safe_damage_per_attempt": 5.5,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,0,2,2,1,0,0": {
+            "samples": 6,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.6096569663469354,
+              0.9999999999999999
+            ],
+            "safe_damage_standard_error": 0.7923242882669809,
+            "safe_damage_mean": 5.833333333333333,
+            "safe_damage_per_attempt": 5.833333333333333,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,0,3,1,1,0,0": {
+            "samples": 12,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.7574992425007574,
+              1
+            ],
+            "safe_damage_standard_error": 0.44381268229929727,
+            "safe_damage_mean": 6.0,
+            "safe_damage_per_attempt": 6.0,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,0,2,1,1,1,0": {
+            "samples": 6,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.6096569663469354,
+              0.9999999999999999
+            ],
+            "safe_damage_standard_error": 0.22360679774997896,
+            "safe_damage_mean": 6.5,
+            "safe_damage_per_attempt": 6.5,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,0,2,1,1,0,0": {
+            "samples": 118,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.9684705387979147,
+              1
+            ],
+            "safe_damage_standard_error": 0.14306731369605197,
+            "safe_damage_mean": 6.059322033898305,
+            "safe_damage_per_attempt": 6.059322033898305,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,0,3,2,0,0,0": {
+            "samples": 4,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.5100999795960008,
+              1
+            ],
+            "safe_damage_standard_error": 0.0,
+            "safe_damage_mean": 8.0,
+            "safe_damage_per_attempt": 8.0,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,0,1,1,1,1,0": {
+            "samples": 18,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.8241154494176252,
+              1
+            ],
+            "safe_damage_standard_error": 0.3597889319121795,
+            "safe_damage_mean": 5.277777777777778,
+            "safe_damage_per_attempt": 5.277777777777778,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,1,1,1,1,1,0": {
+            "samples": 2,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.34237195288961925,
+              1
+            ],
+            "safe_damage_standard_error": 1.5,
+            "safe_damage_mean": 5.5,
+            "safe_damage_per_attempt": 5.5,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,0,1,1,1,1,1": {
+            "samples": 2,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.34237195288961925,
+              1
+            ],
+            "safe_damage_standard_error": 0.0,
+            "safe_damage_mean": 8.0,
+            "safe_damage_per_attempt": 8.0,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "2,0,2,1,0,0,0": {
+            "samples": 18,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.8241154494176252,
+              1
+            ],
+            "safe_damage_standard_error": 0.32589745369793455,
+            "safe_damage_mean": 6.166666666666667,
+            "safe_damage_per_attempt": 6.166666666666667,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,0,3,1,0,0,0": {
+            "samples": 22,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.8513404742740388,
+              1
+            ],
+            "safe_damage_standard_error": 0.3691412330011557,
+            "safe_damage_mean": 6.045454545454546,
+            "safe_damage_per_attempt": 6.045454545454546,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "2,1,1,1,0,0,0": {
+            "samples": 10,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.7224598312333834,
+              1
+            ],
+            "safe_damage_standard_error": 0.3,
+            "safe_damage_mean": 6.3,
+            "safe_damage_per_attempt": 6.3,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "2,0,1,1,1,0,0": {
+            "samples": 16,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.8063865817272802,
+              1
+            ],
+            "safe_damage_standard_error": 0.3966001344763598,
+            "safe_damage_mean": 5.875,
+            "safe_damage_per_attempt": 5.875,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,0,2,2,0,0,0": {
+            "samples": 12,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.7574992425007574,
+              1
+            ],
+            "safe_damage_standard_error": 0.4993682878083938,
+            "safe_damage_mean": 6.083333333333333,
+            "safe_damage_per_attempt": 6.083333333333333,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,1,2,1,0,0,0": {
+            "samples": 4,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.5100999795960008,
+              1
+            ],
+            "safe_damage_standard_error": 1.0,
+            "safe_damage_mean": 5.0,
+            "safe_damage_per_attempt": 5.0,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,1,1,1,1,0,0": {
+            "samples": 2,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.34237195288961925,
+              1
+            ],
+            "safe_damage_standard_error": 0.0,
+            "safe_damage_mean": 5.0,
+            "safe_damage_per_attempt": 5.0,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          }
+        },
+        "budget_compliance_rate": 1.0
+      },
+      "3": {
+        "games": 256,
+        "eligible": 256,
+        "ineligible": 0,
+        "truncated": 0,
+        "samples": 256,
+        "safety_rate": 1.0,
+        "safety_interval95": [
+          0.9852156082782743,
+          1
+        ],
+        "safe_damage_standard_error": 0.09599755567044276,
+        "safe_damage_mean": 6.07421875,
+        "safe_damage_per_attempt": 6.07421875,
+        "direct_damage_mean": null,
+        "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss.",
+        "damage_mean": 6.05078125,
+        "enemy_morale_loss_mean": 6.07421875,
+        "own_morale_loss_mean": 0.0234375,
+        "root_actions": {
+          "activate": 256,
+          "arcaneCodex": 213,
+          "play": 43
+        },
+        "return_mean": 0.42495888157894735,
+        "raw_score_mean": 8.07421875,
+        "continuation_bonus_mean": 2.0,
+        "ending_gems_mean": 2.0546875,
+        "gem_retention_rate": 1.0,
+        "wisdom_trigger_rate": 0.6796875,
+        "spent_and_recovered_rate": 0.6796875,
+        "kept_without_spending_rate": 0.16796875,
+        "feasible_raw_score_per_attempt": 8.07421875,
+        "rebound_mean": 3.9296875,
+        "zero_loss_rate": 0.9765625,
+        "by_hand": {
+          "0,1,2,1,1,0,0": {
+            "samples": 4,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.5100999795960008,
+              1
+            ],
+            "safe_damage_standard_error": 0.28867513459481287,
+            "safe_damage_mean": 5.5,
+            "safe_damage_per_attempt": 5.5,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,0,2,2,1,0,0": {
+            "samples": 6,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.6096569663469354,
+              0.9999999999999999
+            ],
+            "safe_damage_standard_error": 0.5627314338711378,
+            "safe_damage_mean": 6.5,
+            "safe_damage_per_attempt": 6.5,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,0,3,1,1,0,0": {
+            "samples": 12,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.7574992425007574,
+              1
+            ],
+            "safe_damage_standard_error": 0.497468338163091,
+            "safe_damage_mean": 6.333333333333333,
+            "safe_damage_per_attempt": 6.333333333333333,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,0,2,1,1,1,0": {
+            "samples": 6,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.6096569663469354,
+              0.9999999999999999
+            ],
+            "safe_damage_standard_error": 0.22360679774997896,
+            "safe_damage_mean": 6.5,
+            "safe_damage_per_attempt": 6.5,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,0,2,1,1,0,0": {
+            "samples": 118,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.9684705387979147,
+              1
+            ],
+            "safe_damage_standard_error": 0.14159018591953593,
+            "safe_damage_mean": 6.101694915254237,
+            "safe_damage_per_attempt": 6.101694915254237,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,0,3,2,0,0,0": {
+            "samples": 4,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.5100999795960008,
+              1
+            ],
+            "safe_damage_standard_error": 0.0,
+            "safe_damage_mean": 8.0,
+            "safe_damage_per_attempt": 8.0,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,0,1,1,1,1,0": {
+            "samples": 18,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.8241154494176252,
+              1
+            ],
+            "safe_damage_standard_error": 0.3597889319121795,
+            "safe_damage_mean": 5.277777777777778,
+            "safe_damage_per_attempt": 5.277777777777778,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,1,1,1,1,1,0": {
+            "samples": 2,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.34237195288961925,
+              1
+            ],
+            "safe_damage_standard_error": 1.5,
+            "safe_damage_mean": 5.5,
+            "safe_damage_per_attempt": 5.5,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,0,1,1,1,1,1": {
+            "samples": 2,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.34237195288961925,
+              1
+            ],
+            "safe_damage_standard_error": 0.0,
+            "safe_damage_mean": 8.0,
+            "safe_damage_per_attempt": 8.0,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "2,0,2,1,0,0,0": {
+            "samples": 18,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.8241154494176252,
+              1
+            ],
+            "safe_damage_standard_error": 0.32589745369793455,
+            "safe_damage_mean": 6.166666666666667,
+            "safe_damage_per_attempt": 6.166666666666667,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,0,3,1,0,0,0": {
+            "samples": 22,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.8513404742740388,
+              1
+            ],
+            "safe_damage_standard_error": 0.3774435017443691,
+            "safe_damage_mean": 6.090909090909091,
+            "safe_damage_per_attempt": 6.090909090909091,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "2,1,1,1,0,0,0": {
+            "samples": 10,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.7224598312333834,
+              1
+            ],
+            "safe_damage_standard_error": 0.3,
+            "safe_damage_mean": 6.3,
+            "safe_damage_per_attempt": 6.3,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "2,0,1,1,1,0,0": {
+            "samples": 16,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.8063865817272802,
+              1
+            ],
+            "safe_damage_standard_error": 0.3966001344763598,
+            "safe_damage_mean": 5.875,
+            "safe_damage_per_attempt": 5.875,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,0,2,2,0,0,0": {
+            "samples": 12,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.7574992425007574,
+              1
+            ],
+            "safe_damage_standard_error": 0.4993682878083938,
+            "safe_damage_mean": 6.083333333333333,
+            "safe_damage_per_attempt": 6.083333333333333,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,1,2,1,0,0,0": {
+            "samples": 4,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.5100999795960008,
+              1
+            ],
+            "safe_damage_standard_error": 1.0,
+            "safe_damage_mean": 5.0,
+            "safe_damage_per_attempt": 5.0,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,1,1,1,1,0,0": {
+            "samples": 2,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.34237195288961925,
+              1
+            ],
+            "safe_damage_standard_error": 0.0,
+            "safe_damage_mean": 5.0,
+            "safe_damage_per_attempt": 5.0,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          }
+        },
+        "budget_compliance_rate": 1.0
+      }
+    },
+    "by_initial_gems_and_bonus": {
+      "1gem+4bonus": {
+        "games": 512,
+        "eligible": 512,
+        "ineligible": 0,
+        "truncated": 0,
+        "samples": 512,
+        "safety_rate": 1.0,
+        "safety_interval95": [
+          0.9925527526279385,
+          1
+        ],
+        "safe_damage_standard_error": 0.07909364645270453,
+        "safe_damage_mean": 5.6015625,
+        "safe_damage_per_attempt": 5.6015625,
+        "direct_damage_mean": null,
+        "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss.",
+        "damage_mean": 5.5703125,
+        "enemy_morale_loss_mean": 5.6015625,
+        "own_morale_loss_mean": 0.0078125,
+        "root_actions": {
+          "activate": 512,
+          "arcaneCodex": 338,
+          "play": 174
+        },
+        "return_mean": 0.505345394736842,
+        "raw_score_mean": 9.6015625,
+        "continuation_bonus_mean": 4.0,
+        "ending_gems_mean": 1.69140625,
+        "gem_retention_rate": 1.0,
+        "wisdom_trigger_rate": 0.66015625,
+        "spent_and_recovered_rate": 0.66015625,
+        "kept_without_spending_rate": 0.33984375,
+        "feasible_raw_score_per_attempt": 9.6015625,
+        "rebound_mean": 3.93359375,
+        "zero_loss_rate": 0.9921875,
+        "by_hand": {
+          "0,1,2,1,1,0,0": {
+            "samples": 8,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.6755843804891231,
+              1
+            ],
+            "safe_damage_standard_error": 0.1889822365046136,
+            "safe_damage_mean": 5.5,
+            "safe_damage_per_attempt": 5.5,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,0,2,2,1,0,0": {
+            "samples": 12,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.7574992425007574,
+              1
+            ],
+            "safe_damage_standard_error": 0.6435381994422819,
+            "safe_damage_mean": 5.333333333333333,
+            "safe_damage_per_attempt": 5.333333333333333,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,0,3,1,1,0,0": {
+            "samples": 24,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.8620194241710247,
+              1
+            ],
+            "safe_damage_standard_error": 0.3333333333333333,
+            "safe_damage_mean": 5.333333333333333,
+            "safe_damage_per_attempt": 5.333333333333333,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,0,2,1,1,1,0": {
+            "samples": 12,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.7574992425007574,
+              1
+            ],
+            "safe_damage_standard_error": 0.3361622383686938,
+            "safe_damage_mean": 6.416666666666667,
+            "safe_damage_per_attempt": 6.416666666666667,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,0,2,1,1,0,0": {
+            "samples": 236,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.9839827619562244,
+              0.9999999999999999
+            ],
+            "safe_damage_standard_error": 0.11517386519038894,
+            "safe_damage_mean": 5.61864406779661,
+            "safe_damage_per_attempt": 5.61864406779661,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,0,3,2,0,0,0": {
+            "samples": 8,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.6755843804891231,
+              1
+            ],
+            "safe_damage_standard_error": 0.0,
+            "safe_damage_mean": 8.0,
+            "safe_damage_per_attempt": 8.0,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,0,1,1,1,1,0": {
+            "samples": 36,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.9035781695514236,
+              1
+            ],
+            "safe_damage_standard_error": 0.26427498905736396,
+            "safe_damage_mean": 4.666666666666667,
+            "safe_damage_per_attempt": 4.666666666666667,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,1,1,1,1,1,0": {
+            "samples": 4,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.5100999795960008,
+              1
+            ],
+            "safe_damage_standard_error": 0.0,
+            "safe_damage_mean": 4.0,
+            "safe_damage_per_attempt": 4.0,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,0,1,1,1,1,1": {
+            "samples": 4,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.5100999795960008,
+              1
+            ],
+            "safe_damage_standard_error": 0.0,
+            "safe_damage_mean": 8.0,
+            "safe_damage_per_attempt": 8.0,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "2,0,2,1,0,0,0": {
+            "samples": 36,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.9035781695514236,
+              1
+            ],
+            "safe_damage_standard_error": 0.29710537682490973,
+            "safe_damage_mean": 5.722222222222222,
+            "safe_damage_per_attempt": 5.722222222222222,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,0,3,1,0,0,0": {
+            "samples": 44,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.9197016822179859,
+              0.9999999999999999
+            ],
+            "safe_damage_standard_error": 0.2948033154675947,
+            "safe_damage_mean": 5.886363636363637,
+            "safe_damage_per_attempt": 5.886363636363637,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "2,1,1,1,0,0,0": {
+            "samples": 20,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.8388698745050667,
+              1
+            ],
+            "safe_damage_standard_error": 0.23395906074624073,
+            "safe_damage_mean": 6.4,
+            "safe_damage_per_attempt": 6.4,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "2,0,1,1,1,0,0": {
+            "samples": 32,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.8928172849426366,
+              1
+            ],
+            "safe_damage_standard_error": 0.275878362630602,
+            "safe_damage_mean": 5.125,
+            "safe_damage_per_attempt": 5.125,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,0,2,2,0,0,0": {
+            "samples": 24,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.8620194241710247,
+              1
+            ],
+            "safe_damage_standard_error": 0.44095855184409843,
+            "safe_damage_mean": 5.833333333333333,
+            "safe_damage_per_attempt": 5.833333333333333,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,1,2,1,0,0,0": {
+            "samples": 8,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.6755843804891231,
+              1
+            ],
+            "safe_damage_standard_error": 0.7559289460184544,
+            "safe_damage_mean": 4.0,
+            "safe_damage_per_attempt": 4.0,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,1,1,1,1,0,0": {
+            "samples": 4,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.5100999795960008,
+              1
+            ],
+            "safe_damage_standard_error": 0.0,
+            "safe_damage_mean": 5.0,
+            "safe_damage_per_attempt": 5.0,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          }
+        },
+        "by_budget": {
+          "0": {
+            "games": 128,
+            "eligible": 128,
+            "ineligible": 0,
+            "truncated": 0,
+            "samples": 128,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.9708620041018919,
+              0.9999999999999999
+            ],
+            "safe_damage_standard_error": 0.1602811083062257,
+            "safe_damage_mean": 5.5546875,
+            "safe_damage_per_attempt": 5.5546875,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss.",
+            "damage_mean": 5.5234375,
+            "enemy_morale_loss_mean": 5.5546875,
+            "own_morale_loss_mean": 0.0,
+            "root_actions": {
+              "activate": 128,
+              "arcaneCodex": 83,
+              "play": 45
+            },
+            "return_mean": 0.5028782894736842,
+            "raw_score_mean": 9.5546875,
+            "continuation_bonus_mean": 4.0,
+            "ending_gems_mean": 1.6796875,
+            "gem_retention_rate": 1.0,
+            "wisdom_trigger_rate": 0.6484375,
+            "spent_and_recovered_rate": 0.6484375,
+            "kept_without_spending_rate": 0.3515625,
+            "feasible_raw_score_per_attempt": 9.5546875,
+            "rebound_mean": 3.875,
+            "zero_loss_rate": 1.0,
+            "by_hand": {
+              "0,1,2,1,1,0,0": {
+                "samples": 2,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.34237195288961925,
+                  1
+                ],
+                "safe_damage_standard_error": 0.5,
+                "safe_damage_mean": 5.5,
+                "safe_damage_per_attempt": 5.5,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,2,2,1,0,0": {
+                "samples": 3,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.43849391955098227,
+                  1
+                ],
+                "safe_damage_standard_error": 1.5275252316519468,
+                "safe_damage_mean": 5.0,
+                "safe_damage_per_attempt": 5.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,3,1,1,0,0": {
+                "samples": 6,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.6096569663469354,
+                  0.9999999999999999
+                ],
+                "safe_damage_standard_error": 0.7149203529842405,
+                "safe_damage_mean": 5.333333333333333,
+                "safe_damage_per_attempt": 5.333333333333333,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,2,1,1,1,0": {
+                "samples": 3,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.43849391955098227,
+                  1
+                ],
+                "safe_damage_standard_error": 1.3333333333333333,
+                "safe_damage_mean": 5.666666666666667,
+                "safe_damage_per_attempt": 5.666666666666667,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,0,2,1,1,0,0": {
+                "samples": 59,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.938868520215908,
+                  1
+                ],
+                "safe_damage_standard_error": 0.2321391763844565,
+                "safe_damage_mean": 5.576271186440678,
+                "safe_damage_per_attempt": 5.576271186440678,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,3,2,0,0,0": {
+                "samples": 2,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.34237195288961925,
+                  1
+                ],
+                "safe_damage_standard_error": 0.0,
+                "safe_damage_mean": 8.0,
+                "safe_damage_per_attempt": 8.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,0,1,1,1,1,0": {
+                "samples": 9,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.7008472464490407,
+                  1
+                ],
+                "safe_damage_standard_error": 0.5527707983925667,
+                "safe_damage_mean": 4.666666666666667,
+                "safe_damage_per_attempt": 4.666666666666667,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,1,1,1,1,1,0": {
+                "samples": 1,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.20654329147389294,
+                  1
+                ],
+                "safe_damage_standard_error": null,
+                "safe_damage_mean": 4.0,
+                "safe_damage_per_attempt": 4.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,1,1,1,1,1": {
+                "samples": 1,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.20654329147389294,
+                  1
+                ],
+                "safe_damage_standard_error": null,
+                "safe_damage_mean": 8.0,
+                "safe_damage_per_attempt": 8.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "2,0,2,1,0,0,0": {
+                "samples": 9,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.7008472464490407,
+                  1
+                ],
+                "safe_damage_standard_error": 0.6894263136661587,
+                "safe_damage_mean": 5.555555555555555,
+                "safe_damage_per_attempt": 5.555555555555555,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,0,3,1,0,0,0": {
+                "samples": 11,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.7411599827511859,
+                  1
+                ],
+                "safe_damage_standard_error": 0.5720775535473553,
+                "safe_damage_mean": 6.0,
+                "safe_damage_per_attempt": 6.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "2,1,1,1,0,0,0": {
+                "samples": 5,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.5655085052479191,
+                  1
+                ],
+                "safe_damage_standard_error": 0.5099019513592785,
+                "safe_damage_mean": 6.4,
+                "safe_damage_per_attempt": 6.4,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "2,0,1,1,1,0,0": {
+                "samples": 8,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.6755843804891231,
+                  1
+                ],
+                "safe_damage_standard_error": 0.5805631502503164,
+                "safe_damage_mean": 5.125,
+                "safe_damage_per_attempt": 5.125,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,0,2,2,0,0,0": {
+                "samples": 6,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.6096569663469354,
+                  0.9999999999999999
+                ],
+                "safe_damage_standard_error": 0.9457507306074072,
+                "safe_damage_mean": 5.833333333333333,
+                "safe_damage_per_attempt": 5.833333333333333,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,1,2,1,0,0,0": {
+                "samples": 2,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.34237195288961925,
+                  1
+                ],
+                "safe_damage_standard_error": 2.0,
+                "safe_damage_mean": 4.0,
+                "safe_damage_per_attempt": 4.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,1,1,1,1,0,0": {
+                "samples": 1,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.20654329147389294,
+                  1
+                ],
+                "safe_damage_standard_error": null,
+                "safe_damage_mean": 5.0,
+                "safe_damage_per_attempt": 5.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              }
+            },
+            "budget_compliance_rate": 1.0
+          },
+          "1": {
+            "games": 128,
+            "eligible": 128,
+            "ineligible": 0,
+            "truncated": 0,
+            "samples": 128,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.9708620041018919,
+              0.9999999999999999
+            ],
+            "safe_damage_standard_error": 0.1581272563718133,
+            "safe_damage_mean": 5.609375,
+            "safe_damage_per_attempt": 5.609375,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss.",
+            "damage_mean": 5.578125,
+            "enemy_morale_loss_mean": 5.609375,
+            "own_morale_loss_mean": 0.0,
+            "root_actions": {
+              "activate": 128,
+              "arcaneCodex": 85,
+              "play": 43
+            },
+            "return_mean": 0.5057565789473684,
+            "raw_score_mean": 9.609375,
+            "continuation_bonus_mean": 4.0,
+            "ending_gems_mean": 1.6953125,
+            "gem_retention_rate": 1.0,
+            "wisdom_trigger_rate": 0.6640625,
+            "spent_and_recovered_rate": 0.6640625,
+            "kept_without_spending_rate": 0.3359375,
+            "feasible_raw_score_per_attempt": 9.609375,
+            "rebound_mean": 3.8984375,
+            "zero_loss_rate": 1.0,
+            "by_hand": {
+              "0,1,2,1,1,0,0": {
+                "samples": 2,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.34237195288961925,
+                  1
+                ],
+                "safe_damage_standard_error": 0.5,
+                "safe_damage_mean": 5.5,
+                "safe_damage_per_attempt": 5.5,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,2,2,1,0,0": {
+                "samples": 3,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.43849391955098227,
+                  1
+                ],
+                "safe_damage_standard_error": 1.5275252316519468,
+                "safe_damage_mean": 5.0,
+                "safe_damage_per_attempt": 5.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,3,1,1,0,0": {
+                "samples": 6,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.6096569663469354,
+                  0.9999999999999999
+                ],
+                "safe_damage_standard_error": 0.7149203529842405,
+                "safe_damage_mean": 5.333333333333333,
+                "safe_damage_per_attempt": 5.333333333333333,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,2,1,1,1,0": {
+                "samples": 3,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.43849391955098227,
+                  1
+                ],
+                "safe_damage_standard_error": 0.33333333333333337,
+                "safe_damage_mean": 6.666666666666667,
+                "safe_damage_per_attempt": 6.666666666666667,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,0,2,1,1,0,0": {
+                "samples": 59,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.938868520215908,
+                  1
+                ],
+                "safe_damage_standard_error": 0.2321391763844565,
+                "safe_damage_mean": 5.576271186440678,
+                "safe_damage_per_attempt": 5.576271186440678,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,3,2,0,0,0": {
+                "samples": 2,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.34237195288961925,
+                  1
+                ],
+                "safe_damage_standard_error": 0.0,
+                "safe_damage_mean": 8.0,
+                "safe_damage_per_attempt": 8.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,0,1,1,1,1,0": {
+                "samples": 9,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.7008472464490407,
+                  1
+                ],
+                "safe_damage_standard_error": 0.5527707983925667,
+                "safe_damage_mean": 4.666666666666667,
+                "safe_damage_per_attempt": 4.666666666666667,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,1,1,1,1,1,0": {
+                "samples": 1,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.20654329147389294,
+                  1
+                ],
+                "safe_damage_standard_error": null,
+                "safe_damage_mean": 4.0,
+                "safe_damage_per_attempt": 4.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,1,1,1,1,1": {
+                "samples": 1,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.20654329147389294,
+                  1
+                ],
+                "safe_damage_standard_error": null,
+                "safe_damage_mean": 8.0,
+                "safe_damage_per_attempt": 8.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "2,0,2,1,0,0,0": {
+                "samples": 9,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.7008472464490407,
+                  1
+                ],
+                "safe_damage_standard_error": 0.6236095644623235,
+                "safe_damage_mean": 6.0,
+                "safe_damage_per_attempt": 6.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,0,3,1,0,0,0": {
+                "samples": 11,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.7411599827511859,
+                  1
+                ],
+                "safe_damage_standard_error": 0.5720775535473553,
+                "safe_damage_mean": 6.0,
+                "safe_damage_per_attempt": 6.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "2,1,1,1,0,0,0": {
+                "samples": 5,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.5655085052479191,
+                  1
+                ],
+                "safe_damage_standard_error": 0.5099019513592785,
+                "safe_damage_mean": 6.4,
+                "safe_damage_per_attempt": 6.4,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "2,0,1,1,1,0,0": {
+                "samples": 8,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.6755843804891231,
+                  1
+                ],
+                "safe_damage_standard_error": 0.5805631502503164,
+                "safe_damage_mean": 5.125,
+                "safe_damage_per_attempt": 5.125,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,0,2,2,0,0,0": {
+                "samples": 6,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.6096569663469354,
+                  0.9999999999999999
+                ],
+                "safe_damage_standard_error": 0.9457507306074072,
+                "safe_damage_mean": 5.833333333333333,
+                "safe_damage_per_attempt": 5.833333333333333,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,1,2,1,0,0,0": {
+                "samples": 2,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.34237195288961925,
+                  1
+                ],
+                "safe_damage_standard_error": 2.0,
+                "safe_damage_mean": 4.0,
+                "safe_damage_per_attempt": 4.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,1,1,1,1,0,0": {
+                "samples": 1,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.20654329147389294,
+                  1
+                ],
+                "safe_damage_standard_error": null,
+                "safe_damage_mean": 5.0,
+                "safe_damage_per_attempt": 5.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              }
+            },
+            "budget_compliance_rate": 1.0
+          },
+          "2": {
+            "games": 128,
+            "eligible": 128,
+            "ineligible": 0,
+            "truncated": 0,
+            "samples": 128,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.9708620041018919,
+              0.9999999999999999
+            ],
+            "safe_damage_standard_error": 0.1586294584475165,
+            "safe_damage_mean": 5.5859375,
+            "safe_damage_per_attempt": 5.5859375,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss.",
+            "damage_mean": 5.5546875,
+            "enemy_morale_loss_mean": 5.5859375,
+            "own_morale_loss_mean": 0.0078125,
+            "root_actions": {
+              "activate": 128,
+              "arcaneCodex": 84,
+              "play": 44
+            },
+            "return_mean": 0.5045230263157895,
+            "raw_score_mean": 9.5859375,
+            "continuation_bonus_mean": 4.0,
+            "ending_gems_mean": 1.6875,
+            "gem_retention_rate": 1.0,
+            "wisdom_trigger_rate": 0.65625,
+            "spent_and_recovered_rate": 0.65625,
+            "kept_without_spending_rate": 0.34375,
+            "feasible_raw_score_per_attempt": 9.5859375,
+            "rebound_mean": 3.9609375,
+            "zero_loss_rate": 0.9921875,
+            "by_hand": {
+              "0,1,2,1,1,0,0": {
+                "samples": 2,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.34237195288961925,
+                  1
+                ],
+                "safe_damage_standard_error": 0.5,
+                "safe_damage_mean": 5.5,
+                "safe_damage_per_attempt": 5.5,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,2,2,1,0,0": {
+                "samples": 3,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.43849391955098227,
+                  1
+                ],
+                "safe_damage_standard_error": 1.5275252316519468,
+                "safe_damage_mean": 5.0,
+                "safe_damage_per_attempt": 5.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,3,1,1,0,0": {
+                "samples": 6,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.6096569663469354,
+                  0.9999999999999999
+                ],
+                "safe_damage_standard_error": 0.7149203529842405,
+                "safe_damage_mean": 5.333333333333333,
+                "safe_damage_per_attempt": 5.333333333333333,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,2,1,1,1,0": {
+                "samples": 3,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.43849391955098227,
+                  1
+                ],
+                "safe_damage_standard_error": 0.33333333333333337,
+                "safe_damage_mean": 6.666666666666667,
+                "safe_damage_per_attempt": 6.666666666666667,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,0,2,1,1,0,0": {
+                "samples": 59,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.938868520215908,
+                  1
+                ],
+                "safe_damage_standard_error": 0.23301232347233083,
+                "safe_damage_mean": 5.627118644067797,
+                "safe_damage_per_attempt": 5.627118644067797,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,3,2,0,0,0": {
+                "samples": 2,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.34237195288961925,
+                  1
+                ],
+                "safe_damage_standard_error": 0.0,
+                "safe_damage_mean": 8.0,
+                "safe_damage_per_attempt": 8.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,0,1,1,1,1,0": {
+                "samples": 9,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.7008472464490407,
+                  1
+                ],
+                "safe_damage_standard_error": 0.5527707983925667,
+                "safe_damage_mean": 4.666666666666667,
+                "safe_damage_per_attempt": 4.666666666666667,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,1,1,1,1,1,0": {
+                "samples": 1,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.20654329147389294,
+                  1
+                ],
+                "safe_damage_standard_error": null,
+                "safe_damage_mean": 4.0,
+                "safe_damage_per_attempt": 4.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,1,1,1,1,1": {
+                "samples": 1,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.20654329147389294,
+                  1
+                ],
+                "safe_damage_standard_error": null,
+                "safe_damage_mean": 8.0,
+                "safe_damage_per_attempt": 8.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "2,0,2,1,0,0,0": {
+                "samples": 9,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.7008472464490407,
+                  1
+                ],
+                "safe_damage_standard_error": 0.5773502691896257,
+                "safe_damage_mean": 5.666666666666667,
+                "safe_damage_per_attempt": 5.666666666666667,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,0,3,1,0,0,0": {
+                "samples": 11,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.7411599827511859,
+                  1
+                ],
+                "safe_damage_standard_error": 0.6337609111975773,
+                "safe_damage_mean": 5.7272727272727275,
+                "safe_damage_per_attempt": 5.7272727272727275,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "2,1,1,1,0,0,0": {
+                "samples": 5,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.5655085052479191,
+                  1
+                ],
+                "safe_damage_standard_error": 0.5099019513592785,
+                "safe_damage_mean": 6.4,
+                "safe_damage_per_attempt": 6.4,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "2,0,1,1,1,0,0": {
+                "samples": 8,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.6755843804891231,
+                  1
+                ],
+                "safe_damage_standard_error": 0.5805631502503164,
+                "safe_damage_mean": 5.125,
+                "safe_damage_per_attempt": 5.125,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,0,2,2,0,0,0": {
+                "samples": 6,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.6096569663469354,
+                  0.9999999999999999
+                ],
+                "safe_damage_standard_error": 0.9457507306074072,
+                "safe_damage_mean": 5.833333333333333,
+                "safe_damage_per_attempt": 5.833333333333333,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,1,2,1,0,0,0": {
+                "samples": 2,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.34237195288961925,
+                  1
+                ],
+                "safe_damage_standard_error": 2.0,
+                "safe_damage_mean": 4.0,
+                "safe_damage_per_attempt": 4.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,1,1,1,1,0,0": {
+                "samples": 1,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.20654329147389294,
+                  1
+                ],
+                "safe_damage_standard_error": null,
+                "safe_damage_mean": 5.0,
+                "safe_damage_per_attempt": 5.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              }
+            },
+            "budget_compliance_rate": 1.0
+          },
+          "3": {
+            "games": 128,
+            "eligible": 128,
+            "ineligible": 0,
+            "truncated": 0,
+            "samples": 128,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.9708620041018919,
+              0.9999999999999999
+            ],
+            "safe_damage_standard_error": 0.15742667178146458,
+            "safe_damage_mean": 5.65625,
+            "safe_damage_per_attempt": 5.65625,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss.",
+            "damage_mean": 5.625,
+            "enemy_morale_loss_mean": 5.65625,
+            "own_morale_loss_mean": 0.0234375,
+            "root_actions": {
+              "activate": 128,
+              "arcaneCodex": 86,
+              "play": 42
+            },
+            "return_mean": 0.5082236842105263,
+            "raw_score_mean": 9.65625,
+            "continuation_bonus_mean": 4.0,
+            "ending_gems_mean": 1.703125,
+            "gem_retention_rate": 1.0,
+            "wisdom_trigger_rate": 0.671875,
+            "spent_and_recovered_rate": 0.671875,
+            "kept_without_spending_rate": 0.328125,
+            "feasible_raw_score_per_attempt": 9.65625,
+            "rebound_mean": 4.0,
+            "zero_loss_rate": 0.9765625,
+            "by_hand": {
+              "0,1,2,1,1,0,0": {
+                "samples": 2,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.34237195288961925,
+                  1
+                ],
+                "safe_damage_standard_error": 0.5,
+                "safe_damage_mean": 5.5,
+                "safe_damage_per_attempt": 5.5,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,2,2,1,0,0": {
+                "samples": 3,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.43849391955098227,
+                  1
+                ],
+                "safe_damage_standard_error": 1.2018504251546631,
+                "safe_damage_mean": 6.333333333333333,
+                "safe_damage_per_attempt": 6.333333333333333,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,3,1,1,0,0": {
+                "samples": 6,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.6096569663469354,
+                  0.9999999999999999
+                ],
+                "safe_damage_standard_error": 0.7149203529842405,
+                "safe_damage_mean": 5.333333333333333,
+                "safe_damage_per_attempt": 5.333333333333333,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,2,1,1,1,0": {
+                "samples": 3,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.43849391955098227,
+                  1
+                ],
+                "safe_damage_standard_error": 0.33333333333333337,
+                "safe_damage_mean": 6.666666666666667,
+                "safe_damage_per_attempt": 6.666666666666667,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,0,2,1,1,0,0": {
+                "samples": 59,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.938868520215908,
+                  1
+                ],
+                "safe_damage_standard_error": 0.22967239302312753,
+                "safe_damage_mean": 5.694915254237288,
+                "safe_damage_per_attempt": 5.694915254237288,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,3,2,0,0,0": {
+                "samples": 2,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.34237195288961925,
+                  1
+                ],
+                "safe_damage_standard_error": 0.0,
+                "safe_damage_mean": 8.0,
+                "safe_damage_per_attempt": 8.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,0,1,1,1,1,0": {
+                "samples": 9,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.7008472464490407,
+                  1
+                ],
+                "safe_damage_standard_error": 0.5527707983925667,
+                "safe_damage_mean": 4.666666666666667,
+                "safe_damage_per_attempt": 4.666666666666667,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,1,1,1,1,1,0": {
+                "samples": 1,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.20654329147389294,
+                  1
+                ],
+                "safe_damage_standard_error": null,
+                "safe_damage_mean": 4.0,
+                "safe_damage_per_attempt": 4.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,1,1,1,1,1": {
+                "samples": 1,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.20654329147389294,
+                  1
+                ],
+                "safe_damage_standard_error": null,
+                "safe_damage_mean": 8.0,
+                "safe_damage_per_attempt": 8.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "2,0,2,1,0,0,0": {
+                "samples": 9,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.7008472464490407,
+                  1
+                ],
+                "safe_damage_standard_error": 0.5773502691896257,
+                "safe_damage_mean": 5.666666666666667,
+                "safe_damage_per_attempt": 5.666666666666667,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,0,3,1,0,0,0": {
+                "samples": 11,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.7411599827511859,
+                  1
+                ],
+                "safe_damage_standard_error": 0.6580713116674131,
+                "safe_damage_mean": 5.818181818181818,
+                "safe_damage_per_attempt": 5.818181818181818,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "2,1,1,1,0,0,0": {
+                "samples": 5,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.5655085052479191,
+                  1
+                ],
+                "safe_damage_standard_error": 0.5099019513592785,
+                "safe_damage_mean": 6.4,
+                "safe_damage_per_attempt": 6.4,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "2,0,1,1,1,0,0": {
+                "samples": 8,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.6755843804891231,
+                  1
+                ],
+                "safe_damage_standard_error": 0.5805631502503164,
+                "safe_damage_mean": 5.125,
+                "safe_damage_per_attempt": 5.125,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,0,2,2,0,0,0": {
+                "samples": 6,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.6096569663469354,
+                  0.9999999999999999
+                ],
+                "safe_damage_standard_error": 0.9457507306074072,
+                "safe_damage_mean": 5.833333333333333,
+                "safe_damage_per_attempt": 5.833333333333333,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,1,2,1,0,0,0": {
+                "samples": 2,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.34237195288961925,
+                  1
+                ],
+                "safe_damage_standard_error": 2.0,
+                "safe_damage_mean": 4.0,
+                "safe_damage_per_attempt": 4.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,1,1,1,1,0,0": {
+                "samples": 1,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.20654329147389294,
+                  1
+                ],
+                "safe_damage_standard_error": null,
+                "safe_damage_mean": 5.0,
+                "safe_damage_per_attempt": 5.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              }
+            },
+            "budget_compliance_rate": 1.0
+          }
+        },
+        "budget_compliance_rate": 1.0
+      },
+      "2gem+0bonus": {
+        "games": 512,
+        "eligible": 512,
+        "ineligible": 0,
+        "truncated": 0,
+        "samples": 512,
+        "safety_rate": 1.0,
+        "safety_interval95": [
+          0.9925527526279385,
+          1
+        ],
+        "safe_damage_standard_error": 0.04826601287678035,
+        "safe_damage_mean": 6.40625,
+        "safe_damage_per_attempt": 6.40625,
+        "direct_damage_mean": null,
+        "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss.",
+        "damage_mean": 6.390625,
+        "enemy_morale_loss_mean": 6.40625,
+        "own_morale_loss_mean": 0.0078125,
+        "root_actions": {
+          "activate": 512,
+          "arcaneCodex": 502,
+          "play": 10
+        },
+        "return_mean": 0.3371710526315789,
+        "raw_score_mean": 6.40625,
+        "continuation_bonus_mean": 0.0,
+        "ending_gems_mean": 2.341796875,
+        "gem_retention_rate": 1.0,
+        "wisdom_trigger_rate": 0.65234375,
+        "spent_and_recovered_rate": 0.65234375,
+        "kept_without_spending_rate": 0.01953125,
+        "feasible_raw_score_per_attempt": 6.40625,
+        "rebound_mean": 3.74609375,
+        "zero_loss_rate": 0.9921875,
+        "by_hand": {
+          "0,1,2,1,1,0,0": {
+            "samples": 8,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.6755843804891231,
+              1
+            ],
+            "safe_damage_standard_error": 0.18298126367784998,
+            "safe_damage_mean": 5.375,
+            "safe_damage_per_attempt": 5.375,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,0,2,2,1,0,0": {
+            "samples": 12,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.7574992425007574,
+              1
+            ],
+            "safe_damage_standard_error": 0.42640143271122083,
+            "safe_damage_mean": 6.0,
+            "safe_damage_per_attempt": 6.0,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,0,3,1,1,0,0": {
+            "samples": 24,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.8620194241710247,
+              1
+            ],
+            "safe_damage_standard_error": 0.211211995981234,
+            "safe_damage_mean": 6.875,
+            "safe_damage_per_attempt": 6.875,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,0,2,1,1,1,0": {
+            "samples": 12,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.7574992425007574,
+              1
+            ],
+            "safe_damage_standard_error": 0.1421338109037403,
+            "safe_damage_mean": 6.333333333333333,
+            "safe_damage_per_attempt": 6.333333333333333,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,0,2,1,1,0,0": {
+            "samples": 236,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.9839827619562244,
+              0.9999999999999999
+            ],
+            "safe_damage_standard_error": 0.07461795625467695,
+            "safe_damage_mean": 6.470338983050848,
+            "safe_damage_per_attempt": 6.470338983050848,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,0,3,2,0,0,0": {
+            "samples": 8,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.6755843804891231,
+              1
+            ],
+            "safe_damage_standard_error": 0.0,
+            "safe_damage_mean": 8.0,
+            "safe_damage_per_attempt": 8.0,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,0,1,1,1,1,0": {
+            "samples": 36,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.9035781695514236,
+              1
+            ],
+            "safe_damage_standard_error": 0.17416973618216128,
+            "safe_damage_mean": 5.777777777777778,
+            "safe_damage_per_attempt": 5.777777777777778,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,1,1,1,1,1,0": {
+            "samples": 4,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.5100999795960008,
+              1
+            ],
+            "safe_damage_standard_error": 0.5,
+            "safe_damage_mean": 6.5,
+            "safe_damage_per_attempt": 6.5,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "0,0,1,1,1,1,1": {
+            "samples": 4,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.5100999795960008,
+              1
+            ],
+            "safe_damage_standard_error": 0.5,
+            "safe_damage_mean": 7.5,
+            "safe_damage_per_attempt": 7.5,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "2,0,2,1,0,0,0": {
+            "samples": 36,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.9035781695514236,
+              1
+            ],
+            "safe_damage_standard_error": 0.11268723396380222,
+            "safe_damage_mean": 6.666666666666667,
+            "safe_damage_per_attempt": 6.666666666666667,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,0,3,1,0,0,0": {
+            "samples": 44,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.9197016822179859,
+              0.9999999999999999
+            ],
+            "safe_damage_standard_error": 0.17604469755488258,
+            "safe_damage_mean": 6.409090909090909,
+            "safe_damage_per_attempt": 6.409090909090909,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "2,1,1,1,0,0,0": {
+            "samples": 20,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.8388698745050667,
+              1
+            ],
+            "safe_damage_standard_error": 0.16662280124501821,
+            "safe_damage_mean": 6.15,
+            "safe_damage_per_attempt": 6.15,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "2,0,1,1,1,0,0": {
+            "samples": 32,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.8928172849426366,
+              1
+            ],
+            "safe_damage_standard_error": 0.1724468127447024,
+            "safe_damage_mean": 6.375,
+            "safe_damage_per_attempt": 6.375,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,0,2,2,0,0,0": {
+            "samples": 24,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.8620194241710247,
+              1
+            ],
+            "safe_damage_standard_error": 0.18532351918546394,
+            "safe_damage_mean": 6.291666666666667,
+            "safe_damage_per_attempt": 6.291666666666667,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,1,2,1,0,0,0": {
+            "samples": 8,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.6755843804891231,
+              1
+            ],
+            "safe_damage_standard_error": 0.125,
+            "safe_damage_mean": 6.125,
+            "safe_damage_per_attempt": 6.125,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          },
+          "1,1,1,1,1,0,0": {
+            "samples": 4,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.5100999795960008,
+              1
+            ],
+            "safe_damage_standard_error": 0.0,
+            "safe_damage_mean": 5.0,
+            "safe_damage_per_attempt": 5.0,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+          }
+        },
+        "by_budget": {
+          "0": {
+            "games": 128,
+            "eligible": 128,
+            "ineligible": 0,
+            "truncated": 0,
+            "samples": 128,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.9708620041018919,
+              0.9999999999999999
+            ],
+            "safe_damage_standard_error": 0.09763717825580534,
+            "safe_damage_mean": 6.265625,
+            "safe_damage_per_attempt": 6.265625,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss.",
+            "damage_mean": 6.25,
+            "enemy_morale_loss_mean": 6.265625,
+            "own_morale_loss_mean": 0.0,
+            "root_actions": {
+              "activate": 128,
+              "arcaneCodex": 123,
+              "play": 5
+            },
+            "return_mean": 0.32976973684210525,
+            "raw_score_mean": 6.265625,
+            "continuation_bonus_mean": 0.0,
+            "ending_gems_mean": 2.2421875,
+            "gem_retention_rate": 1.0,
+            "wisdom_trigger_rate": 0.59375,
+            "spent_and_recovered_rate": 0.59375,
+            "kept_without_spending_rate": 0.0390625,
+            "feasible_raw_score_per_attempt": 6.265625,
+            "rebound_mean": 3.53125,
+            "zero_loss_rate": 1.0,
+            "by_hand": {
+              "0,1,2,1,1,0,0": {
+                "samples": 2,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.34237195288961925,
+                  1
+                ],
+                "safe_damage_standard_error": 0.0,
+                "safe_damage_mean": 5.0,
+                "safe_damage_per_attempt": 5.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,2,2,1,0,0": {
+                "samples": 3,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.43849391955098227,
+                  1
+                ],
+                "safe_damage_standard_error": 1.2018504251546631,
+                "safe_damage_mean": 5.333333333333333,
+                "safe_damage_per_attempt": 5.333333333333333,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,3,1,1,0,0": {
+                "samples": 6,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.6096569663469354,
+                  0.9999999999999999
+                ],
+                "safe_damage_standard_error": 0.4216370213557839,
+                "safe_damage_mean": 6.666666666666667,
+                "safe_damage_per_attempt": 6.666666666666667,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,2,1,1,1,0": {
+                "samples": 3,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.43849391955098227,
+                  1
+                ],
+                "safe_damage_standard_error": 0.33333333333333337,
+                "safe_damage_mean": 6.333333333333333,
+                "safe_damage_per_attempt": 6.333333333333333,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,0,2,1,1,0,0": {
+                "samples": 59,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.938868520215908,
+                  1
+                ],
+                "safe_damage_standard_error": 0.1567065872954233,
+                "safe_damage_mean": 6.389830508474576,
+                "safe_damage_per_attempt": 6.389830508474576,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,3,2,0,0,0": {
+                "samples": 2,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.34237195288961925,
+                  1
+                ],
+                "safe_damage_standard_error": 0.0,
+                "safe_damage_mean": 8.0,
+                "safe_damage_per_attempt": 8.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,0,1,1,1,1,0": {
+                "samples": 9,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.7008472464490407,
+                  1
+                ],
+                "safe_damage_standard_error": 0.24216105241892633,
+                "safe_damage_mean": 5.444444444444445,
+                "safe_damage_per_attempt": 5.444444444444445,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,1,1,1,1,1,0": {
+                "samples": 1,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.20654329147389294,
+                  1
+                ],
+                "safe_damage_standard_error": null,
+                "safe_damage_mean": 5.0,
+                "safe_damage_per_attempt": 5.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,1,1,1,1,1": {
+                "samples": 1,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.20654329147389294,
+                  1
+                ],
+                "safe_damage_standard_error": null,
+                "safe_damage_mean": 6.0,
+                "safe_damage_per_attempt": 6.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "2,0,2,1,0,0,0": {
+                "samples": 9,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.7008472464490407,
+                  1
+                ],
+                "safe_damage_standard_error": 0.23570226039551584,
+                "safe_damage_mean": 6.666666666666667,
+                "safe_damage_per_attempt": 6.666666666666667,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,0,3,1,0,0,0": {
+                "samples": 11,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.7411599827511859,
+                  1
+                ],
+                "safe_damage_standard_error": 0.34015067152490375,
+                "safe_damage_mean": 6.454545454545454,
+                "safe_damage_per_attempt": 6.454545454545454,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "2,1,1,1,0,0,0": {
+                "samples": 5,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.5655085052479191,
+                  1
+                ],
+                "safe_damage_standard_error": 0.31622776601683794,
+                "safe_damage_mean": 6.0,
+                "safe_damage_per_attempt": 6.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "2,0,1,1,1,0,0": {
+                "samples": 8,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.6755843804891231,
+                  1
+                ],
+                "safe_damage_standard_error": 0.2672612419124244,
+                "safe_damage_mean": 6.0,
+                "safe_damage_per_attempt": 6.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,0,2,2,0,0,0": {
+                "samples": 6,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.6096569663469354,
+                  0.9999999999999999
+                ],
+                "safe_damage_standard_error": 0.3073181485764296,
+                "safe_damage_mean": 6.166666666666667,
+                "safe_damage_per_attempt": 6.166666666666667,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,1,2,1,0,0,0": {
+                "samples": 2,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.34237195288961925,
+                  1
+                ],
+                "safe_damage_standard_error": 0.5,
+                "safe_damage_mean": 6.5,
+                "safe_damage_per_attempt": 6.5,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,1,1,1,1,0,0": {
+                "samples": 1,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.20654329147389294,
+                  1
+                ],
+                "safe_damage_standard_error": null,
+                "safe_damage_mean": 5.0,
+                "safe_damage_per_attempt": 5.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              }
+            },
+            "budget_compliance_rate": 1.0
+          },
+          "1": {
+            "games": 128,
+            "eligible": 128,
+            "ineligible": 0,
+            "truncated": 0,
+            "samples": 128,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.9708620041018919,
+              0.9999999999999999
+            ],
+            "safe_damage_standard_error": 0.09575599510820922,
+            "safe_damage_mean": 6.4140625,
+            "safe_damage_per_attempt": 6.4140625,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss.",
+            "damage_mean": 6.3984375,
+            "enemy_morale_loss_mean": 6.4140625,
+            "own_morale_loss_mean": 0.0,
+            "root_actions": {
+              "activate": 128,
+              "arcaneCodex": 125,
+              "play": 3
+            },
+            "return_mean": 0.33758223684210525,
+            "raw_score_mean": 6.4140625,
+            "continuation_bonus_mean": 0.0,
+            "ending_gems_mean": 2.3359375,
+            "gem_retention_rate": 1.0,
+            "wisdom_trigger_rate": 0.6484375,
+            "spent_and_recovered_rate": 0.6484375,
+            "kept_without_spending_rate": 0.0234375,
+            "feasible_raw_score_per_attempt": 6.4140625,
+            "rebound_mean": 3.78125,
+            "zero_loss_rate": 1.0,
+            "by_hand": {
+              "0,1,2,1,1,0,0": {
+                "samples": 2,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.34237195288961925,
+                  1
+                ],
+                "safe_damage_standard_error": 0.5,
+                "safe_damage_mean": 5.5,
+                "safe_damage_per_attempt": 5.5,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,2,2,1,0,0": {
+                "samples": 3,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.43849391955098227,
+                  1
+                ],
+                "safe_damage_standard_error": 1.2018504251546631,
+                "safe_damage_mean": 5.333333333333333,
+                "safe_damage_per_attempt": 5.333333333333333,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,3,1,1,0,0": {
+                "samples": 6,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.6096569663469354,
+                  0.9999999999999999
+                ],
+                "safe_damage_standard_error": 0.4772607021092118,
+                "safe_damage_mean": 6.833333333333333,
+                "safe_damage_per_attempt": 6.833333333333333,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,2,1,1,1,0": {
+                "samples": 3,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.43849391955098227,
+                  1
+                ],
+                "safe_damage_standard_error": 0.33333333333333337,
+                "safe_damage_mean": 6.333333333333333,
+                "safe_damage_per_attempt": 6.333333333333333,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,0,2,1,1,0,0": {
+                "samples": 59,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.938868520215908,
+                  1
+                ],
+                "safe_damage_standard_error": 0.14580212317021402,
+                "safe_damage_mean": 6.491525423728813,
+                "safe_damage_per_attempt": 6.491525423728813,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,3,2,0,0,0": {
+                "samples": 2,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.34237195288961925,
+                  1
+                ],
+                "safe_damage_standard_error": 0.0,
+                "safe_damage_mean": 8.0,
+                "safe_damage_per_attempt": 8.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,0,1,1,1,1,0": {
+                "samples": 9,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.7008472464490407,
+                  1
+                ],
+                "safe_damage_standard_error": 0.3888888888888889,
+                "safe_damage_mean": 5.888888888888889,
+                "safe_damage_per_attempt": 5.888888888888889,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,1,1,1,1,1,0": {
+                "samples": 1,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.20654329147389294,
+                  1
+                ],
+                "safe_damage_standard_error": null,
+                "safe_damage_mean": 7.0,
+                "safe_damage_per_attempt": 7.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,1,1,1,1,1": {
+                "samples": 1,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.20654329147389294,
+                  1
+                ],
+                "safe_damage_standard_error": null,
+                "safe_damage_mean": 8.0,
+                "safe_damage_per_attempt": 8.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "2,0,2,1,0,0,0": {
+                "samples": 9,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.7008472464490407,
+                  1
+                ],
+                "safe_damage_standard_error": 0.23570226039551584,
+                "safe_damage_mean": 6.666666666666667,
+                "safe_damage_per_attempt": 6.666666666666667,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,0,3,1,0,0,0": {
+                "samples": 11,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.7411599827511859,
+                  1
+                ],
+                "safe_damage_standard_error": 0.34015067152490375,
+                "safe_damage_mean": 6.454545454545454,
+                "safe_damage_per_attempt": 6.454545454545454,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "2,1,1,1,0,0,0": {
+                "samples": 5,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.5655085052479191,
+                  1
+                ],
+                "safe_damage_standard_error": 0.3741657386773941,
+                "safe_damage_mean": 6.2,
+                "safe_damage_per_attempt": 6.2,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "2,0,1,1,1,0,0": {
+                "samples": 8,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.6755843804891231,
+                  1
+                ],
+                "safe_damage_standard_error": 0.25,
+                "safe_damage_mean": 6.25,
+                "safe_damage_per_attempt": 6.25,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,0,2,2,0,0,0": {
+                "samples": 6,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.6096569663469354,
+                  0.9999999999999999
+                ],
+                "safe_damage_standard_error": 0.4216370213557839,
+                "safe_damage_mean": 6.333333333333333,
+                "safe_damage_per_attempt": 6.333333333333333,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,1,2,1,0,0,0": {
+                "samples": 2,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.34237195288961925,
+                  1
+                ],
+                "safe_damage_standard_error": 0.0,
+                "safe_damage_mean": 6.0,
+                "safe_damage_per_attempt": 6.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,1,1,1,1,0,0": {
+                "samples": 1,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.20654329147389294,
+                  1
+                ],
+                "safe_damage_standard_error": null,
+                "safe_damage_mean": 5.0,
+                "safe_damage_per_attempt": 5.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              }
+            },
+            "budget_compliance_rate": 1.0
+          },
+          "2": {
+            "games": 128,
+            "eligible": 128,
+            "ineligible": 0,
+            "truncated": 0,
+            "samples": 128,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.9708620041018919,
+              0.9999999999999999
+            ],
+            "safe_damage_standard_error": 0.09532591150640815,
+            "safe_damage_mean": 6.453125,
+            "safe_damage_per_attempt": 6.453125,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss.",
+            "damage_mean": 6.4375,
+            "enemy_morale_loss_mean": 6.453125,
+            "own_morale_loss_mean": 0.0078125,
+            "root_actions": {
+              "activate": 128,
+              "arcaneCodex": 127,
+              "play": 1
+            },
+            "return_mean": 0.33963815789473684,
+            "raw_score_mean": 6.453125,
+            "continuation_bonus_mean": 0.0,
+            "ending_gems_mean": 2.3828125,
+            "gem_retention_rate": 1.0,
+            "wisdom_trigger_rate": 0.6796875,
+            "spent_and_recovered_rate": 0.6796875,
+            "kept_without_spending_rate": 0.0078125,
+            "feasible_raw_score_per_attempt": 6.453125,
+            "rebound_mean": 3.8125,
+            "zero_loss_rate": 0.9921875,
+            "by_hand": {
+              "0,1,2,1,1,0,0": {
+                "samples": 2,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.34237195288961925,
+                  1
+                ],
+                "safe_damage_standard_error": 0.5,
+                "safe_damage_mean": 5.5,
+                "safe_damage_per_attempt": 5.5,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,2,2,1,0,0": {
+                "samples": 3,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.43849391955098227,
+                  1
+                ],
+                "safe_damage_standard_error": 0.33333333333333337,
+                "safe_damage_mean": 6.666666666666667,
+                "safe_damage_per_attempt": 6.666666666666667,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,3,1,1,0,0": {
+                "samples": 6,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.6096569663469354,
+                  0.9999999999999999
+                ],
+                "safe_damage_standard_error": 0.4216370213557839,
+                "safe_damage_mean": 6.666666666666667,
+                "safe_damage_per_attempt": 6.666666666666667,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,2,1,1,1,0": {
+                "samples": 3,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.43849391955098227,
+                  1
+                ],
+                "safe_damage_standard_error": 0.33333333333333337,
+                "safe_damage_mean": 6.333333333333333,
+                "safe_damage_per_attempt": 6.333333333333333,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,0,2,1,1,0,0": {
+                "samples": 59,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.938868520215908,
+                  1
+                ],
+                "safe_damage_standard_error": 0.14779280312953721,
+                "safe_damage_mean": 6.491525423728813,
+                "safe_damage_per_attempt": 6.491525423728813,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,3,2,0,0,0": {
+                "samples": 2,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.34237195288961925,
+                  1
+                ],
+                "safe_damage_standard_error": 0.0,
+                "safe_damage_mean": 8.0,
+                "safe_damage_per_attempt": 8.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,0,1,1,1,1,0": {
+                "samples": 9,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.7008472464490407,
+                  1
+                ],
+                "safe_damage_standard_error": 0.3888888888888889,
+                "safe_damage_mean": 5.888888888888889,
+                "safe_damage_per_attempt": 5.888888888888889,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,1,1,1,1,1,0": {
+                "samples": 1,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.20654329147389294,
+                  1
+                ],
+                "safe_damage_standard_error": null,
+                "safe_damage_mean": 7.0,
+                "safe_damage_per_attempt": 7.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,1,1,1,1,1": {
+                "samples": 1,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.20654329147389294,
+                  1
+                ],
+                "safe_damage_standard_error": null,
+                "safe_damage_mean": 8.0,
+                "safe_damage_per_attempt": 8.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "2,0,2,1,0,0,0": {
+                "samples": 9,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.7008472464490407,
+                  1
+                ],
+                "safe_damage_standard_error": 0.23570226039551584,
+                "safe_damage_mean": 6.666666666666667,
+                "safe_damage_per_attempt": 6.666666666666667,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,0,3,1,0,0,0": {
+                "samples": 11,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.7411599827511859,
+                  1
+                ],
+                "safe_damage_standard_error": 0.3878314365036644,
+                "safe_damage_mean": 6.363636363636363,
+                "safe_damage_per_attempt": 6.363636363636363,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "2,1,1,1,0,0,0": {
+                "samples": 5,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.5655085052479191,
+                  1
+                ],
+                "safe_damage_standard_error": 0.3741657386773941,
+                "safe_damage_mean": 6.2,
+                "safe_damage_per_attempt": 6.2,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "2,0,1,1,1,0,0": {
+                "samples": 8,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.6755843804891231,
+                  1
+                ],
+                "safe_damage_standard_error": 0.41992771486803027,
+                "safe_damage_mean": 6.625,
+                "safe_damage_per_attempt": 6.625,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,0,2,2,0,0,0": {
+                "samples": 6,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.6096569663469354,
+                  0.9999999999999999
+                ],
+                "safe_damage_standard_error": 0.4216370213557839,
+                "safe_damage_mean": 6.333333333333333,
+                "safe_damage_per_attempt": 6.333333333333333,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,1,2,1,0,0,0": {
+                "samples": 2,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.34237195288961925,
+                  1
+                ],
+                "safe_damage_standard_error": 0.0,
+                "safe_damage_mean": 6.0,
+                "safe_damage_per_attempt": 6.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,1,1,1,1,0,0": {
+                "samples": 1,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.20654329147389294,
+                  1
+                ],
+                "safe_damage_standard_error": null,
+                "safe_damage_mean": 5.0,
+                "safe_damage_per_attempt": 5.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              }
+            },
+            "budget_compliance_rate": 1.0
+          },
+          "3": {
+            "games": 128,
+            "eligible": 128,
+            "ineligible": 0,
+            "truncated": 0,
+            "samples": 128,
+            "safety_rate": 1.0,
+            "safety_interval95": [
+              0.9708620041018919,
+              0.9999999999999999
+            ],
+            "safe_damage_standard_error": 0.09732905324243578,
+            "safe_damage_mean": 6.4921875,
+            "safe_damage_per_attempt": 6.4921875,
+            "direct_damage_mean": null,
+            "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss.",
+            "damage_mean": 6.4765625,
+            "enemy_morale_loss_mean": 6.4921875,
+            "own_morale_loss_mean": 0.0234375,
+            "root_actions": {
+              "activate": 128,
+              "arcaneCodex": 127,
+              "play": 1
+            },
+            "return_mean": 0.3416940789473684,
+            "raw_score_mean": 6.4921875,
+            "continuation_bonus_mean": 0.0,
+            "ending_gems_mean": 2.40625,
+            "gem_retention_rate": 1.0,
+            "wisdom_trigger_rate": 0.6875,
+            "spent_and_recovered_rate": 0.6875,
+            "kept_without_spending_rate": 0.0078125,
+            "feasible_raw_score_per_attempt": 6.4921875,
+            "rebound_mean": 3.859375,
+            "zero_loss_rate": 0.9765625,
+            "by_hand": {
+              "0,1,2,1,1,0,0": {
+                "samples": 2,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.34237195288961925,
+                  1
+                ],
+                "safe_damage_standard_error": 0.5,
+                "safe_damage_mean": 5.5,
+                "safe_damage_per_attempt": 5.5,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,2,2,1,0,0": {
+                "samples": 3,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.43849391955098227,
+                  1
+                ],
+                "safe_damage_standard_error": 0.33333333333333337,
+                "safe_damage_mean": 6.666666666666667,
+                "safe_damage_per_attempt": 6.666666666666667,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,3,1,1,0,0": {
+                "samples": 6,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.6096569663469354,
+                  0.9999999999999999
+                ],
+                "safe_damage_standard_error": 0.4216370213557839,
+                "safe_damage_mean": 7.333333333333333,
+                "safe_damage_per_attempt": 7.333333333333333,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,2,1,1,1,0": {
+                "samples": 3,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.43849391955098227,
+                  1
+                ],
+                "safe_damage_standard_error": 0.33333333333333337,
+                "safe_damage_mean": 6.333333333333333,
+                "safe_damage_per_attempt": 6.333333333333333,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,0,2,1,1,0,0": {
+                "samples": 59,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.938868520215908,
+                  1
+                ],
+                "safe_damage_standard_error": 0.1497570238514042,
+                "safe_damage_mean": 6.508474576271187,
+                "safe_damage_per_attempt": 6.508474576271187,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,3,2,0,0,0": {
+                "samples": 2,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.34237195288961925,
+                  1
+                ],
+                "safe_damage_standard_error": 0.0,
+                "safe_damage_mean": 8.0,
+                "safe_damage_per_attempt": 8.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,0,1,1,1,1,0": {
+                "samples": 9,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.7008472464490407,
+                  1
+                ],
+                "safe_damage_standard_error": 0.3888888888888889,
+                "safe_damage_mean": 5.888888888888889,
+                "safe_damage_per_attempt": 5.888888888888889,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,1,1,1,1,1,0": {
+                "samples": 1,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.20654329147389294,
+                  1
+                ],
+                "safe_damage_standard_error": null,
+                "safe_damage_mean": 7.0,
+                "safe_damage_per_attempt": 7.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "0,0,1,1,1,1,1": {
+                "samples": 1,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.20654329147389294,
+                  1
+                ],
+                "safe_damage_standard_error": null,
+                "safe_damage_mean": 8.0,
+                "safe_damage_per_attempt": 8.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "2,0,2,1,0,0,0": {
+                "samples": 9,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.7008472464490407,
+                  1
+                ],
+                "safe_damage_standard_error": 0.23570226039551584,
+                "safe_damage_mean": 6.666666666666667,
+                "safe_damage_per_attempt": 6.666666666666667,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,0,3,1,0,0,0": {
+                "samples": 11,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.7411599827511859,
+                  1
+                ],
+                "safe_damage_standard_error": 0.3878314365036644,
+                "safe_damage_mean": 6.363636363636363,
+                "safe_damage_per_attempt": 6.363636363636363,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "2,1,1,1,0,0,0": {
+                "samples": 5,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.5655085052479191,
+                  1
+                ],
+                "safe_damage_standard_error": 0.3741657386773941,
+                "safe_damage_mean": 6.2,
+                "safe_damage_per_attempt": 6.2,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "2,0,1,1,1,0,0": {
+                "samples": 8,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.6755843804891231,
+                  1
+                ],
+                "safe_damage_standard_error": 0.41992771486803027,
+                "safe_damage_mean": 6.625,
+                "safe_damage_per_attempt": 6.625,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,0,2,2,0,0,0": {
+                "samples": 6,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.6096569663469354,
+                  0.9999999999999999
+                ],
+                "safe_damage_standard_error": 0.4216370213557839,
+                "safe_damage_mean": 6.333333333333333,
+                "safe_damage_per_attempt": 6.333333333333333,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,1,2,1,0,0,0": {
+                "samples": 2,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.34237195288961925,
+                  1
+                ],
+                "safe_damage_standard_error": 0.0,
+                "safe_damage_mean": 6.0,
+                "safe_damage_per_attempt": 6.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              },
+              "1,1,1,1,1,0,0": {
+                "samples": 1,
+                "safety_rate": 1.0,
+                "safety_interval95": [
+                  0.20654329147389294,
+                  1
+                ],
+                "safe_damage_standard_error": null,
+                "safe_damage_mean": 5.0,
+                "safe_damage_per_attempt": 5.0,
+                "direct_damage_mean": null,
+                "warning": "Safety here means within the supplied loss budget; zero_loss_rate separately reports no own loss."
+              }
+            },
+            "budget_compliance_rate": 1.0
+          }
+        },
+        "budget_compliance_rate": 1.0
+      }
+    },
+    "budget_compliance_rate": 1.0
+  }
+}

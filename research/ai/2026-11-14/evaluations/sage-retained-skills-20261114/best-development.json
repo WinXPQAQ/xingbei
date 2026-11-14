@@ -1,0 +1,165 @@
+{
+  "hero": "sage",
+  "round": 1,
+  "checkpoint": "/home/xp/.local/share/xingbei-ml/sage-retained-skills-20261114/sage/round-000001.pt",
+  "control": {
+    "games": 144,
+    "completed": 144,
+    "wins": 66,
+    "truncated": 0,
+    "win_rate": 0.4583333333333333,
+    "seed_cluster_interval95": [
+      0.3819444444444444,
+      0.5347222222222222
+    ],
+    "inability_forfeits": 0,
+    "victory_routes": {
+      "cups": 66,
+      "morale": 78
+    },
+    "behavior": {
+      "turns": 1299,
+      "coveredAdded": 0,
+      "enemyAttackDamage": 697,
+      "enemySpellDamage": 318,
+      "refineGem": 1,
+      "refineCrystal": 0
+    },
+    "skill_notes": {
+      "spellRebound": 112,
+      "wisdomCodex": 7,
+      "arcaneCodex": 24,
+      "whiteKarma": 2,
+      "wayOfService": 2,
+      "heresyJudgment": 1,
+      "passionateRhapsody": 3,
+      "service": 8
+    },
+    "root_actions": {
+      "activate": 978,
+      "play": 966,
+      "synthesize": 202,
+      "purchase": 50,
+      "arcaneCodex": 12,
+      "refine": 1
+    },
+    "opponents": {
+      "model:frozenCurrent": {
+        "wins": 16,
+        "completed": 36
+      },
+      "model:anchor417": {
+        "wins": 13,
+        "completed": 36
+      },
+      "v1.17.0-preview.5": {
+        "wins": 19,
+        "completed": 36
+      },
+      "legacy-score-partial-v1": {
+        "wins": 18,
+        "completed": 36
+      }
+    },
+    "behavior_note": "Public event totals, not rewards. Skill notes can include multiple notes per activation; damage is not morale loss."
+  },
+  "specialist": {
+    "games": 144,
+    "completed": 144,
+    "wins": 65,
+    "truncated": 0,
+    "win_rate": 0.4513888888888889,
+    "seed_cluster_interval95": [
+      0.3680555555555555,
+      0.5347222222222222
+    ],
+    "inability_forfeits": 0,
+    "victory_routes": {
+      "cups": 63,
+      "morale": 81
+    },
+    "behavior": {
+      "turns": 1296,
+      "coveredAdded": 0,
+      "enemyAttackDamage": 726,
+      "enemySpellDamage": 346,
+      "refineGem": 0,
+      "refineCrystal": 0
+    },
+    "skill_notes": {
+      "spellRebound": 124,
+      "wisdomCodex": 10,
+      "arcaneCodex": 44,
+      "wayOfService": 2,
+      "heresyJudgment": 1,
+      "service": 6
+    },
+    "root_actions": {
+      "activate": 995,
+      "play": 973,
+      "purchase": 49,
+      "synthesize": 171,
+      "arcaneCodex": 22
+    },
+    "opponents": {
+      "model:frozenCurrent": {
+        "wins": 14,
+        "completed": 36
+      },
+      "model:anchor417": {
+        "wins": 13,
+        "completed": 36
+      },
+      "v1.17.0-preview.5": {
+        "wins": 21,
+        "completed": 36
+      },
+      "legacy-score-partial-v1": {
+        "wins": 17,
+        "completed": 36
+      }
+    },
+    "behavior_note": "Public event totals, not rewards. Skill notes can include multiple notes per activation; damage is not morale loss."
+  },
+  "paired": {
+    "paired_completed": 144,
+    "difference": -0.006944444444444444,
+    "seed_cluster_interval95": [
+      -0.09027777777777778,
+      0.07638888888888888
+    ]
+  },
+  "stats": {
+    "decisions": 21930,
+    "candidates": 71161,
+    "bytes": 137220510,
+    "batches": 9724,
+    "max_batch": 7,
+    "collate_seconds": 9.81442196527496,
+    "infer_seconds": 17.683632959146053,
+    "collate_infer_seconds": 27.649350935127586,
+    "parse_seconds": 1.1946185575798154,
+    "decode_seconds": 5.7210797041188926,
+    "binary_read_seconds": 0.7200974505394697,
+    "queue_wait_seconds": 134.1914519390557,
+    "decode_cpu_seconds": 3.9109787599999493,
+    "collate_cpu_seconds": 8.55833610800006,
+    "infer_cpu_seconds": 14.770022785999704,
+    "reused_prefixes": 0,
+    "model_decisions": {
+      "frozenCurrent": 7756,
+      "anchor417": 8377,
+      "current": 5797
+    },
+    "workers_started": 0,
+    "workers_reused": 16,
+    "timing_semantics": "Host wall-clock phases. Combined collation and inference ends after results return to CPU.",
+    "seconds": 41.82157577783801,
+    "games_per_second": 3.443198811181767,
+    "decisions_per_second": 524.3704856195566,
+    "fresh_engine_requests": 30032,
+    "engine_requests_per_second": 718.0982409542418,
+    "mean_batch": 2.2552447552447554,
+    "forced_choices": 6760
+  }
+}

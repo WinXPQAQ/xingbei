@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "baselineCommit": "d1560abd1be87b1aa5a56a33f550903508d23ac2",
+  "baselinePolicy": "v1.5",
+  "branch": "codex/ml-terminal-reward",
+  "reward": {
+    "terminalTeamWin": 1,
+    "terminalTeamLoss": -1,
+    "intermediate": false,
+    "truncated": null
+  },
+  "deployment": "local-only; no main push or online AI change",
+  "completed": [
+    "isolated worktree",
+    "rule-only action and request candidate enumerator",
+    "async six-hero simulator driver with fail-closed automatic fallback",
+    "uniform-policy smoke across all twelve observed decision types",
+    "semantic detached model observation without entity IDs",
+    "six-seat hidden-state counterfactual checks",
+    "persistent JSON worker and stale-request rejection",
+    "1/2/4/8 worker uniform-policy IPC benchmark; results invariant",
+    "explicit v1.5/v1.4 teacher mapping verified by twelve complete games",
+    "model mask, seat-memory isolation, optimizer and RNG checkpoint unit tests",
+    "six-game imitation plus six-game terminal PPO smoke",
+    "resume from checkpoint to next PPO update",
+    "84-game development evaluation including paired control, no truncations",
+    "CPU neural forward microbenchmark",
+    "three fixed-budget training seeds, 2304 complete games",
+    "frozen v1.5/v1.4 teammates and opponents",
+    "3024 final evaluation records across 12 seed clusters, independently recomputed",
+    "228 natural-decision privacy counterfactual comparisons across six seats and twelve decision types",
+    "RTX4090 48GB verified; CUDA forward/backward/Adam stress",
+    "CPU-to-GPU and GPU-to-GPU checkpoint resume, 48 additional complete verification games",
+    "learning curves, pinned dependencies, hash manifest and reproducible report"
+  ],
+  "incomplete": [],
+  "gpuIssue": {
+    "loadedKernelDriver": "595.91.07",
+    "userspaceNVML": "595.99",
+    "status": "resolved for task via isolated signed matching user libraries; global mismatch remains; no reboot or global replacement",
+    "onDiskKernelDriver": "595.99.02",
+    "rebootApproval": "User authorized after task check; foreign jobs found. Reboot avoided using isolated matching libraries; other tasks untouched."
+  },
+  "diagnosticSeeds": {
+    "first": 210000000,
+    "last": 210000100,
+    "purpose": "adapter smoke/regression only; never held-out evaluation"
+  },
+  "trainingSeeds": {
+    "first": 220000000,
+    "purpose": "reserved training/development; not final evaluation"
+  },
+  "finalEvaluationSeeds": {
+    "first": 240000000,
+    "last": 240000011,
+    "status": "used once after freezing all three checkpoints; no longer fresh holdout"
+  },
+  "limitations": [
+    "Raw Game stays in trusted simulator callback; only encodeDecision output crosses the worker boundary.",
+    "Candidate card IDs/indexes are engine commands, not network features.",
+    "Smoke demonstrates execution, not complete privacy, legal-choice coverage, or model strength.",
+    "Full overflow combinations are enumerated; measure and factorize if needed without heuristic pruning.",
+    "All three models weaker than v1.5; no claim of human strength.",
+    "Only twelve independent final seed clusters; controls and three models are correlated.",
+    "Default-composition single-model evaluation omits marksman/priest; both covered in mirrored lineups.",
+    "No BC-only endpoint retained, so PPO contribution not isolated.",
+    "Source after frozen pilot adds fail-closed foreign reservation guard and GPU RNG restore fix; current six heroes cannot reach guarded path."
+  ],
+  "evidenceDirectory": "/home/xp/.local/share/xingbei-ml/evidence",
+  "latestTests": {
+    "nodePassed": 251,
+    "nodeFailed": 0,
+    "pythonModelPassed": 2,
+    "pythonEvaluationPassed": 2
+  },
+  "implementedNotYetRuntimeVerified": [],
+  "pythonEnvironment": "/home/xp/.local/share/xingbei-ml/venv",
+  "pythonInstall": "torch 2.14.1+cpu imported and tested; official wheel SHA256 verified",
+  "developmentSmoke": "18 games over 3 updates; eval 84 games one diagnostic seed cluster, team model 0/28 and mixed 6/28; not final evidence",
+  "status": "complete: offline pilot; models weaker than v1.5; no deployment",
+  "report": "training/results/pilot-v2/report.txt"
+}

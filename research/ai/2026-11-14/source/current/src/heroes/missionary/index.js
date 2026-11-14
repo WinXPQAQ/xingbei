@@ -1,0 +1,368 @@
+import { Hero } from "../../hero-base.js";
+import { ExclusiveCard } from "../../card.js";
+import { Timing } from "../../timing.js";
+import { choice, targets, healTarget } from "../shared/actions.js";
+import { discardHand } from "../shared/covered.js";
+import { gainCard } from "../shared/compound.js";
+import { canContinueWithHand, safePaidRemovalChoices } from "../../inability.js";
+export class Missionary extends Hero {
+  constructor(enabled = true) {
+    super({ id: "missionary", name: "传教士" });
+    this.state = {
+      devotion: 0,
+      started: false,
+      waypointCardId: null,
+      confessedIds: [],
+    };
+    if (!enabled) return;
+    const hero = this;
+    this.skills = [
+      {
+        id: "confessionReset",
+        name: "告解式重置",
+        ...this.bind("player", [Timing.TURN_BEFORE], "all"),
+        resolve() {
+          hero.state.confessedIds = [];
+        },
+      },
+      {
+        id: "pathOfFaith",
+        name: "信仰之路",
+        ...this.onOwnTurn([Timing.TURN_START]),
+        filter: () => !hero.state.started,
+        *resolve({ game, player, options }) {
+          hero.state.started = true;
+          yield* hero.place(
+            game,
+            player,
+            hero.previous(game, player.id),
+            false,
+            options,
+          );
+        },
+      },
+      {
+        id: "pathTravel",
+        name: "信仰之路转移",
+        ...this.onOwnTurn([Timing.TURN_END]),
+        filter: ({ game, context }) =>
+          context.route !== "special" && hero.holder(game) != null,
+        *resolve({ game, player, options }) {
+          yield* hero.transfer(game, player, options);
+        },
+      },
+      {
+        id: "preaching",
+        name: "传道",
+        ...this.onOwnTurn([Timing.ACTIVATION]),
+        activationEnablesAction: ({ game, player }) => player.hand.length > 0 || hero.hasDonorCard(game),
+        filter: ({ game, player }) => hero.holder(game) != null &&
+          (player.hand.length > 0 || hero.hasDonorCard(game)),
+        *resolve({ game, player, context, options }) {
+          if (context.usedSkills.terminalActivation) return;
+          if (
+            !(yield* game.offerSkill(
+              player.id,
+              "preaching",
+              "传道：可摸1张，明弃1张并与路标角色交换",
+            ))
+          )
+            return;
+          context.usedSkills.terminalActivation = true;
+          const holderEmpty = !hero.hasDonorCard(game);
+          const mustDraw = game.turn.state?.seekingAction || player.hand.length === 0 || (holderEmpty && player.hand.length === 1);
+          const n = yield* choice(
+            player.id,
+            "preachingDraw",
+            "传道：摸牌数量",
+            [
+              ...(mustDraw ? [] : [{ value: 0, label: "不摸牌" }]),
+              { value: 1, label: "摸1张" },
+            ],
+            mustDraw ? 1 : 0,
+          );
+          if (n) yield* game.drawSteps(player.id, n, options);
+          const [mine] = yield* hero.selfDiscard(
+            game,
+            player,
+            "preachingCost",
+            options,
+            "public",
+            { preserveUsable: holderEmpty },
+          );
+          hero.gain(game, player, 1);
+          const id = hero.holder(game);
+          const donor = game.player(id);
+          const requiresDelivery = player.hand.length === 0;
+          const deliverable = donor.hand.filter(card => !requiresDelivery || card.getDiscardDestination(game).zone === "discard");
+          const usable = new Set(!player.hand.length
+            ? deliverable.filter(card => game.isUsableHandCard(player.id, card)).map(card => card.id) : []);
+          const allowed = new Set(deliverable.map(card => card.id));
+          const receivedCards = donor.hand.length ? yield* game.chooseHandCards(id, 1,
+            card => allowed.has(card.id) && (!usable.size || usable.has(card.id)), {
+              skillId: "preachingRecipient", title: "传道：明弃1张牌交给传教士",
+            }) : [];
+          const [received] = receivedCards;
+          const failedDelivery = requiresDelivery && received && received.getDiscardDestination(game).zone !== "discard";
+          let delivered = false;
+          if (received && received.getDiscardDestination(game).zone === "discard") {
+            const a = mine?.getTraits({ game, playerId: player.id }),
+              b = received.getTraits({ game, playerId: id });
+            // This revealed discard is delivered directly. It never enters the
+            // discard pile, so discard-pile acquisition skills cannot claim it.
+            game.queueExposure(id, receivedCards, { reason: "preachingRecipient" });
+            game.recordPublicAction({ type: "discard", playerId: id, card: received.name, elements: [...b.elements] });
+            game.giveCards(id, player.id, receivedCards, { visibility: "public" });
+            delivered = true;
+            yield* game.flushRuleEvents(options);
+            yield* game.drawSteps(player.id, 0, { ...options, cause: { type: "directDraw", skillId: "preaching" } });
+            if (
+              a &&
+              (a.elements.some((e) => b.elements.includes(e)) ||
+                a.fates.some((f) => b.fates.includes(f)))
+            )
+              hero.gain(game, player, 1);
+          } else if (received) {
+            // Blades and the Chronicle retain their discard replacement and
+            // leaving-hand effects instead of becoming a delivered card.
+            game.discardCards(id, receivedCards, { reason: "preachingRecipient", visibility: "public" });
+            yield* game.flushRuleEvents(options);
+          }
+          if (failedDelivery && !delivered && game.forfeitMaliciousInability(id, "preachingRecipient", player.id, {
+            basis: "publicEmptyHandAndDiscardDestination", cardId: received.id,
+            destination: received.getDiscardDestination(game), targetHandCountBefore: 0,
+          })) return;
+          // The discard is only an intermediate cost; the donor's card and all
+          // Service effects must finish before inability is assessed.
+          game.allowActivationRefresh(player.id, "preaching");
+        },
+      },
+      {
+        id: "spiritualGift",
+        name: "属灵恩赐",
+        ...this.onOwnTurn([Timing.ACTIVATION]),
+        activationBlockedReason: ({game,player}) => hero.giftBlockedReason(game,player),
+        filter: ({ game, player }) => game.canPayEnergy(player.id, "crystal"),
+        *resolve({ game, player, context, options }) {
+          if (context.usedSkills.terminalActivation) return;
+          if (
+            !(yield* game.offerSkill(
+              player.id,
+              "spiritualGift",
+              "属灵恩赐：水晶，治疗+1，弃1牌",
+              {blockedReason: hero.giftBlockedReason(game,player)},
+            ))
+          )
+            return;
+          context.usedSkills.terminalActivation = true;
+          const payments=safePaidRemovalChoices(game,player.id,{healingGain:1});
+          yield* game.paySkillEnergy(player.id, "crystal", 1, {allowedPayments:payments.map(option=>option.payment)});
+          game.changeHealing(player.id, 1);
+          yield* hero.selfDiscard(game, player, "spiritualGiftCost", options, "hidden", {
+            cardFilter: card=>canContinueWithHand(game,player.id,player.hand.filter(c=>c!==card)),
+          });
+        },
+      },
+      { id: "revelation", name: "启示" },
+      { id: "service", name: "事奉" },
+      { id: "mass", name: "弥撒" },
+      { id: "confession", name: "告解式" },
+      { id: "godsDisciple", name: "神的门徒" },
+    ];
+  }
+  initialize(g, p) {
+    if (!this.skills.length) return;
+    this.state.waypointCardId = `waypoint:${p.id}`;
+    if (!g.effects.has("waypoint"))
+      g.registerEffect("waypoint", { name: "路标", category: "exclusive" });
+    g.registerCard(
+      new ExclusiveCard({ id: this.state.waypointCardId, name: "waypoint" }),
+      { zone: "outside" },
+    );
+  }
+  holder(g) {
+    const c = g.cards.get(this.state.waypointCardId);
+    return c?.location.zone === "status" ? c.location.playerId : null;
+  }
+  hasDonorCard(game) {
+    const id = this.holder(game);
+    // Hidden faces cannot restrict activation. Blades and the Chronicle have
+    // public identities and a known destination outside after being discarded.
+    return id != null && game.player(id).hand.some(card =>
+      !card.publicIdentity || card.getDiscardDestination(game).zone === "discard");
+  }
+  followsPlayer(g) {
+    return this.holder(g);
+  }
+  eligible(g) {
+    return g.players.filter((p) => p.hero.id !== "missionary").map((p) => p.id);
+  }
+  previous(g, id) {
+    for (let n = 1; n < g.players.length; n++) {
+      const next = (id - n + g.players.length) % g.players.length;
+      if (this.eligible(g).includes(next)) return next;
+    }
+    return null;
+  }
+  gain(g, p, n) {
+    const old = this.state.devotion;
+    this.state.devotion = Math.min(4, old + n);
+    g.logSkill(
+      p.id,
+      "pathOfFaith",
+      `虔诚+${this.state.devotion - old}（${this.state.devotion}/4）`,
+    );
+  }
+  giftBlockedReason(game, player) {
+    if(player.hand.length<=1)return "你将无法行动：属灵恩赐不能弃到空手";
+    return safePaidRemovalChoices(game,player.id,{healingGain:1}).length?null:"你将无法行动：属灵恩赐必须保留合法后续行动";
+  }
+  *selfDiscard(g, p, skill, options, visibility = "hidden", selection = null) {
+    let cs;
+    if (selection && p.hand.length) {
+      const {cardFilter=()=>true,...selectionOptions}=selection;
+      cs = yield* g.chooseHandCards(p.id, 1, cardFilter, { skillId: skill, ...selectionOptions });
+      g.discardCards(p.id, cs, { reason: skill, visibility });
+      yield* g.flushRuleEvents(options);
+    } else cs = yield* discardHand(g, p.id, 1, skill, options, visibility);
+    const c = cs[0],
+      id = this.holder(g);
+    if (
+      c?.location.zone === "discard" &&
+      p.healing > 0 &&
+      id != null &&
+      (yield* g.offerSkill(
+        p.id,
+        "service",
+        "事奉：移除1治疗，将弃牌交给路标角色",
+        { targetId: id },
+      ))
+    ) {
+      g.changeHealing(p.id, -1);
+      const team = g.player(id).team,
+        before = g.teams[team].morale;
+      yield* gainCard(g, id, c, "service", options);
+      if (g.teams[team].morale >= before) {
+        const target = yield* g.choosePlayer(
+          p.id,
+          targets(g).filter((t) => t !== p.id),
+          "事奉：目标+1治疗",
+          { skillId: "serviceHealing" },
+        );
+        g.changeHealing(target, 1);
+      }
+    }
+    return cs;
+  }
+  *transfer(g, p, options) {
+    let id = this.previous(g, this.holder(g)),
+      transferred = true;
+    if (
+      this.state.devotion >= 2 &&
+      (yield* g.offerSkill(
+        p.id,
+        "revelation",
+        "启示：2虔诚，治疗或展示摸牌尝试改放路标",
+      ))
+    ) {
+      this.state.devotion -= 2;
+      g.logSkill(p.id, "revelation", "移除2虔诚");
+      const mode = yield* choice(p.id, "revelationMode", "启示", [
+        { value: "heal", label: "目标+1治疗" },
+        { value: "draw", label: "摸1张并展示" },
+      ]);
+      if (mode === "heal") yield* healTarget(g, p, 1, "revelationHealing");
+      else {
+        const cs = yield* g.drawSteps(p.id, 1, options);
+        g.logSkill(p.id, "revelation", `展示${g.describeCards(cs, p.id)}`);
+        g.queueExposure(p.id, cs);
+        yield* g.flushRuleEvents(options);
+        if (
+          cs.some(
+            (c) =>
+              c.type === "spell" ||
+              c.getTraits({ game: g, playerId: p.id }).fates.includes("S"),
+          )
+        ) {
+          id = yield* g.choosePlayer(
+            p.id,
+            this.eligible(g),
+            "启示：重新放置路标",
+            { skillId: "revelationTarget" },
+          );
+          g.removeEffect(this.state.waypointCardId, { zone: "outside" });
+          transferred = false;
+        }
+      }
+    }
+    yield* this.place(g, p, id, transferred, options);
+  }
+  *place(g, p, id, transferred, options) {
+    if (id == null) return;
+    g.attachCard(this.state.waypointCardId, id, {
+      effectId: "waypoint",
+      sourcePlayerId: p.id,
+    });
+    yield* this.mass(g, p, id, options);
+    if (
+      transferred &&
+      !this.state.confessedIds.includes(id) &&
+      (yield* g.offerSkill(
+        id,
+        "confession",
+        "告解式：摸2牌、我方水晶+1，继续传递路标",
+      ))
+    ) {
+      this.state.confessedIds.push(id);
+      yield* g.drawSteps(id, 2, options);
+      g.addStones(g.player(id).team, "crystal");
+      yield* this.transfer(g, p, options);
+      yield* this.selfDiscard(g, p, "confessionCost", options);
+    }
+  }
+  *mass(g, p, id, options) {
+    if (!g.canPayEnergy(p.id, "crystal")) return;
+    const effects = g.player(id).getBasicEffects();
+    if (!p.hand.length && !effects.length) return;
+    if (
+      !(yield* g.offerSkill(
+        p.id,
+        "mass",
+        "弥撒：水晶，虔诚+1并放置或收取基础效果",
+        { targetId: id },
+      ))
+    )
+      return;
+    yield* g.paySkillEnergy(p.id, "crystal");
+    this.gain(g, p, 1);
+    const choices = [];
+    if (p.hand.length)
+      choices.push({ value: "place", label: "明弃1牌，可放置为基础效果" });
+    if (effects.length)
+      choices.push({ value: "take", label: "收取基础效果，再+1虔诚" });
+    const mode = yield* choice(p.id, "massMode", "弥撒", choices);
+    if (mode === "take") {
+      const card = yield* g.chooseBasicEffect(
+        p.id,
+        effects,
+        "弥撒：收取基础效果",
+        { skillId: "massEffect" },
+      );
+      g.removeEffect(card, { zone: "hand", playerId: p.id });
+      this.gain(g, p, 1);
+      yield* g.drawSteps(p.id, 0, options);
+    } else {
+      const [c] = yield* this.selfDiscard(g, p, "massCost", options, "public");
+      if (
+        c?.location.zone === "discard" &&
+        ["poison", "weakness", "holyShield"].includes(c.name) &&
+        g.canAttach(c, id, c.name)
+      )
+        g.attachCard(c.id, id, {
+          effectId: c.name,
+          sourcePlayerId: p.id,
+          sourceSkillId: "mass",
+        });
+    }
+  }
+}

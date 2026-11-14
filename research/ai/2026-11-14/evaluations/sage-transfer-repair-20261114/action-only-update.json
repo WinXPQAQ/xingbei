@@ -1,0 +1,252 @@
+{
+  "learning": {
+    "updates": 88,
+    "samples": 2773,
+    "sample_visits": 5546,
+    "stopped_early": false,
+    "target_kl": 0.02,
+    "stopping_kl": null,
+    "actor_updates": 88,
+    "critic_updates": 32,
+    "independent_updates": true,
+    "by_decision_type": {
+      "action": {
+        "samples": 2773,
+        "sample_visits": 5546,
+        "policy_loss": 0.17702668081375234,
+        "value_loss": 0.8291749179315353,
+        "entropy": 0.8792034752248477,
+        "approx_kl": 0.0024933950297784343,
+        "clip_fraction": 0.02109628561125135,
+        "normalized_entropy": 0.8340692483451254,
+        "sample_fraction": 1.0
+      }
+    },
+    "by_decision_group": {
+      "action/intent/none": {
+        "samples": 575,
+        "sample_visits": 1150,
+        "policy_loss": 0.14630615384196458,
+        "value_loss": 0.8527721895315303,
+        "entropy": 0.9637767670983853,
+        "approx_kl": 0.00032565363075422204,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.9944139162872149,
+        "sample_fraction": 0.20735665344392354
+      },
+      "action/card/none": {
+        "samples": 365,
+        "sample_visits": 730,
+        "policy_loss": 0.11756240761366814,
+        "value_loss": 0.8472384816713588,
+        "entropy": 1.1222651971529607,
+        "approx_kl": 0.0008276723019064289,
+        "clip_fraction": 0.0027397260273972603,
+        "normalized_entropy": 0.9584840405885487,
+        "sample_fraction": 0.13162639740353407
+      },
+      "action/targets/none": {
+        "samples": 526,
+        "sample_visits": 1052,
+        "policy_loss": 0.14402940482460672,
+        "value_loss": 0.8066749250063422,
+        "entropy": 1.1777187438377184,
+        "approx_kl": 0.001217973762025398,
+        "clip_fraction": 0.004752851711026616,
+        "normalized_entropy": 0.9080165703727832,
+        "sample_fraction": 0.18968626036783268
+      },
+      "action/direction/none": {
+        "samples": 1023,
+        "sample_visits": 2046,
+        "policy_loss": 0.1789991535746628,
+        "value_loss": 0.8542134044827322,
+        "entropy": 0.5905639217977111,
+        "approx_kl": 0.005625275084757968,
+        "clip_fraction": 0.053763440860215055,
+        "normalized_entropy": 0.6884970922507382,
+        "sample_fraction": 0.3689145329967544
+      },
+      "action/costCards/none": {
+        "samples": 173,
+        "sample_visits": 346,
+        "policy_loss": 0.31925384622239483,
+        "value_loss": 0.6310352322080147,
+        "entropy": 0.9651615989173767,
+        "approx_kl": 7.647041209860344e-05,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.7975047356691319,
+        "sample_fraction": 0.062387306166606565
+      },
+      "action/fees/none": {
+        "samples": 69,
+        "sample_visits": 138,
+        "policy_loss": 0.4392596886601245,
+        "value_loss": 0.8995617381443098,
+        "entropy": 1.1770961383978527,
+        "approx_kl": 0.00023039354794267294,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.9831912167694258,
+        "sample_fraction": 0.024882798413270825
+      },
+      "action/skill/none": {
+        "samples": 42,
+        "sample_visits": 84,
+        "policy_loss": 0.46293413570882486,
+        "value_loss": 0.7215670045323004,
+        "entropy": 0.05745850800580922,
+        "approx_kl": 9.429596719287691e-06,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.08289510391963024,
+        "sample_fraction": 0.015146051208077894
+      }
+    },
+    "reference_weight": 0.0,
+    "reference_visits": 0,
+    "reference_loss_sum": 0.0,
+    "rehearsal_weight": 0.0,
+    "rehearsal_batches": 0,
+    "rehearsal_kl_sum": 0.0,
+    "prepare_seconds": 0.01155272382311523,
+    "policy_loss": 0.17702668081375234,
+    "value_loss": 0.8291749179315353,
+    "entropy": 0.8792034752248477,
+    "approx_kl": 0.0024933950297784343,
+    "clip_fraction": 0.02109628561125135,
+    "normalized_entropy": 0.8340692483451254,
+    "critic": {
+      "loss": "bce",
+      "updates": 32,
+      "best_update": 0,
+      "train_sources": 71,
+      "validation_sources": 25,
+      "source_overlap": 0,
+      "skipped": false,
+      "validation_before": {
+        "samples": 600,
+        "objective": 0.37251164237658185,
+        "mse": 0.4750363580385844,
+        "value_semantics": "terminal_win",
+        "brier": 0.1187590891122818,
+        "nll": 0.3725116495291392,
+        "ece": 0.10678379336992899,
+        "calibration": [
+          {
+            "count": 148,
+            "predicted": 3.329907774925232,
+            "won": 0.0
+          },
+          {
+            "count": 59,
+            "predicted": 9.13092714548111,
+            "won": 3.0
+          },
+          {
+            "count": 78,
+            "predicted": 18.89017578959465,
+            "won": 2.0
+          },
+          {
+            "count": 80,
+            "predicted": 28.4460069835186,
+            "won": 13.0
+          },
+          {
+            "count": 46,
+            "predicted": 21.190259277820587,
+            "won": 19.0
+          },
+          {
+            "count": 43,
+            "predicted": 23.545885801315308,
+            "won": 22.0
+          },
+          {
+            "count": 30,
+            "predicted": 19.637650430202484,
+            "won": 16.0
+          },
+          {
+            "count": 21,
+            "predicted": 15.675110697746277,
+            "won": 8.0
+          },
+          {
+            "count": 51,
+            "predicted": 43.448840737342834,
+            "won": 47.0
+          },
+          {
+            "count": 44,
+            "predicted": 41.673192858695984,
+            "won": 38.0
+          }
+        ]
+      },
+      "validation_after": {
+        "samples": 600,
+        "objective": 0.37251164237658185,
+        "mse": 0.4750363580385844,
+        "value_semantics": "terminal_win",
+        "brier": 0.1187590891122818,
+        "nll": 0.3725116495291392,
+        "ece": 0.10678379336992899,
+        "calibration": [
+          {
+            "count": 148,
+            "predicted": 3.329907774925232,
+            "won": 0.0
+          },
+          {
+            "count": 59,
+            "predicted": 9.13092714548111,
+            "won": 3.0
+          },
+          {
+            "count": 78,
+            "predicted": 18.89017578959465,
+            "won": 2.0
+          },
+          {
+            "count": 80,
+            "predicted": 28.4460069835186,
+            "won": 13.0
+          },
+          {
+            "count": 46,
+            "predicted": 21.190259277820587,
+            "won": 19.0
+          },
+          {
+            "count": 43,
+            "predicted": 23.545885801315308,
+            "won": 22.0
+          },
+          {
+            "count": 30,
+            "predicted": 19.637650430202484,
+            "won": 16.0
+          },
+          {
+            "count": 21,
+            "predicted": 15.675110697746277,
+            "won": 8.0
+          },
+          {
+            "count": 51,
+            "predicted": 43.448840737342834,
+            "won": 47.0
+          },
+          {
+            "count": 44,
+            "predicted": 41.673192858695984,
+            "won": 38.0
+          }
+        ]
+      },
+      "mean_training_loss": 0.5243310043588281
+    },
+    "value_metric": "Actor-loop value errors are frozen rollout predictions; critic validation is reported separately",
+    "seconds": 1.506923160981387
+  }
+}

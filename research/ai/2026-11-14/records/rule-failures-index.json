@@ -1,0 +1,498 @@
+[
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-v4-f3ce248/rule-failures/failure-731103683.json",
+    "member": "objects/9fe2e001123870622ef6ffc83d14846a950cfe6d94d5d8c6587f9d956e1f733c.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-v6-20261109-a9f04a0aa8/rule-failures/inability-forfeit-831141647-0.json",
+    "member": "objects/97ec80be8d27a0a8489a2f8635a19d0a1cedd92ab8d7574c82fccd91bd92bae9.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-v6-20261109-a9f04a0aa8/rule-failures/inability-forfeit-831148317-0.json",
+    "member": "objects/2af819d1d302a786df0948cd2a4e5b1ba5d334eb5171507d5cacdc4f82d266ce.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-v6-20261109-a9f04a0aa8/rule-failures/inability-forfeit-831149879-0.json",
+    "member": "objects/ccf951921fc98b49651527be76f536159e35f27a42481c678ce78f8e635efdc0.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-v6-20261109-a9f04a0aa8/rule-failures/failure-831150491-795570-1794229589987.json",
+    "member": "objects/9e3e5becce25bbf3de8c8fae7c602b6a1e6d1afff85986c89d55f6f8b6265713.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-v6-20261109-124b6feb26/rule-failures/failure-731104562-615833-1794214828681.json",
+    "member": "objects/4f27e2e0bead2d9c3d2637c892ef415529d538df60fd128d2395b744c296813c.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-v6-20261109-124b6feb26/rule-failures/inability-forfeit-831103602-0.json",
+    "member": "objects/fa4cbaf864dbf3359dd9b94d99e47e5d82e8e7bfd480d53471d4a624b65b53e9.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/morale-only-20261112-45a50c338d/rule-failures/failure-831118091-2627138-1794458676863.json",
+    "member": "objects/2d005863bbebdc0b13221d79bdcf848f531667750ac1ad4f9873d11edc025825.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/sage-retained-skills-20261114/rule-failures/inability-forfeit-860500114-1794641161965-25991-0.json",
+    "member": "objects/eae45d2e2ec33a9e8993091e73ee9416897e34f26b29f1a62daaf5d27997ae9f.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/morale-only-20261111-stealth-c4707e34db/rule-failures/inability-forfeit-831115542-0.json",
+    "member": "objects/c1dc93e7769f4e46db8ca083be47b3eda5cb5d158c57a890f66b68a59a2cd873.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/morale-only-20261111-gift-6da09e8fc3/rule-failures/failure-831116208-2163147-1794397964059.json",
+    "member": "objects/20d062450c1565e31077bf12b84bde64732b4a0c74fe935581063f7a08dc4604.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/morale-only-20261112-001a9cc2aa/rule-failures/inability-forfeit-831139904-1794463992587-2771570-0.json",
+    "member": "objects/dd5b38218ae87f9143ff67a308d8ad457b8f0d366c70cf793a010cec9f2318b2.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/morale-only-20261112-001a9cc2aa/rule-failures/inability-forfeit-831119032-1794459649450-2689128-0.json",
+    "member": "objects/af36e2fafcd9deb5765a909d1ccd03f38cf022287b015a82e47a2123c22d9047.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/morale-only-20261112-001a9cc2aa/rule-failures/inability-forfeit-831136870-1794463458859-2760070-0.json",
+    "member": "objects/5f2f2ba22067d65327fdcfacdc9bb5c22e28c3f63f39c94923d9e19039fb6b0e.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/morale-only-20261112-001a9cc2aa/rule-failures/inability-forfeit-831122901-1794460411312-2703634-0.json",
+    "member": "objects/80d552e10d6f6d5f13b637ed92e59e768b5cffb0a30c88771efdaed58ba4c502.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/morale-only-20261112-001a9cc2aa/rule-failures/inability-forfeit-831127602-1794461310218-2721417-0.json",
+    "member": "objects/dc9a17b2069aa90164e54a2d7e9fe2d0dab315180ee40e5fba46a684ac0091dc.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/morale-only-20261112-001a9cc2aa/rule-failures/inability-forfeit-831141801-1794464410843-2778658-0.json",
+    "member": "objects/5cdf7b49c59673e2aff2b28ab4392dee0318cff896283be3227e7eac6f0e79a5.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/morale-only-20261112-001a9cc2aa/rule-failures/inability-forfeit-831138955-1794463810281-2767623-0.json",
+    "member": "objects/fd8a3d4ef5035e066b1e1a333d2634bbc4ac36374f51c956d0f14fd3ff492819.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/morale-only-20261112-001a9cc2aa/rule-failures/inability-forfeit-831120193-1794459890681-2693213-0.json",
+    "member": "objects/97a663c8e0eed6a0441faa7424ef3bc61759a01ae3334c04e4cd53528b649b29.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/morale-only-20261112-001a9cc2aa/rule-failures/inability-forfeit-831123141-1794460452285-2704414-0.json",
+    "member": "objects/8137e890670df17fda66256c80b683debe9e318dfcd6e6b775b31250a3de4513.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/morale-only-20261112-001a9cc2aa/rule-failures/inability-forfeit-831137533-1794463562997-2761864-0.json",
+    "member": "objects/8710386f3fc9f156207a19814991bd1b69878a829ce58c6c048e8f5dfda0c3bc.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/morale-only-20261112-001a9cc2aa/rule-failures/inability-forfeit-831132741-1794462320379-2739905-0.json",
+    "member": "objects/9924483a4ffee0bc95f3a34dbd5ffa461e491a053ebfb830d0e78d630c35bb29.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/morale-only-20261112-001a9cc2aa/rule-failures/inability-forfeit-831120637-1794459981146-2694872-0.json",
+    "member": "objects/560e63d12b1c3e79965ee098a04f923f7d20fa7cd77d4ca04b4d55e2c78bcfed.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/morale-only-20261112-001a9cc2aa/rule-failures/inability-forfeit-831127046-1794461218991-2719613-0.json",
+    "member": "objects/9a3b248e7bd7fa8c940360c7e32f6f9c3c2d1724a4cdc20abfd27cf4243b4b34.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/morale-only-20261112-001a9cc2aa/rule-failures/inability-forfeit-831119071-1794459652554-2689151-0.json",
+    "member": "objects/1f11b97427da524f9d3eb8a3df6d9c9091811119269a76a8049002e643b04a15.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/morale-only-20261112-001a9cc2aa/rule-failures/inability-forfeit-831143940-1794464799912-2786535-0.json",
+    "member": "objects/eb4bcc7e8ec97e09b3fe69ed9603569cab65106b9ae14406e49c2a288356f275.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/morale-only-20261112-001a9cc2aa/rule-failures/inability-forfeit-831126635-1794461145729-2718107-0.json",
+    "member": "objects/be04837c5b592b0d69f8285c1876b85cd0b2321c8b44305d90652704b7db050e.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/morale-only-20261112-001a9cc2aa/rule-failures/inability-forfeit-831132933-1794462351784-2740439-0.json",
+    "member": "objects/967e6a1e35e619d49745a5f1564353bed5a826a58a76d8d8a2c9b902bf19a61e.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/morale-only-20261112-001a9cc2aa/rule-failures/inability-forfeit-831137733-1794463598466-2762676-0.json",
+    "member": "objects/6c069d31159d1312816b93d355c9cc32e383dda24cb92e48ed801fa24bf335a1.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/morale-only-20261112-001a9cc2aa/rule-failures/failure-831131116-2788403-1794464895951.json",
+    "member": "objects/47594464b18a919c33e282b7b567494de13230a0fd116bcfadb1069f3e3ad3fa.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/morale-only-20261112-001a9cc2aa/rule-failures/inability-forfeit-831137298-1794463522022-2761202-0.json",
+    "member": "objects/13684fa64a7f95a61741fa122e33e85fb286f7fc3a785a3f3a246547ad9aba87.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/morale-only-20261112-001a9cc2aa/rule-failures/inability-forfeit-831125709-1794460971916-2714958-0.json",
+    "member": "objects/8d9f0a15c5d758156385c3f1f560a4a4c183ec73d8c6106951ae20f6aa84044c.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/morale-only-20261112-001a9cc2aa/rule-failures/inability-forfeit-831121819-1794460232682-2699411-0.json",
+    "member": "objects/b0816426094a7cc135d10d8714cf78488d7ce99adc118192669c952038789aa6.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/magic-archer-pipeline-20261112/rule-failures/failure-850118394-3717339-1794552941604.json",
+    "member": "objects/c87e9a2b3ede66d6bb5659fa7be92596bfdf41cdc2a57f7930f6302b8d2c1d85.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/sage-full-activation-guard-20261113/rule-failures/inability-forfeit-860023208-1794570500559-3838132-0.json",
+    "member": "objects/90794a96a10f2ff81d324599251f967fde56845fde8382fc0787107ba2e2e50b.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/sage-full-activation-guard-20261113/rule-failures/failure-860087871-3838138-1794592675432.json",
+    "member": "objects/92e6d1e5ce15424cb8f1301d85e5e5a1a1f66dc133e54ff12b645c3f9a87d966.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/sage-full-activation-guard-20261113/rule-failures/inability-forfeit-860053835-1794581146040-3838122-0.json",
+    "member": "objects/d37489e26631ba36250612b592838faa77ca983c8408143088e2a4633470c19c.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/sage-full-activation-guard-20261113/rule-failures/inability-forfeit-860068981-1794586587368-3838131-0.json",
+    "member": "objects/b4490852e16696ad579384b23a17ece3dcd15bc2d49a8232d40f283a93c8d080.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/sage-full-activation-guard-20261113/rule-failures/inability-forfeit-860048197-1794579108116-3838140-0.json",
+    "member": "objects/a1957c2c7f04a5658f28d2fd93ac719eb7b5d8180253ae1ba5e92fd992fa0aa8.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/sage-full-activation-guard-20261113/rule-failures/inability-forfeit-860027515-1794571814916-3838138-0.json",
+    "member": "objects/8ae88e2688ee369d673ada62b6fca1e2781b5f5dd2abec1777396d1549f3f0af.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/sage-full-activation-guard-20261113/rule-failures/inability-forfeit-860032665-1794573589663-3838126-0.json",
+    "member": "objects/2c59c1606b127a1f9f42be050a4f16dda635360aaa57f43d3fc8c11a0e2c139e.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/sage-full-activation-guard-20261113/rule-failures/inability-forfeit-860028611-1794572175241-3838144-0.json",
+    "member": "objects/310e0bb5b63ef1b144e920ef26a2230a5a9777b5a431776355da8883e2889e9b.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/sage-full-activation-guard-20261113/rule-failures/inability-forfeit-860023570-1794570613366-3838132-0.json",
+    "member": "objects/c7343b47f9b9ad5a0f1209adb0c4b74c22c7b479ad9441fcd84d0e5cc6ce1a47.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/sage-full-activation-guard-20261113/rule-failures/inability-forfeit-860082731-1794591645182-3838146-0.json",
+    "member": "objects/38bb735c36501d4e10e408eef295a13505e57701d6f5db762081d04d0aed59de.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/sage-full-activation-guard-20261113/rule-failures/inability-forfeit-860072409-1794587829735-3838138-0.json",
+    "member": "objects/401836486d00e65d6ba4b3ee61ae21379b64c489f529138e86cd003b6442d285.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/magic-archer-action-boundary-20261114/rule-failures/inability-forfeit-850181061-1794638146258-4188456-0.json",
+    "member": "objects/a78ca57e2e944a9cb7cb323c57ba5841b1077da928278935554354b69d484d74.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-v6-20261110-994720c281/rule-failures/inability-forfeit-831131847-0.json",
+    "member": "objects/27475349cf0318283bba59497410aece7115a72ff21fb10b64b47e0d494aa83d.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-v6-20261110-994720c281/rule-failures/failure-831142835-1159964-1794301523678.json",
+    "member": "objects/2cbe1422303c664c1b709bea514e3960b896392e7dfb2ee9967e99a0360d4ca7.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-v6-20261109-f58393112d/rule-failures/failure-831138184-737979-1794226240357.json",
+    "member": "objects/68e351eaa7b2f7ac9f43ac344d0bc5c58b21a765d910814947468c077eab2ed3.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-v6-20261109-f58393112d/rule-failures/inability-forfeit-831137569-0.json",
+    "member": "objects/d488f4d1ae42797272da9fe0db1f1ff1f0d29daadd46d483b39a3b47d6f9828e.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-v6-20261109-7abbd42e8e/rule-failures/failure-831162971-868751-1794241134712.json",
+    "member": "objects/a78397100a10f1beac1033add3d60079d2424a9e9d23e2f6fdb171f20632f7a6.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-v6-20261110-03568a79ff/rule-failures/inability-forfeit-831218353-0.json",
+    "member": "objects/4424c06d81f744ac1033cad07fe493e1856013046a5d0bf72c8a5abcec809851.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-v6-20261110-03568a79ff/rule-failures/inability-forfeit-931103036-0.json",
+    "member": "objects/cc138a1b709bdc25476ca61528c17b7fcb00ab7a90e17de82986a92dbd9a4903.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-v6-20261110-03568a79ff/rule-failures/inability-forfeit-831240271-0.json",
+    "member": "objects/b6eacf791d3cb528d8d9d821abc572b045ddb10925a9e1733159478dac88da02.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-v6-20261110-03568a79ff/rule-failures/inability-forfeit-831156044-0.json",
+    "member": "objects/f36be7aec1db8b51f3f890a6b2e72197ba6589498e142fb6f11885af8f31f99b.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-v6-20261110-03568a79ff/rule-failures/inability-forfeit-831242805-0.json",
+    "member": "objects/4c0860d68845c2aa8e0b04074c55def97ec062efaa473e6acfd748377f076e9d.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-v6-20261110-03568a79ff/rule-failures/inability-forfeit-831162058-0.json",
+    "member": "objects/a2b2f684e1ca5eb618341fcd5d45a2e711a437158b854a1507efc7aac659a414.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-v6-20261110-03568a79ff/rule-failures/inability-forfeit-831186415-0.json",
+    "member": "objects/c5bc85883eb2859971909fcc2c7d55c26e72a428d6ca2d3e8df2fcbae38bbb59.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-v6-20261110-03568a79ff/rule-failures/inability-forfeit-831176593-0.json",
+    "member": "objects/b0f9db3fcce629e85b108a8303e9b3bf5519dc5ebd596f2d15f9463aecf4a836.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-v6-20261110-calibrated/rule-failures/failure-831123155-1106984-1794298914968.json",
+    "member": "objects/2fc94419cb816c9794c0d327029b41b2eb6eb510c275107cfaf4d23909a6127a.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/magic-archer-activation-guard-20261113/rule-failures/inability-forfeit-850154512-1794581010626-3838121-0.json",
+    "member": "objects/c7da625d26a8ab971d9adb1741b4cef4795e64e197c641efa5154586b72ade56.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/magic-archer-activation-guard-20261113/rule-failures/inability-forfeit-850143304-1794576543697-3838119-0.json",
+    "member": "objects/9938b6198ad21f8d3aefe56d54eddb1cb80e4419c2f615a1412e791f85bf444c.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/magic-archer-activation-guard-20261113/rule-failures/inability-forfeit-850175565-1794589492981-3838137-0.json",
+    "member": "objects/223e8201214e4019a856ab415212b94a07305ebfd5e3547427bf817218d0867d.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/magic-archer-activation-guard-20261113/rule-failures/failure-850181113-3838121-1794591582452.json",
+    "member": "objects/3d26ade97e71f46822345c8ff791a7fcc5b04988ceea7da8e084a78057e049ab.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/magic-archer-activation-guard-20261113/rule-failures/inability-forfeit-850139897-1794575218646-3838117-0.json",
+    "member": "objects/c477c03c8ad94ccac3ceabc8efa08f6bc52a029bd3441c90e3c7fc5ca8d4cd0f.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/magic-archer-activation-guard-20261113/rule-failures/inability-forfeit-850167330-1794586117913-3838120-0.json",
+    "member": "objects/d7dc7f3aca901e939af6fd8a0dc398beb71489ba1c32c7d3650bbc27ea6a9101.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-731104292-0.json",
+    "member": "objects/ab26e3908849a1e12c43d161673ee0692d53ed8971544422a1b30e3b4292e1c2.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-831113684-0.json",
+    "member": "objects/73df189dbf4cdce77e2dd94318e75f6bd7fb4c9278201a522c2449fe8d1a91f8.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-831108871-0.json",
+    "member": "objects/764a356c53f674684c3ffcacb5476c8a88cf387a7c68ac89e19a667b30c2f4bb.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-831109030-0.json",
+    "member": "objects/fb0cf37581ecfad33fb2ddef8d07dc644744bbf3e14d1a5260b51c83aa4a808c.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-831105623-0.json",
+    "member": "objects/26cd9e053cf2bc42a7e869669dad5b370a6fc00d36c10febbfb84971ae72ac19.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-731104897-0.json",
+    "member": "objects/ea7fb327c1247904ff0b40727eae07d1f9aa6dbdc08dc49c10fcaddea0da8aad.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-731103523-0.json",
+    "member": "objects/3068f4fad4b0056b7cfa1325ad451834cebd5aed8ef61f8188f82f2147bdaa0f.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-831112552-0.json",
+    "member": "objects/c5745b1a83f7fa4e90bd716039a8b81a35504f891bf26c2e8db58d8e42a10962.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-831109685-0.json",
+    "member": "objects/d82ee17102021616f8a0fcc8a1280afbdc7d2e9a16604e38fdb677214d7c3aa5.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-831104165-0.json",
+    "member": "objects/ac11261dd481506fecf1135091f99f0b96072d596e4c1137e7a1c2ee64835099.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-831108565-0.json",
+    "member": "objects/46a17e54830d5a672ec760aa011c5bdd683c2ab03245db59929853b13bb6d882.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-731103902-0.json",
+    "member": "objects/4ad3fe69a33d9a34f76122f0d914ddaf5700fa9949779f20a3e10ae16fba11a5.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-831111259-0.json",
+    "member": "objects/4ea59fe5918ebe18ddbacc839d3d56a53bda0a326c947afcab61ce75af781e3b.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-731104515-0.json",
+    "member": "objects/c95a5bfa72da5482f556aa050c11fad7e2a5f6db6b07546bea105aa728576a03.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-831110632-0.json",
+    "member": "objects/367cee3832a4314013516c8eea8e8493fdd9104d1eca7693d9a073bd2b62da95.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-831103753-0.json",
+    "member": "objects/c9abb8eedc053c183336c801c87aff2df18050301f79ed3db10503bf025fde92.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-731104153-0.json",
+    "member": "objects/418f82b0314ebf1c34f32cc2ccc984016d0407e18756025d41140f2b249eed4a.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-831108209-0.json",
+    "member": "objects/4d08b0d124acbbef124f371d2bf9a05987278b86c5518314dd4949b45b2ddb02.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-831108749-0.json",
+    "member": "objects/91b3f27dd0a8f6748acedf4569573a2a9ba3503c2be13d7ad2b26db09c539cc4.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-831108955-0.json",
+    "member": "objects/498a274f4ddc9ebea8cfdd1e019a0812135338745224913ec7c5a241af3571da.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-831111332-0.json",
+    "member": "objects/ff2296c2a8488fbdc42764c1d1220b149a0be726591f6819c72929614f96c5d2.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-831110649-0.json",
+    "member": "objects/7a42a89b576db8e16a2339fe2fca6695ef084aa9ee8e54e17c4c50eabd90eede.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-831109214-0.json",
+    "member": "objects/84a11250182ad550dabcb0fb43bb1c227399197dd63b3a445b246b922d1dd959.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-831111960-0.json",
+    "member": "objects/d27db7a262712f187753e7c5e70916a314d2b84e8bf9dcb4f51f38b90ccfca49.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/failure-831116038.json",
+    "member": "objects/4398f1d9493466230f6c387971ab20bfc846137f7bb227f0deb768add42625ee.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-831110124-0.json",
+    "member": "objects/1815c62abc7911622e3790fdef4254f5983492fc4e478cca8e6f56e6eef56c49.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-831112775-0.json",
+    "member": "objects/a5a618e5b873ce3f3612827f93b62a2fcab1124419b09713efdeaad75b3287b2.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-731104645-0.json",
+    "member": "objects/076f5042f8a160f46aaa8eae873a6ee7ce115ab777ecdbf6edc22cad5bed982d.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-831109962-0.json",
+    "member": "objects/51dcaeec2541dd0ff6691956b229db24331674ee27370deaaaf3a47b8db3ef03.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-831115741-0.json",
+    "member": "objects/1535a69416f5ea059208b22e28b5e22c36b2875336f13766550230071553c9ac.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-731104535-0.json",
+    "member": "objects/3097e39949069b0a48ae2272a9070ce8dbdfcae3d52666569611fcc2fbbe9d78.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-831114762-0.json",
+    "member": "objects/668119d8a3e56cf5a2e0de1901ce737902f0635ec1549808346e3edfab4ab897.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-731105022-0.json",
+    "member": "objects/642cba49d3ef3c5e41c806f5b0da1901b88c056ade09d06b1335696a90d8196d.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-831115427-0.json",
+    "member": "objects/1e6135ff98e367af9ace4ba1e7a3bc612432659448f14a820a70a5bbd3a9a2a4.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-831109669-0.json",
+    "member": "objects/79246ba1009d6c7ec34233fd23067067babedd8cab5b874926bc342720fb7bfa.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-731105162-0.json",
+    "member": "objects/0d0293b364a0b062462cfcbd9b3862cf4f6595e3d2c7b9478b6131ee8b8c2acb.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-731104809-0.json",
+    "member": "objects/b31026ba57b33d30f88be0c1f3b5af2143b585f50d4f3b23e724643478cbce3d.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-831103302-0.json",
+    "member": "objects/07f60e014cece4ed028374756bba7b4d6e8b8ed2d9a589cd8fffe6b11606db6f.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-831109456-0.json",
+    "member": "objects/34d3b943ad2c2d3ea933f741c65308865c0a7b1947e7be89aa4577c87bcda68a.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-831105802-0.json",
+    "member": "objects/68551e7849993aa07c2fd57d1b964aeefdb8065f61c939b3cbaa60e226aa0387.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-831104575-0.json",
+    "member": "objects/093a112e8b86d257cd29155d48f1a1c2dd3276047a55fc61795764415e4d38fb.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-inability-875bbaa/rule-failures/inability-forfeit-831104035-0.json",
+    "member": "objects/feeafaf40a646584d457860865d0a0636ffd12c7d04f53bcf60edc1ad5a812d4.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/sage-full-game-20261113/rule-failures/failure-860012508-3720693-1794543685275.json",
+    "member": "objects/952b659c453507099eeffb37051cc8dd9361d7d26eb2454247ad0e82c64536a7.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/morale-only-20261111-1520d1bc0b/rule-failures/failure-831114900-2139584-1794386662432.json",
+    "member": "objects/fc1c8a84a147ae84284f2193af48bb6973464d5ccd2244dd73b561fdb36accd2.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-v4-68656d9/rule-failures/failure-931103118.json",
+    "member": "objects/491b57e3027b16098f9f25ebeb2b36031c0457b74f2eb846457cc4beb870591b.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-v6-20261110-independent-mc/rule-failures/inability-forfeit-831104470-0.json",
+    "member": "objects/5bc3cf345938b6df931b5b2103ea94ddaa1c9bcf19d63e168ada0ccab3c41e1d.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-v6-20261110-independent-mc/rule-failures/inability-forfeit-831107655-0.json",
+    "member": "objects/d6c50009ec492f188d336ba61a79eae478d73b42b1486635d783e3f0756d9f78.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-v6-20261110-independent-mc/rule-failures/inability-forfeit-831110270-0.json",
+    "member": "objects/481f3a9e5f1e4773da8525a507b95acdf5d70867313df18bbd8de69075d2830d.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/morale-only-20261112-75ea6551d9/rule-failures/failure-831117056-2545147-1794458220892.json",
+    "member": "objects/75ba0cb0b1eea6fec292a2a5f95f85518e79f19153763b8cc64d0e47b8e76c2b.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/rule-failures/failure-731103000-1556006-1794322099357.json",
+    "member": "objects/d1d726a304e9613ead14848c54a7ea2e905f766ff47d08ed49c69e5ea87520a0.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/rule-failures/failure-831117056-2595646-1794458490896.json",
+    "member": "objects/17200249a6839a17b3a7029b77a04804a1fd559818587bd420d17ca33f493ab4.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/rule-failures/failure-831109802-590258-1794209635616.json",
+    "member": "objects/becdccd167b0f9b57c07207fd7333b9625db1cbb16fd659d1991a5ef98f32697.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/rule-failures/failure-831109802-600454-1794212977453.json",
+    "member": "objects/7485c9582ffbbb0084566772f030c79f46294e238cb196b854e30d6e5a139624.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/rule-failures/failure-831109802-590120-1794209596460.json",
+    "member": "objects/562c578ae004d2379da3b61abc3bb1d38ef98f7775e2f73619748859dc30d4de.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/rule-failures/inability-forfeit-951109061-0.json",
+    "member": "objects/295e5284ad14f2c1f36ac149ad5c227cf6f26bc31a6dd50f4e76e7d1b6e0b84f.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/rule-failures/failure-831109802-600381-1794212960343.json",
+    "member": "objects/fa036f08b39bf99c948916b9de34736696a63d2a01b5f1aa574dbd94a3240869.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/rule-failures/failure-831118091-2640957-1794458938218.json",
+    "member": "objects/c5fb0039ea0c6e0a71ef99626ddb66f1ffe532ddcfaf04029d4f001bcc5aa4c9.json"
+  },
+  {
+    "original": "/home/xp/.local/share/xingbei-ml/all-heroes-v6-20261109-0279195806/rule-failures/failure-831138636-747033-1794227236350.json",
+    "member": "objects/d95c1a7abf25c688164b00e2ddfed6717e024d36bbb5704d4972cfbef38413e4.json"
+  }
+]

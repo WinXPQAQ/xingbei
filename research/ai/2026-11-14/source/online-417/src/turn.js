@@ -1,0 +1,165 @@
+import { RuleError } from "./errors.js";
+import { ELEMENT_NAMES, FATE_NAMES } from "./cards.js";
+import { playableCards } from "./playable-cards.js";
+import { Timing } from "./timing.js";
+
+export class TurnFlow {
+  constructor(game) { this.game = game; this.state = null; this.lastEndedPlayerId = null; this.extraTurns = []; this.followupTurns = []; this.resumePlayerId = null; }
+  normalNext(playerId) {
+    for (let step = 1; step <= this.game.players.length; step++) {
+      const id = (playerId + step) % this.game.players.length;
+      if (this.game.player(id).hero.followsPlayer?.(this.game) == null) return id;
+    }
+    return (playerId + 1) % this.game.players.length;
+  }
+  addExtraTurn(playerId) { this.extraTurns.push(playerId); }
+  repeatLast(playerId) {
+    if (this.state || this.game.winner || this.lastEndedPlayerId !== playerId) throw new RuleError("只能重复刚结束的回合");
+    this.game.current = playerId;
+    this.lastEndedPlayerId = null;
+  }
+  *start(playerId, options = {}) {
+    if (this.state) throw new RuleError("上一回合尚未结束");
+    const context = { playerId, skipped: false, route: null, actionType: null, completed: false, activationDone: false, attackCount: 0, pendingActions: [], usedSkills: {}, phase: Timing.TURN_START };
+    this.state = context;
+    this.game.recordPresentation("turn", { playerId });
+    context.phase = Timing.TURN_BEFORE;
+    yield* this.game.trigger(Timing.TURN_BEFORE, context, options);
+    context.phase = Timing.TURN_START;
+    yield* this.game.trigger(Timing.TURN_START, context, options);
+    context.phase = Timing.ACTION_PHASE_BEFORE;
+    yield* this.game.trigger(Timing.ACTION_PHASE_BEFORE, context, options);
+    context.phase = context.skipped ? Timing.ACTION_PHASE_SKIPPED : Timing.ACTION_PHASE_START;
+    yield* this.game.trigger(context.phase, context, options);
+    return { skipped: context.skipped };
+  }
+  nextAction() {
+    const state = this.state;
+    if (!state || !state.completed) return null;
+    return [...state.pendingActions].reverse().find(action => action.element || action.fate) ?? state.pendingActions[0] ?? null;
+  }
+  hasExtraActions() { return !!this.nextAction(); }
+  needsAction() {
+    return !!this.state && !this.game.winner && !this.state.skipped && (!this.state.completed || this.hasExtraActions());
+  }
+  addAttackAction(options = {}) { this.addAction({ ...options, type: "attack" }); }
+  addAction({ type, element = null, fate = null, sourceSkillId = null }) {
+    if (!["attack", "spell"].includes(type)) throw new RuleError("无效的额外行动类型");
+    if (!this.state || this.game.winner) return;
+    this.state.pendingActions.push({ type, element, ...(fate ? { fate } : {}), sourceSkillId });
+    const label = type === "attack" ? "攻击行动" : "法术行动";
+    this.game.logSkill(this.state.playerId, sourceSkillId ?? "额外行动", `获得1次${element ? ELEMENT_NAMES[element] + "系限定" : fate ? FATE_NAMES[fate] + "命格限定" : ""}额外${label}，可选择放弃`);
+    this.game.recordPresentation("extraAction", { playerId: this.state.playerId, label: `额外${label}` });
+  }
+  canUse(type, card = null) {
+    const state = this.state;
+    if (!state) return true;
+    if (state.skipped) return false;
+    if (!state.completed) return !state.actionType && (type !== "special" || !state.activationDone);
+    const action = this.nextAction();
+    return !!action && action.type === type && (!action.element || card?.getTraits({ game: this.game, playerId: state.playerId, purpose: "action" }).elements.includes(action.element)) && (!action.fate || card?.getTraits({ game: this.game, playerId: state.playerId, purpose: "action" }).fates.includes(action.fate));
+  }
+  *activate(playerId, options = {}, validatedAction = false) {
+    if (!validatedAction && !this.game.canActivate(playerId)) throw new RuleError("当前不能启动");
+    const state = this.state, plan = options.plan ?? null, action = plan?.action;
+    if (!validatedAction && !this.game.hasOrdinaryContinuation(playerId)) {
+      const suppliers=this.game.activationSuppliers(playerId);
+      const skillId=yield {type:"numberChoice",playerId,skillId:"activationRoute",title:"选择启动后获得行动条件的路线",
+        choices:suppliers.map(skill=>({value:skill.id,label:skill.name})),defaultValue:suppliers[0]?.id};
+      if(!suppliers.some(skill=>skill.id===skillId)) throw new RuleError("无效的启动路线");
+      state.requiredActivationSkill=skillId;
+    }
+    state.seekingAction = !this.game.hasOrdinaryContinuation(playerId);
+    state.activationDone = true;
+    state.route = "normal";
+    state.phase = Timing.ACTIVATION;
+    state.activationPlan = plan;
+    state.activationIntent = options.intent ?? plan?.action ?? null;
+    const spec = action?.type === "skill" ? this.game.skillActionSpec(playerId, action) : null;
+    state.reservedCardIds = action?.type === "play" ? [playableCards(this.game.player(playerId))[action.index]?.id].filter(Boolean)
+      : action?.cardIds ?? options.actionCardIds ?? [];
+    state.reservedSkillId = action?.skillId ?? options.actionSkillId ?? null;
+    state.reservedTargetIds = action?.targetIds ?? (action?.targetId != null ? [action.targetId] : options.actionTargetIds ?? []);
+    state.reservedEnergy = spec?.energy ? 1 : options.actionEnergyCost ?? 0;
+    state.reservedHealing = spec?.healingCost ?? options.actionHealingCost ?? 0;
+    this.game.recordPublicAction({type:"activation",playerId});
+    try {
+      yield* this.game.trigger(Timing.ACTIVATION, state, options);
+      yield* this.game.restoreRandomInability(playerId, options);
+    } finally {
+      for (const key of ["seekingAction", "requiredActivationSkill", "activationPlan", "activationIntent", "reservedCardIds", "reservedSkillId", "reservedTargetIds", "reservedEnergy", "reservedHealing"]) delete state[key];
+    }
+    // No ACTION_PHASE_START trigger here: it ran before activation, and firing
+    // it again would reset forms (notably Magic Swordsman's shadow form).
+    if (!this.game.winner && !state.skipped) state.phase = Timing.ACTION_PHASE_START;
+  }
+  *beginAction(playerId, actionType, card = null, options = {}) {
+    const state = this.state;
+    // Standalone rule operations are allowed in fixtures; normal clients start a turn.
+    if (!state) return;
+    if (!["attack", "spell", "special"].includes(actionType)) throw new RuleError("未知行动类型");
+    if (state.playerId !== playerId || !this.canUse(actionType, card)) throw new RuleError("当前阶段不能执行该行动");
+    const route = actionType === "special" ? "special" : "normal";
+    if (route === "normal" && !state.activationDone) {
+      // Compatibility for low-level callers. Interactive/AI clients explicitly
+      // activate first, then choose again from the resulting state.
+      yield* this.activate(playerId, options, true);
+    }
+    if (state.skipped) {
+      const error = new RuleError("行动阶段已跳过"); error.actionInvalidated = true; throw error;
+    }
+    try { options.validateAction?.(); }
+    catch (error) {
+      state.phase = Timing.ACTION_PHASE_START;
+      if (error instanceof RuleError) error.actionInvalidated = true;
+      throw error;
+    }
+    if (state.completed) {
+      const action = this.nextAction(); state.actionSourceSkillId = action.sourceSkillId; state.pendingActions.splice(state.pendingActions.indexOf(action), 1);
+    }
+    state.completed = false;
+    if (actionType === "attack") state.attackCount++;
+    state.route = route; state.actionType = actionType; state.skillId = null; delete state.refinedStones;
+    state.phase = { attack: Timing.ATTACK_ACTION_START, spell: Timing.SPELL_ACTION_START, special: Timing.SPECIAL_ACTION_START }[actionType];
+    yield* this.game.trigger(state.phase, state, options);
+  }
+  *endAction(options = {}) {
+    const state = this.state;
+    yield* this.game.present();
+    if (!state || !state.completed) {
+      this.game.recordPresentation("clear");
+      yield* this.game.present();
+    }
+    if (!state || state.completed || !state.actionType) return;
+    state.phase = { attack: Timing.ATTACK_ACTION_END, spell: Timing.SPELL_ACTION_END, special: Timing.SPECIAL_ACTION_END }[state.actionType];
+    yield* this.game.trigger(state.phase, state, options);
+    state.completed = true;
+  }
+  *end(options = {}) {
+    if (this.game.winner) { yield* this.game.present(); return; }
+    const state = this.state;
+    if (!state) throw new RuleError("没有正在进行的回合");
+    if (!this.game.winner && !state.skipped && !state.completed) throw new RuleError("必须完成普通行动及其结算后才能结束回合");
+    if (this.game.players.some(player => player.pendingOverflow)) throw new RuleError("必须完成强制弃牌后才能结束回合");
+    if (!state.skipped) {
+      state.phase = Timing.ACTION_PHASE_END;
+      yield* this.game.trigger(state.phase, state, options);
+    }
+    state.phase = Timing.TURN_END;
+    yield* this.game.trigger(state.phase, state, options);
+    this.lastEndedPlayerId = state.playerId;
+    const followers = this.game.players.filter(p => p.id !== state.playerId && p.hero.followsPlayer?.(this.game) === state.playerId).map(p => p.id);
+    if (followers.length) {
+      if (this.resumePlayerId == null) this.resumePlayerId = this.normalNext(state.playerId);
+      this.followupTurns.push(...followers);
+    }
+    if (this.extraTurns.length) {
+      if (this.resumePlayerId == null) this.resumePlayerId = this.normalNext(state.playerId);
+      this.game.current = this.extraTurns.shift();
+    }
+    else if (this.followupTurns.length) this.game.current = this.followupTurns.shift();
+    else if (this.resumePlayerId != null) { this.game.current = this.resumePlayerId; this.resumePlayerId = null; }
+    else this.game.current = this.normalNext(state.playerId);
+    this.state = null;
+  }
+}

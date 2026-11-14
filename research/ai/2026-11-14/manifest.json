@@ -1,0 +1,12 @@
+{
+  "created_at": "2026-11-14T07:46:32.838275+00:00",
+  "models": 12,
+  "model_bytes": 175821868,
+  "round_records": 5951,
+  "runs": 57,
+  "unique_failure_records": 124,
+  "failure_sources": 124,
+  "source_snapshots": 6,
+  "model_loading_verified": 12,
+  "inference_examples_verified": 34
+}

@@ -1,0 +1,93 @@
+import { magicBranches } from "../base/planner.js";
+import { cardScore, cardCost, chooseAiDiscard } from "./cards.js";
+import { publicState, copy, evaluate, terminal, hurt, applyDamage, spend, hasActiveEffect } from "./model.js";
+import { attackScore, preparationOptions, scorePreparation, scoringApi } from "./scoring.js";
+import { heroAi, skillDecision } from "./registry.js";
+const sumBranches = (branches) => branches.reduce((sum, b) => sum + b.probability * evaluate(b.state), 0);
+const lowCards = (game, id, indexes) => [...indexes].sort((a,b) => cardScore(game,id,game.player(id).hand[a])-cardScore(game,id,game.player(id).hand[b]));
+function reservedAttack(game, id, request) {
+  const ids = request.reservedCardIds ?? game.turn.state?.reservedCardIds ?? [];
+  const card = game.player(id).hand.find((c) => ids.includes(c.id) && c.type === "attack");
+  const targets = game.turn.state?.reservedTargetIds ?? [];
+  return card && targets.length ? { type: "play", index: game.player(id).hand.indexOf(card), targetId: targets[0] } : null;
+}
+function activationUseful(game, id, state, request, skillId) {
+  const reserved = reservedAttack(game,id,request);
+  const actions = reserved ? [reserved] : game.player(id).hand.flatMap((card,index) => card.type === 'attack'
+    ? state.players.filter(p=>p.team!==state.players[id].team).map(p=>({type:'play',index,targetId:p.id})) : []);
+  let without=-Infinity, withSkill=-Infinity;
+  for (const action of actions) {
+    const card = game.player(id).hand[action.index];
+    without=Math.max(without,attackScore(game,id,state,card,action.targetId));
+    const prepared = preparationOptions(game,id,{...state,turn:{...state.turn,activationDone:false}},action)
+      .find(entry=>entry.activated===skillId);
+    if (prepared) withSkill=Math.max(withSkill,
+      scorePreparation(prepared,evaluate(state),next=>terminal(next)?0:attackScore(game,id,next,card,action.targetId)));
+  }
+  return withSkill>without+0.5;
+}
+
+export function chooseAiRuleDecision(request, game) {
+  const id=request.playerId??request.player?.id, player=game.player(id), state=publicState(game,id), p=state.players[id];
+  const ctx=request.context??{}, skill=request.skillId;
+  if (request.type === "healing") {
+    const preferred=heroAi(p.hero).healingDecision?.({game,id,state,player:p,source:player,request,context:ctx},decisionApi);
+    if(preferred!==undefined&&request.choices.some(item=>item.value===preferred))return preferred;
+    let best={value:0,score:-Infinity};
+    for (const item of request.choices) {
+      const next=copy(state);applyDamage(next,id,ctx.amount??0,item.value,ctx.damageType??"spell",ctx.moraleLoss!==false);
+      const score=evaluate(next);if(score>best.score)best={value:item.value,score};
+    }
+    return best.value;
+  }
+  const decision = skillDecision(skill)?.({ game, id, state, player: p, source: player, request, context: ctx }, decisionApi);
+  if (decision !== undefined) return decision;
+  if (request.type === "skillChoice") return request.defaultValue ?? false;
+  if (request.type === "numberChoice") return request.defaultValue;
+  if (request.type === "cardChoice") {
+    if (request.validSets) return [...request.validSets].sort((a, b) =>
+      cardCost(game, id, a.map((i) => player.hand[i])) - cardCost(game, id, b.map((i) => player.hand[i])))[0] ?? null;
+    return chooseAiDiscard(game, id, request.count, request.valid ?? player.hand.map((_, i) => i));
+  }
+  if (request.type === "playerChoice") return request.choices.map((c) => ({ value: c.value,
+    score: (state.players[c.value].team === p.team ? 1 : -1) * Math.max(0, state.players[c.value].healingLimit - state.players[c.value].healing),
+  })).sort((a, b) => b.score - a.score)[0]?.value ?? request.defaultValue;
+  return request.defaultValue??null;
+}
+export function chooseAiResponse(game, request) {
+  const id=request.target.id, state=publicState(game,id), take=copy(state);
+  const profile=heroAi(state.players[id].hero);
+  const defendedId=profile.defendedPlayer?.(request) ?? id;
+  const responseCost=profile.responseCost?.(request,{game,id,state},scoringApi) ?? 0;
+  const amount=request.damage??request.context?.amount??2;
+  const shielded=request.shieldable!==false&&hasActiveEffect(take.players[defendedId],"holyShield");
+  if(shielded)
+    take.players[defendedId].effects=take.players[defendedId].effects.filter((e)=>e.name!=="holyShield");
+  else {
+    const actual=hurt(take,defendedId,amount,request.attack?"attack":"spell",{sourceId:request.actor?.id??request.context?.sourceId});
+    if (request.attack && request.actor) heroAi(state.players[defendedId].hero).afterAttackDamage?.({ state: take, actorId: request.actor.id, actual }, scoringApi);
+  }
+  const defenseRisk=shielded?0:profile.defenseRisk?.({game,id,state,request},scoringApi)??0;
+  let best={decision:null,score:evaluate(take)-evaluate(state)-defenseRisk};
+  for(const entry of request.valid) {
+    const card=entry.asAttack ? {...entry.card,type:'attack',name:`${entry.card.getTraits({playerId:id}).elements[0]}Strike`,uniqueSkills:[]} : entry.card;
+    if(request.attack&&card.type==="attack") {
+      if (heroAi(state.players[id].hero).skipCounterCard?.({ game, id, card, request }, scoringApi)) continue;
+      for(const target of request.counterTargets) {
+        const score=attackScore(game,id,state,card,target.id,{active:false,follow:false})-responseCost+
+          (profile.responseBonus?.({game,id,state,card,targetId:target.id,request},scoringApi)??0);
+        if(score>best.score)best={decision:{index:entry.index,targetId:target.id},score};
+      }
+    } else {
+      const next=copy(state), selected=next.players[id].hand.find((c)=>c.id===card.id);
+      spend(next,id,[selected]);
+      const targetId=request.nextTarget?.id??null;
+      const score=(card.name==="holyLight"?evaluate(next):sumBranches(magicBranches(next,id,targetId,amount+1)))-evaluate(state)-cardCost(game,id,[card])
+        +(profile.responseBonus?.({game,id,state,card,targetId,request},scoringApi)??0);
+      if(score>best.score)best={decision:{index:entry.index,targetId},score};
+    }
+  }
+  return best.decision;
+}
+
+const decisionApi = { ...scoringApi, lowCards, activationUseful };

@@ -1,0 +1,64 @@
+{
+  "status": "complete",
+  "scope": "offline six-hero prototype; not strength promotion",
+  "requirements": [
+    {
+      "item": "environment and frozen baseline",
+      "passed": true,
+      "evidence": [
+        "training/protocol.json",
+        "/home/xp/.local/share/xingbei-ml/evidence/torch-cuda-check.json",
+        "/home/xp/.local/share/xingbei-ml/evidence/ipc-benchmark.json",
+        "/home/xp/.local/share/xingbei-ml/evidence/cpu-gpu-model-benchmark.json"
+      ]
+    },
+    {
+      "item": "rule candidates, detached observations, complete games and privacy",
+      "passed": true,
+      "evidence": [
+        "/home/xp/.local/share/xingbei-ml/evidence/final-node-tests.txt",
+        "/home/xp/.local/share/xingbei-ml/evidence/audit-private.json"
+      ],
+      "scopeNote": "Natural six-hero coverage, not proof for future heroes."
+    },
+    {
+      "item": "terminal reward PPO, masks, independent memory and checkpoint restore",
+      "passed": true,
+      "evidence": [
+        "training/model_test.py",
+        "training/train.py",
+        "/home/xp/.local/share/xingbei-ml/runs/gpu-resume-verification/metrics.jsonl"
+      ]
+    },
+    {
+      "item": "bounded multi-seed pilot and frozen opponents",
+      "passed": true,
+      "evidence": [
+        "training/run-pilot.sh",
+        "/home/xp/.local/share/xingbei-ml/evidence/frozen-pilot-checkpoints.json"
+      ],
+      "games": 2304
+    },
+    {
+      "item": "independent evaluation, statistics, diagnostics, reproducible report",
+      "passed": true,
+      "evidence": [
+        "/home/xp/.local/share/xingbei-ml/evidence/audit-final.json",
+        "training/results/pilot-v2/report.txt",
+        "training/results/pilot-v2/manifest.json"
+      ],
+      "records": 3024,
+      "seedClusters": 12
+    },
+    {
+      "item": "local isolation and unchanged online policy",
+      "passed": true,
+      "evidence": "Main worktree remains 5159804; frozen ai source diff empty; only local codex/ml-terminal-reward branch modified; no push."
+    }
+  ],
+  "postFreezeChanges": [
+    "GPU RNG tensors moved to CPU before CUDA RNG restore; official runs were CPU.",
+    "Fail-closed guard rejects foreign nonzero activation reservations. Only priest own-turn activation exists in current six heroes; does not alter reachable model inputs."
+  ],
+  "acceptance": "Execution and reproducibility achieved. All three models fail strength promotion; do not deploy."
+}

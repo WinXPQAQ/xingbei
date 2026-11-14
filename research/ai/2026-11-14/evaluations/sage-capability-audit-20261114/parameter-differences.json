@@ -1,0 +1,155 @@
+{
+  "drill480": {
+    "actor.features.": {
+      "parameters": 202080,
+      "changed_tensors": 0,
+      "tensors": 1,
+      "relative_l2": 0.0,
+      "cosine": 1.0000035762786865
+    },
+    "actor.roles.": {
+      "parameters": 202080,
+      "changed_tensors": 0,
+      "tensors": 1,
+      "relative_l2": 0.0,
+      "cosine": 1.0000007152557373
+    },
+    "actor.norm.": {
+      "parameters": 192,
+      "changed_tensors": 0,
+      "tensors": 2,
+      "relative_l2": 0.0,
+      "cosine": 0.9999998807907104
+    },
+    "actor.transformer.": {
+      "parameters": 186624,
+      "changed_tensors": 0,
+      "tensors": 24,
+      "relative_l2": 0.0,
+      "cosine": 1.0000029802322388
+    },
+    "score.": {
+      "parameters": 18625,
+      "changed_tensors": 0,
+      "tensors": 4,
+      "relative_l2": 0.0,
+      "cosine": 1.0
+    },
+    "critic.": {
+      "parameters": 590976,
+      "changed_tensors": 0,
+      "tensors": 28,
+      "relative_l2": 0.0,
+      "cosine": 1.000064730644226
+    },
+    "value.": {
+      "parameters": 9409,
+      "changed_tensors": 0,
+      "tensors": 4,
+      "relative_l2": 0.0,
+      "cosine": 0.9999998807907104
+    }
+  },
+  "full285": {
+    "actor.features.": {
+      "parameters": 202080,
+      "changed_tensors": 1,
+      "tensors": 1,
+      "relative_l2": 0.04679584130644798,
+      "cosine": 0.9994239807128906
+    },
+    "actor.roles.": {
+      "parameters": 202080,
+      "changed_tensors": 1,
+      "tensors": 1,
+      "relative_l2": 0.03345905616879463,
+      "cosine": 0.9999924898147583
+    },
+    "actor.norm.": {
+      "parameters": 192,
+      "changed_tensors": 2,
+      "tensors": 2,
+      "relative_l2": 0.04405345395207405,
+      "cosine": 0.9994699358940125
+    },
+    "actor.transformer.": {
+      "parameters": 186624,
+      "changed_tensors": 24,
+      "tensors": 24,
+      "relative_l2": 0.1975633054971695,
+      "cosine": 0.9804354906082153
+    },
+    "score.": {
+      "parameters": 18625,
+      "changed_tensors": 4,
+      "tensors": 4,
+      "relative_l2": 0.17908813059329987,
+      "cosine": 0.9838415384292603
+    },
+    "critic.": {
+      "parameters": 590976,
+      "changed_tensors": 28,
+      "tensors": 28,
+      "relative_l2": 0.016067879274487495,
+      "cosine": 0.9999818205833435
+    },
+    "value.": {
+      "parameters": 9409,
+      "changed_tensors": 4,
+      "tensors": 4,
+      "relative_l2": 1.748553991317749,
+      "cosine": -0.0036149127408862114
+    }
+  },
+  "full451": {
+    "actor.features.": {
+      "parameters": 202080,
+      "changed_tensors": 1,
+      "tensors": 1,
+      "relative_l2": 0.06649775803089142,
+      "cosine": 0.9990510940551758
+    },
+    "actor.roles.": {
+      "parameters": 202080,
+      "changed_tensors": 1,
+      "tensors": 1,
+      "relative_l2": 0.052219208329916,
+      "cosine": 0.9999877214431763
+    },
+    "actor.norm.": {
+      "parameters": 192,
+      "changed_tensors": 2,
+      "tensors": 2,
+      "relative_l2": 0.06136569380760193,
+      "cosine": 0.9992349743843079
+    },
+    "actor.transformer.": {
+      "parameters": 186624,
+      "changed_tensors": 24,
+      "tensors": 24,
+      "relative_l2": 0.24522805213928223,
+      "cosine": 0.9698058366775513
+    },
+    "score.": {
+      "parameters": 18625,
+      "changed_tensors": 4,
+      "tensors": 4,
+      "relative_l2": 0.2231031358242035,
+      "cosine": 0.9748241901397705
+    },
+    "critic.": {
+      "parameters": 590976,
+      "changed_tensors": 28,
+      "tensors": 28,
+      "relative_l2": 0.016192123293876648,
+      "cosine": 0.999972939491272
+    },
+    "value.": {
+      "parameters": 9409,
+      "changed_tensors": 4,
+      "tensors": 4,
+      "relative_l2": 1.7463645935058594,
+      "cosine": -0.0030529580544680357
+    }
+  }
+}

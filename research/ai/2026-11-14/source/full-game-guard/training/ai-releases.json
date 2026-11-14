@@ -1,0 +1,79 @@
+{
+  "1.5.1": {
+    "checkpointSha256": "bc8accee0bc33e02624a81fdcd8ee4861c413c6356d7e73194047cd0444a2849",
+    "run": "residual-focused-candidate-211",
+    "completed": 192,
+    "baseline": "v1.5",
+    "developmentWins": 298,
+    "developmentGames": 504,
+    "scope": "Development result under pre-terminal-fix rules; not independent acceptance"
+  },
+  "1.5.2": {
+    "checkpointSha256": "bc8accee0bc33e02624a81fdcd8ee4861c413c6356d7e73194047cd0444a2849",
+    "run": "residual-focused-candidate-211",
+    "completed": 192,
+    "baseline": "v1.5",
+    "scope": "Same AI 1.5.1 weights plus deterministic same-element ordinary-first counter; requires new evaluation, old win rate not inherited.",
+    "responsePolicy": "ordinary-first-v1",
+    "parentRelease": "1.5.1"
+  },
+  "1.5.3-preview.1": {
+    "label": "AI 1.5.3-测试版",
+    "baseline": "experimental/hero-foundation-1",
+    "checkpointSha256": "22799db56e82155211396a8c81d2391471865782c29fe1680069647bdfbcf17e",
+    "sourceCheckpointSha256": "31d6814ddb84dd795728b262de4508a4245f043fee0a5f1f773b28d2c83a369b",
+    "run": "hero-foundation-211",
+    "completed": 192,
+    "scope": "Manual preview requested after failed promotion. NOT accepted baseline. No extra inference postprocessing beyond evaluated policy.",
+    "results": {
+      "v1.5": {
+        "games": 1008,
+        "seedClusters": 36,
+        "wins": 559,
+        "losses": 449,
+        "truncated": 0,
+        "resolvedWinRate": 0.5545634920634921,
+        "allGameWinRateBounds": [
+          0.5545634920634921,
+          0.5545634920634921
+        ],
+        "seedCluster95": [
+          0.5228174603174602,
+          0.5863095238095238
+        ],
+        "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+      },
+      "ai151": {
+        "games": 1008,
+        "seedClusters": 36,
+        "wins": 463,
+        "losses": 545,
+        "truncated": 0,
+        "resolvedWinRate": 0.4593253968253968,
+        "allGameWinRateBounds": [
+          0.4593253968253968,
+          0.4593253968253968
+        ],
+        "seedCluster95": [
+          0.43253968253968256,
+          0.4871031746031746
+        ],
+        "interpretation": "Truncations are unresolved, never draws; bounds assign them loss/win respectively."
+      }
+    }
+  },
+  "1.6.0-preview.1": {
+    "label": "AI 1.6.0-preview.1",
+    "baseline": "experimental/hero-foundation-1",
+    "checkpointSha256": "16abe8afa1ea460f73da03f29bbac4c001afb4297ebeeae7e8c0f55aea10c7d4",
+    "sourceCheckpointSha256": "caff00ad63e7760f65997c5bd71769e13b91d01fb17d1dc82fa4db325b288a01",
+    "run": "hero-foundation-211",
+    "completed": 0,
+    "parentRelease": "1.5.1",
+    "scope": "Group B: new deterministic scoring plus original AI 1.5.1 network, exactly equal tensors, no further training. User-selected preview, not a promoted baseline.",
+    "responsePolicy": null,
+    "inference": "greedy",
+    "featureEncoding": "decision-context-v6",
+    "gameRulesVersion": "terminal-v1"
+  }
+}

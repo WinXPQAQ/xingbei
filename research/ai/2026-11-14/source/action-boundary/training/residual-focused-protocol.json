@@ -1,0 +1,59 @@
+{
+  "name": "residual-focused-211",
+  "state": "registered-not-launched",
+  "launchCondition": "Wait for all comparison-head 96/192 evaluations. If none exceeds parent development team point estimate, run this curriculum comparison; otherwise reassess.",
+  "parent": "/home/xp/.local/share/xingbei-ml/runs/residual-temp13-211/checkpoint-192.pt",
+  "parentSha256": "ea3ad473d558e668a1c944d95313760627b67b9374b158387e243520393320c9",
+  "hypothesis": "Live audit of comparison training: about 61% model decisions are self-play and about 15% whole-team versus v1.5. Test greater exposure to the benchmark opponent while retaining self-play/mixed historical teammates; do not assume this causes the plateau.",
+  "arms": [
+    {
+      "name": "residual-focused-control-211",
+      "curriculum": "balanced"
+    },
+    {
+      "name": "residual-focused-candidate-211",
+      "curriculum": "v15-focused"
+    }
+  ],
+  "initialization": "Same parent weights and architecture without comparison head; fresh identical Adam/RNG. Only schedule mixture differs. No changed reward or observation.",
+  "shared": {
+    "updates": 192,
+    "games": 24,
+    "gamesPerArm": 4608,
+    "firstSeed": 252300000,
+    "lastSeed": 252304607,
+    "seed": 211,
+    "device": "cuda",
+    "workers": 4,
+    "threads": 2,
+    "epochs": 3,
+    "learningRate": 0.0001,
+    "batchSize": 512,
+    "temperature": 1.3,
+    "baseline": "v1.5",
+    "baselineProbability": 0.95,
+    "encoding": "decision-context-v6",
+    "separateCritic": true,
+    "warmup": 0,
+    "saveEvery": 96,
+    "maximumMinutes": 60,
+    "cpuQuota": "400%",
+    "memory": "12G"
+  },
+  "development": {
+    "checkpoints": [
+      96,
+      192
+    ],
+    "firstSeed": 231000000,
+    "seeds": 18,
+    "recordsPerEvaluation": 1512,
+    "compareAgainst": "residual-temp13-211-192-greedy",
+    "greedy": true,
+    "balancedMixed": true,
+    "report": "All four checkpoints and paired between-arm endpoint difference; seven lineups and hero/mixed controls. Reused development only."
+  },
+  "reward": "Terminal team +/-1 only",
+  "finalSeedsUsed": false,
+  "decision": "Report both arms at both checkpoints and mixed controls; no changing schedule after seeing partial results, no automatic promotion/deployment. Retain previous best and unused final seeds."
+}

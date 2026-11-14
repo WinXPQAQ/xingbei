@@ -1,0 +1,1160 @@
+{
+  "summary": {
+    "games": 192,
+    "completed": 192,
+    "wins": 68,
+    "truncated": 0,
+    "win_rate": 0.3541666666666667,
+    "seed_cluster_interval95": [
+      0.2864583333333333,
+      0.421875
+    ],
+    "inability_forfeits": 0,
+    "victory_routes": {
+      "morale": 114,
+      "cups": 78
+    },
+    "behavior": {
+      "turns": 1682,
+      "coveredAdded": 0,
+      "enemyAttackDamage": 908,
+      "enemySpellDamage": 548,
+      "refineGem": 116,
+      "refineCrystal": 100
+    },
+    "skill_notes": {
+      "arcaneCodex": 222,
+      "spellRebound": 162,
+      "wayOfService": 2,
+      "wisdomCodex": 19,
+      "heresyJudgment": 4,
+      "confession": 3,
+      "service": 2,
+      "whiteKarma": 2
+    },
+    "root_actions": {
+      "activate": 1115,
+      "play": 1004,
+      "refine": 157,
+      "arcaneCodex": 111,
+      "purchase": 165,
+      "synthesize": 145
+    },
+    "opponents": {
+      "v1.17.0-preview.5": {
+        "wins": 13,
+        "completed": 48
+      },
+      "legacy-score-partial-v1": {
+        "wins": 21,
+        "completed": 48
+      },
+      "model:frozenCurrent": {
+        "wins": 28,
+        "completed": 48
+      },
+      "model:anchor417": {
+        "wins": 6,
+        "completed": 48
+      }
+    },
+    "behavior_note": "Public event totals, not rewards. Skill notes can include multiple notes per activation; damage is not morale loss."
+  },
+  "learning": {
+    "updates": 240,
+    "samples": 7677,
+    "sample_visits": 15354,
+    "stopped_early": false,
+    "target_kl": 0.02,
+    "stopping_kl": null,
+    "actor_updates": 240,
+    "critic_updates": 32,
+    "independent_updates": true,
+    "by_decision_type": {
+      "action": {
+        "samples": 5409,
+        "sample_visits": 10818,
+        "policy_loss": 0.011961280854225516,
+        "value_loss": 0.7913470808534951,
+        "entropy": 0.7459210650291885,
+        "approx_kl": 0.004231727803613247,
+        "clip_fraction": 0.04501756332039194,
+        "normalized_entropy": 0.7266191353216812,
+        "sample_fraction": 0.7045720984759671
+      },
+      "overflow": {
+        "samples": 522,
+        "sample_visits": 1044,
+        "policy_loss": -0.03507908483765577,
+        "value_loss": 0.8546874925000146,
+        "entropy": 1.8948610069879628,
+        "approx_kl": 0.00496500222390639,
+        "clip_fraction": 0.05459770114942529,
+        "normalized_entropy": 0.9496213103505386,
+        "sample_fraction": 0.06799531066822978
+      },
+      "cardChoice": {
+        "samples": 497,
+        "sample_visits": 994,
+        "policy_loss": -0.037766638151473055,
+        "value_loss": 0.8120212616341455,
+        "entropy": 0.8539896599070068,
+        "approx_kl": 0.0014979507496779114,
+        "clip_fraction": 0.012072434607645875,
+        "normalized_entropy": 0.6844454177186952,
+        "sample_fraction": 0.06473883027224177
+      },
+      "healing": {
+        "samples": 128,
+        "sample_visits": 256,
+        "policy_loss": -0.2483464184715558,
+        "value_loss": 0.9520842386646677,
+        "entropy": 0.11576047608396857,
+        "approx_kl": 0.013242567889392376,
+        "clip_fraction": 0.05859375,
+        "normalized_entropy": 0.13974766674947686,
+        "sample_fraction": 0.016673179627458644
+      },
+      "weakness": {
+        "samples": 98,
+        "sample_visits": 196,
+        "policy_loss": 0.07229349506562766,
+        "value_loss": 0.798994556711069,
+        "entropy": 0.0007174464993888795,
+        "approx_kl": 1.9158635820661274e-08,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.0010350564957994377,
+        "sample_fraction": 0.012765403152273024
+      },
+      "response": {
+        "samples": 757,
+        "sample_visits": 1514,
+        "policy_loss": -0.10301482768162169,
+        "value_loss": 0.9140755235525235,
+        "entropy": 0.5076362031169132,
+        "approx_kl": 0.005973465740680695,
+        "clip_fraction": 0.062087186261558784,
+        "normalized_entropy": 0.3695031644736198,
+        "sample_fraction": 0.09860622639051712
+      },
+      "skillChoice": {
+        "samples": 91,
+        "sample_visits": 182,
+        "policy_loss": 0.4398188192990946,
+        "value_loss": 0.6490037146083253,
+        "entropy": 0.17320473295134994,
+        "approx_kl": 0.00022318940814379808,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.24988160798182854,
+        "sample_fraction": 0.011853588641396379
+      },
+      "playerChoice": {
+        "samples": 174,
+        "sample_visits": 348,
+        "policy_loss": -0.10914265792870402,
+        "value_loss": 0.8011452520534048,
+        "entropy": 0.39801826793593564,
+        "approx_kl": 0.00637901931915475,
+        "clip_fraction": 0.04597701149425287,
+        "normalized_entropy": 0.23676642498233777,
+        "sample_fraction": 0.022665103556076593
+      },
+      "effectChoice": {
+        "samples": 1,
+        "sample_visits": 2,
+        "policy_loss": 0.224409781396389,
+        "value_loss": 0.053605567663908005,
+        "entropy": 0.6676428020000458,
+        "approx_kl": 0.0011546313762664795,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.963204950094223,
+        "sample_fraction": 0.00013025921583952066
+      }
+    },
+    "by_decision_group": {
+      "action/intent/none": {
+        "samples": 1115,
+        "sample_visits": 2230,
+        "policy_loss": 0.024897168922622274,
+        "value_loss": 0.7818151496055151,
+        "entropy": 0.8931978882027314,
+        "approx_kl": 0.006948344523062086,
+        "clip_fraction": 0.08654708520179372,
+        "normalized_entropy": 0.9237070083484521,
+        "sample_fraction": 0.14523902566106553
+      },
+      "action/card/none": {
+        "samples": 747,
+        "sample_visits": 1494,
+        "policy_loss": 0.04613823517708175,
+        "value_loss": 0.8010632232906225,
+        "entropy": 0.8721485303288171,
+        "approx_kl": 0.004898097780015733,
+        "clip_fraction": 0.05220883534136546,
+        "normalized_entropy": 0.7298230791881798,
+        "sample_fraction": 0.09730363423212192
+      },
+      "action/targets/none": {
+        "samples": 1040,
+        "sample_visits": 2080,
+        "policy_loss": 0.017387160218808834,
+        "value_loss": 0.7777159898345163,
+        "entropy": 0.7835577461593326,
+        "approx_kl": 0.004616940222107447,
+        "clip_fraction": 0.04807692307692308,
+        "normalized_entropy": 0.636412251946192,
+        "sample_fraction": 0.13546958447310148
+      },
+      "action/direction/none": {
+        "samples": 1987,
+        "sample_visits": 3974,
+        "policy_loss": 0.01868259524877329,
+        "value_loss": 0.7963965190114419,
+        "entropy": 0.5910343691832272,
+        "approx_kl": 0.0028049353876670943,
+        "clip_fraction": 0.024408656265727226,
+        "normalized_entropy": 0.6891662300769174,
+        "sample_fraction": 0.25882506187312754
+      },
+      "action/fees/none": {
+        "samples": 111,
+        "sample_visits": 222,
+        "policy_loss": 0.16154793841630086,
+        "value_loss": 0.9813353006986028,
+        "entropy": 0.9833054961384954,
+        "approx_kl": 0.0053416486527468705,
+        "clip_fraction": 0.07207207207207207,
+        "normalized_entropy": 0.8758143926257486,
+        "sample_fraction": 0.014458772958186792
+      },
+      "overflow/selectCards/none": {
+        "samples": 510,
+        "sample_visits": 1020,
+        "policy_loss": -0.04607762025039205,
+        "value_loss": 0.8623771728568089,
+        "entropy": 1.8957786446692897,
+        "approx_kl": 0.005030042984906365,
+        "clip_fraction": 0.054901960784313725,
+        "normalized_entropy": 0.9497446362878762,
+        "sample_fraction": 0.06643220007815553
+      },
+      "action/skill/none": {
+        "samples": 78,
+        "sample_visits": 156,
+        "policy_loss": -0.13955565949436277,
+        "value_loss": 0.77345204088462,
+        "entropy": 7.354651022054041e-05,
+        "approx_kl": 7.64162112505008e-10,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.00010610518682148695,
+        "sample_fraction": 0.01016021883548261
+      },
+      "action/costCards/none": {
+        "samples": 331,
+        "sample_visits": 662,
+        "policy_loss": -0.1805996374502142,
+        "value_loss": 0.7545506056136986,
+        "entropy": 0.8726237128980737,
+        "approx_kl": 0.0015564501465627433,
+        "clip_fraction": 0.004531722054380665,
+        "normalized_entropy": 0.6849124879757503,
+        "sample_fraction": 0.04311580044288133
+      },
+      "cardChoice/selectCards/glassDiscard": {
+        "samples": 4,
+        "sample_visits": 8,
+        "policy_loss": 0.36203262209892273,
+        "value_loss": 1.0690281987190247,
+        "entropy": 0.9908519983291626,
+        "approx_kl": 0.0007577985525131226,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.8099005483090878,
+        "sample_fraction": 0.0005210368633580826
+      },
+      "healing/complete/arcaneCodex": {
+        "samples": 14,
+        "sample_visits": 28,
+        "policy_loss": 0.020367333382767226,
+        "value_loss": 0.3636133270384952,
+        "entropy": 0.3623694627146636,
+        "approx_kl": 0.012037355984960283,
+        "clip_fraction": 0.10714285714285714,
+        "normalized_entropy": 0.37448833151055233,
+        "sample_fraction": 0.001823629021753289
+      },
+      "weakness/complete/none": {
+        "samples": 98,
+        "sample_visits": 196,
+        "policy_loss": 0.07229349506562766,
+        "value_loss": 0.798994556711069,
+        "entropy": 0.0007174464993888795,
+        "approx_kl": 1.9158635820661274e-08,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.0010350564957994377,
+        "sample_fraction": 0.012765403152273024
+      },
+      "healing/complete/none": {
+        "samples": 72,
+        "sample_visits": 144,
+        "policy_loss": -0.3508015064160443,
+        "value_loss": 1.0707279806859635,
+        "entropy": 0.10348279989557325,
+        "approx_kl": 0.020172388189368777,
+        "clip_fraction": 0.0763888888888889,
+        "normalized_entropy": 0.13579550901124737,
+        "sample_fraction": 0.009378663540445486
+      },
+      "response/complete/none": {
+        "samples": 757,
+        "sample_visits": 1514,
+        "policy_loss": -0.10301482768162169,
+        "value_loss": 0.9140755235525235,
+        "entropy": 0.5076362031169132,
+        "approx_kl": 0.005973465740680695,
+        "clip_fraction": 0.062087186261558784,
+        "normalized_entropy": 0.3695031644736198,
+        "sample_fraction": 0.09860622639051712
+      },
+      "skillChoice/complete/passionateRhapsody": {
+        "samples": 10,
+        "sample_visits": 20,
+        "policy_loss": 0.6118030086159706,
+        "value_loss": 0.5892308610491455,
+        "entropy": 0.19895823411643504,
+        "approx_kl": 0.00010308325290679932,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.28703605495393275,
+        "sample_fraction": 0.0013025921583952064
+      },
+      "skillChoice/complete/victorySymphony": {
+        "samples": 10,
+        "sample_visits": 20,
+        "policy_loss": 0.6246719650924206,
+        "value_loss": 0.6049511985853314,
+        "entropy": 0.15414993241429328,
+        "approx_kl": 5.269944667816162e-05,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.2223913423717022,
+        "sample_fraction": 0.0013025921583952064
+      },
+      "cardChoice/selectCards/spellRebound": {
+        "samples": 275,
+        "sample_visits": 550,
+        "policy_loss": -0.19161486277949405,
+        "value_loss": 0.8305189157412678,
+        "entropy": 0.7641757277936164,
+        "approx_kl": 0.0010775430365042252,
+        "clip_fraction": 0.007272727272727273,
+        "normalized_entropy": 0.6343267509392693,
+        "sample_fraction": 0.03582128435586818
+      },
+      "playerChoice/complete/spellRebound": {
+        "samples": 162,
+        "sample_visits": 324,
+        "policy_loss": -0.1231368481423016,
+        "value_loss": 0.834731849559134,
+        "entropy": 0.3828816830462299,
+        "approx_kl": 0.006462954766588446,
+        "clip_fraction": 0.046296296296296294,
+        "normalized_entropy": 0.21369033345592775,
+        "sample_fraction": 0.021101992966002344
+      },
+      "overflow/selectCards/scarletFlash": {
+        "samples": 2,
+        "sample_visits": 4,
+        "policy_loss": 0.5127212814986706,
+        "value_loss": 0.4409193273168057,
+        "entropy": 1.8938283920288086,
+        "approx_kl": 0.00012165307998657227,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.9732352197170258,
+        "sample_fraction": 0.0002605184316790413
+      },
+      "cardChoice/selectCards/shadowHoleCost": {
+        "samples": 17,
+        "sample_visits": 34,
+        "policy_loss": 0.621399616713033,
+        "value_loss": 0.9461747407365371,
+        "entropy": 1.1600587928996366,
+        "approx_kl": 0.0011191718718584847,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.9179021540810081,
+        "sample_fraction": 0.002214406669271851
+      },
+      "cardChoice/selectCards/shadowStitchCost": {
+        "samples": 32,
+        "sample_visits": 64,
+        "policy_loss": 0.36013020941754803,
+        "value_loss": 0.679351471730115,
+        "entropy": 1.102635926567018,
+        "approx_kl": 0.003237960860133171,
+        "clip_fraction": 0.03125,
+        "normalized_entropy": 0.9612383870407939,
+        "sample_fraction": 0.004168294906864661
+      },
+      "skillChoice/complete/calmWind": {
+        "samples": 25,
+        "sample_visits": 50,
+        "policy_loss": 0.4680941580608487,
+        "value_loss": 0.7598403094895184,
+        "entropy": 0.13212673496454955,
+        "approx_kl": 6.357431411743164e-05,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.19061858274042606,
+        "sample_fraction": 0.003256480395988016
+      },
+      "overflow/selectCards/bloodBarrier": {
+        "samples": 1,
+        "sample_visits": 2,
+        "policy_loss": 0.05149719677865505,
+        "value_loss": 0.002682846039533615,
+        "entropy": 1.730401873588562,
+        "approx_kl": 0.00011152029037475586,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.8892506062984467,
+        "sample_fraction": 0.00013025921583952066
+      },
+      "cardChoice/selectCards/shadowPrisonCost": {
+        "samples": 1,
+        "sample_visits": 2,
+        "policy_loss": -0.4102229028940201,
+        "value_loss": 0.17304599285125732,
+        "entropy": 0.9892536103725433,
+        "approx_kl": 0.0007815062999725342,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.9004574120044708,
+        "sample_fraction": 0.00013025921583952066
+      },
+      "cardChoice/selectCards/imaginarySwordCost": {
+        "samples": 5,
+        "sample_visits": 10,
+        "policy_loss": -0.35652360767126084,
+        "value_loss": 1.0233503341674806,
+        "entropy": 1.3167837858200073,
+        "approx_kl": 0.0013216197490692138,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.8254421651363373,
+        "sample_fraction": 0.0006512960791976032
+      },
+      "cardChoice/selectCards/wisdomCodex": {
+        "samples": 19,
+        "sample_visits": 38,
+        "policy_loss": -0.16694100583462337,
+        "value_loss": 0.7798380093108311,
+        "entropy": 1.4330145575498279,
+        "approx_kl": 0.00331307241791173,
+        "clip_fraction": 0.05263157894736842,
+        "normalized_entropy": 0.8746135438743391,
+        "sample_fraction": 0.0024749251009508924
+      },
+      "healing/complete/azureCodex": {
+        "samples": 1,
+        "sample_visits": 2,
+        "policy_loss": 0.1873617246747017,
+        "value_loss": 0.035109907388687134,
+        "entropy": 0.0009307616128353402,
+        "approx_kl": 0.0,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.0013428051606751978,
+        "sample_fraction": 0.00013025921583952066
+      },
+      "cardChoice/selectCards/abundance": {
+        "samples": 30,
+        "sample_visits": 60,
+        "policy_loss": -0.008880078963314494,
+        "value_loss": 1.0271819193261762,
+        "entropy": 1.1463657384117445,
+        "approx_kl": 0.0019493957360585531,
+        "clip_fraction": 0.016666666666666666,
+        "normalized_entropy": 0.850292215993007,
+        "sample_fraction": 0.003907776475185619
+      },
+      "cardChoice/selectCards/windTalisman": {
+        "samples": 9,
+        "sample_visits": 18,
+        "policy_loss": 0.6555790296859212,
+        "value_loss": 0.6328711720804373,
+        "entropy": 1.1121614111794367,
+        "approx_kl": 0.0017251769701639812,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.8505265398157967,
+        "sample_fraction": 0.0011723329425556857
+      },
+      "cardChoice/selectCards/blackHoleResponse": {
+        "samples": 2,
+        "sample_visits": 4,
+        "policy_loss": -0.8743280684575438,
+        "value_loss": 1.5856142782140523,
+        "entropy": 0.0016954414404608542,
+        "approx_kl": 0.0,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.00244600497171632,
+        "sample_fraction": 0.0002605184316790413
+      },
+      "healing/complete/holyBurst": {
+        "samples": 2,
+        "sample_visits": 4,
+        "policy_loss": -0.1199265718460083,
+        "value_loss": 0.014506880659610033,
+        "entropy": 1.3044241775617138e-07,
+        "approx_kl": 0.0,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 1.881886309007541e-07,
+        "sample_fraction": 0.0002605184316790413
+      },
+      "cardChoice/selectCards/magicBurst": {
+        "samples": 15,
+        "sample_visits": 30,
+        "policy_loss": -0.08299737445389231,
+        "value_loss": 0.7634096573718125,
+        "entropy": 0.13417917913144115,
+        "approx_kl": 0.0003908465305964152,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.12262589853789337,
+        "sample_fraction": 0.0019538882375928096
+      },
+      "healing/complete/magicBurst": {
+        "samples": 7,
+        "sample_visits": 14,
+        "policy_loss": -0.6631065162697009,
+        "value_loss": 1.4552872595418844,
+        "entropy": 0.10792803158533713,
+        "approx_kl": 0.006378803934369769,
+        "clip_fraction": 0.07142857142857142,
+        "normalized_entropy": 0.13591158621356467,
+        "sample_fraction": 0.0009118145108766445
+      },
+      "healing/complete/magicBullet": {
+        "samples": 9,
+        "sample_visits": 18,
+        "policy_loss": -0.02112243738439348,
+        "value_loss": 1.0363831689788237,
+        "entropy": 0.0015936830260680306,
+        "approx_kl": 4.6359168158637154e-08,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.0021231623191613697,
+        "sample_fraction": 0.0011723329425556857
+      },
+      "healing/complete/spellRebound": {
+        "samples": 10,
+        "sample_visits": 20,
+        "policy_loss": -0.5304153428412974,
+        "value_loss": 1.0091020263746031,
+        "entropy": 0.10188176076205764,
+        "approx_kl": 0.0026169925928115844,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.11876808715196603,
+        "sample_fraction": 0.0013025921583952064
+      },
+      "cardChoice/selectCards/none": {
+        "samples": 3,
+        "sample_visits": 6,
+        "policy_loss": 0.9821792741616567,
+        "value_loss": 1.0254650115966797,
+        "entropy": 0.9792449474334717,
+        "approx_kl": 0.0018798609574635823,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.9333238204320272,
+        "sample_fraction": 0.00039077764751856197
+      },
+      "overflow/selectCards/passionateRhapsody": {
+        "samples": 1,
+        "sample_visits": 2,
+        "policy_loss": 1.806384563446045,
+        "value_loss": 2.7550015449523926,
+        "entropy": 1.8750964999198914,
+        "approx_kl": 0.003705739974975586,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.9636089503765106,
+        "sample_fraction": 0.00013025921583952066
+      },
+      "overflow/selectCards/starlight": {
+        "samples": 1,
+        "sample_visits": 2,
+        "policy_loss": 1.379815697669983,
+        "value_loss": 1.9373509883880615,
+        "entropy": 1.8455824851989746,
+        "approx_kl": 0.0014774799346923828,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.948441743850708,
+        "sample_fraction": 0.00013025921583952066
+      },
+      "overflow/selectCards/newMovement": {
+        "samples": 1,
+        "sample_visits": 2,
+        "policy_loss": 0.15472683310508728,
+        "value_loss": 0.022084930911660194,
+        "entropy": 1.917254388332367,
+        "approx_kl": 0.001154780387878418,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.9852738380432129,
+        "sample_fraction": 0.00013025921583952066
+      },
+      "overflow/selectCards/resonance": {
+        "samples": 3,
+        "sample_visits": 6,
+        "policy_loss": 0.32829571266969043,
+        "value_loss": 0.10952723026275635,
+        "entropy": 1.9026349584261577,
+        "approx_kl": 0.0011305709679921467,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.9147361914316813,
+        "sample_fraction": 0.00039077764751856197
+      },
+      "cardChoice/selectCards/judgmentDiscard": {
+        "samples": 8,
+        "sample_visits": 16,
+        "policy_loss": 0.25426479149609804,
+        "value_loss": 1.722250065766275,
+        "entropy": 1.1281836703419685,
+        "approx_kl": 0.0008530691266059875,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.8442839607596397,
+        "sample_fraction": 0.0010420737267161652
+      },
+      "cardChoice/selectCards/calamityDefense": {
+        "samples": 1,
+        "sample_visits": 2,
+        "policy_loss": 0.05501852370798588,
+        "value_loss": 0.0030268237460404634,
+        "entropy": 0.0009862667066045105,
+        "approx_kl": 0.0,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.001422882080078125,
+        "sample_fraction": 0.00013025921583952066
+      },
+      "cardChoice/selectCards/spellStripCost": {
+        "samples": 1,
+        "sample_visits": 2,
+        "policy_loss": -0.5188402235507965,
+        "value_loss": 0.25949105620384216,
+        "entropy": 1.089360535144806,
+        "approx_kl": 0.004719942808151245,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.7858075201511383,
+        "sample_fraction": 0.00013025921583952066
+      },
+      "cardChoice/selectCards/witchStingCost": {
+        "samples": 6,
+        "sample_visits": 12,
+        "policy_loss": -0.17586564544277886,
+        "value_loss": 0.9461155767870272,
+        "entropy": 0.9823913077513377,
+        "approx_kl": 0.0019442786773045857,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.9534107546011606,
+        "sample_fraction": 0.0007815552950371239
+      },
+      "cardChoice/selectCards/royalPressure": {
+        "samples": 13,
+        "sample_visits": 26,
+        "policy_loss": -0.05462345581215162,
+        "value_loss": 0.407118766523826,
+        "entropy": 0.7974420640116128,
+        "approx_kl": 0.0027417815648592436,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.6145576072426943,
+        "sample_fraction": 0.0016933698059137684
+      },
+      "healing/complete/thunderScatter": {
+        "samples": 1,
+        "sample_visits": 2,
+        "policy_loss": -0.06131255626678467,
+        "value_loss": 0.003759214887395501,
+        "entropy": 0.0009333682828582823,
+        "approx_kl": 2.9802322387695312e-08,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.0013465657539200038,
+        "sample_fraction": 0.00013025921583952066
+      },
+      "overflow/selectCards/authorityReversal": {
+        "samples": 1,
+        "sample_visits": 2,
+        "policy_loss": 0.1769949048757553,
+        "value_loss": 0.02893769182264805,
+        "entropy": 1.7403504252433777,
+        "approx_kl": 0.0024057626724243164,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.9713080525398254,
+        "sample_fraction": 0.00013025921583952066
+      },
+      "healing/complete/myriadRuins": {
+        "samples": 1,
+        "sample_visits": 2,
+        "policy_loss": -1.8584033250808716,
+        "value_loss": 3.0643460750579834,
+        "entropy": 0.2613585293292999,
+        "approx_kl": 0.0021660923957824707,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.3770606517791748,
+        "sample_fraction": 0.00013025921583952066
+      },
+      "cardChoice/selectCards/slothResponse": {
+        "samples": 8,
+        "sample_visits": 16,
+        "policy_loss": 0.44534071162343025,
+        "value_loss": 0.24159767990931869,
+        "entropy": 9.815772875754192e-05,
+        "approx_kl": 3.725290298461914e-09,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.0001416116670043266,
+        "sample_fraction": 0.0010420737267161652
+      },
+      "playerChoice/complete/slothDrawTarget": {
+        "samples": 12,
+        "sample_visits": 24,
+        "policy_loss": 0.0797789099548633,
+        "value_loss": 0.34772618572606007,
+        "entropy": 0.6023621639469638,
+        "approx_kl": 0.0052458907787998514,
+        "clip_fraction": 0.041666666666666664,
+        "normalized_entropy": 0.548293660588873,
+        "sample_fraction": 0.0015631105900742479
+      },
+      "skillChoice/complete/confession": {
+        "samples": 38,
+        "sample_visits": 76,
+        "policy_loss": 0.37374526046608625,
+        "value_loss": 0.7219071111911418,
+        "entropy": 0.12817365696996844,
+        "approx_kl": 0.00023064443743542622,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.18491549951661573,
+        "sample_fraction": 0.004949850201901785
+      },
+      "cardChoice/selectCards/preachingRecipient": {
+        "samples": 29,
+        "sample_visits": 58,
+        "policy_loss": 0.412618702438114,
+        "value_loss": 0.5449051524448241,
+        "entropy": 1.0619440977943355,
+        "approx_kl": 0.00230965750484631,
+        "clip_fraction": 0.034482758620689655,
+        "normalized_entropy": 0.8260894088909544,
+        "sample_fraction": 0.0037775172593460986
+      },
+      "cardChoice/selectCards/trickTreatCost": {
+        "samples": 3,
+        "sample_visits": 6,
+        "policy_loss": 0.15804146913190684,
+        "value_loss": 0.13010339733834067,
+        "entropy": 0.41712258538852137,
+        "approx_kl": 0.000659589966138204,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.4770531759907802,
+        "sample_fraction": 0.00039077764751856197
+      },
+      "cardChoice/selectCards/beastCounterDiscard": {
+        "samples": 1,
+        "sample_visits": 2,
+        "policy_loss": 0.3260190337896347,
+        "value_loss": 0.09567715227603912,
+        "entropy": 0.7750091552734375,
+        "approx_kl": 0.0031005144119262695,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.7054437100887299,
+        "sample_fraction": 0.00013025921583952066
+      },
+      "healing/complete/spiritBullet": {
+        "samples": 1,
+        "sample_visits": 2,
+        "policy_loss": 0.33741867542266846,
+        "value_loss": 0.11385136097669601,
+        "entropy": 9.314296534057576e-08,
+        "approx_kl": 0.0,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 1.3437689716511159e-07,
+        "sample_fraction": 0.00013025921583952066
+      },
+      "healing/complete/doomFlip": {
+        "samples": 1,
+        "sample_visits": 2,
+        "policy_loss": 0.26633836328983307,
+        "value_loss": 0.07092510163784027,
+        "entropy": 0.0015987739025149494,
+        "approx_kl": 0.0,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.00230654317419976,
+        "sample_fraction": 0.00013025921583952066
+      },
+      "healing/complete/toxicNova": {
+        "samples": 1,
+        "sample_visits": 2,
+        "policy_loss": 0.05712944269180298,
+        "value_loss": 0.00326377316378057,
+        "entropy": 1.8925674538650128e-07,
+        "approx_kl": 0.0,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 2.730397739014734e-07,
+        "sample_fraction": 0.00013025921583952066
+      },
+      "healing/complete/deathTouch": {
+        "samples": 1,
+        "sample_visits": 2,
+        "policy_loss": 0.01154625415802002,
+        "value_loss": 0.00013331598893273622,
+        "entropy": 1.1209882710971897e-07,
+        "approx_kl": 0.0,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 1.6172441519302083e-07,
+        "sample_fraction": 0.00013025921583952066
+      },
+      "cardChoice/selectCards/magicEyeDiscard": {
+        "samples": 5,
+        "sample_visits": 10,
+        "policy_loss": -0.9352653991430998,
+        "value_loss": 1.3447316465433687,
+        "entropy": 1.2526639938354491,
+        "approx_kl": 0.001426142454147339,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.9457510709762573,
+        "sample_fraction": 0.0006512960791976032
+      },
+      "healing/complete/finalJudgment": {
+        "samples": 1,
+        "sample_visits": 2,
+        "policy_loss": -0.14942021667957306,
+        "value_loss": 0.022326860576868057,
+        "entropy": 0.00017301345724263228,
+        "approx_kl": 2.9802322387695312e-08,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.0002496056586096529,
+        "sample_fraction": 0.00013025921583952066
+      },
+      "healing/complete/ragingTide": {
+        "samples": 1,
+        "sample_visits": 2,
+        "policy_loss": 0.02634453773498535,
+        "value_loss": 0.0006940346793271601,
+        "entropy": 2.1591645804619475e-08,
+        "approx_kl": 0.0,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 3.1150159784942844e-08,
+        "sample_fraction": 0.00013025921583952066
+      },
+      "skillChoice/complete/whiteKarma": {
+        "samples": 2,
+        "sample_visits": 4,
+        "policy_loss": 0.1552238529548049,
+        "value_loss": 0.03172527509741485,
+        "entropy": 0.6490461528301239,
+        "approx_kl": 0.003079742193222046,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.9363756626844406,
+        "sample_fraction": 0.0002605184316790413
+      },
+      "effectChoice/complete/karmaCard": {
+        "samples": 1,
+        "sample_visits": 2,
+        "policy_loss": 0.224409781396389,
+        "value_loss": 0.053605567663908005,
+        "entropy": 0.6676428020000458,
+        "approx_kl": 0.0011546313762664795,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.963204950094223,
+        "sample_fraction": 0.00013025921583952066
+      },
+      "healing/complete/trickOrTreat": {
+        "samples": 2,
+        "sample_visits": 4,
+        "policy_loss": 0.8449337407946587,
+        "value_loss": 1.062631070613861,
+        "entropy": 0.005514920048881322,
+        "approx_kl": 0.0,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.0079563477775082,
+        "sample_fraction": 0.0002605184316790413
+      },
+      "overflow/selectCards/rebelliousWall": {
+        "samples": 1,
+        "sample_visits": 2,
+        "policy_loss": 0.20778850466012955,
+        "value_loss": 0.0533938892185688,
+        "entropy": 1.8010135889053345,
+        "approx_kl": 0.012625336647033691,
+        "clip_fraction": 0.5,
+        "normalized_entropy": 0.9255378842353821,
+        "sample_fraction": 0.00013025921583952066
+      },
+      "cardChoice/selectCards/holidayBurstResponse": {
+        "samples": 4,
+        "sample_visits": 8,
+        "policy_loss": 0.49100901931524277,
+        "value_loss": 0.4404316945001483,
+        "entropy": 0.28929104221424495,
+        "approx_kl": 7.041357457637787e-05,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.2644239495948568,
+        "sample_fraction": 0.0005210368633580826
+      },
+      "cardChoice/selectCards/newMovement": {
+        "samples": 1,
+        "sample_visits": 2,
+        "policy_loss": 0.9476641714572906,
+        "value_loss": 0.897049069404602,
+        "entropy": 1.085383117198944,
+        "approx_kl": 7.87973403930664e-05,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.9879582822322845,
+        "sample_fraction": 0.00013025921583952066
+      },
+      "healing/complete/destructionStorm": {
+        "samples": 2,
+        "sample_visits": 4,
+        "policy_loss": 1.5060942769050598,
+        "value_loss": 2.304036855697632,
+        "entropy": 0.017637659834861097,
+        "approx_kl": 7.748603820800781e-06,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.016054489576617925,
+        "sample_fraction": 0.0002605184316790413
+      },
+      "overflow/selectCards/paleMoon": {
+        "samples": 1,
+        "sample_visits": 2,
+        "policy_loss": -0.5992333590984344,
+        "value_loss": 0.324640691280365,
+        "entropy": 1.865075945854187,
+        "approx_kl": 0.0012935996055603027,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.9584594070911407,
+        "sample_fraction": 0.00013025921583952066
+      },
+      "cardChoice/selectCards/jealousResponse": {
+        "samples": 3,
+        "sample_visits": 6,
+        "policy_loss": -0.9471470812956492,
+        "value_loss": 1.203635825465123,
+        "entropy": 0.22708548035355505,
+        "approx_kl": 0.0005153814951578776,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.20670310335759404,
+        "sample_fraction": 0.00039077764751856197
+      },
+      "cardChoice/selectCards/beastVigilanceDiscard": {
+        "samples": 1,
+        "sample_visits": 2,
+        "policy_loss": -1.4989319443702698,
+        "value_loss": 2.52829909324646,
+        "entropy": 1.680522382259369,
+        "approx_kl": 0.0021733343601226807,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.9379173815250397,
+        "sample_fraction": 0.00013025921583952066
+      },
+      "healing/complete/thunderTalisman": {
+        "samples": 1,
+        "sample_visits": 2,
+        "policy_loss": 0.041019417345523834,
+        "value_loss": 0.0015425015008077025,
+        "entropy": 0.19344960898160934,
+        "approx_kl": 0.0011101365089416504,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.2790887951850891,
+        "sample_fraction": 0.00013025921583952066
+      },
+      "skillChoice/complete/speedBlessing": {
+        "samples": 6,
+        "sample_visits": 12,
+        "policy_loss": 0.2406068773319324,
+        "value_loss": 0.10426482005277649,
+        "entropy": 0.45978156477212906,
+        "approx_kl": 0.00037317971388498944,
+        "clip_fraction": 0.0,
+        "normalized_entropy": 0.6633245795965195,
+        "sample_fraction": 0.0007815552950371239
+      },
+      "cardChoice/selectCards/forbiddenMysteryCost": {
+        "samples": 1,
+        "sample_visits": 2,
+        "policy_loss": 0.1371581107378006,
+        "value_loss": 0.012333613820374012,
+        "entropy": 1.0929933786392212,
+        "approx_kl": 0.02451324462890625,
+        "clip_fraction": 0.5,
+        "normalized_entropy": 0.9948854148387909,
+        "sample_fraction": 0.00013025921583952066
+      }
+    },
+    "reference_weight": 0.0,
+    "reference_visits": 0,
+    "reference_loss_sum": 0.0,
+    "rehearsal_weight": 1.0,
+    "rehearsal_batches": 240,
+    "rehearsal_kl_sum": 0.09439547499641776,
+    "prepare_seconds": 0.04131708084605634,
+    "policy_loss": -0.0070094355934516555,
+    "value_loss": 0.810310464549182,
+    "entropy": 0.7728396581921324,
+    "approx_kl": 0.004373323789937112,
+    "clip_fraction": 0.04435326299335678,
+    "normalized_entropy": 0.6680679199133212,
+    "critic": {
+      "loss": "bce",
+      "updates": 32,
+      "best_update": 32,
+      "train_sources": 149,
+      "validation_sources": 43,
+      "source_overlap": 0,
+      "skipped": false,
+      "validation_before": {
+        "samples": 1032,
+        "objective": 0.6363020389117011,
+        "mse": 0.8517386042693442,
+        "value_semantics": "terminal_win",
+        "brier": 0.21293465106733606,
+        "nll": 0.6363020445140757,
+        "ece": 0.10829044439533884,
+        "calibration": [
+          {
+            "count": 254,
+            "predicted": 11.068550437688828,
+            "won": 44.0
+          },
+          {
+            "count": 121,
+            "predicted": 18.435980677604675,
+            "won": 50.0
+          },
+          {
+            "count": 88,
+            "predicted": 22.12506115436554,
+            "won": 23.0
+          },
+          {
+            "count": 92,
+            "predicted": 31.813461124897003,
+            "won": 29.0
+          },
+          {
+            "count": 108,
+            "predicted": 48.77973857522011,
+            "won": 34.0
+          },
+          {
+            "count": 132,
+            "predicted": 71.91993719339371,
+            "won": 63.0
+          },
+          {
+            "count": 86,
+            "predicted": 56.22339689731598,
+            "won": 47.0
+          },
+          {
+            "count": 62,
+            "predicted": 46.371346056461334,
+            "won": 42.0
+          },
+          {
+            "count": 55,
+            "predicted": 46.761879086494446,
+            "won": 42.0
+          },
+          {
+            "count": 34,
+            "predicted": 32.48442804813385,
+            "won": 34.0
+          }
+        ]
+      },
+      "validation_after": {
+        "samples": 1032,
+        "objective": 0.6014328616303067,
+        "mse": 0.8073901026978973,
+        "value_semantics": "terminal_win",
+        "brier": 0.20184752567447434,
+        "nll": 0.6014328652112059,
+        "ece": 0.09805452156552048,
+        "calibration": [
+          {
+            "count": 215,
+            "predicted": 9.584860235452652,
+            "won": 36.0
+          },
+          {
+            "count": 150,
+            "predicted": 22.237333834171295,
+            "won": 47.0
+          },
+          {
+            "count": 116,
+            "predicted": 30.14859363436699,
+            "won": 39.0
+          },
+          {
+            "count": 133,
+            "predicted": 47.30179604887962,
+            "won": 47.0
+          },
+          {
+            "count": 120,
+            "predicted": 54.38288277387619,
+            "won": 37.0
+          },
+          {
+            "count": 100,
+            "predicted": 54.64752036333084,
+            "won": 46.0
+          },
+          {
+            "count": 58,
+            "predicted": 37.54634314775467,
+            "won": 34.0
+          },
+          {
+            "count": 69,
+            "predicted": 52.51299184560776,
+            "won": 60.0
+          },
+          {
+            "count": 42,
+            "predicted": 35.391053199768066,
+            "won": 33.0
+          },
+          {
+            "count": 29,
+            "predicted": 27.593549728393555,
+            "won": 29.0
+          }
+        ]
+      },
+      "mean_training_loss": 0.5131747787818313
+    },
+    "value_metric": "Actor-loop value errors are frozen rollout predictions; critic validation is reported separately",
+    "seconds": 6.5393742739688605
+  },
+  "stats": {
+    "decisions": 28635,
+    "candidates": 93625,
+    "bytes": 182007563,
+    "batches": 11583,
+    "max_batch": 7,
+    "collate_seconds": 11.445517361396924,
+    "infer_seconds": 30.944477051496506,
+    "collate_infer_seconds": 42.56319626211189,
+    "parse_seconds": 1.0611778248567134,
+    "decode_seconds": 8.161027848953381,
+    "binary_read_seconds": 0.539995486382395,
+    "queue_wait_seconds": 233.6273513736669,
+    "decode_cpu_seconds": 5.535455236999525,
+    "collate_cpu_seconds": 10.327676470000284,
+    "infer_cpu_seconds": 26.442985929999946,
+    "reused_prefixes": 0,
+    "model_decisions": {
+      "frozenCurrent": 9924,
+      "current": 7677,
+      "anchor417": 11034
+    },
+    "workers_started": 0,
+    "workers_reused": 16,
+    "timing_semantics": "Host wall-clock phases. Combined collation and inference ends after results return to CPU.",
+    "seconds": 57.179566632024944,
+    "games_per_second": 3.3578428678132943,
+    "decisions_per_second": 500.7907839574671,
+    "fresh_engine_requests": 39625,
+    "engine_requests_per_second": 692.9923106099052,
+    "mean_batch": 2.472157472157472,
+    "forced_choices": 8326
+  }
+}

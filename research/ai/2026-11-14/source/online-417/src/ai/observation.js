@@ -1,0 +1,97 @@
+import { hiddenEffectFor } from "../card-visibility.js";
+import { cardSets } from "../card-sets.js";
+// Trusted adapter: only this function receives Game. The policy receives a detached
+// whitelist of legal observations, never a proxy, live entity, or engine callback.
+const pick = (value, keys) => Object.fromEntries(keys.filter(k => value?.[k] !== undefined).map(k => [k, value[k]]));
+const copy = value => value == null ? value : JSON.parse(JSON.stringify(value));
+export function captureObservation(game, observerId, { actions = false, history = true, activation = false, revealedCards = [] } = {}) {
+  const visible = [...game.player(observerId).hand, ...game.player(observerId).covered.filter(c => c.coveredVisibility !== "concealed"), ...[...game.cards.values()].filter(c => c.publicIdentity), ...game.players.flatMap(p => [...p.statuses, ...p.covered.filter(c => c.coveredVisibility === "public")]), ...game.field, ...revealedCards];
+  const cards = [...new Map(visible.map(c => [c.id, c])).values()].map(c => { const hidden = hiddenEffectFor(c,observerId) && !revealedCards.some(x=>x.id===c.id); return ({
+    id: c.id, name: hidden ? "hiddenEffect" : c.name, type: hidden ? null : c.type, category: c.category, elements: hidden ? [] : [...c.elements], fates: hidden ? [] : [...c.fates],
+    uniqueSkills: hidden ? [] : [...c.uniqueSkills], coveredVisibility: c.coveredVisibility, location: copy(c.location), attachment: c.attachment ? { effectId: c.attachment.effectId } : null,
+    traits: Object.fromEntries(game.players.map(p => [p.id, hidden ? {elements:[],fates:[]} : copy(c.getTraits({ game, playerId: p.id }))])),
+  }); });
+  const specData = spec => ({ ...copy(pick(spec, ['type','cardCount','targets','targetCount','targetCounts','energy','healingCost','modes','cardCounts','targetCountsByCardCount','requiresActivation'])),
+    allowedCardIds: game.player(observerId).hand.filter(spec.cardFilter ?? (() => true)).map(c => c.id),
+    ...(spec.cardsFilter ? {allowedCardSets:cardSets(game.player(observerId).hand,spec).map(cards=>cards.map(c=>c.id))} : {}) });
+  const skills = actions ? game.legalSkillActions(observerId).map(entry => ({ skillId: entry.skillId, spec: specData(entry.spec),
+    modes: (entry.spec.modes?.map(c => c.value) ?? [null]).map(mode => ({ mode, spec: specData(game.skillActionSpec(observerId, { skillId: entry.skillId, mode: mode ?? undefined })) })) })) : [];
+  // Follow-up attacks must respect current card/target restrictions, but not the
+  // consumed action queue. Only the maid currently uses this short preview.
+  const actor=game.player(observerId);
+  const attackFollowups=actor.hero.id==='headMaid' && game.allowsAction(observerId,'attack')
+    ? actor.hand.filter(c=>c.type==='attack'&&game.allowsCard(observerId,c)).map(c=>({cardId:c.id,
+      targets:c.legalTargets({game,actor}).filter(id=>game.canAttackTarget(observerId,id))})) : [];
+  return copy({ observerId, current: game.current, extraTurns: [...(game.turn.extraTurns ?? [])], followupTurns: [...game.turn.followupTurns], resumePlayerId: game.turn.resumePlayerId, cards, attackFollowups,
+    players: game.players.map(p => ({ id: p.id, name: p.name, team: p.team, handLimit: p.handLimit, healing: p.healing, energy: pick(p.energy,['gem','crystal']),
+      hero: { id: p.hero.id, ...(['holidayMage', 'greedyGirl', 'curseTalisman', 'delinquentGirl', 'apprenticeProducer', 'magicArcherEX', 'ranger', 'enviousGirl', 'trickHolyArcher', 'primalArcher', 'trickAdventurer', 'gluttonousGirl', 'godEater', 'lawgiver', 'cardinal', 'chronicler', 'missionary', 'heretic', 'nobleLady', 'headMaid', 'barrierMaster', 'mystic', 'defiler', 'swordWitch', 'butterflyDancer', 'battleMage', 'starfallWitch', 'inquisitor', 'witchHunter', 'templar', 'elfArcher', 'yinYangMaster', 'soulWarlock', 'bloodWitch', 'moonGoddess', 'holyArcher', 'talismanMaster', 'swordEmperor', 'magicArcher', 'azureFlameWitch', 'bloodSwordSpirit', 'beastWarrior', 'saint', 'holyLancer', 'plagueMage', 'elementalist', 'valkyrie', 'magicalGirl', 'assassin', 'magicSwordsman', 'adjudicator', 'sage', 'prayer', 'heroicPuppet', 'adventurer', 'fighter', 'brave', 'redLotusKnight', 'magicLancer', 'bard', 'spiritTide', 'slothGirl', 'swordChild', 'orchestraLeader', 'holyAdjudicator', 'mischiefGirl', 'windSwordmaster'].includes(p.hero.id) ? {state: { ...pick(p.hero.state,['oathEmpowered', 'surge', 'echoUsed', 'attacksCompleted', 'imaginaryUsed', 'severanceUsed', 'admiresWitch', 'oathHit', 'cupsAtStart', 'residualUsed', 'residualTarget', 'notesLocked', 'sins', 'noSins', 'form', 'reckoningUsed', 'leftScaleId', 'rightScaleId', 'surprise', 'blackHoleUsed', 'atoms', 'doubleShadowUsed', 'windBulletPending', 'hitElement', 'pursuitUsed', 'faith', 'cannon', 'cannonCardId', 'demonBladeId', 'alienBladeId', 'relics', 'silverBullets', 'silverGraceUsed', 'orbCardId', 'archives', 'ruinRebuttalUsed', 'bookCardId', 'castingCardId', 'devotion', 'started', 'waypointCardId', 'confessedIds', 'prophecyCardId', 'revealedFace', 'banishUsed', 'banishing', 'lessons', 'friendshipUsed', 'threads', 'flashUsed', 'flashActive', 'tunnelCardId', 'windHitCardId', 'ritual', 'realmCardId', 'sorcery', 'fairyUsed', 'castingWordId', 'malice', 'surgeUsed', 'chrysalises', 'witherProtection', 'actionCount', 'runeExchangeUsed', 'enchantedStrikeUsed', 'starlight', 'moonlight', 'eclipse', 'starRingUsed', 'courtCardId', 'courtHealing', 'rulings', 'verdictUsed', 'ambushUsed', 'holySeals', 'awaitNextTurn', 'divineMightBlocked', 'healingBlockedIds', 'elementShotUsed', 'windArrowPending', 'ghostFire', 'yellowSoul', 'blueSoul', 'linkCardId', 'fateCardId', 'linkedPlayerId', 'newMoon', 'petrification', 'desecrationUsed', 'nextUncounterable', 'swordQi', 'charged', 'pierceUsed', 'multiShotUsed', 'lastTarget', 'rebirth', 'blood', 'gardenCardId', 'souls', 'residual', 'elements', 'compassion', 'judgment', 'requiredJudgment', 'prayerRunes', 'battleRunes', 'magicRunes', 'spirit', 'lockedTarget', 'rage', 'intellect', 'bloodSeals', 'attackBonus', 'released', 'inspiration', 'damagedEnemies', 'concertoUsed']), ...(p.id === observerId ? pick(p.hero.state, ['prophecyFace']) : {}) }} : {}), skills: p.hero.skills.map(s => typeof s === 'string' ? s : s.id) },
+      skillIds: p.getSkills().map(({skill}) => typeof skill === 'string' ? skill : skill.id),
+      handIds: p.id === observerId ? p.hand.map(c => c.id) : null, handCount: p.hand.length,
+      coveredIds: p.id === observerId ? p.covered.filter(c => c.coveredVisibility !== "concealed").map(c => c.id) : null, coveredCount: p.covered.length,
+      statusIds: p.statuses.map(c => c.id), healingLimit: game.getHealingLimit(p.id), ...(game.getEnergyLimit?.(p.id)!==undefined && game.getEnergyLimit(p.id)!==3 ? {energyLimit:game.getEnergyLimit(p.id)} : {}) })),
+    teams: Object.fromEntries(Object.entries(game.teams).map(([id,t]) => [id,pick(t,['morale','cups','gem','crystal','achievements'])])), turn: game.turn.state ? pick(game.turn.state,['playerId','completed','attackCount','pendingActions','usedSkills',...(activation&&game.turn.state.playerId===observerId?['activationDone','seekingAction','activationPlan','reservedEnergy','reservedHealing','reservedSkillId',...(game.turn.state.reservedCardIds?.length?['reservedCardIds','reservedSkillId','reservedTargetIds']:[])]:[])]) : null, hasExtraActions: game.turn.hasExtraActions?.() ?? false,
+    effects: [...game.effects].map(([id, effect]) => [id, { isSeal: !!effect.isSeal }]),
+    publicHistory: history && game.publicHistory ? { sequence: game.publicHistory.sequence, ...(game.publicHistory.actions ? {actions: game.publicHistory.actions.map(e=>pick(e,['type','team','playerId','actorId','sourceId','targetId','card','elements','fates','uniqueSkills','counter','result','amount','skillId','accepted','count','sequence','effectId','gem','crystal']))} : {}), events: game.publicHistory.events.map(e => pick(e,['type','playerId','elements','sequence','acceptCost'])) } : null,
+    skills, legal: actions ? game.legalCards(observerId).map(e => ({ index: e.index, cardId: e.card.id, targets: e.targets })) : [],
+    refresh: actions && game.canRefreshUnableHand(observerId), draw: actions && game.canDrawSpecial(observerId), refine: actions && game.canRefine(observerId),
+    stones: Object.fromEntries(Object.keys(game.teams).map(team => [team, game.stoneCounts(team)])),
+    synthesis: actions ? Object.fromEntries(Object.keys(game.teams).map(team => [team, game.synthesisOptions(team)])) : {},
+  });
+}
+// Functions below close only over detached observation data. Reflection cannot
+// recover hidden cards because they were never passed across this boundary.
+export function observationView(data) {
+  const d = copy(data), cards = new Map(d.cards.map(c => [c.id, { ...c,
+    hasUniqueSkill: id => c.uniqueSkills.includes(id), getTraits: ({playerId}) => copy(c.traits[playerId]),
+  }]));
+  const players = d.players.map(p => ({ ...p, hand: p.handIds ? p.handIds.map(id => cards.get(id)) : Object.freeze({ length: p.handCount }),
+    covered: p.coveredIds ? p.coveredIds.map(id => cards.get(id)) : Object.freeze({ length: p.coveredCount ?? 0 }),
+    statuses: p.statusIds.map(id => cards.get(id)), getSkills: () => p.skillIds.map(id => ({skill: {id}})),
+    getStatus: id => p.statusIds.map(id => cards.get(id)).filter(c => c.attachment?.effectId === id),
+    getBasicEffects: () => p.statusIds.map(id => cards.get(id)).filter(c => c.category === 'basic'),
+  }));
+  const spec = s => s && ({ ...s, cardFilter: card => s.allowedCardIds.includes(card.id),
+    ...(s.allowedCardSets ? {cardsFilter: cards => s.allowedCardSets.some(set=>set.length===cards.length&&cards.every(c=>set.includes(c.id)))} : {}) });
+  return { players, player: id => players[id], cards, teams: d.teams, current: d.current, effects: new Map(d.effects), publicHistory: d.publicHistory, attackFollowups:d.attackFollowups??[],
+    turn: { state: d.turn, extraTurns: d.extraTurns ?? [], followupTurns: d.followupTurns ?? [], resumePlayerId: d.resumePlayerId ?? null, hasExtraActions: () => d.hasExtraActions },
+    legalCards: () => d.legal.map(e => ({ ...e, card: cards.get(e.cardId) })),
+    legalSkillActions: () => d.skills.map(e => ({ ...e, spec: spec(e.spec) })),
+    skillActionSpec: (id, action) => spec(d.skills.find(e => e.skillId === action.skillId).modes.find(e => e.mode === (action.mode ?? null)).spec),
+    canRefreshUnableHand: () => d.refresh, canDrawSpecial: () => d.draw, canRefine: () => d.refine,
+    stoneCounts: team => d.stones[team], synthesisOptions: team => d.synthesis[team], getHealingLimit: id => players[id].healingLimit, getEnergyLimit: id => players[id].energyLimit ?? 3,
+    canPayEnergy: (id, kind, count = 1) => (kind === 'gem' ? players[id].energy.gem : players[id].energy.gem + players[id].energy.crystal) >= count,
+  };
+}
+export function isolatePolicy(raw, {history = true, activation = false} = {}) {
+  const view = (game, id, actions = false, revealedCards = []) => observationView(captureObservation(game, id, {actions, history, activation, revealedCards}));
+  const requestView = (request, v) => {
+    const out = {};
+    for (const key of ['type','protectedTargetId','playerId','skillId','purpose','recipientId','targetId','count','counts','validSets','optional','defaultValue','shieldable','canCounter','canHolyLight','canDarkStrike','isCounter','damage','activationPlan','blockedReason','reservedEnergy','reservedHealing','reservedCardIds','reservedSkillId','energy','choices']) if (request[key] !== undefined) out[key] = copy(request[key]);
+    for (const key of ['target','actor','player','nextTarget']) if (request[key]) out[key] = v.player(request[key].id);
+    if (request.counterTargets) out.counterTargets = request.counterTargets.map(p => v.player(p.id));
+    if (request.valid) out.valid = request.valid.map(e => typeof e === 'number' ? e : {index: e.index, card: v.cards.get(e.card.id), ...(e.asAttack ? {asAttack:true} : {})});
+    if (request.context) out.context = { ...copy(pick(request.context,["actorId","playerId","mode","effect","element","targetIds","triggered","stage","sourceId","actual","count","drawCount","skillId","extraSpell","purpose","sameElement","damage","moraleLoss","battleRunes","magicRunes","transferTargetId","attackTraits","team"])), targetId: request.context.targetId, amount: request.context.amount, damageType: request.context.damageType, isCounter: request.context.isCounter, card: v.cards.get(request.context.card?.id) };
+    if (request.context?.selectedCardIds) out.context.selectedCardIds=request.context.selectedCardIds.filter(id=>v.cards.has(id));
+    if (request.attack) {
+      const traits = copy(request.attackTraits ?? request.attack.getTraits());
+      out.attack = v.cards.get(request.attack.id) ?? { id: null, name: request.attack.name, type: "attack", elements: traits.elements, fates: traits.fates, uniqueSkills: [], element: traits.elements[0], getTraits: () => copy(traits), hasUniqueSkill: () => false };
+    }
+    return out;
+  };
+  return { ...raw,
+    rankAiActions: (g, id) => raw.rankAiActions(view(g, id, true), id),
+    chooseAiAction(g, id) { return this.rankAiActions(g,id)[0].action; },
+    chooseAiResponse(g, r) { const v = view(g,r.target.id); return raw.chooseAiResponse(v,requestView(r,v)); },
+    chooseAiRuleDecision(r,g) {
+      if (!g) return r.defaultValue ?? null;
+      const id = r.playerId ?? r.player?.id, v = view(g,id,false,r.revealedCards ?? []);
+      if (r.type === 'overflow') return g.resolveOverflow(id,raw.chooseAiDiscard(v,id,v.player(id).hand.length-v.player(id).handLimit));
+      return raw.chooseAiRuleDecision(requestView({...r,context:{...g.activeTrigger?.context,...r.context}},v),v);
+    },
+    chooseAiDiscard: (g,id,count,valid) => raw.chooseAiDiscard(view(g,id),id,count,valid),
+    cardScore(g,id,card,retained=[]) { const v=view(g,id); return raw.cardScore(v,id,v.cards.get(card.id),retained.map(c=>v.cards.get(c.id))); },
+    keepCards(g,id,cards,count) { const v=view(g,id); const ids=new Set(raw.keepCards(v,id,cards.map(c=>v.cards.get(c.id)),count).map(c=>c.id)); return [...ids].map(id=>cards.find(c=>c.id===id)); },
+    giftScore(g,id,recipient,card) { const v=view(g,id); return raw.giftScore(v,id,recipient,v.cards.get(card.id)); },
+    planWindAttacks(g,id,options={}) { const v=view(g,id); return raw.planWindAttacks(v,id,{...options,card:v.cards.get(options.card?.id)}); },
+  };
+}

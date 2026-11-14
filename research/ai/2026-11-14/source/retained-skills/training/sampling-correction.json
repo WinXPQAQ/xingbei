@@ -1,0 +1,12 @@
+{
+  "issue": "torch.multinomial consumes random numbers for zero-probability padding; previous per-game seeds did not ensure invariance to worker batching.",
+  "affected": "stochastic rollouts/evaluations with samplingVersion 1 or missing metadata",
+  "unaffected": "legal action mask, action probability distribution, terminal rewards, teacher-forced trajectories, greedy selection, privacy boundary",
+  "correction": "sample only the actual legal candidate prefix; samplingVersion 2 is recorded in new checkpoints/evaluations; incompatible resume rejected; explicit initialization allowed",
+  "evidence": [
+    "training/on_policy_test.py",
+    "/home/xp/.local/share/xingbei-ml/evidence/sampling-v2-neural-parity.json"
+  ],
+  "retention": "Prior records remain actual stochastic observations; withdraw assertions of worker-scheduling-invariant stochastic replay. Do not rewrite old manifests or claim old samples used version 2.",
+  "retiredTrial": "ppo-separate-211 retained with partial checkpoints; ppo-separate-v2-211 starts from the original BC parent."
+}

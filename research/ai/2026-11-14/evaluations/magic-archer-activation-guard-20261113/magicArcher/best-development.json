@@ -1,0 +1,177 @@
+{
+  "hero": "magicArcher",
+  "round": 617,
+  "checkpoint": "/home/xp/.local/share/xingbei-ml/magic-archer-activation-guard-20261113/magicArcher/round-000617.pt",
+  "control": {
+    "games": 144,
+    "completed": 144,
+    "wins": 38,
+    "truncated": 0,
+    "win_rate": 0.2638888888888889,
+    "seed_cluster_interval95": [
+      0.1875,
+      0.34027777777777773
+    ],
+    "inability_forfeits": 0,
+    "victory_routes": {
+      "cups": 59,
+      "morale": 85
+    },
+    "behavior": {
+      "turns": 1486,
+      "coveredAdded": 409,
+      "enemyAttackDamage": 689,
+      "enemySpellDamage": 424,
+      "refineGem": 371,
+      "refineCrystal": 1
+    },
+    "skill_notes": {
+      "magicEye": 320,
+      "thunderScatter": 152,
+      "charge": 225,
+      "multiShot": 184,
+      "multiShotAttack": 91,
+      "magicPierce": 24,
+      "wayOfService": 2,
+      "victorySymphony": 2,
+      "service": 3,
+      "heresyJudgment": 4,
+      "chargeTrim": 1,
+      "passionateRhapsody": 4
+    },
+    "root_actions": {
+      "activate": 1007,
+      "play": 929,
+      "purchase": 103,
+      "refine": 188,
+      "thunderScatter": 76,
+      "multiShotAttack": 91,
+      "synthesize": 114,
+      "pass": 1
+    },
+    "opponents": {
+      "model:frozenCurrent": {
+        "wins": 10,
+        "completed": 36
+      },
+      "model:anchor417": {
+        "wins": 5,
+        "completed": 36
+      },
+      "v1.17.0-preview.5": {
+        "wins": 9,
+        "completed": 36
+      },
+      "legacy-score-partial-v1": {
+        "wins": 14,
+        "completed": 36
+      }
+    },
+    "behavior_note": "Public event totals, not rewards. Skill notes can include multiple notes per activation; damage is not morale loss."
+  },
+  "specialist": {
+    "games": 144,
+    "completed": 144,
+    "wins": 70,
+    "truncated": 0,
+    "win_rate": 0.4861111111111111,
+    "seed_cluster_interval95": [
+      0.40277777777777773,
+      0.5833333333333334
+    ],
+    "inability_forfeits": 0,
+    "victory_routes": {
+      "cups": 61,
+      "morale": 83
+    },
+    "behavior": {
+      "turns": 1505,
+      "coveredAdded": 637,
+      "enemyAttackDamage": 1097,
+      "enemySpellDamage": 439,
+      "refineGem": 412,
+      "refineCrystal": 2
+    },
+    "skill_notes": {
+      "magicEye": 335,
+      "magicPierce": 89,
+      "charge": 238,
+      "multiShot": 324,
+      "multiShotAttack": 162,
+      "thunderScatter": 106,
+      "service": 4,
+      "wayOfService": 3,
+      "chargeTrim": 2,
+      "heresyJudgment": 2
+    },
+    "root_actions": {
+      "activate": 918,
+      "play": 868,
+      "purchase": 181,
+      "refine": 210,
+      "multiShotAttack": 162,
+      "synthesize": 106,
+      "thunderScatter": 50
+    },
+    "opponents": {
+      "model:frozenCurrent": {
+        "wins": 24,
+        "completed": 36
+      },
+      "model:anchor417": {
+        "wins": 16,
+        "completed": 36
+      },
+      "v1.17.0-preview.5": {
+        "wins": 14,
+        "completed": 36
+      },
+      "legacy-score-partial-v1": {
+        "wins": 16,
+        "completed": 36
+      }
+    },
+    "behavior_note": "Public event totals, not rewards. Skill notes can include multiple notes per activation; damage is not morale loss."
+  },
+  "paired": {
+    "paired_completed": 144,
+    "difference": 0.2222222222222222,
+    "seed_cluster_interval95": [
+      0.1111111111111111,
+      0.3333333333333333
+    ]
+  },
+  "stats": {
+    "decisions": 25724,
+    "candidates": 83442,
+    "bytes": 169841590,
+    "batches": 11462,
+    "max_batch": 8,
+    "collate_seconds": 11.156920603942126,
+    "infer_seconds": 19.633617038838565,
+    "collate_infer_seconds": 30.94342639343813,
+    "parse_seconds": 1.745930154575035,
+    "decode_seconds": 7.170699087437242,
+    "binary_read_seconds": 0.9799551130272448,
+    "queue_wait_seconds": 163.22851461498067,
+    "decode_cpu_seconds": 4.851745831000322,
+    "collate_cpu_seconds": 9.168676732000279,
+    "infer_cpu_seconds": 16.19594252600017,
+    "reused_prefixes": 0,
+    "model_decisions": {
+      "frozenCurrent": 8447,
+      "current": 7778,
+      "anchor417": 9499
+    },
+    "workers_started": 0,
+    "workers_reused": 16,
+    "timing_semantics": "Host wall-clock phases. Combined collation and inference ends after results return to CPU.",
+    "seconds": 46.636858489131555,
+    "games_per_second": 3.087686535180288,
+    "decisions_per_second": 551.5808918817897,
+    "fresh_engine_requests": 38463,
+    "engine_requests_per_second": 824.7339389072181,
+    "mean_batch": 2.2442854650148316,
+    "forced_choices": 8576
+  }
+}

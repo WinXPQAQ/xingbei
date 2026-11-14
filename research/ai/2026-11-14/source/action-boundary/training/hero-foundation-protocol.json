@@ -1,0 +1,12 @@
+{
+  "name": "hero-foundation-211",
+  "parent": "residual-focused-candidate-211/checkpoint-192.pt",
+  "parentSha256": "bc8accee0bc33e02624a81fdcd8ee4861c413c6356d7e73194047cd0444a2849",
+  "baseline": "experimental/hero-foundation-1",
+  "initialization": "Explicit old network weight transfer; new baseline; fresh Adam and RNG",
+  "training": {"updates":192,"games":24,"firstSeed":254000000,"seed":211,"warmup":0,"temperature":1.3,"learningRate":0.0001,"workers":8,"device":"cuda","targetedExploration":false,"preserveSkills":false},
+  "reward": "Terminal team +/-1 only",
+  "confirmation": {"checkpoint":192,"firstSeed":254100000,"seeds":36,"lineups":7,"gamesPerOpponent":1008,"opponents":["v1.5","AI 1.5.1"],"selection":"greedy","gate":"Both direct-match seed-cluster 95% lower confidence bounds above 50%, zero truncations. Fixed final checkpoint; no retry with changed seeds or cherry-picked checkpoints."},
+  "authorization": "User authorizes promoting improved version to baseline and main; no promotion if comparison fails or is inconclusive.",
+  "execution": "Frozen CUDA run plus automatic completion/evaluation service; existing 4173/4174 remain fixed pending acceptance."
+}

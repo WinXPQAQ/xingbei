@@ -1,0 +1,173 @@
+{
+  "time": 1794638288.6452196,
+  "protocol": "Fixed development seeds. Replace focal hero only; frozen five other seats. Cluster bootstrap across six rotations.",
+  "heroes": {
+    "sage": {
+      "hero": "sage",
+      "round": 458,
+      "checkpoint": "/home/xp/.local/share/xingbei-ml/sage-full-action-boundary-20261114/sage/round-000458.pt",
+      "control": {
+        "games": 144,
+        "completed": 144,
+        "wins": 66,
+        "truncated": 0,
+        "win_rate": 0.4583333333333333,
+        "seed_cluster_interval95": [
+          0.3819444444444444,
+          0.5347222222222222
+        ],
+        "inability_forfeits": 0,
+        "victory_routes": {
+          "cups": 66,
+          "morale": 78
+        },
+        "behavior": {
+          "turns": 1299,
+          "coveredAdded": 0,
+          "enemyAttackDamage": 697,
+          "enemySpellDamage": 318,
+          "refineGem": 1,
+          "refineCrystal": 0
+        },
+        "skill_notes": {
+          "spellRebound": 112,
+          "wisdomCodex": 7,
+          "arcaneCodex": 24,
+          "whiteKarma": 2,
+          "wayOfService": 2,
+          "heresyJudgment": 1,
+          "passionateRhapsody": 3,
+          "service": 8
+        },
+        "root_actions": {
+          "activate": 978,
+          "play": 966,
+          "synthesize": 202,
+          "purchase": 50,
+          "arcaneCodex": 12,
+          "refine": 1
+        },
+        "opponents": {
+          "model:frozenCurrent": {
+            "wins": 16,
+            "completed": 36
+          },
+          "model:anchor417": {
+            "wins": 13,
+            "completed": 36
+          },
+          "v1.17.0-preview.5": {
+            "wins": 19,
+            "completed": 36
+          },
+          "legacy-score-partial-v1": {
+            "wins": 18,
+            "completed": 36
+          }
+        },
+        "behavior_note": "Public event totals, not rewards. Skill notes can include multiple notes per activation; damage is not morale loss."
+      },
+      "specialist": {
+        "games": 144,
+        "completed": 144,
+        "wins": 78,
+        "truncated": 0,
+        "win_rate": 0.5416666666666666,
+        "seed_cluster_interval95": [
+          0.45138888888888884,
+          0.6319444444444444
+        ],
+        "inability_forfeits": 0,
+        "victory_routes": {
+          "morale": 75,
+          "cups": 69
+        },
+        "behavior": {
+          "turns": 1331,
+          "coveredAdded": 0,
+          "enemyAttackDamage": 844,
+          "enemySpellDamage": 354,
+          "refineGem": 0,
+          "refineCrystal": 0
+        },
+        "skill_notes": {
+          "spellRebound": 125,
+          "wisdomCodex": 7,
+          "arcaneCodex": 26,
+          "passionateRhapsody": 4,
+          "confession": 19,
+          "service": 10,
+          "wayOfService": 2,
+          "calmWind": 1
+        },
+        "root_actions": {
+          "activate": 885,
+          "play": 872,
+          "purchase": 189,
+          "synthesize": 179,
+          "arcaneCodex": 13
+        },
+        "opponents": {
+          "model:frozenCurrent": {
+            "wins": 24,
+            "completed": 36
+          },
+          "model:anchor417": {
+            "wins": 17,
+            "completed": 36
+          },
+          "v1.17.0-preview.5": {
+            "wins": 19,
+            "completed": 36
+          },
+          "legacy-score-partial-v1": {
+            "wins": 18,
+            "completed": 36
+          }
+        },
+        "behavior_note": "Public event totals, not rewards. Skill notes can include multiple notes per activation; damage is not morale loss."
+      },
+      "paired": {
+        "paired_completed": 144,
+        "difference": 0.08333333333333333,
+        "seed_cluster_interval95": [
+          -0.01388888888888889,
+          0.18055555555555555
+        ]
+      },
+      "stats": {
+        "decisions": 22872,
+        "candidates": 74914,
+        "bytes": 144446815,
+        "batches": 10081,
+        "max_batch": 8,
+        "collate_seconds": 8.474996545352042,
+        "infer_seconds": 17.611360620940104,
+        "collate_infer_seconds": 26.191606314620003,
+        "parse_seconds": 1.2067290565464646,
+        "decode_seconds": 5.934937479905784,
+        "binary_read_seconds": 0.6972788611892611,
+        "queue_wait_seconds": 132.48068052809685,
+        "decode_cpu_seconds": 4.079975057999867,
+        "collate_cpu_seconds": 7.303314086999984,
+        "infer_cpu_seconds": 14.675820593000182,
+        "reused_prefixes": 0,
+        "model_decisions": {
+          "current": 5740,
+          "anchor417": 9234,
+          "frozenCurrent": 7898
+        },
+        "workers_started": 0,
+        "workers_reused": 16,
+        "timing_semantics": "Host wall-clock phases. Combined collation and inference ends after results return to CPU.",
+        "seconds": 39.841578190913424,
+        "games_per_second": 3.6143146566629167,
+        "decisions_per_second": 574.0736446332933,
+        "fresh_engine_requests": 30170,
+        "engine_requests_per_second": 757.2491193855569,
+        "mean_batch": 2.268822537446682,
+        "forced_choices": 6613
+      }
+    }
+  }
+}

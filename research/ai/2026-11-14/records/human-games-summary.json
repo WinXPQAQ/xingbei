@@ -1,0 +1,258 @@
+[
+  {
+    "id": "06087462b3bdd144225e4b2c05155ea124959a1f48d68bbd",
+    "lastSequence": 1014,
+    "status": "completed",
+    "winner": "blue",
+    "updatedAt": "2026-11-11T18:50:57.467Z",
+    "archive_path": "training/human-games/06087462b3bdd144225e4b2c05155ea124959a1f48d68bbd"
+  },
+  {
+    "id": "066856e092ff71124a1c51b58b844c951c51653ffe0b0ca5",
+    "lastSequence": 2,
+    "status": "incomplete",
+    "winner": null,
+    "updatedAt": "2026-11-11T12:44:21.482Z",
+    "archive_path": "training/human-games/066856e092ff71124a1c51b58b844c951c51653ffe0b0ca5"
+  },
+  {
+    "id": "085673324855d20c1d59911df9d9d7a6c278221371db3139",
+    "lastSequence": 603,
+    "status": "incomplete",
+    "winner": null,
+    "updatedAt": "2026-11-11T18:43:32.752Z",
+    "archive_path": "training/human-games/085673324855d20c1d59911df9d9d7a6c278221371db3139"
+  },
+  {
+    "id": "085dbb64a3a6178b7e037bb8b4297bc330b24273271fce57",
+    "lastSequence": 680,
+    "status": "completed",
+    "winner": "red",
+    "updatedAt": "2026-11-11T15:50:28.218Z",
+    "archive_path": "training/human-games/085dbb64a3a6178b7e037bb8b4297bc330b24273271fce57"
+  },
+  {
+    "id": "0e817ea5118b1a42da5dd571557569a8d23ddd1176a1c312",
+    "lastSequence": 1228,
+    "status": "completed",
+    "winner": "blue",
+    "updatedAt": "2026-11-11T05:25:58.632Z",
+    "archive_path": "training/human-games/0e817ea5118b1a42da5dd571557569a8d23ddd1176a1c312"
+  },
+  {
+    "id": "2889aa1a904a083c8f842dd68566b9c0ed5f943729f3bfc0",
+    "lastSequence": 709,
+    "status": "completed",
+    "winner": "red",
+    "updatedAt": "2026-11-11T15:56:42.431Z",
+    "archive_path": "training/human-games/2889aa1a904a083c8f842dd68566b9c0ed5f943729f3bfc0"
+  },
+  {
+    "id": "3448b10bd5c34e0d09d64f9a397f43315bcd991140896325",
+    "lastSequence": 602,
+    "status": "completed",
+    "winner": "red",
+    "updatedAt": "2026-11-11T15:31:35.167Z",
+    "archive_path": "training/human-games/3448b10bd5c34e0d09d64f9a397f43315bcd991140896325"
+  },
+  {
+    "id": "490717b3007889d9040d79ea68b7cb4e1e132428ad275a04",
+    "lastSequence": 677,
+    "status": "incomplete",
+    "winner": null,
+    "updatedAt": "2026-11-11T06:03:09.806Z",
+    "archive_path": "training/human-games/490717b3007889d9040d79ea68b7cb4e1e132428ad275a04"
+  },
+  {
+    "id": "503e59d218674380fa87220143d98536534dc5fdcbbb437a",
+    "lastSequence": 850,
+    "status": "completed",
+    "winner": "red",
+    "updatedAt": "2026-11-11T12:44:06.822Z",
+    "archive_path": "training/human-games/503e59d218674380fa87220143d98536534dc5fdcbbb437a"
+  },
+  {
+    "id": "56346c4531d5999167c92d80b666f065d4b186c8db9baaf1",
+    "lastSequence": 834,
+    "status": "completed",
+    "winner": "red",
+    "updatedAt": "2026-11-11T18:39:35.478Z",
+    "archive_path": "training/human-games/56346c4531d5999167c92d80b666f065d4b186c8db9baaf1"
+  },
+  {
+    "id": "5ad0a33c0bdd0907c42a7f3bb2ed4e83e35292e67f166f97",
+    "lastSequence": 176,
+    "status": "incomplete",
+    "winner": null,
+    "updatedAt": "2026-11-11T16:32:32.940Z",
+    "archive_path": "training/human-games/5ad0a33c0bdd0907c42a7f3bb2ed4e83e35292e67f166f97"
+  },
+  {
+    "id": "5f070923fd430829f9318da7c386468a95d1e9e0f06232e5",
+    "lastSequence": 884,
+    "status": "completed",
+    "winner": "blue",
+    "updatedAt": "2026-11-11T07:46:01.434Z",
+    "archive_path": "training/human-games/5f070923fd430829f9318da7c386468a95d1e9e0f06232e5"
+  },
+  {
+    "id": "633c9a5c72ed0a5471023bf9244c3565bfb3e00b074959b2",
+    "lastSequence": 550,
+    "status": "completed",
+    "winner": "red",
+    "updatedAt": "2026-11-13T11:28:38.475Z",
+    "archive_path": "training/human-games/633c9a5c72ed0a5471023bf9244c3565bfb3e00b074959b2"
+  },
+  {
+    "id": "676d1108b71ce6fe85b731fd55809f5cac1b240503852cd0",
+    "lastSequence": 661,
+    "status": "incomplete",
+    "winner": null,
+    "updatedAt": "2026-11-13T11:48:15.116Z",
+    "archive_path": "training/human-games/676d1108b71ce6fe85b731fd55809f5cac1b240503852cd0"
+  },
+  {
+    "id": "6d821b3026ef0f1244bde064451bea17fbe3143963709a2c",
+    "lastSequence": 552,
+    "status": "completed",
+    "winner": "red",
+    "updatedAt": "2026-11-11T15:44:28.774Z",
+    "archive_path": "training/human-games/6d821b3026ef0f1244bde064451bea17fbe3143963709a2c"
+  },
+  {
+    "id": "73453d15cfea419ec4387827b21e7e7617bdec0fade4f5e5",
+    "lastSequence": 975,
+    "status": "incomplete",
+    "winner": null,
+    "updatedAt": "2026-11-10T15:40:10.553Z",
+    "archive_path": "training/human-games/73453d15cfea419ec4387827b21e7e7617bdec0fade4f5e5"
+  },
+  {
+    "id": "767f4ad217564359d669d3980021b78f3d8fa84bd7550eee",
+    "lastSequence": 193,
+    "status": "incomplete",
+    "winner": null,
+    "updatedAt": "2026-11-12T04:47:45.661Z",
+    "archive_path": "training/human-games/767f4ad217564359d669d3980021b78f3d8fa84bd7550eee"
+  },
+  {
+    "id": "7ea994172632e580c209e143622209a3f43d7c71de3dc2c5",
+    "lastSequence": 56,
+    "status": "incomplete",
+    "winner": null,
+    "updatedAt": "2026-11-13T11:29:04.292Z",
+    "archive_path": "training/human-games/7ea994172632e580c209e143622209a3f43d7c71de3dc2c5"
+  },
+  {
+    "id": "8b6fc1aaf4f1eb79d8965ef4bfcb1a254c9cc2f03e93a152",
+    "lastSequence": 507,
+    "status": "completed",
+    "winner": "red",
+    "updatedAt": "2026-11-10T15:46:07.486Z",
+    "archive_path": "training/human-games/8b6fc1aaf4f1eb79d8965ef4bfcb1a254c9cc2f03e93a152"
+  },
+  {
+    "id": "98924821579eeb33a57380f37bfa6667753861d05a955989",
+    "lastSequence": 1191,
+    "status": "completed",
+    "winner": "blue",
+    "updatedAt": "2026-11-11T15:26:57.961Z",
+    "archive_path": "training/human-games/98924821579eeb33a57380f37bfa6667753861d05a955989"
+  },
+  {
+    "id": "9f01e9c927d46accb77bbe53a331f6ae6fdd1736f7e72061",
+    "lastSequence": 950,
+    "status": "incomplete",
+    "winner": null,
+    "updatedAt": "2026-11-10T15:30:01.107Z",
+    "archive_path": "training/human-games/9f01e9c927d46accb77bbe53a331f6ae6fdd1736f7e72061"
+  },
+  {
+    "id": "a74e8e544064e89e0ef34f7f3c525ee39de1d907bd899dd5",
+    "lastSequence": 506,
+    "status": "completed",
+    "winner": "red",
+    "updatedAt": "2026-11-13T11:20:52.351Z",
+    "archive_path": "training/human-games/a74e8e544064e89e0ef34f7f3c525ee39de1d907bd899dd5"
+  },
+  {
+    "id": "aadc8f6ac0f8dc78ce15a85c895bfa803ec49bc2d09431d1",
+    "lastSequence": 834,
+    "status": "completed",
+    "winner": "red",
+    "updatedAt": "2026-11-11T05:34:02.447Z",
+    "archive_path": "training/human-games/aadc8f6ac0f8dc78ce15a85c895bfa803ec49bc2d09431d1"
+  },
+  {
+    "id": "b530de847e663cc66d32efb344d61886ada7b191d9b5386a",
+    "lastSequence": 1071,
+    "status": "completed",
+    "winner": "red",
+    "updatedAt": "2026-11-11T12:50:59.525Z",
+    "archive_path": "training/human-games/b530de847e663cc66d32efb344d61886ada7b191d9b5386a"
+  },
+  {
+    "id": "c5d86eeb667cb8c190b8194350c58923f8ab452b6ec40b47",
+    "lastSequence": 1034,
+    "status": "incomplete",
+    "winner": null,
+    "updatedAt": "2026-11-11T18:10:48.393Z",
+    "archive_path": "training/human-games/c5d86eeb667cb8c190b8194350c58923f8ab452b6ec40b47"
+  },
+  {
+    "id": "cb6766ac342ab160c4290c61dea0b32a4712d5a8512c95b0",
+    "lastSequence": 1185,
+    "status": "completed",
+    "winner": "blue",
+    "updatedAt": "2026-11-11T18:34:21.773Z",
+    "archive_path": "training/human-games/cb6766ac342ab160c4290c61dea0b32a4712d5a8512c95b0"
+  },
+  {
+    "id": "d42f1271f29a1cbd85d9edb4c4d350a63be922d9e33afcfd",
+    "lastSequence": 694,
+    "status": "completed",
+    "winner": "red",
+    "updatedAt": "2026-11-10T15:54:45.955Z",
+    "archive_path": "training/human-games/d42f1271f29a1cbd85d9edb4c4d350a63be922d9e33afcfd"
+  },
+  {
+    "id": "eea76fd2260fe80cf1db3331e4c35a6efa176c4e72e206a5",
+    "lastSequence": 1049,
+    "status": "completed",
+    "winner": "red",
+    "updatedAt": "2026-11-11T15:39:44.455Z",
+    "archive_path": "training/human-games/eea76fd2260fe80cf1db3331e4c35a6efa176c4e72e206a5"
+  },
+  {
+    "id": "f1d91cf0e5291245d033094878e5e9ed5790be1475dce5c8",
+    "lastSequence": 473,
+    "status": "completed",
+    "winner": "red",
+    "updatedAt": "2026-11-13T11:39:46.955Z",
+    "archive_path": "training/human-games/f1d91cf0e5291245d033094878e5e9ed5790be1475dce5c8"
+  },
+  {
+    "id": "f513be44b046b1e33de9a1b05fcb14ea49714b11c9be38bc",
+    "lastSequence": 548,
+    "status": "completed",
+    "winner": "red",
+    "updatedAt": "2026-11-13T11:35:07.141Z",
+    "archive_path": "training/human-games/f513be44b046b1e33de9a1b05fcb14ea49714b11c9be38bc"
+  },
+  {
+    "id": "f866b059aa4104c180a29f2e2e580081debb254d71a9eebc",
+    "lastSequence": 93,
+    "status": "incomplete",
+    "winner": null,
+    "updatedAt": "2026-11-11T12:52:07.794Z",
+    "archive_path": "training/human-games/f866b059aa4104c180a29f2e2e580081debb254d71a9eebc"
+  },
+  {
+    "id": "ff385d04fc9f8d3ed9f8c113f3cedfd6c3ae1e27d6c06fc8",
+    "lastSequence": 0,
+    "status": "incomplete",
+    "winner": null,
+    "updatedAt": "2026-11-11T15:27:02.859Z",
+    "archive_path": "training/human-games/ff385d04fc9f8d3ed9f8c113f3cedfd6c3ae1e27d6c06fc8"
+  }
+]
