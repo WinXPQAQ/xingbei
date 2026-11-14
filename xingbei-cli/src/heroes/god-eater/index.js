@@ -27,6 +27,7 @@ export class DevouringBlade extends ExclusiveCard {
   resolve(c) {
     return AttackCard.prototype.resolve.call(this, c);
   }
+  getDiscardDestination() { return { zone: "outside" }; }
   onMoved(game, { from, to, removal }) {
     // Removal is an explicit operation, not a discard or a use. Ragnarok uses it.
     if (removal || to.zone === "outside") return;
@@ -48,7 +49,7 @@ export class DevouringBlade extends ExclusiveCard {
     if (to.zone === "discard")
       game.moveCard(
         this.id,
-        { zone: "outside" },
+        this.getDiscardDestination(game),
         { removal: true, animate: false },
       );
   }
@@ -107,9 +108,7 @@ export class GodEater extends Hero {
             game,
             player,
             "bladeControl",
-            true,
           );
-          if (!blade) return;
           yield* hero.gain(game, player, [blade], "bladeControl", options);
         },
       },
@@ -324,14 +323,13 @@ export class GodEater extends Hero {
   absent(game) {
     return this.blades(game).filter((c) => c.location.zone === "outside");
   }
-  *chooseBlade(game, player, skillId, optional) {
+  *chooseBlade(game, player, skillId) {
     const choices = this.absent(game).map((c) => ({
       value: c.id,
       label: c.name === "demonBlade" ? "获得魔刃" : "获得异刃",
     }));
-    if (optional) choices.unshift({ value: null, label: "不发动" });
     const id = yield* choice(player.id, skillId, "御刃：获得场外的刃", choices);
-    return id ? game.cards.get(id) : null;
+    return game.cards.get(id);
   }
   *gain(game, player, cards, skillId, options) {
     for (const c of cards)

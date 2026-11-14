@@ -31,7 +31,7 @@ export function applyBarrierForecast(state,id,card,targetId,options) {
 }
 export const cardData = c => ({id:c.id,name:c.name,type:c.type,category:c.category,elements:[...c.elements],uniqueSkills:[...c.uniqueSkills],traits:immutableTraits(c)});
 export function stateOf(g, id, { economy = true, ownership = true, energy = true, healing = true } = {}) {
- return { observer: id, economy, ownership, energy, healing, current: g.current, turn: structuredClone(g.turn.state),
+ return { observer: id, economy, ownership, energy, healing, ruleVariant:g.ruleVariant ?? 'standard', current: g.current, turn: structuredClone(g.turn.state),
   publicBarriers:g.players.filter(p=>p.hero.id==='barrierMaster').map(p=>({id:p.id,team:p.team,ritual:p.hero.state.ritual??0,form:p.hero.state.form,
    cards:[...g.cards.values()].filter(c=>c.location.zone==='covered'&&c.location.pile==='barrier'&&c.location.playerId===p.id&&c.coveredVisibility==='public').map(cardData)})),
   players: g.players.map(p => ({ id:p.id,team:p.team,hero:p.hero.skills.length?p.hero.id:'none',limit:p.handLimit,
@@ -58,7 +58,7 @@ export function handValue(s,p) {
  const urgency=1+Math.max(0,7-s.teams[p.team].morale)/7;
  for(const [e,count] of groups)value+=(e==='dark'?12*urgency:1.5)+Math.min(2,count-1)*.8;
  const lights=cards.filter(c=>c.name==='holyLight').length;
- if(lights)value+=12*urgency+Math.min(2,lights-1)*2;
+ if(lights)value+=12*urgency+4*(1-0.5**(lights-1));
  // Offensive spell options are realized by the planner, not paid twice as retention.
 
 
@@ -159,13 +159,13 @@ const spellCache=new WeakMap();
 // One strongest available threat per enemy opportunity. Alternative skills and
 // shared energy are not independent casts; full combo planning stays in heroes.
 // Readiness weights are heuristics, not calibrated action probabilities.
-export function spellExposure(s,team) {
+function spellExposureByTeam(s) {
  const cardKey=(c,id)=>[c.name,c.type,traits(c,id),c.traits?.[id]?.fates??c.fates,c.uniqueSkills];
  const key=JSON.stringify([s.observer,s.current,s.teams,s.publicBarriers,s.players.map(p=>[
   p.id,p.team,p.hero,p.count,p.limit,p.healing,p.healingDisabled,p.energy,p.heroState,p.coveredCount,
   p.effects.map(e=>[e.name,e.card?.category]),p.id===s.observer?p.hand.map(c=>[cardKey(c,p.id),c.reserve]):[],p.known.map(c=>cardKey(c,p.id))])]);
  let memo=spellCache.get(s.beliefs);if(!memo){memo=new Map();spellCache.set(s.beliefs,memo);}
- if(memo.has(key))return memo.get(key)[team];
+ if(memo.has(key))return memo.get(key);
  const capabilities=estimateAllHeroCapabilities(s),results={};
  for(const side of Object.keys(s.teams)) {
   const allies=s.players.filter(p=>p.team===side),enemies=s.players.filter(p=>p.team!==side);
@@ -206,10 +206,15 @@ export function spellExposure(s,team) {
   results[side]=outcomes.reduce((sum,o)=>sum+o.weight*(o.draw+Math.max(0,o.spell-shelter)),0)*weights.morale;
  }
  if(memo.size<4096)memo.set(key,results);
- return results[team]??0;
+ return results;
 }
+export const spellExposure=(s,team)=>spellExposureByTeam(s)[team]??0;
+const spellExposureDifference=(s,team)=>{
+ const exposure=spellExposureByTeam(s);
+ return (-exposure[team]+exposure[team==='red'?'blue':'red'])*.25;
+};
 export function components(s) {
- const team=s.players[s.observer].team, out={morale:0,cups:0,stones:0,allocation:0,conversion:0,ownHand:0,otherHands:0,healing:0,energy:0,effects:0,barrierSupport:s.barrierSupportForecast??0,nextTurnRisk:s.economy?nextTurnRisk(s)*.25:0,otherTurnRisk:0,spellRisk:(-spellExposure(s,team)+spellExposure(s,team==='red'?'blue':'red'))*.25,futureTerminal:terminalForecast(s),cupWindow:0,terminal:0};
+ const team=s.players[s.observer].team, out={morale:0,cups:0,stones:0,allocation:0,conversion:0,ownHand:0,otherHands:0,healing:0,energy:0,effects:0,barrierSupport:s.barrierSupportForecast??0,nextTurnRisk:s.economy?nextTurnRisk(s)*.25:0,otherTurnRisk:0,spellRisk:spellExposureDifference(s,team),futureTerminal:terminalForecast(s),cupWindow:0,terminal:0};
  for(const [id,t] of Object.entries(s.teams)) {
   const sign=id===team?1:-1;
   out.morale+=sign*(t.morale*weights.morale-3*Math.max(0,5-t.morale)**2);

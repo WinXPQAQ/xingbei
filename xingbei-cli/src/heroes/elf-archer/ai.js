@@ -1,5 +1,6 @@
 import { damageTarget, cheapCards } from '../shared/ai/decisions.js';
 import { playableCards } from '../../playable-cards.js';
+import { heroAi } from '../shared/ai/wave-three/registry.js';
 
 const bestHealing = (state, api) => Math.max(0, ...state.players.map(target => {
   if (target.healingDisabled || target.healing >= target.healingLimit) return 0;
@@ -11,15 +12,36 @@ function blessingEnd(state, id, api) {
   const p = state.players[id];
   return p.heroState.form && !p.coveredCount ? bestDamage(state, id, 2, api) : 0;
 }
+// One optional extra attack, including the ending spell if it spends the last
+// blessing. Reconsider targets after the first attack; do not reuse its arrow.
+function windContinuation(game, state, id, api) {
+  const next = api.copy(state);
+  next.players[id].heroState.arrowPreview = null;
+  const before = api.evaluate(next);
+  let best = blessingEnd(next, id, api);
+  for (const card of next.players[id].hand.filter(c => c.type === 'attack')) {
+    const live = game.cards.get(card.id), price = live ? api.cardCost(game, id, [live]) : 0;
+    for (const target of api.foes(next, id)) {
+      if (heroAi(target.hero).blocksActiveAttack?.(target)) continue;
+      const branches = api.attackOutcomes(game, id, next, card, target.id);
+      if (!branches.length) continue;
+      const score = branches.reduce((sum, b) => sum + b.probability *
+        (api.evaluate(b.state) + (b.bonus ?? 0)
+          + (api.terminal(b.state) ? 0 : blessingEnd(b.state, id, api))), 0) - before - price;
+      best = Math.max(best, score);
+    }
+  }
+  return best;
+}
 function arrowOutcomes(game, state, id, card, targetId, element, api) {
   const next = api.copy(state), p = next.players[id];
   p.heroState.elementShotUsed = true;
   p.heroState.arrowPreview = element;
   const branches = api.attackOutcomes(game, id, next, card, targetId, { alreadyPlayed: true });
-  let score = api.scoreBranches(branches) + branches.reduce((sum, b) => sum + b.probability * (b.bonus ?? 0), 0);
-  if (element === 'wind') score += branches.reduce((sum, b) => sum + b.probability *
-    (api.terminal(b.state) ? 0 : api.bestAttackScore(game, id, b.state).score), 0);
-  return score;
+  return branches.reduce((sum, b) => sum + b.probability *
+    (api.evaluate(b.state) + (b.bonus ?? 0) + (api.terminal(b.state) ? 0
+      : element === 'wind' ? windContinuation(game, b.state, id, api)
+        : blessingEnd(b.state, id, api))), 0);
 }
 // Compare the same attack with/without an arrow. Payment can free hand space or
 // consume a playable blessing; only the last blessing unlocks the ending spell.
@@ -40,8 +62,7 @@ function arrowOptions({ game, state, id, card, targetId, alreadyPlayed = false }
     const next = api.copy(before); api.spend(next, id, [cost]);
     const live = game.cards.get(cost.id), price = live ? api.cardCost(game, id, [live]) : 0;
     for (const element of elements) {
-      const score = arrowOutcomes(game, next, id, card, targetId, element, api) - baseline - price
-        + blessingEnd(next, id, api) - blessingEnd(before, id, api);
+      const score = arrowOutcomes(game, next, id, card, targetId, element, api) - baseline - price;
       options.push({ cost: cost.id, payment: cost.reserve ? 'blessing' : 'spell', element, score });
     }
   }

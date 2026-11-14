@@ -98,4 +98,25 @@ test('吟游新版：第二敌方时点3触发，囚徒减法伤，队友胜利�
  const song=g.cards.get('eternalMovement-0');g.attachCard(song.id,3,{effectId:'eternalMovement',sourcePlayerId:0});g.addStones('red','crystal',1);
  run(g.trigger(Timing.TURN_END,{playerId:3}),r=>r.type==='skillChoice'?true:r.skillId==='victorySymphony'?'crystal':base(r));
  assert.equal(g.player(3).energy.gem,1);assert.equal(g.player(3).energy.crystal,0);assert.equal(g.player(0).healing,1);assert.equal(song.location.zone,'outside');g.assertCardLocations();
+ for(const inspiration of [0,1]) {
+  const h=make('bard'),p=h.player(0);p.energy.crystal=1;p.hero.state.inspiration=inspiration;
+  const attack=take(h,0,c=>c.name==='fireStrike'),light=take(h,0,c=>c.name==='holyLight');
+  h.attachCard('eternalMovement-0',3,{effectId:'eternalMovement',sourcePlayerId:0});h.startTurn(0);
+  run(h.activateSteps(0),r=>{
+   if(r.skillId!=='hopeFugue')return base(r);
+   if(r.type==='skillChoice')return true;
+   if(r.type==='playerChoice')return 0;
+   if(r.type==='cardChoice'){assert.deepEqual(r.valid,inspiration?[0,1]:[1]);return [inspiration?0:1];}
+   if(r.choices.some(c=>c.value==='inspiration')){
+    assert.deepEqual(r.choices.map(c=>c.value),inspiration?['inspiration']:['healing','inspiration']);return 'inspiration';
+   }
+   return 0;
+  });
+  assert.equal(p.hero.state.inspiration,inspiration+1);assert.equal(p.energy.crystal,0);
+  assert.equal(p.hand[0],inspiration?light:attack);assert.ok(h.hasOrdinaryContinuation(0));
+  assert.equal(h.inabilityArchives.length,0);assert.equal(h.winner,null);h.assertCardLocations();
+ }
+ const empty=make('bard');empty.player(0).energy.crystal=1;
+ empty.attachCard('eternalMovement-0',3,{effectId:'eternalMovement',sourcePlayerId:0});empty.startTurn(0);
+ assert.equal(empty.canActivate(0),false);assert.equal(empty.player(0).energy.crystal,1);
 });

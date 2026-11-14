@@ -1,5 +1,6 @@
 import { Hero } from '../../hero-base.js';
 import { Timing } from '../../timing.js';
+import { canContinueWithHand } from '../../inability.js';
 import { choice, discardCost, hasElement, enemies, targets } from '../shared/actions.js';
 
 export class AzureFlameWitch extends Hero {
@@ -25,14 +26,16 @@ export class AzureFlameWitch extends Hero {
           }
         },
       })),
-      { id: 'witchWrath', name: '魔女之怒', ...this.onOwnTurn([Timing.ACTIVATION]),
-        activationEnablesAction: () => true,
+      { id: 'witchWrath', activationBlockedReason: ({game,player}) => this.canEnterFlame(game,player) ? null : '你将无法行动', name: '魔女之怒', ...this.onOwnTurn([Timing.ACTIVATION]),
+        activationEnablesAction: ({ game, player }) => this.canEnterFlame(game, player),
         filter: ({ player }) => !this.state.form && player.hand.length < 4,
         *resolve({ game, player, options }) {
-          if (!(yield* game.offerSkill(player.id, 'witchWrath', '魔女之怒'))) return;
+          const blockedReason = player.hero.canEnterFlame(game, player) ? null : '你将无法行动';
+          if (!(yield* game.offerSkill(player.id, 'witchWrath', '魔女之怒', { blockedReason }))) return;
           player.hero.state.form = 'flame';
           game.logSkill(player.id, 'witchWrath', '进入烈焰形态，攻击属性及手牌上限改变');
-          const count = yield* choice(player.id, 'witchWrath', '魔女之怒：摸0至2张牌', [0, 1, 2].map(value => ({ value, label: `摸${value}张` })), 0);
+          const minimum = game.hasOrdinaryContinuation(player.id) ? 0 : 1;
+          const count = yield* choice(player.id, 'witchWrath', `魔女之怒：摸${minimum}至2张牌`, [0, 1, 2].filter(value => value >= minimum).map(value => ({ value, label: `摸${value}张` })), minimum);
           yield* game.drawSteps(player.id, count, { ...options, cause: { type: 'directDraw', skillId: 'witchWrath' } });
         } },
       { id: 'flameTraits', name: '烈焰形态',
@@ -94,5 +97,10 @@ export class AzureFlameWitch extends Hero {
           yield* game.damageSteps(targetId, cards.length - 1, { ...options, sourceId: player.id, damageType: 'spell', skillId: 'manaInversion' });
         } },
     ];
+  }
+  canEnterFlame(game, player) {
+    // The form's known hand-limit adjustment must leave room for a drawn card,
+    // or the player must have a legal action which works with an empty hand.
+    return player.handLimit + this.state.rebirth - 2 > 0 || canContinueWithHand(game, player.id, []);
   }
 }

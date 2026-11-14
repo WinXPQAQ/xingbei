@@ -2,12 +2,15 @@ import { AI_POLICY_VERSION } from '../../src/ai.js';
 import { heroFields } from './hero-state.mjs';
 import { createHero, HERO_DEFINITIONS } from '../../src/hero.js';
 export const ALL_HERO_IDS = Object.keys(HERO_DEFINITIONS).sort();
-export const EXCLUDED_TRAINING_HERO_IDS = ['magicArcherEX'];
+export const EXCLUDED_TRAINING_HERO_IDS = ['magicArcherEX', ...ALL_HERO_IDS.filter(id=>HERO_DEFINITIONS[id].startingHero === false)];
 export const HERO_IDS = ALL_HERO_IDS.filter(id=>!EXCLUDED_TRAINING_HERO_IDS.includes(id));
-// A cyclic deck gives each of the 71 training heroes each seat once per 71
-// games, without duplicates within a game. Reshuffle only after the full cycle.
+// A stride coprime to the roster size gives every starting hero every seat
+// once per cycle, even when the roster size shares factors with six seats.
+const gcd = (a,b) => b ? gcd(b,a%b) : a;
+let stride = 6;
+while (gcd(stride,HERO_IDS.length)!==1) stride++;
 export function roster(index) {
-  const epoch = Math.floor(index / HERO_IDS.length), offset=(index%HERO_IDS.length)*6;
+  const epoch = Math.floor(index / HERO_IDS.length), offset=(index%HERO_IDS.length)*stride;
   let state = (71103 + epoch) >>> 0;
   const ids = [...HERO_IDS];
   for (let i = ids.length-1; i > 0; i--) {

@@ -18,12 +18,21 @@ export class BloodWitch extends Hero {
       {id:'bleedingStart',name:'流血自伤',...this.onOwnTurn([Timing.TURN_START]),
         filter:()=>!!hero.state.form,
         *resolve({game,player,options}){yield* game.damageSteps(player.id,1,{...options,sourceId:player.id,damageType:'spell',skillId:'bleeding'});}},
-      {id:'bloodSorrow',name:'血之哀伤',...this.onOwnTurn([Timing.ACTIVATION]),
+      {id:'bloodSorrow',name:'血之哀伤',timings:[Timing.ACTIVATION,Timing.HEALING_BEFORE],
+        bindings:[{role:'player',timings:[Timing.ACTIVATION]},
+          {role:'target',timings:[Timing.HEALING_BEFORE],damageTypes:['spell']}],
         activationEnablesAction: () => true,
-        filter:({game})=>game.cards.get(hero.state.fateCardId)?.location.zone==='status',
-        *resolve({game,player,options}){
+        filter:({game,player,timing,context})=>timing===Timing.HEALING_BEFORE
+          ? context.skillId==='bloodSorrow'&&context.sourceId===player.id&&!player.hand.length
+          : game.cards.get(hero.state.fateCardId)?.location.zone==='status',
+        *resolve({game,player,timing,context,options}){
+          if(timing===Timing.HEALING_BEFORE){
+            context.healingLimit=Math.min(context.healingLimit,Math.max(0,context.amount-1));
+            return;
+          }
           if(!(yield* game.offerSkill(player.id,'bloodSorrow','血之哀伤：自受2法伤，转移或移除同生共死')))return;
           yield* game.damageSteps(player.id,2,{...options,sourceId:player.id,damageType:'spell',skillId:'bloodSorrow'});
+          if(game.winner)return;
           const card=game.cards.get(hero.state.fateCardId),previous=card.location.playerId;
           const mode=yield* choice(player.id,'bloodSorrowMode','血之哀伤',[{value:'move',label:'转移'},{value:'remove',label:'移除'}],'move');
           game.removeEffect(card.id,{zone:'outside'});hero.state.linkedPlayerId=null;
@@ -43,7 +52,12 @@ export class BloodWitch extends Hero {
         }},
       {id:'sharedFate',name:'同生共死',
         action:game=>game.cards.get(hero.state.fateCardId)?.location.zone==='outside'?{type:'spell',targets:targets(game)}:null,
-        *resolveAction({game,player,targetIds,options}){yield* game.drawSteps(player.id,2,{...options,cause:{type:'directDraw',skillId:'sharedFate'}});hero.attach(game,player,targetIds[0]);yield* hero.checkLimits(game,player,options);}},
+        *resolveAction({game,player,targetIds,options}){
+          yield* game.drawSteps(player.id,2,{...options,cause:{type:'directDraw',skillId:'sharedFate'}});
+          if(game.winner)return;
+          hero.attach(game,player,targetIds[0]);
+          yield* hero.checkLimits(game,player,options);
+        }},
       {id:'bloodCurse',name:'血之诅咒',action:game=>({type:'spell',energy:'gem',targets:targets(game)}),
         *resolveAction({game,player,targetIds,options}){yield* game.paySkillEnergy(player.id,'gem');yield* game.damageSteps(targetIds[0],2,{...options,sourceId:player.id,damageType:'spell',skillId:'bloodCurse'});yield* discardHand(game,player.id,3,'bloodCurse',options);}},
     ];
@@ -56,6 +70,9 @@ export class BloodWitch extends Hero {
   attach(game,player,id){this.state.linkedPlayerId=id;game.attachCard(this.state.fateCardId,id,{effectId:'sharedFate',sourcePlayerId:player.id,sourceSkillId:'sharedFate'});}
   *checkLimits(game,player,options,others=[]){
     const id=game.cards.get(this.state.fateCardId)?.location.playerId;
-    for(const targetId of seatOrder(game,player.id,[...new Set([player.id,...(id==null?[]:[id]),...others])]))yield* game.drawSteps(targetId,0,{...options,moraleLoss:false,cause:{type:'handLimit',skillId:'sharedFate'}});
+    for(const targetId of seatOrder(game,player.id,[...new Set([player.id,...(id==null?[]:[id]),...others])])){
+      if(game.winner)return;
+      yield* game.drawSteps(targetId,0,{...options,moraleLoss:true,cause:{type:'handLimit',skillId:'sharedFate'}});
+    }
   }
 }

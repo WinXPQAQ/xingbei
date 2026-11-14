@@ -4,6 +4,21 @@ import { Session, Cancelled } from "../web/session.js";
 import { PlaybackGate } from "../web/play-mode.js";
 import { runAiAction } from "../src/ai.js";
 import { Game, Timing } from "../src/engine.js";
+import { DEFAULT_TEAMS } from '../src/engine.js';
+import { controlledSeats, revealsHiddenCards } from '../src/play-mode.js';
+
+test('多控归属固定为所选阵营，视角变化不改变控制权，也不显示全场暗牌', () => {
+  for (let anchor = 0; anchor < 6; anchor++) {
+    const seats = controlledSeats('team', anchor, DEFAULT_TEAMS);
+    assert.equal(seats.length, 3);
+    for (const id of seats) assert.equal(DEFAULT_TEAMS[id], DEFAULT_TEAMS[anchor]);
+    assert.deepEqual(controlledSeats('normal', anchor, DEFAULT_TEAMS), [anchor]);
+  }
+  assert.equal(revealsHiddenCards('team'), false);
+  assert.equal(revealsHiddenCards('normal'), false);
+  assert.equal(revealsHiddenCards('test'), true);
+  assert.deepEqual(controlledSeats('spectate', 0, DEFAULT_TEAMS), []);
+});
 
 test("观战暂停独立于动画，恢复释放检查点，重开取消旧等待", async () => {
   const gate = new PlaybackGate(), session = new Session();

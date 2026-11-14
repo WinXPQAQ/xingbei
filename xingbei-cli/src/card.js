@@ -23,6 +23,8 @@ export class Card {
   get location() { return this.#location; }
   // Called only by Game.registerCard()/moveCard(); consumers query location.
   setLocation(location) { this.#location = Object.freeze({ ...location }); }
+  // Public, deterministic destination after discard, before later skill reactions.
+  getDiscardDestination(game) { return this.destinationForMove?.({ zone: "discard" }, game) ?? { zone: "discard" }; }
   get element() { return this.elements[0] ?? null; }
   get fate() { return this.fates[0] ?? null; }
   getPrintedTraits() { return { elements: [...this.elements], fates: [...this.fates] }; }

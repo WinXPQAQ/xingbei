@@ -47,9 +47,11 @@ export class BloodSwordSpirit extends Hero {
         activationEnablesAction: () => true,
         filter:({game,player})=>game.canPayEnergy(player.id,'crystal'),
         *resolve({game,player,options}) {
-          const choices=[{value:'skip',label:'不发动'},{value:'crystal',label:'水晶：放置庭院，+2鲜血'}];
+          const required=game.turn.state?.requiredActivationSkill==='petalDance';
+          const choices=[{value:'crystal',label:'水晶：放置庭院，+2鲜血'}];
+          if(!required)choices.unshift({value:'skip',label:'不发动'});
           if(game.canPayEnergy(player.id,'gem'))choices.push({value:'gem',label:'宝石：放置庭院，+2鲜血（最高4），弃到4张'});
-          const kind=yield* choice(player.id,'petalDance','散华轮舞',choices,'skip');
+          const kind=yield* choice(player.id,'petalDance','散华轮舞',choices,required?'crystal':'skip');
           if(kind==='skip')return;
           yield* game.paySkillEnergy(player.id,kind);
           game.moveCard(hero.state.gardenCardId,{zone:'field'},{reason:'roseGarden'});

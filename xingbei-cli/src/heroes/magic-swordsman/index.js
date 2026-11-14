@@ -40,7 +40,7 @@ export class MagicSwordsman extends Hero {
         *resolve({ game, player, options }) {
           if (!(yield* game.offerSkill(player.id, "shadowGathering", "暗影凝聚：对自身造成1法术伤害"))) return;
           yield* game.damageSteps(player.id, 1, {
-            ...options, sourceId: player.id, damageType: "spell", skillId: "shadowGathering",
+            ...options, sourceId: player.id, damageType: "spell", skillId: "shadowGathering", preserveActivationDraw: true,
           });
           player.hero.state.form = "暗影";
           game.logSkill(player.id, "shadowGathering", "横置，进入暗影形态");

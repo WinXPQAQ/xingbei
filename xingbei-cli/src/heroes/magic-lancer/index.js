@@ -27,7 +27,7 @@ export class MagicLancer extends Hero {
           if (!(yield* game.offerSkill(player.id, 'phantomStars', '幻影星辰'))) return;
           context.usedSkills.magicLancerActivation = true;
           const morale = game.teams[player.team].morale;
-          yield* game.damageSteps(player.id, 2, { ...options, sourceId: player.id, damageType: 'spell', skillId: 'phantomStars' });
+          yield* game.damageSteps(player.id, 2, { ...options, sourceId: player.id, damageType: 'spell', skillId: 'phantomStars', preserveActivationDraw: true });
           if (game.winner) return;
           player.hero.state.form = null;
           game.logSkill(player.id, 'phantomStars', '重置，脱离幻影形态');

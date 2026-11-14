@@ -27,7 +27,7 @@ export const assassinAi = {
   resourceValue: (p) => p.energy.gem * 5 + Math.min(1, p.energy.crystal) * (p.energy.gem || p.heroState.form ? 2 : 0.5) + (p.heroState.form ? 4 : 0),
   refineBonus({ player, gem, crystal }) {
     const firstCrystal = Math.min(crystal, Math.max(0, 1 - player.energy.crystal));
-    return (gem && !player.energy.gem ? 12 : 0) + gem * 3 + firstCrystal - (crystal - firstCrystal) * 10 - (!gem && !player.energy.gem ? 8 : 0);
+    return (gem && !player.energy.gem ? 12 : 0) + gem * 3 - firstCrystal * 2 - (crystal - firstCrystal) * 10 - (!gem && !player.energy.gem ? 8 : 0);
   },
   actionBonus({ player, action }) {
     if (!["purchase", "synthesize"].includes(action.type)) return 0;

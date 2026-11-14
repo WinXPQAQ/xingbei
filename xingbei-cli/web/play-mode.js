@@ -32,7 +32,7 @@ export function createModeControls(container, onCommand) {
   container.append(panel);
   return { update(mode, { ready, editable, hasCards, paused, morale, controlled: label }) {
     panel.hidden = mode === "normal" || !ready;
-    controlled.hidden = mode !== "developer"; controlled.textContent = `正在控制：${label}`;
+    controlled.hidden = !["developer", "team"].includes(mode); controlled.textContent = `${mode === "team" ? "多控 · " : ""}正在控制：${label}`;
     for (const button of panel.querySelectorAll("button")) {
       button.hidden = button.dataset.mode !== mode && !(mode === "developer" && button.dataset.mode === "test");
       button.disabled = ["test", "developer"].includes(mode) && (!editable || (button.dataset.command === "discard" && !hasCards) || (button.dataset.command.endsWith("-plus") && morale[button.dataset.command.split("-")[0]] >= 15));

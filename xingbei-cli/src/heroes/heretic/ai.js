@@ -17,7 +17,7 @@ function prophecyPlan({source,request,game,id},api) {
     Number(traits(a).includes(group))-Number(traits(b).includes(group)))[0]??ordinary.find(c=>c.type==='attack');
   const lights=hand.filter(c=>c.name==='holyLight');
   const keepValue=card=>card.name==='darkStrike'?1000:card===lights[0]?900:card===action?850:
-    card===lights[1]?180:card.name==='holyLight'?55:
+    card===lights[1]?180:card.name==='holyLight'?55/(lights.indexOf(card)-1):
     (traits(card).includes(group)?160:0)+(card.type==='spell'?12:0)+api.cardScore(game,id,card)/10;
   const count=request.count??6;
   const indexes=[...eligible].sort((a,b)=>keepValue(hand[a])-keepValue(hand[b])).slice(0,count);

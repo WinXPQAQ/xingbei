@@ -1,3 +1,4 @@
+import { forcedMagicArcherRefine, allowsMagicArcherAiAction, forcedMagicArcherAiChoice } from '../heroes/magic-archer/ai.js';
 import { captureObservation, observationView } from './observation.js';
 import { publicState } from '../heroes/shared/ai/wave-three/model.js';
 import { heroAi } from '../heroes/shared/ai/wave-three/registry.js';
@@ -17,12 +18,14 @@ function energyPreference(game, state, player, profile) {
   return uses.length ? uses.every(use=>use.kind==='gem')?'gem':uses.every(use=>use.kind==='either')?'crystal':'mixed' : null;
 }
 
-// Preferences adjust only the rule teacher. They neither remove engine legal
-// commands nor become rewards for the learned policy.
+// Score preferences adjust only the rule teacher. Explicit hero commitments
+// are shared with the network runner, never engine legality or learned rewards.
 export function withStrategyPreferences(policy) {
   const adapted={...policy,
     rankAiActions(game,id) {
-      const ranked=policy.rankAiActions(game,id);
+      const forced=forcedMagicArcherRefine(game,id);
+      if(forced)return [{action:forced,score:Infinity,reason:'magic-archer-required-two-gems'}];
+      const ranked=policy.rankAiActions(game,id).filter(entry=>allowsMagicArcherAiAction(game,id,entry.action));
       if (!ranked.some(e=>['refine','synthesize'].includes(e.action.type))) return ranked;
       const view=observationView(captureObservation(game,id,{actions:true,activation:true}));
       const state=publicState(view,id), player=state.players[id], profile=profileFor(player.hero);
@@ -53,6 +56,11 @@ export function withStrategyPreferences(policy) {
       }).sort((a,b)=>b.score-a.score);
     },
     chooseAiAction(game,id) { return adapted.rankAiActions(game,id)[0]?.action; },
+    chooseAiRuleDecision(request,game) {
+      const id=request.playerId??request.player?.id;
+      const forced=id==null?undefined:forcedMagicArcherAiChoice(game,id,request);
+      return forced===undefined?policy.chooseAiRuleDecision(request,game):forced;
+    },
   };
   return adapted;
 }

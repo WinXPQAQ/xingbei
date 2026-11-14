@@ -132,15 +132,15 @@ export class PrimalArcher extends HolyArcher {
                         ...options,
                         skillId: "radiantCannon",
                       });
-                    game.teams[player.team].cups++;
+                    const cups = game.gainCups(player.team);
                     game.logSkill(
                       player.id,
                       "radiantCannon",
-                      "全员手牌调整至4，我方星杯+1",
+                      `全员手牌调整至4${cups ? '，我方星杯+1' : '（训练规则：不增加星杯）'}`,
                     );
-                    game.recordPresentation("cups", {
+                    if (cups) game.recordPresentation("cups", {
                       team: player.team,
-                      amount: 1,
+                      amount: cups,
                     });
                     game.checkWinner();
                     yield* game.present();

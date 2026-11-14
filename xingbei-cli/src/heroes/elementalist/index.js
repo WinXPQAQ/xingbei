@@ -19,16 +19,8 @@ export class Elementalist extends Hero {
         name: "元素吸收",
         ...this.onDamage([Timing.DAMAGE_BEFORE], "actor", ["spell"]),
         filter: ({ context }) => context.skillId !== "elementIgnition",
-        *resolve({ game, player }) {
-          if (
-            player.hero.state.elements >= 3 ||
-            !(yield* game.offerSkill(
-              player.id,
-              "elementAbsorption",
-              "元素吸收",
-            ))
-          )
-            return;
+        resolve({ game, player }) {
+          if (player.hero.state.elements >= 3) return;
           player.hero.state.elements++;
           game.logSkill(
             player.id,

@@ -9,7 +9,12 @@ export class RedLotusKnight extends Hero {
     this.skills = [
       { id: 'scarletFaith', name: '猩红信仰', ...this.onDamage([Timing.HEALING_BEFORE], 'target'),
         modifyHealingLimit: limit => limit + 2,
-        resolve({ player, context }) { if (context.sourceId !== player.id) context.healingLimit = 0; } },
+        resolve({ player, context }) {
+          if (context.sourceId !== player.id) context.healingLimit = 0;
+          if (context.skillId === 'bloodPrayer' && !player.hand.length) {
+            context.healingLimit = Math.min(context.healingLimit, Math.max(0, context.amount - 1));
+          }
+        } },
       { id: 'scarletCovenant', name: '腥红圣约', ...this.onOwnAttack([Timing.ATTACK_DECLARED]),
         filter: ({ game, context }) => this.isActiveAttack(context) && !game.turn.state?.usedSkills.scarletCovenant,
         *resolve({ game, player }) {

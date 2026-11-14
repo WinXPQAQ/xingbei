@@ -48,7 +48,7 @@ export class HeadMaid extends Hero {
           const id = yield* game.choosePlayer(
             player.id,
             enemies(game, player),
-            "放置风穴",
+            "影之穴：放置风穴",
             { skillId: "shadowHoleTarget" },
           );
           game.attachCard(hero.state.tunnelCardId, id, {
@@ -60,6 +60,7 @@ export class HeadMaid extends Hero {
       },
       {
         id: "trueShadow",
+        activationBlockedReason: ({game, player}) => player.hand.length <= 2 || game.knownRemovalBlocked(player.id, player.id, 2) ? "你将无法行动" : null,
         name: "真·摹影",
         ...this.onOwnTurn([Timing.ACTIVATION]),
         filter: ({ game, player, context }) =>
@@ -79,7 +80,7 @@ export class HeadMaid extends Hero {
           if (context.usedSkills) context.usedSkills.maidActivation = true;
           yield* game.paySkillEnergy(player.id, "gem");
           const cs = yield* game.chooseHandCards(player.id, 2, () => true, {
-            skillId: "trueShadowCards", preserveAction: true,
+            skillId: "trueShadowCards", title: "真·摹影：选择2张手牌作为影", preserveAction: true,
           });
           yield* hero.addShadows(game, player, cs, options);
           game.forfeitMaliciousInability(player.id, 'trueShadow');
@@ -115,6 +116,7 @@ export class HeadMaid extends Hero {
         *resolve({ game, player }) {
           const c = yield* game.chooseCoveredCard(player.id, "shadow", {
             skillId: "flashKill",
+            title: "瞬·影·杀：移除1张影，获得无法应战的额外攻击",
             optional: true,
           });
           if (!c) return;
@@ -169,7 +171,7 @@ export class HeadMaid extends Hero {
               player.id,
               remaining,
               "shadowStitchCard",
-              "观看弃牌，选择1张作为影",
+              "影缝：观看弃牌，选择1张作为影",
             );
             yield* hero.addShadows(game, player, [c], options);
           }
@@ -185,6 +187,7 @@ export class HeadMaid extends Hero {
         *resolve({ game, player, options }) {
           const cs = yield* selectCovered(game, player, "shadow", {
             skillId: "wayOfService",
+            title: "侍奉之道：选择2张影，获得1糸；同系时交出其中1张并进入影牢",
             min: 2,
             max: 2,
             optional: true,
@@ -202,14 +205,14 @@ export class HeadMaid extends Hero {
               reveal: true,
               skillId: "wayOfService",
             });
-          hero.gainThreads(game, player, 1);
+          hero.gainThreads(game, player, 1, "wayOfService");
           if (same) {
             const c = yield* chooseVisibleCard(
               game,
               player.id,
               cs,
               "serviceCard",
-              "选择交给目标的影",
+              "侍奉之道：选择交给目标的影",
             );
             const id = yield* game.choosePlayer(
               player.id,
@@ -228,14 +231,6 @@ export class HeadMaid extends Hero {
         ...this.bind("player", [Timing.SPECIAL_ACTION_END], "all"),
         filter: ({ player, context }) => context.playerId !== player.id,
         *resolve({ game, player, options }) {
-          if (
-            !(yield* game.offerSkill(
-              player.id,
-              "shadowPrison",
-              "禁术·影牢：获得1糸",
-            ))
-          )
-            return;
           hero.gainThreads(game, player, 1);
           if (
             hero.state.form &&
@@ -243,7 +238,7 @@ export class HeadMaid extends Hero {
             (yield* game.offerSkill(
               player.id,
               "prisonRelease",
-              "消耗3糸重置，伤害对手或帮助队友弃牌",
+              "禁术·影牢：消耗3糸重置，伤害对手或帮助队友弃牌",
             ))
           ) {
             hero.state.threads -= 3;
@@ -297,7 +292,7 @@ export class HeadMaid extends Hero {
         ...this.bind("player", [Timing.ATTACK_ACTION_END], "all"),
         filter: ({ game, context }) => hero.holder(game) === context.playerId,
         resolve({ game, player }) {
-          hero.gainThreads(game, player, 1);
+          hero.gainThreads(game, player, 1, "windThread");
         },
       },
       {
@@ -347,12 +342,12 @@ export class HeadMaid extends Hero {
   shadows(p) {
     return coveredCards(p, "shadow");
   }
-  gainThreads(g, p, n) {
+  gainThreads(g, p, n, skillId = "shadowPrison") {
     const before = this.state.threads;
     this.state.threads = Math.min(4, before + n);
     g.logSkill(
       p.id,
-      "shadowPrison",
+      skillId,
       `糸+${this.state.threads - before}（${this.state.threads}/4）`,
     );
   }

@@ -3,6 +3,9 @@ import assert from 'node:assert/strict';
 import { Game } from '../src/engine.js';
 import { actionCandidates, decisionCandidates } from './candidates.mjs';
 import { driveGame } from './driver.mjs';
+import { teacherIndex } from './teacher.mjs';
+import { AI_POLICY_VERSION } from '../src/ai.js';
+import { playableCards } from '../src/playable-cards.js';
 
 test('refresh does not hide legal refinement; ordinary pass stays illegal', async () => {
   const game = new Game({ seed: 1, heroRules: false }).setup();
@@ -28,6 +31,22 @@ test('holy light has no target while magic relay retains its fixed target', () =
   const target = { hand: [{ name: 'holyLight', type: 'spell' }, { name: 'magicBullet', type: 'spell' }] };
   assert.deepEqual(decisionCandidates(null, { type: 'response', target, valid: target.hand.map((card, index) => ({ card, index })), nextTarget: { id: 4 } }),
     [null, { index: 0, targetId: null }, { index: 1, targetId: 4 }]);
+  for (const heroId of ['elfArcher', 'chronicler', 'mystic']) {
+    const game = new Game({ seed: 1, heroIds: [heroId, 'berserker', 'marksman', 'sealer', 'guardianAngel', 'priest'] }).setup();
+    const player = game.player(0), light = game.deck.find(card => card.name === 'holyLight');
+    const pile = { elfArcher: 'blessing', chronicler: 'ruins', mystic: 'word' }[heroId];
+    if (heroId === 'chronicler') { game.moveCard(light.id, {zone:'field'}); player.hero.revealedCards = [light]; }
+    else game.moveCard(light.id, { zone: 'covered', playerId: 0, pile });
+    if (heroId === 'elfArcher') player.hero.state.form = 'elfBlessing';
+    else player.hero.state[heroId === 'chronicler' ? 'castingCardId' : 'castingWordId'] = light.id;
+    const index = playableCards(player).indexOf(light);
+    assert.ok(index >= player.hand.length);
+    const request = { type: 'response', actor: game.player(1), target: player,
+      valid: [{ index, card: light }], nextTarget: game.player(1), damage: 12 };
+    const candidates = decisionCandidates(game, request);
+    const selected = teacherIndex({ game, playerId: 0, request, candidates }, AI_POLICY_VERSION);
+    assert.deepEqual(candidates[selected], { index, targetId: null }, heroId);
+  }
 });
 
 test('uniform full six-hero games route asynchronous decisions without legacy fallback', async () => {

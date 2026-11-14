@@ -27,21 +27,14 @@ const boost = (a, api) => {
 export const apprenticeProducerAi = {
   id: "apprenticeProducer",
   energyPreference: "gem",
-  usefulCrystals: ({ state, player, action }) => {
-    const red = player.energy.gem + (action?.stones?.gem ?? 0);
-    return red > 0 && state.players.some((target) => target.team !== player.team &&
-      target.count + red + player.energy.crystal + 1 - target.healing > target.limit) ? 1 : 0;
-  },
+  usefulCrystals: 1,
   cardBonus: ({ card }) =>
     card.uniqueSkills.some((s) => uniques.includes(s)) ? 35 : 0,
-  refineBonus: ({ state, player, gem, crystal }) => {
-    // A blue stone only adds damage to a prepared Moonfall. It does not pay its
-    // gem cost, and a second blue stone occupies another future gem slot.
-    const ready = player.energy.gem + gem > 0 && state.players.some((target) =>
-      target.team !== player.team && target.count + player.energy.gem + gem +
-        player.energy.crystal + crystal - target.healing > target.limit);
-    const firstBlue = player.energy.crystal === 0 ? Math.min(1, crystal) : 0;
-    return (!player.energy.gem && gem ? 8 : 0) + firstBlue * (ready ? 3 : 0);
+  refineBonus: ({ player, gem, crystal }) => {
+    // Match Elementalist: a first blue can support Moonfall, but acquiring it
+    // carries a small cost. Further blue stones strongly compete with gem slots.
+    const firstBlue = Math.min(crystal, Math.max(0, 1 - player.energy.crystal));
+    return (!player.energy.gem && gem ? 8 : 0) - firstBlue * 2 - (crystal - firstBlue) * 18;
   },
   resourceValue: (p) => p.heroState.atoms * 2,
   scoreSkill({ next, id, player, action, costs, skillId, targetId }, api) {

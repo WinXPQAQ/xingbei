@@ -18,7 +18,10 @@ def summarize(results):
              if None not in scores[i:i+2]]
     rng = random.Random(71029)
     bootstrap = sorted(sum(rng.choices(pairs, k=len(pairs)))/len(pairs) for _ in range(2000)) if pairs else []
+    ordinary = [score for score,result in zip(scores,results) if score is not None and not result.get('inabilityForfeits')]
     return dict(games=len(results), wins=sum(complete), completed=len(complete), truncated=len(results)-len(complete),
+                inability_forfeits=sum(bool(r.get('inabilityForfeits')) for r in results),
+                non_forfeit_win_rate=sum(ordinary)/len(ordinary) if ordinary else None,
                 win_rate=sum(complete)/len(complete) if complete else None,
                 paired_seed_interval95=[bootstrap[49], bootstrap[1949]] if bootstrap else None)
 

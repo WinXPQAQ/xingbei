@@ -8,7 +8,8 @@ export function discardTarget({request,state,id},api,count=1){
 }
 export function cheapCards({request,source,game,id},api){
   const reserved=new Set(game.turn.state?.reservedCardIds??[]);
-  const cost=i=>api.cardScore(game,id,source.hand[i])+(reserved.has(source.hand[i].id)?1000:0);
+  const cost=i=>api.cardScore(game,id,source.hand[i],source.hand.filter((_,index)=>index!==i))+
+    (reserved.has(source.hand[i].id)?1000:0);
   if(request.validSets)return [...request.validSets].sort((a,b)=>a.reduce((n,i)=>n+cost(i),0)-b.reduce((n,i)=>n+cost(i),0))[0]??null;
   return [...(request.valid??[])].sort((a,b)=>cost(a)-cost(b)).slice(0,request.count??1);
 }

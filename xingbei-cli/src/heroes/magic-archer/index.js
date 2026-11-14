@@ -67,7 +67,7 @@ export class MagicArcher extends Hero {
           if(!n||!player.hand.length||game.winner)return;
           const usable=new Set(game.usableHandCards(player.id).map(c=>c.id));
           const cards=yield* game.chooseCardSet(player.id,{counts:Array.from({length:Math.min(n,player.hand.length)},(_,i)=>i+1),skillId:'chargeCover',title:'充能：盖牌后至少保留1张可用牌',optional:true,
-            cardsFilter:chosen=>player.hand.some(c=>usable.has(c.id)&&!chosen.includes(c))});
+            cardsFilter:chosen=>player.hand.some(c=>usable.has(c.id)&&!chosen.some(selected=>selected.id===c.id))});
           if(cards){game.coverCards(player.id,cards,'charge');yield* game.flushCardMoves(options);yield* trimCovered(game,player,'charge',8,'chargeTrim');}
         }},
       {id:'magicEye',name:'魔眼',...this.onOwnTurn([Timing.ACTIVATION]),

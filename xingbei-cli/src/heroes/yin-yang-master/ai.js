@@ -15,7 +15,7 @@ export const yinYangMasterAi={
   return Math.max(0,api.evaluate(state)-api.evaluate(next));
  },
  responseBonus({request,state,id,card},api) {
-  if(!counterFate(request,card,id))return 0;
+  if(!request.attack||card.type!=='attack'||!counterFate(request,card,id))return 0;
   const next=api.copy(state),p=next.players[id],wasForm=!!p.heroState.form;
   p.heroState.ghostFire=Math.min(3,p.heroState.ghostFire+1);p.heroState.form=null;
   const remaining=p.hand.filter(c=>c.id!==card.id);

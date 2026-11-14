@@ -8,6 +8,57 @@ import { resolveSync } from "../src/resolution/decisions.js";
 const trigger = (game, timing, context) => resolveSync(game.trigger(timing, context), request => request.defaultValue);
 const empty = () => new Game({ heroRules: false, shuffleDeck: false });
 
+test("行动选择边界结清即时连锁，保持技能优先级、原阶段与额外行动", () => {
+  for (const phase of [Timing.ACTION_PHASE_START, Timing.ACTIVATION, Timing.ATTACK_ACTION_END,
+    Timing.SPELL_ACTION_END, Timing.SPECIAL_ACTION_END, Timing.TURN_END]) {
+    const game = empty(), hero = game.player(0).hero, calls = [];
+    const card = game.deck.find(card => card.type === "attack");
+    game.moveCard(card.id, { zone: "hand", playerId: 0 });
+    if (phase !== Timing.ACTION_PHASE_START) game.startTurn(0);
+    hero.addSkills(
+      { id: "boundary-heal", ...hero.onOwnTurn([phase]), priority: 10,
+        resolve() { calls.push("high"); game.changeHealing(0, 1); } },
+      { id: "boundary-low", ...hero.onOwnTurn([phase]), priority: -10,
+        resolve() { calls.push("low"); } },
+      { id: "boundary-healing", ...hero.onOwnTurn([Timing.HEALING_CHANGED]),
+        resolve() {
+          assert.equal(game.turn.state.phase, phase);
+          calls.push("healing"); game.changeMorale("red", -1);
+        } },
+      { id: "boundary-morale", ...hero.bind("team", [Timing.MORALE_AFTER], "self"),
+        *resolve() {
+          assert.equal(game.turn.state.phase, phase);
+          calls.push("morale");
+          yield* game.chooseHandCards(0, 1, () => true, { skillId: "boundary-discard" });
+          game.turn.addAttackAction({ sourceSkillId: "boundary-extra" });
+        } },
+    );
+    const options = { choose: request => {
+      assert.equal(request.skillId, "boundary-discard");
+      assert.equal(game.turn.state.phase, phase);
+      calls.push("choice"); return [0];
+    } };
+    if (phase === Timing.ACTION_PHASE_START) game.startTurn(0, options);
+    else if (phase === Timing.ACTIVATION) game.activate(0, options);
+    else if (phase === Timing.TURN_END) {
+      game.turn.state.completed = true;
+      game.endTurn(options);
+    } else {
+      game.turn.state.actionType = phase === Timing.ATTACK_ACTION_END ? "attack"
+        : phase === Timing.SPELL_ACTION_END ? "spell" : "special";
+      game.endAction(options);
+    }
+    assert.deepEqual(calls, ["high", "low", "healing", "morale", "choice"], phase);
+    assert.equal(game.pendingHealingChanges.length, 0);
+    assert.equal(game.pendingMoraleEvents.length, 0);
+    assert.equal(game.processingRuleEvents, false);
+    assert.equal(game.timeline.filter(entry => entry.timing === phase).length, 1);
+    assert.equal(game.timeline.some(entry => entry.timing === Timing.ATTACK_ACTION_START), false);
+    if (phase !== Timing.TURN_END) assert.equal(game.turn.state.pendingActions.length, 1);
+    game.assertCardLocations();
+  }
+});
+
 test("主动与应战命中先加战绩再触发技能；满区不补发，技能获胜终止后续伤害", async () => {
   for (const asynchronous of [false, true]) for (const counter of [false, true]) for (const full of [false, true]) {
     const game = empty(), ownerId = counter ? 1 : 0, targetId = counter ? 3 : 1;
@@ -116,11 +167,22 @@ test("伤害3至6按造成/受到与类别分派；自伤双绑定去重、无�
     id: "spell-target", ...game.player(1).hero.onDamage(timings, "target", ["spell"]),
     resolve({ context }) { calls.push(`spell:${context.point}`); },
   });
-  game.damage(1, 0, { sourceId: 0, damageType: "attack" });
+  game.damage(1, 1, { sourceId: 0, damageType: "attack" });
   assert.deepEqual(calls.splice(0), ["attack:3", "attack:4", "attack:5", "attack:6"]);
-  game.damage(1, 0, { sourceId: 0, damageType: "spell" });
+  game.damage(1, 1, { sourceId: 0, damageType: "spell" });
   assert.deepEqual(calls.splice(0), ["spell:3", "spell:4", "spell:5", "spell:6"]);
-  game.damage(1, 0, { damageType: "spell" });
+  game.damage(1, 1, { damageType: "spell" });
+  assert.deepEqual(calls.splice(0), ["spell:3", "spell:4", "spell:5", "spell:6"]);
+  for (const damageType of ["attack", "spell"]) {
+    game.player(1).healing = 2;
+    const count = game.player(1).hand.length, start = game.timeline.length;
+    assert.equal(game.damage(1, 2, { sourceId: 0, damageType, useHealing: 2 }), 0);
+    assert.deepEqual(calls.splice(0), [`${damageType}:3`, `${damageType}:4`]);
+    assert.equal(game.player(1).hand.length, count);
+    assert.ok(!game.timeline.slice(start).some(entry => [Timing.DAMAGE_ACTUAL_BEFORE, Timing.DAMAGE_ACTUAL, Timing.DAMAGE_AFTER].includes(entry.timing)));
+  }
+  game.player(1).healing = 1;
+  game.damage(1, 2, { sourceId: 0, damageType: "spell", useHealing: 1 });
   assert.deepEqual(calls.splice(0), ["spell:3", "spell:4", "spell:5", "spell:6"]);
   game.draw(1, 1, { cause: { type: "directDraw" } });
   assert.deepEqual(calls, []);

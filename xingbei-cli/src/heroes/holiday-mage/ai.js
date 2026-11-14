@@ -1,4 +1,5 @@
 import { cheapCards } from "../shared/ai/decisions.js";
+import { gemPreparationValue } from "../shared/ai/wave-two/energy.js";
 export const holidayMageAi = {
   id: "holidayMage",
   energyPreference: "gem",
@@ -9,7 +10,7 @@ export const holidayMageAi = {
       : elements.some((e) => ["earth", "fire"].includes(e))
         ? 5
         : 0,
-  refineBonus: ({ player, gem }) => (!player.energy.gem && gem ? 8 : 0),
+  refineBonus: ({ player, gem }) => gemPreparationValue(player.energy, gem),
   scoreSkill({ next, id, player, action, skillId, targetId }, api) {
     if (skillId === "magicBurst") {
       api.stones(next, player.team, "gem", 1);

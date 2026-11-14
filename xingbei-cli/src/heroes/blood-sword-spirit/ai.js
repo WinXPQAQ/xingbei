@@ -74,7 +74,7 @@ function roseOpportunity(state,id,api){
  }
  return value;
 }
-function gardenOption({game,state,id},api){
+function gardenOption({game,state,id,request},api){
  const p=state.players[id],options=[{kind:'skip',score:0}];
  for(const kind of ['crystal','gem']){
   if(kind==='gem'?!p.energy.gem:!p.energy.gem&&!p.energy.crystal)continue;
@@ -87,7 +87,8 @@ function gardenOption({game,state,id},api){
   const ordinary=api.bestAttackScore(game,id,state).score;
   options.push({kind,state:next,score:api.evaluate(next)-api.evaluate(state)+continuation-ordinary});
  }
- return options.sort((a,b)=>b.score-a.score)[0];
+ return options.filter(option=>!request?.choices || request.choices.some(choice=>choice.value===option.kind))
+  .sort((a,b)=>b.score-a.score)[0];
 }
 export const bloodSwordSpiritAi={
  id:'bloodSwordSpirit',energyPreference:'mixed',acceptsRefine:()=>true,

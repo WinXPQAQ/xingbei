@@ -41,7 +41,7 @@ const heroMarkers = {
 };
 
 export function cardContents(card, context = {}) {
-  return `<img class="image" src="/assets/card/${card.name}.png" alt=""><span class="info"><span>${card.getTraits(context).elements.map(element => ELEMENT_NAMES[element]).join("/")}${card.getTraits(context).fates.map(fate => FATE_NAMES[fate]).join("/")}</span></span><span class="name" aria-hidden="true"></span><span class="range">${(card.uniqueSkills ?? []).map(id => UNIQUE_SKILL_NAMES[id] ?? id).join("<br>")}</span>`;
+  return `<img class="image" src="/assets/card/${card.name}.png" alt=""><span class="info"><span>${card.getTraits(context).elements.map(element => ELEMENT_NAMES[element]).join("/")}${card.getTraits(context).fates.map(fate => FATE_NAMES[fate]).join("/")}</span></span><span class="card-fate">${card.getTraits(context).fates.map(fate => FATE_NAMES[fate]).join("/")}</span>${card.type === "spell" && card.name !== "holyLight" ? `<span class="card-element">${card.getTraits(context).elements.map(element => ELEMENT_NAMES[element]).join("/")}</span>` : ""}<span class="name" aria-hidden="true"></span><span class="range">${(card.uniqueSkills ?? []).map(id => UNIQUE_SKILL_NAMES[id] ?? id).join("<br>")}</span>`;
 }
 
 export function cardLabel(card, context = {}) {
@@ -56,6 +56,44 @@ export function renderTeams(game, nodes, humanId) {
     const markup = `<td>${data.morale}</td><td class="stones">${[...Array(stones.gem)].map(() => '<img src="/assets/stones/gem.png" alt="宝石">').join("")}${[...Array(stones.crystal)].map(() => '<img src="/assets/stones/crystal.png" alt="水晶">').join("")}</td><td>${data.cups}</td>`;
     if (nodes[team]._markup !== markup) { nodes[team].innerHTML = markup; nodes[team]._markup = markup; }
   }
+}
+
+function coveredPileMarkup(game, player, cards, label, pile, humanId, revealHands, scale = false) {
+  const canView = card => revealHands || (player.id === humanId && card.coveredVisibility !== 'concealed') || card.coveredVisibility === 'public';
+  const count = `${cards.length}${scale ? '/3' : ''}`;
+  const icon = `<img src="${scale ? '/assets/card/' + pile + '.png' : '/theme/cardback.png'}" alt="${label}">${scale ? `<span class="covered-pile-name">${pile === 'leftScale' ? '左' : '右'}</span>` : ''}<b>${count}</b>`;
+  if (!cards.some(canView)) {
+    return `<span class="covered-mark covered-unavailable" data-pile="${pile}" aria-disabled="true" title="${label} ${count}，${cards.length ? '不可查看' : '暂无盖牌'}">${icon}</span>`;
+  }
+  const contents = cards.map(card => {
+    const visible = canView(card);
+    const description = visible ? cardLabel(card, { game, playerId: player.id }) : '盖牌';
+    return `<span class="covered-card" title="${description}"><img src="${visible ? '/assets/card/' + card.name + '.png' : '/theme/cardback.png'}" alt="${description}">${visible ? `<small>${card.getTraits({ game, playerId: player.id }).fates.map(f => FATE_NAMES[f]).join('/')}</small>` : ''}</span>`;
+  }).join('');
+  return `<details class="covered-mark" data-pile="${pile}"><summary title="${label} ${count}，点击查看" aria-label="${label} ${count}，点击查看">${icon}</summary><div class="covered-cards" popover="auto" aria-label="${player.hero.name}的${label}">${contents}</div></details>`;
+}
+
+// The browser top layer escapes player stacking contexts and the scaled board.
+function bindCoveredPopover(pile) {
+  const popup = pile.querySelector('.covered-cards');
+  const close = () => {
+    if (popup.matches(':popover-open')) popup.hidePopover();
+    pile.open = false;
+  };
+  popup.addEventListener('beforetoggle', event => {
+    if (event.newState === 'closed') pile.open = false;
+  });
+  pile.addEventListener('toggle', () => {
+    if (!pile.isConnected || !pile.open) { close(); return; }
+    if (popup.matches(':popover-open')) return;
+    popup.showPopover();
+    const anchor = pile.querySelector('summary').getBoundingClientRect();
+    const bounds = popup.getBoundingClientRect(), gap = 6;
+    const preferred = anchor.right + gap + bounds.width <= innerWidth - gap ? anchor.right + gap : anchor.left - gap - bounds.width;
+    popup.style.left = `${Math.max(gap, Math.min(preferred, innerWidth - bounds.width - gap))}px`;
+    popup.style.top = `${Math.max(gap, Math.min(anchor.top, innerHeight - bounds.height - gap))}px`;
+  });
+  return close;
 }
 
 export function renderPlayers(game, container, humanId, targets = null, revealHands = false) {
@@ -92,15 +130,20 @@ export function renderPlayers(game, container, humanId, targets = null, revealHa
     if (player.getStatus("weakness")[0]) marks.push('<img src="/assets/card/weakness.png" title="虚弱" alt="虚弱">');
     if (player.getStatus("poison").length) marks.push(`<span class="poison-mark"><img src="/assets/card/poison.png" title="中毒" alt="中毒"><b>${player.getStatus("poison").length}</b></span>`);
     for (const card of player.statuses.filter(card => !["holyShield", "weakness", "poison"].includes(card.attachment.effectId))) {
+      if (['leftScale', 'rightScale'].includes(card.attachment.effectId)) {
+        const pile = card.attachment.effectId;
+        marks.push(coveredPileMarkup(game, player, player.covered.filter(card => card.location.pile === pile), pile === 'leftScale' ? '天平·左' : '天平·右', pile, humanId, revealHands, true));
+        continue;
+      }
       const afterglow = card.attachment.effectId === "primalCannon" && card.attachment.data?.face === "afterglow";
       const id = card.attachment.effectId, label = afterglow ? "圣煌余辉" : game.effects?.get?.(id)?.name ?? UNIQUE_SKILL_NAMES[id] ?? CARD_NAMES[id] ?? id;
       const image = !revealHands && hiddenEffectFor(card,humanId) ? "/theme/cardback.png" : `/assets/card/${afterglow ? "primalAfterglow" : card.name}.png`;
       marks.push(`<span class="poison-mark" data-effect-id="${id}"><img src="${image}" title="${label}" alt="${label}"><b>${label.startsWith("五") ? "" : label[0]}</b></span>`);
     }
-    if (player.covered?.length) {
+    const otherCovered = (player.covered ?? []).filter(card => !['leftScale', 'rightScale'].includes(card.location.pile));
+    if (otherCovered.length) {
       const label = { ranger: "子弹", curseTalisman: "妖力", orchestraLeader: "音符", holyAdjudicator: "天平", lawgiver: "宝珠牌", cardinal: "宝珠牌", chronicler: "遗迹", heretic: "预言", headMaid: "影", barrierMaster: "结界", mystic: "言灵", butterflyDancer: "茧", starfallWitch: "卢恩", witchHunter: "魔力瓶", elfArcher: "祝福", moonGoddess: "暗月", swordEmperor: "剑魂", talismanMaster: "妖力", magicArcher: "充能" }[player.hero.id] ?? "盖牌";
-      const cards = player.covered.map(card => { const visible = revealHands || (player.id === humanId && card.coveredVisibility !== 'concealed') || card.coveredVisibility === 'public'; return `<span class="covered-card" title="${visible ? cardLabel(card, { game, playerId: player.id }) : '盖牌'}"><img src="${visible ? '/assets/card/' + card.name + '.png' : '/theme/cardback.png'}" alt="${visible ? cardLabel(card, { game, playerId: player.id }) : '盖牌'}">${visible ? `<small>${card.getTraits({ game, playerId: player.id }).fates.map(f => FATE_NAMES[f]).join('/')}</small>` : ''}</span>`; }).join('');
-      marks.push(`<details class="covered-mark"><summary title="${label}，点击查看"><img src="/theme/cardback.png" alt="${label}"><b>${player.covered.length}</b></summary><div class="covered-cards">${cards}</div></details>`);
+      marks.push(coveredPileMarkup(game, player, otherCovered, label, 'covered', humanId, revealHands));
     }
     if (player.hero.id === 'heretic') { const card = game.field?.find(c => c.id === player.hero.state.prophecyCardId); if (card) marks.push(`<img src="/assets/card/${card.name}.png" title="末日预言／灾殃" alt="末日预言／灾殃">`); }
     if (game.field?.some(card => card.name === 'roseGarden')) marks.push('<img src="/assets/card/roseGarden.png" title="血蔷薇庭院在场：不能使用治疗抵伤" alt="血蔷薇庭院">');
@@ -110,7 +153,14 @@ export function renderPlayers(game, container, humanId, targets = null, revealHa
     const revealed = revealHands ? `<div class="revealed-hand" aria-label="${player.name}的手牌">${player.hand.map(card => `<span class="revealed-card"><img data-hand-card-id="${card.id}" src="/assets/card/${card.name}.png" alt="${cardLabel(card, { game, playerId: player.id })}" title="${cardLabel(card, { game, playerId: player.id })}"><small class="revealed-fate" aria-hidden="true">${card.getTraits({ game, playerId: player.id }).fates.map(fate => FATE_NAMES[fate] ?? fate).join("/")}</small></span>`).join("")}</div>` : "";
     const markup = `<img class="avatar" src="/assets/character/${player.hero.portrait}.jpg" alt=""><span class="player-name" title="${player.name}；${player.hero.implemented || player.hero.skills?.length ? "已实现角色技能" : "角色技能尚未实现"}">${player.hero.name}</span><span class="identity"><span>${player.team === "red" ? "红" : "蓝"}</span></span><span class="count">${player.hand.length}/${player.handLimit}</span><span class="hp" title="治疗 ${player.healing}" aria-label="治疗 ${player.healing}">${Array.from({ length: Math.max(player.healing, game.getHealingLimit?.(player.id) ?? player.healingLimit ?? 2) }, (_, index) => index).reverse().map(index => `<span class="${index < player.healing ? "" : "lost"}"></span>`).join("")}</span><span class="energy" title="个人能量" style="top:${6 + marks.length * 28}px">${energy}</span><div class="marks">${marks.reverse().join("")}</div>${revealed}`;
     if (node._markup !== markup) {
+      const opened = new Set([...node.querySelectorAll('.covered-mark[open]')].map(pile => pile.dataset.pile));
+      for (const close of node._coveredPopovers ?? []) close();
       node.innerHTML = markup; node._markup = markup;
+      node._coveredPopovers = [...node.querySelectorAll('details.covered-mark')].map(pile => {
+        const close = bindCoveredPopover(pile);
+        pile.open = opened.has(pile.dataset.pile);
+        return close;
+      });
       for (const pile of node.querySelectorAll(".covered-mark")) for (const type of ["click", "keydown"]) pile.addEventListener(type, event => event.stopPropagation());
     }
     if (player.energy.gem + player.energy.crystal === 0) node.querySelector(".energy").hidden = true;
@@ -164,6 +214,7 @@ export function layoutHand(container) {
 }
 
 export function resizeStage() {
+  for (const popup of document.querySelectorAll('.covered-cards:popover-open')) popup.hidePopover();
   const stage = document.querySelector("#window");
   // UI.updated()/updatez(), ui_zoom=big. Use the same rounded device zoom.
   const narrow = innerWidth < 900 || innerHeight < 500;

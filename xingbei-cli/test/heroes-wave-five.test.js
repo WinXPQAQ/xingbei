@@ -61,6 +61,25 @@ test('苍炎：属性覆盖仅自己；先中毒虚弱再重置；法伤实际�
   if(lethal)assert.equal(h.winner,'red');
   h.assertCardLocations();
  }
+ const empty=make('azureFlameWitch');empty.player(0).hero.state.form='flame';empty.startTurn(0);
+ assert.equal(empty.canActivate(0),true);
+ let requiredDraw=false;
+ run(empty.activateSteps(0),r=>{
+  if(r.skillId==='witchWrath'&&r.type==='skillChoice')return true;
+  if(r.skillId==='witchWrath'&&r.type==='numberChoice'){
+   requiredDraw=true;assert.deepEqual(r.choices.map(c=>c.value),[1,2]);return 1;
+  }
+  return base(r);
+ });
+ assert.ok(requiredDraw);assert.ok(empty.hasOrdinaryContinuation(0));assert.equal(empty.winner,null);empty.assertCardLocations();
+ const limited=make('azureFlameWitch');limited.player(0).handLimit=2;limited.startTurn(0);
+ assert.equal(limited.canActivate(0),false);
+ take(limited,0,c=>c.type==='attack');
+ run(limited.activateSteps(0),r=>{
+  if(r.skillId==='witchWrath'){assert.equal(r.blockedReason,'你将无法行动');return true;}
+  return base(r);
+ });
+ assert.equal(limited.player(0).hero.state.form,null);assert.ok(limited.hasOrdinaryContinuation(0));
 });
 
 test('血剑：庭院独立场外实体，禁止双方治疗抵伤；结束移除及鲜血超限保留',()=>{

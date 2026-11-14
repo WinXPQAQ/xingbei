@@ -14,6 +14,7 @@
 | capture-original-animation.mjs | 原版动画录像、关键帧与隔离呈现调用 | 输出目录 |
 | update-server.mjs | 独立目录拉取分支、检查、切换和失败回退 | --prepare（首次安装）、--status、--retry；见[部署说明](../docs/server-updates.md) |
 | benchmark-ai.mjs | 相同种子换边对抗历史AI，记录胜负和实例守恒 | 种子数、结果JSON、历史提交哈希 |
+| audit-human-games.mjs | 只读审计真人记录，分别建立完整局／胜局的人类决策索引，排除同局AI选择和明确强制选项 | 原记录目录、独立输出目录；索引尚未重放编码，不可直接用于训练 |
 
 在工作区根目录运行，先启动当前Web服务：
 
@@ -71,3 +72,5 @@ node xingbei-cli/tools/evaluate-ai.mjs read-1 v1.0 holdout 200 /tmp/xingbei-hold
 
 
 第三批英雄：`BASE_URL=http://127.0.0.1:4189 node tools/verify-heroes-wave-three.mjs`手动核对18角色入口、六新英雄状态、变长牌组费用、选人及确认/取消，使用1440×900和390×844两视口。输出在`artifacts/heroes/wave-three/`；不加入日常`npm test`，不作为每次发布必须全跑的评分场景矩阵。
+
+- `extract-legacy-ai.mjs`：只读原角色包，提取无歧义数值型AI行动顺序到`training/legacy/static-orders.json`；不会迁移技能结算或动态回调。范围、原项目许可与局限见`training/legacy/README.md`。

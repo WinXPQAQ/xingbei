@@ -5,7 +5,8 @@ import { cardSets, targetCounts } from "./card-sets.js";
 import { getAvailableHeroes } from "./hero.js";
 import { cardText } from "./cards.js";
 import { Game, RuleError } from "./engine.js";
-import { chooseAiAction, chooseAiResponse, chooseAiRuleDecision } from "./ai.js";
+import { overflowChoices } from "./inability.js";
+import { chooseAiAction, chooseAiResponse, chooseAiRuleDecision, chooseAiDiscard } from "./ai.js";
 import { askIndex, TerminalUI } from "./tui.js";
 
 const tui = new TerminalUI();
@@ -38,7 +39,8 @@ game.onDecision = async request => {
   if (request.playerId !== humanId) return chooseAiRuleDecision(request, game);
   tui.console(request.title);
   request.choices.forEach((choice, index) => tui.console(`${index}: ${choice.label}`));
-  const index = await askIndex(tui, "选择（回车不发动）> ", request.choices.map((_, index) => index));
+  const defaultLabel = request.choices.find(choice => choice.value === request.defaultValue)?.label ?? "默认选项";
+  const index = await askIndex(tui, `选择（回车选择${defaultLabel}）> `, request.choices.map((_, index) => index));
   return index == null ? request.defaultValue : request.choices[index].value;
 };
 
@@ -62,7 +64,7 @@ function validGemCounts(team, total) {
 }
 
 async function chooseSynthesis(player) {
-  if (!game.canDrawSpecial(player.id)) throw new RuleError("合成只能在手牌为0至3张时执行");
+  if (!game.canDrawSpecial(player.id)) throw new RuleError("合成需要可执行特殊行动、手牌不超过3张，且摸3张后不超过手牌上限");
   const stones = game.stoneCounts(player.team);
   if (stones.total < 3) throw new RuleError("合成需要3个星石");
   const selection = game.synthesisOptions(player.team);
@@ -86,7 +88,11 @@ async function chooseRefinement(player) {
   return { gem, crystal: total - gem };
 }
 
-async function resolveHumanOverflow() {
+async function resolveHumanOverflow(request) {
+  if (request?.resolveInternally && request.player.id!==humanId) {
+    const preferred=chooseAiDiscard(game,request.player.id,request.player.hand.length-request.player.handLimit);
+    return request.validSets?.find(set=>set.length===preferred.length && set.every(i=>preferred.includes(i))) ?? request.validSets?.[0] ?? preferred;
+  }
   const player = game.player(humanId);
   while (player.hand.length > player.handLimit) {
     const excess = player.hand.length - player.handLimit;
@@ -100,6 +106,11 @@ async function resolveHumanOverflow() {
       tui.console(`输入无效：请填写${excess}个不同的手牌编号（0-${player.hand.length - 1}）。`);
       continue;
     }
+    if (!overflowChoices(game, humanId).canSelect(indexes) || (request?.validSets && !request.validSets.some(set=>set.length===indexes.length && set.every(i=>indexes.includes(i))))) {
+      tui.console("你将无法行动，请保留可用手牌。");
+      continue;
+    }
+    if (request?.resolveInternally) return indexes;
     await game.resolveOverflowWithDecisions(humanId, indexes, player.pendingOverflow ?? {});
   }
 }

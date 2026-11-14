@@ -20,7 +20,14 @@ export function terminalForecast(s) {
  let memo=cache.get(s.beliefs);if(!memo){memo=new Map();cache.set(s.beliefs,memo);}if(memo.has(key))return memo.get(key);
  const team=s.players[s.observer].team,other=team==='red'?'blue':'red';
  let win=0,loss=0;
- const alive={};for(const side of [team,other]){alive[side]=Array(s.teams[side].morale+1).fill(0);alive[side][s.teams[side].morale]=1;}
+ // Heuristic branches carry expected (fractional) morale. Preserve its mean
+ // as a distribution over adjacent integers; array lengths must be integral.
+ const alive={};for(const side of [team,other]){
+  const morale=s.teams[side].morale,low=Math.floor(morale),high=Math.ceil(morale);
+  if(!Number.isFinite(morale))throw new Error('Nonfinite forecast morale');
+  alive[side]=Array(high+1).fill(0);
+  alive[side][low]+=1-(morale-low);alive[side][high]+=morale-low;
+ }
  const counts=s.players.map(p=>p.count),guarded=s.players.map(preventsDamageMoraleLoss);
  for(let step=1;step<=s.players.length;step++) {
   const actor=s.players[(s.current+step)%s.players.length];

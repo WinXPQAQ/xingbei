@@ -1,5 +1,6 @@
 import { legalActions } from '../legal-actions.js';
 import { RuleError } from '../errors.js';
+import { legalOverflowDiscard } from '../inability.js';
 const cache = new WeakMap();
 const key = a => JSON.stringify([a.type,a.index,a.targetId,a.skillId,a.mode,a.cardIds,a.targetIds,a.gemCount,a.stones?.gem,a.stones?.crystal]);
 // Frozen scores retain their ordering. Previously omitted legal choices remain
@@ -7,6 +8,20 @@ const key = a => JSON.stringify([a.type,a.index,a.targetId,a.skillId,a.mode,a.ca
 export function legalPolicy(policy) {
   if (cache.has(policy)) return cache.get(policy);
   const adapted = { ...policy,
+    chooseAiRuleDecision(request, game) {
+      if (game && request.type === 'overflow') {
+        const id = request.playerId ?? request.player.id;
+        const player = game.player(id);
+        return game.resolveOverflow(id, adapted.chooseAiDiscard(game, id, player.hand.length - player.handLimit));
+      }
+      return policy.chooseAiRuleDecision(request, game);
+    },
+    chooseAiDiscard(game, id, count, valid = null) {
+      const preferred = policy.chooseAiDiscard(game, id, count, valid);
+      const player = game.player(id);
+      return valid === null && count === player.hand.length - player.handLimit
+        ? legalOverflowDiscard(game, id, preferred) : preferred;
+    },
     rankAiActions(game, id) {
       // A current policy may exclude useless candidates even during refresh or
       // fallback. Historical policies omit this hook and keep their full set.

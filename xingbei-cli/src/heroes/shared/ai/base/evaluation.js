@@ -20,7 +20,7 @@ export function cardScore(game, playerId, card, retained = []) {
   const elements = elementsOf(game, playerId, card);
   const copies = retained.filter(other => other.name === card.name).length;
   if (card.name === "darkStrike") return 160 - copies * 4;
-  if (card.name === "holyLight") return copies ? Math.max(35, 80 - copies * 18) : 140;
+  if (card.name === "holyLight") return copies ? Math.max(0, 80 - copies * 18) : 140;
   const sameElement = retained.some(other => other.type === "attack" && elementsOf(game, playerId, other).some(element => elements.includes(element)));
   const spells = retained.filter(other => other.type === "spell" && other.name !== "holyLight").length;
   const attacks = retained.filter(other => other.type === "attack").length;

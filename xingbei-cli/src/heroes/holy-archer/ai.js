@@ -21,7 +21,7 @@ export const holyArcherAi={
   if(skillId==='radiantCannon'){
    const enemy=player.team==='red'?'blue':'red';player.heroState.faith-=4+Math.max(0,next.teams[enemy].morale-next.teams[player.team].morale);player.heroState.cannon=0;
    for(const p of next.players){if(p.count>4)api.discardEstimate(next,p.id,p.count-4);else api.draw(next,p.id,4-p.count);}
-   next.teams[player.team].cups++;if(next.teams[player.team].morale<next.teams[enemy].morale)next.teams[player.team].morale=next.teams[enemy].morale;else next.teams[enemy].morale=next.teams[player.team].morale;return 0;
+   if(next.ruleVariant!=='morale-only-v1')next.teams[player.team].cups++;if(next.teams[player.team].morale<next.teams[enemy].morale)next.teams[player.team].morale=next.teams[enemy].morale;else next.teams[enemy].morale=next.teams[player.team].morale;return 0;
   }return null;
  },
  decisions:{

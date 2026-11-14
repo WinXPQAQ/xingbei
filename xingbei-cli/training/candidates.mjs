@@ -1,5 +1,6 @@
 // Rule-only enumeration. No policy import, score, top-k pruning, or fallback.
 import { combinations, cardSets, targetCounts, orderedSelections } from '../src/card-sets.js';
+import { overflowChoices } from '../src/inability.js';
 export { combinations };
 
 export function actionCandidates(game, playerId) {
@@ -70,8 +71,9 @@ export function decisionCandidates(game, request) {
   }
   if (request.type === 'target') return request.targets.map(target => target.id);
   if (request.type === 'overflow') {
-    const player = game.player(decisionPlayer(request));
-    return combinations(player.hand.map((_, index) => index), Math.max(0, player.hand.length - player.handLimit));
+    if (request.validSets) return request.validSets;
+    const choices = overflowChoices(game, decisionPlayer(request));
+    return combinations(choices.valid, choices.count).filter(choices.canSelect);
   }
   if (request.type === 'cardChoice') return [...(request.optional ? [null] : []), ...(request.validSets ?? combinations(request.valid, request.count))];
   if (request.type === 'weakness') return ['draw', 'skip'];

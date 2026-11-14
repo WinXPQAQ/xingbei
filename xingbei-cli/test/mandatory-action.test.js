@@ -17,9 +17,10 @@ test('sync, async and direct iterator reject ordinary end without mutating turn'
 });
 test('unfinished action and mandatory request cannot be bypassed via end',()=>{
  const g=make();g.player(0).handLimit=2;g.startTurn(0);
- const action=g.purchaseSteps(0,{overflow:'defer'}),step=action.next();
+ g.turn.beginAction(0,'spell').next();
+ const action=g.drawSteps(0,3,{overflow:'defer'}),step=action.next();
  assert.equal(step.value.type,'overflow');assert.throws(()=>g.endTurn(),/必须完成/);
- g.resolveOverflow(0,[0]);assert.equal(action.next().done,true);g.endTurn();
+ g.resolveOverflow(0,[0]);assert.equal(action.next().done,true);g.turn.endAction().next();g.endTurn();
  const h=make();h.startTurn(0);h.turn.beginAction(0,'special').next();
  assert.throws(()=>h.endTurn(),/必须完成/);
  const c=h.deck[0];h.moveCard(c.id,{zone:'hand',playerId:0});

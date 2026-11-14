@@ -42,6 +42,7 @@ export function* attackTraitsFor(
 
 // Remember feasible assignments for the confirmed cost. These references never
 // enter observation/serialization, and are consumed by the next move/exposure.
+// Predicates receive trait projections, so identity restrictions compare card IDs.
 export function rememberSelection(
   game,
   playerId,

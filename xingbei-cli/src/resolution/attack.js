@@ -17,7 +17,7 @@ export function* attackSteps(game, actorId, handIndex, targetId, options = {}) {
   while (true) {
     const context = { actorId: actor.id, sourceId: actor.id, targetId: target.id, card: attack, attackTraits,
       isCounter, previousAttackTraits, requiresCounterSkill, chainOriginId: actorId, chainDepth, amount: 2, actionSourceSkillId: isCounter ? null : (options.actionSourceSkillId ?? game.turn.state?.actionSourceSkillId), damageType: "attack", hit: true, shieldable: true, canCounter: true, canHolyLight: true, point: 1 };
-    game.log.push(`${actor.name}使用${isCounter ? "应战攻击" : "主动攻击"}${cardName(attack)}，目标是${target.name}`);
+    game.log.push(`${game.actorLabel(actor.id)}使用${isCounter ? "应战攻击" : "主动攻击"}${cardName(attack)}，目标是${game.actorLabel(target.id)}`);
     game.recordPublicAction({type:'attack',actorId:actor.id,targetId:target.id,card:attack.name,elements:[...attackTraits.elements],counter:isCounter});
     yield* game.trigger(Timing.ATTACK_DECLARED, context, options);
     // Point 1: attack properties are attached before a teammate may take the response.
@@ -26,6 +26,9 @@ export function* attackSteps(game, actorId, handIndex, targetId, options = {}) {
     target = game.player(context.targetId);
     context.point = 2;
     yield* game.trigger(Timing.ATTACK_DECISION, context, options);
+    // Point-1/2 skills may replace the traits object (e.g. Elf Sword Dance).
+    // Response offers and their validation must use the same effective traits.
+    attackTraits = context.attackTraits;
     if (context.forceHitRequested) { context.forcedHit = true; context.shieldable = false; }
     const counterTargets = game.players.filter(player => game.canAttackTarget(target.id, player.id, true) && player.id !== actor.id);
     const valid = playableCards(target).map((card, index) => ({ card, index, ...(target.hero.responseAttack?.(game, target, card) ? { asAttack: true } : {}) })).filter(item =>
@@ -39,11 +42,11 @@ export function* attackSteps(game, actorId, handIndex, targetId, options = {}) {
       if (context.forcedHit) context.hit = true;
       game.recordPublicAction({type:'attackResult',actorId:actor.id,targetId:target.id,card:attack.name,result:context.hit?'hit':context.cause??'blocked'});
       if (context.hit) {
-        game.log.push(`${actor.name}的${cardName(attack)}命中${target.name}`);
+        game.log.push(`${game.actorLabel(actor.id)}的${cardName(attack)}命中${game.actorLabel(target.id)}`);
         // Hit rewards precede hit skills and damage (timing workbook C149).
         // This also preserves the reward when a hit skill ends the game.
         const added = game.addStones(actor.team, isCounter ? "crystal" : "gem");
-        game.log.push(`${isCounter ? "应战攻击" : "主动攻击"}命中，${actor.name}一方战绩区${added ? `获得1个${isCounter ? "水晶" : "宝石"}` : "已满5个星石，未增加星石"}`);
+        game.log.push(`${isCounter ? "应战攻击" : "主动攻击"}命中，${game.actorLabel(actor.id)}一方战绩区${added ? `获得1个${isCounter ? "水晶" : "宝石"}` : "已满5个星石，未增加星石"}`);
         yield* game.trigger(Timing.ATTACK_HIT, context, options);
         if (!context.damageReplaced) yield* game.damageSteps(target.id, context.amount, { ...options, sourceId: actor.id, damageType: "attack", attackContext: context });
       } else {
@@ -71,7 +74,7 @@ export function* attackSteps(game, actorId, handIndex, targetId, options = {}) {
     yield* game.present();
     context.hit = false; context.cause = response.name;
     game.recordPublicAction({type:'response',actorId:target.id,sourceId:actor.id,targetId:nextTarget?.id??actor.id,card:response.name,elements:[...nextTraits.elements],result:response.name==='holyLight'?'cancel':'redirect'});
-    game.log.push(`${target.name}使用${response.name === "holyLight" ? cardName(response) + "抵消攻击" : "应战攻击" + cardName(response)}，原攻击未命中`);
+    game.log.push(`${game.actorLabel(target.id)}使用${response.name === "holyLight" ? cardName(response) + "抵消攻击" : "应战攻击" + cardName(response)}，原攻击未命中`);
     yield* game.trigger(Timing.ATTACK_MISS, context, options);
     yield* game.trigger(Timing.ATTACK_RESOLVED, context, options);
     if (response.name === "holyLight") {

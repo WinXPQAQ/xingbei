@@ -71,9 +71,10 @@ export class Assassin extends Hero {
         *resolve({ game, player, options }) {
           if (!(yield* game.offerSkill(player.id, "stealth", "潜行（消耗1宝石）"))) return;
           yield* game.paySkillEnergy(player.id, "gem");
-          const count = yield* choice(player.id, "stealth", "潜行：是否摸1张牌", [
-            { value: 0, label: "不摸牌" }, { value: 1, label: "摸1张牌" },
-          ], 0, { purpose: "draw" });
+          const mustDraw = player.hand.length === 0;
+          const count = yield* choice(player.id, "stealth", mustDraw ? "潜行：空手时必须摸1张牌" : "潜行：是否摸1张牌", [
+            ...(!mustDraw ? [{ value: 0, label: "不摸牌" }] : []), { value: 1, label: "摸1张牌" },
+          ], mustDraw ? 1 : 0, { purpose: "draw" });
           if (count) yield* game.drawSteps(player.id, count, {
             ...options, cause: { type: "directDraw", skillId: "stealth" },
           });

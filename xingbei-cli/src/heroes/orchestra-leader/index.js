@@ -2,6 +2,7 @@ import { Hero } from "../../hero-base.js";
 import { Timing } from "../../timing.js";
 import { choice, targets, enemies } from "../shared/actions.js";
 import { coveredCards, discardHand, seatOrder } from "../shared/covered.js";
+import { actionRequired, canContinueWithHand, safePaidRemovalChoices } from "../../inability.js";
 export class OrchestraLeader extends Hero {
   constructor(enabled = true) {
     super({ id: "orchestraLeader", name: "乐团首席" });
@@ -113,6 +114,10 @@ export class OrchestraLeader extends Hero {
       game.logSkill(p.id, "naplesSolo", "本回合不能增加音符，展示牌弃置");
       return;
     }
+    // During Concerto the total note count ends below three, so no new movement
+    // follows to replenish the hand. At action-end there is no such obligation.
+    const preserveAction=actionRequired(game,p.id);
+    const payments=preserveAction?safePaidRemovalChoices(game,p.id):null;
     if (
       game.canPayEnergy(p.id, "crystal") &&
       p.hand.length &&
@@ -120,13 +125,15 @@ export class OrchestraLeader extends Hero {
         p.id,
         "naplesSolo",
         "那不勒斯独奏：1水晶，用手牌替换新音符，本回合不能再增加音符",
-        { card, count: game.activeTrigger?.timing === Timing.ATTACK_HIT ? 1 : 0 },
+        { card, count: game.activeTrigger?.timing === Timing.ATTACK_HIT ? 1 : 0,
+          blockedReason: payments && !payments.length ? "你将无法行动：独奏必须保留合法后续行动" : null },
       ))
     ) {
-      yield* game.paySkillEnergy(p.id, "crystal");
+      yield* game.paySkillEnergy(p.id, "crystal", 1, {allowedPayments:payments?.map(option=>option.payment)});
       game.moveCard(card.id, { zone: "discard" });
-      const selected = yield* game.chooseHandCards(p.id, 1, () => true, {
+      const selected = yield* game.chooseHandCards(p.id, 1, card=>!preserveAction || canContinueWithHand(game,p.id,p.hand.filter(c=>c!==card)), {
         skillId: "soloCard",
+        purpose: "cover",
       });
       card = selected[0];
       this.state.notesLocked = true;

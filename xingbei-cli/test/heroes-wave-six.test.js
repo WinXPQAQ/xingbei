@@ -45,6 +45,13 @@ test('阴阳：同命格异系应战，转换后鬼火伤害；式神咒束两�
   return {index:0,targetId:2};
  });
  assert.equal(g.player(3).hand.length,before);assert.equal(counter.location.zone,'discard');assert.equal(g.stoneCounts('red').gem,1);g.assertCardLocations();
+ // A trait replacement before the response must also govern validation.
+ const shifted=make('yinYangMaster');shifted.player(0).hero.state.form='shikigami';shifted.addStones('red','gem',2);
+ take(shifted,1,c=>c.name==='earthStrike'&&c.fates.includes('S'));
+ const wind=take(shifted,0,c=>c.name==='windStrike'&&c.fates.includes('Y'));
+ const source=shifted.player(1).hero;source.addSkills({id:'replaceAttackTraits',...source.onOwnAttack([Timing.ATTACK_DECLARED]),resolve({context}){context.attackTraits={...context.attackTraits,elements:['wind']};}});
+ run(shifted.actionSteps(1,0,3),r=>r.skillId==='shikigamiBinding'?{index:0,targetId:2}:base(r));
+ assert.equal(wind.location.zone,'discard');shifted.assertCardLocations();
  for(const restriction of ['forceHitRequested','canCounter',null]){
   const h=make('yinYangMaster'),owner=h.player(0);owner.hero.state.form='shikigami';h.addStones('red','gem',2);
   take(h,1,c=>c.name==='fireStrike');const kept=take(h,0,c=>c.name==='fireStrike');

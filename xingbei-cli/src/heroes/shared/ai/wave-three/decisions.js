@@ -82,7 +82,8 @@ export function chooseAiResponse(game, request) {
       const next=copy(state), selected=next.players[id].hand.find((c)=>c.id===card.id);
       spend(next,id,[selected]);
       const targetId=request.nextTarget?.id??null;
-      const score=(card.name==="holyLight"?evaluate(next):sumBranches(magicBranches(next,id,targetId,amount+1)))-evaluate(state)-cardCost(game,id,[card]);
+      const score=(card.name==="holyLight"?evaluate(next):sumBranches(magicBranches(next,id,targetId,amount+1)))-evaluate(state)-cardCost(game,id,[card])
+        +(profile.responseBonus?.({game,id,state,card,targetId,request},scoringApi)??0);
       if(score>best.score)best={decision:{index:entry.index,targetId},score};
     }
   }

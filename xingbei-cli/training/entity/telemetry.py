@@ -5,7 +5,9 @@ import subprocess
 import threading
 import time
 class Telemetry:
-    def __init__(self,directory):self.directory=directory;self.stop=threading.Event()
+    def __init__(self,directory,process_id=None):
+        self.directory=directory;self.stop=threading.Event()
+        self.process_id=os.getpid() if process_id is None else process_id
     def __enter__(self):
         self.thread=threading.Thread(target=self.sample,daemon=True);self.thread.start();return self
     def sample(self):
@@ -13,7 +15,7 @@ class Telemetry:
             try:
                 # Descendants of this controller only; exclude unrelated GPU services.
                 rows=subprocess.check_output(['ps','-eo','pid=,ppid='],text=True).splitlines()
-                descendants={os.getpid()}
+                descendants={self.process_id}
                 pairs=[tuple(map(int,r.split())) for r in rows]
                 for _ in range(6):descendants.update(pid for pid,ppid in pairs if ppid in descendants)
                 output=subprocess.check_output(['nvidia-smi','pmon','-s','um','-c','1'],text=True,timeout=10)

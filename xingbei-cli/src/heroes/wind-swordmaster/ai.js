@@ -11,7 +11,9 @@ export function windRefineBonus({ state, id, action }) {
   const before = futureWindPlan(p), after = futureWindPlan(p,{energy:p.energy.gem+p.energy.crystal+amount});
   // Refining spends this turn. Reward a newly prepared third attack, not an
   // already funded sequence or accumulating charges without enough cards.
-  return before.count < 3 && after.count >= 3 ? 18 : 0;
+  // A single stone still has a small acquisition cost, even when it unlocks
+  // three attacks. Preparing the same route with two stones earns the full value.
+  return before.count < 3 && after.count >= 3 ? (amount === 1 ? 17.5 : 18) : 0;
 }
 export const heroAI = {
   specialties: ["galeArt", "stormArt"],

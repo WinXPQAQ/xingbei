@@ -2,6 +2,9 @@
 import { cardContents } from "/web/render.js";
 import { CARD_NAMES } from "/src/cards.js";
 
+// Keep the existing event order and motion, with shorter presentation time.
+const ANIMATION_DURATION_SCALE = 0.75;
+
 let assetPromise;
 export function preloadAnimationAssets() {
   assetPromise ??= Promise.all([...Object.keys(CARD_NAMES).map(name => `/assets/card/${name}.png`), "/theme/cardback.png", "/assets/stones/gem.png", "/assets/stones/crystal.png"].map(src => {
@@ -15,24 +18,25 @@ export function presentationView(snapshot, game) {
   const card = data => ({ ...data, getTraits: () => ({ elements: data.elements, fates: data.fates }) });
   const players = snapshot.players.map(data => ({ ...data, hand: data.hand.map(card), covered: (data.covered ?? []).map(card),
     getStatus: id => data.statuses.filter(item => item.attachment?.effectId === id) }));
+  for (const player of players) if (player.hero.id === "chronicler") {
+    player.hero = { ...player.hero, revealedCards: snapshot.field.filter(data => data.id === player.hero.state.castingCardId).map(card) };
+  }
   return { ...snapshot, players, deck: { length: snapshot.deckCount }, discard: { length: snapshot.discardCount },
     player: id => players[id], getHealingLimit: id => players[id].healingLimit, legalTargets: (id, data) => game.legalTargets(id, game.cards.get(data.id)),
-    canDrawSpecial: id => players[id].hand.length <= 3,
+    canDrawSpecial: id => players[id].hand.length <= 3 && players[id].hand.length + 3 <= players[id].handLimit,
     stoneCounts: team => ({ gem: snapshot.teams[team].achievements.filter(kind => kind === "gem").length,
       crystal: snapshot.teams[team].achievements.filter(kind => kind === "crystal").length, total: snapshot.teams[team].achievements.length }) };
 }
 
 export class AnimationDirector {
-  constructor(arena, session, { mode = "normal" } = {}) {
-    this.arena = arena; this.session = session; this.mode = mode;
+  constructor(arena, session, { mode = "normal", perspective = () => 0 } = {}) {
+    this.arena = arena; this.session = session; this.mode = mode; this.perspective = perspective;
     this.origins = new Map(); this.paused = false; this.resume = null;
     this.active = new Set(); this.table = []; this.trace = []; this.playing = false;
     this.reduced = matchMedia("(prefers-reduced-motion: reduce)");
     this.layer = document.createElement("div"); this.layer.className = "animation-layer";
     this.layer.setAttribute("aria-hidden", "true"); arena.append(this.layer);
-    this.onVisibility = () => { if (document.hidden) { this.pause(false); this.finish(); } };
     this.onResize = () => this.finish();
-    document.addEventListener("visibilitychange", this.onVisibility);
     window.addEventListener("resize", this.onResize);
   }
   get mode() { return this._mode; }
@@ -40,7 +44,6 @@ export class AnimationDirector {
   get instant() { return this.mode === "off" || this.reduced.matches || document.hidden; }
   dispose() {
     this.finish(); this.layer.remove();
-    document.removeEventListener("visibilitychange", this.onVisibility);
     window.removeEventListener("resize", this.onResize);
   }
   finish() { for (const animation of this.active) animation.finish(); }
@@ -74,7 +77,7 @@ export class AnimationDirector {
   animate(node, frames, duration, { remove = false, easing = "ease-in-out" } = {}) {
     if (this.instant) { if (remove) node.remove(); return Promise.resolve(); }
     return this.session.wait(resolve => {
-      const animation = node.animate(frames, { duration, easing, fill: "forwards" });
+      const animation = node.animate(frames, { duration: duration * ANIMATION_DURATION_SCALE, easing, fill: "forwards" });
       this.active.add(animation);
       animation.finished.then(() => resolve(), () => {}).catch(() => {});
       return () => { this.active.delete(animation); animation.cancel(); if (remove) node.remove(); };
@@ -129,13 +132,13 @@ export class AnimationDirector {
     try {
       const point = this.point(this.player(event.playerId));
       if (event.type === "move") {
-        const from = event.from.zone === "hand" && event.from.playerId === 0
-          ? this.origins.get(event.card.id) || this.point(this.arena.querySelector(`[data-card-id="${event.card.id}"]`) || this.player(0))
+        const from = event.from.zone === "hand" && event.from.playerId === this.perspective()
+          ? this.origins.get(event.card.id) || this.point(this.arena.querySelector(`[data-card-id="${event.card.id}"]`) || this.player(this.perspective()))
           : event.from.playerId != null ? this.point(this.player(event.from.playerId)) : this.center();
         this.origins.delete(event.card.id);
-        const face = event.visibility !== "hidden" && (event.to.zone !== "hand" || event.to.playerId === 0);
+        const face = event.visibility !== "hidden" && (event.to.zone !== "hand" || event.to.playerId === this.perspective());
         const previous = this.table.find(node => node.dataset.cardId === event.card.id);
-        if (previous && event.to.zone === "status") {
+        if (previous) {
           this.table = this.table.filter(node => node !== previous); previous.remove();
         }
         const node = this.clone(event.card, face);
@@ -159,9 +162,9 @@ export class AnimationDirector {
         render(event.view);
         await this.clear();
       } else if (event.type === "draw") {
-        const nodes = event.cards.map(card => this.clone(card, event.playerId === 0));
+        const nodes = event.cards.map(card => this.clone(card, event.playerId === this.perspective()));
         render(event.view);
-        const arrivals = event.playerId === 0 ? event.cards.map(card => this.arena.querySelector(`#hand [data-card-id="${card.id}"]`)) : [];
+        const arrivals = event.playerId === this.perspective() ? event.cards.map(card => this.arena.querySelector(`#hand [data-card-id="${card.id}"]`)) : [];
         for (const node of arrivals) if (node) node.style.visibility = "hidden";
         try {
           await Promise.all(nodes.map((node, index) => this.travel(node,
@@ -169,8 +172,8 @@ export class AnimationDirector {
             arrivals[index] ? this.point(arrivals[index]) : { x: point.x + (index - (nodes.length - 1) / 2) * 20, y: point.y }, 800, true)));
         } finally { for (const node of arrivals) if (node) node.style.visibility = ""; }
       } else if (event.type === "discard") {
-        const cards = event.cards.map(card => ({ card, from: event.playerId === 0
-          ? this.origins.get(card.id) || this.point(this.arena.querySelector(`[data-card-id="${card.id}"]`) || this.player(0)) : point }));
+        const cards = event.cards.map(card => ({ card, from: event.playerId === this.perspective()
+          ? this.origins.get(card.id) || this.point(this.arena.querySelector(`[data-card-id="${card.id}"]`) || this.player(this.perspective())) : point }));
         this.origins.clear();
         render(event.view);
         await Promise.all(cards.map(({ card, from }, index) => {
@@ -186,14 +189,14 @@ export class AnimationDirector {
             const source = this.point(this.player(event.sourceId));
             const length = Math.hypot(point.x - source.x, point.y - source.y) || 1;
             const dx = (point.x - source.x) * 15 / length, dy = (point.y - source.y) * 15 / length;
-            await Promise.all([this.animate(avatar, [{ transform: "translate(0,0)" }, { transform: `translate(${dx}px,${dy}px)`, offset: .3 }, { transform: "translate(0,0)" }], 400), this.popup(point, String(event.amount), "damage")]);
+            await Promise.all([this.animate(avatar, [{ translate: "0px 0px" }, { translate: `${dx}px ${dy}px`, offset: .3 }, { translate: "0px 0px" }], 400), this.popup(point, String(event.amount), "damage")]);
           } else if (event.amount) await this.popup(point, String(event.amount), "damage");
         }
         if (event.type === "effect") await this.popup(point, CARD_NAMES[event.effectId] || event.effectId, "effect");
         if (event.type === "miss") await this.popup(point, event.cause === "holyLight" ? "圣光 · 未命中" : "圣盾 · 未命中", "protection");
         if (event.type === "turn") {
           const avatar = this.player(event.playerId)?.querySelector(".avatar");
-          if (avatar) await this.animate(avatar, [{ transform: "scale(1)" }, { transform: "scale(1.05)", offset: .4 }, { transform: "scale(1)" }], 400);
+          if (avatar) await this.animate(avatar, [{ scale: "1" }, { scale: "1.05", offset: .4 }, { scale: "1" }], 400);
         }
         if (event.type === "morale" || event.type === "stones" || event.type === "cup") {
           const team = document.querySelector(`#${event.team}-team`);

@@ -19,9 +19,8 @@ export class ApprenticeProducer extends Elementalist {
         name: "元子吸收",
         ...this.onDamage([Timing.DAMAGE_BEFORE], "actor", ["spell"]),
         filter: ({ player }) => player.hero.state.atoms < 3,
-        *resolve({ game, player }) {
-          if (yield* game.offerSkill(player.id, "atomAbsorption", "元子吸收"))
-            player.hero.gainAtom(game, player);
+        resolve({ game, player }) {
+          player.hero.gainAtom(game, player);
         },
       },
       {

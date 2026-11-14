@@ -127,7 +127,8 @@ export class Heretic extends Hero {
         id: "sacrifice",
         name: "献祭",
         ...this.onOwnTurn([Timing.ACTIVATION]),
-        activationEnablesAction: () => true,
+        activationEnablesAction: ({ game, player }) => player.hand.length > 0 || game.hasOrdinaryContinuation(player.id),
+        activationBlockedReason: ({ game, player }) => !player.hand.length && !game.hasOrdinaryContinuation(player.id) ? "你将无法行动：空手且没有其他行动时不能发动献祭" : null,
         filter: ({ game, player }) =>
           hero.active(game) && hero.prophecies(player).length > 0,
         *resolve({ game, player, options }) {
@@ -136,6 +137,7 @@ export class Heretic extends Hero {
               player.id,
               "sacrifice",
               "献祭：猜测预言顶牌系别",
+              { blockedReason: !player.hand.length && !game.hasOrdinaryContinuation(player.id) ? "你将无法行动：空手且没有其他行动时不能发动献祭" : null },
             ))
           )
             return;

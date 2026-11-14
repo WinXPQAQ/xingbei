@@ -78,7 +78,7 @@ export class Fighter extends Hero {
           if (!(yield* game.offerSkill(player.id, 'warGodBody', '斗神天驱'))) return;
           yield* game.paySkillEnergy(player.id, 'crystal');
           if (player.hand.length > 3) {
-            const cards = yield* game.chooseHandCards(player.id, player.hand.length - 3, () => true, { skillId: 'warGodBody', title: '斗神天驱：暗弃到3张牌' });
+            const cards = yield* game.chooseHandCards(player.id, player.hand.length - 3, () => true, { skillId: 'warGodBody', title: '斗神天驱：暗弃到3张牌', preserveAction: true });
             yield* discardCost(game, player, cards, 'warGodBody', options, 'hidden');
           }
           game.changeHealing(player.id, 2);

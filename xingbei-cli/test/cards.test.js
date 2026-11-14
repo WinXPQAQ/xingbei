@@ -203,7 +203,24 @@ test("魔弹每次真正传到玩家时才请求响应，可多轮选择不同�
   assert.match(game.log.join(" "), /伤害增至3/);
 });
 
-test("购买和合成都要求至多3张手牌并摸3张", () => {
+test("购买和合成都要求至多3张手牌且有3张空位", () => {
+  for (const limit of [2, 4, 5, 6]) {
+    const limited = new Game({ heroRules: false, shuffleDeck: false });
+    limited.player(0).handLimit = limit;
+    limited.addStones("red", "gem", 3);
+    for (let count = 0; count <= 4; count++) {
+      const allowed = count <= 3 && count + 3 <= limit;
+      assert.equal(limited.canDrawSpecial(0), allowed);
+      if (!allowed) {
+        assert.throws(() => limited.purchase(0), RuleError);
+        assert.throws(() => limited.synthesize(0, 3), RuleError);
+        assert.equal(limited.player(0).hand.length, count);
+        assert.equal(limited.stoneCounts("red").total, 3);
+        assert.equal(limited.teams.red.cups, 0);
+      }
+      limited.moveCard(limited.deck.at(-1).id, { zone: "hand", playerId: 0 });
+    }
+  }
   const game = new Game({ heroRules: false, shuffleDeck: false });
   setHand(game, 0, [card("holyLight", "light")]);
   game.purchase(0);
@@ -288,7 +305,7 @@ test("合成第五个星杯强制获胜", () => {
   assert.equal(game.winner, "red");
 });
 
-test("合成选择：同类星石或总数恰好3时自动，混合且超过3时询问合法组合", () => {
+test("合成优先水晶，对方有冒险家时保留组合选择", () => {
   const onlyGems = new Game({ heroRules: false, shuffleDeck: false });
   onlyGems.addStones("red", "gem", 5);
   assert.deepEqual(onlyGems.synthesisOptions("red"), { automatic: true, gemCount: 3, choices: [3] });
@@ -301,6 +318,8 @@ test("合成选择：同类星石或总数恰好3时自动，混合且超过3时
   const mixed = new Game({ heroRules: false, shuffleDeck: false });
   mixed.addStones("red", "gem", 2);
   mixed.addStones("red", "crystal", 3);
+  assert.deepEqual(mixed.synthesisOptions("red"), { automatic: true, gemCount: 0, choices: [0] });
+  mixed.player(1).hero.id = "adventurer";
   assert.deepEqual(mixed.synthesisOptions("red"), { automatic: false, choices: [0, 1, 2] });
 });
 

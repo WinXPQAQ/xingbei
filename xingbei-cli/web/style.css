@@ -67,6 +67,9 @@ button:disabled { cursor: default; }
 .dev-tools select, .dev-tools button { font: inherit; padding: 5px; }
 .dev-tools label { display: flex; align-items: center; gap: 4px; }
 .test-version { position: fixed; top: 8px; left: 50%; transform: translateX(-50%); z-index: 51; padding: 3px 8px; border-radius: 4px; background: #222c; color: #eee; font: 12px sans-serif; white-space: nowrap; pointer-events: none; }
+#game-record-status { display: block; margin-top: 2px; text-align: center; color: #b8e9bd; }
+#model-connection-status { display: block; margin-top: 2px; text-align: center; color: #ffe3a2; }
+#model-connection-status[hidden] { display: none; }
 
 @media (min-width: 1150px) { .dialog { width: 630px; left: calc(50% - 315px); } }
 
@@ -90,3 +93,13 @@ button:disabled { cursor: default; }
 .roster-picker select { min-width: 0; width: 100%; padding: 7px; font: inherit; color: #eee; background: #333; border: 1px solid #888; border-radius: 4px; }
 .controlled-seat { flex-basis: 100%; text-align: right; font-size: 16px; text-shadow: 0 1px 2px black; }
 .controlled-seat[hidden] { display: none; }
+
+.card-fate, .card-element { position: absolute; left: 3px; z-index: 4; padding: 1px 3px; border-radius: 3px; background: #17130dde; color: #fff; font: bold 16px/1.2 sans-serif; pointer-events: none; }
+.card-fate { top: 3px; }
+.card-element { bottom: 3px; }
+
+.roster-seat { display: block; margin: 8px 0; }
+.roster-picker label > button { padding: 3px 6px; flex-shrink: 0; }
+.roster-picker label > select { min-width: 0; }
+
+.roster-picker .roster-self > span { color: #ffe5a0; }

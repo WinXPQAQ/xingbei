@@ -1,23 +1,146 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { Game, Timing } from '../../src/engine.js';
+import { AI_POLICY_VERSION } from '../../src/ai.js';
 import { DEFAULT_HERO_IDS, WAVE_TWO_HERO_IDS, WAVE_THREE_HERO_IDS, HERO_DEFINITIONS } from '../../src/hero.js';
 import { actionCandidates } from '../candidates.mjs';
 import { buildDecisionSpace } from '../decision-space.mjs';
+import { resolveDecision } from '../decision-runner.mjs';
 import { driveGame } from '../driver.mjs';
 import { teacherIndex } from '../teacher.mjs';
-import { encodeEntities } from './observation.mjs';
+import { createEntityEncoder, encodeEntities } from './observation.mjs';
+import { createTeacherSampler } from './teacher-sampling.mjs';
 import { HERO_IDS, roster } from './rosters.mjs';
 import { heroFields } from './hero-state.mjs';
+import { createWireEncoder } from './wire.mjs';
+import { estimateActionCapabilities, ACTION_CAPABILITY_SYMBOLS } from '../../src/ai/action-capability.js';
 const rosters = [DEFAULT_HERO_IDS, WAVE_TWO_HERO_IDS, WAVE_THREE_HERO_IDS];
+
+test('typed binary writer preserves exact frame bytes for both index widths',async()=>{
+  const saved=process.env.XINGBEI_WIRE_MODE;
+  try{
+    process.env.XINGBEI_WIRE_MODE='legacy';
+    const legacy=await import('./binary-wire.mjs?pipeline-legacy');
+    process.env.XINGBEI_WIRE_MODE='typed';
+    const typed=await import('./binary-wire.mjs?pipeline-typed');
+    for(const feature of [3,70000]){
+      const observation={schema:'entities-v7',question:0,vocabulary:'test',
+        entities:[[[1,2],[1,Math.log1p(2)],[1],[0]]],
+        candidates:[[[feature,1],[-0,-1.5],[],[]]]};
+      const a=legacy.encodeTensorWire(observation),b=typed.encodeTensorWire(observation);
+      assert.deepEqual(b,a);
+      assert.equal(b.observation.indexBytes,feature===3?2:4);
+    }
+  }finally{
+    if(saved===undefined)delete process.env.XINGBEI_WIRE_MODE;else process.env.XINGBEI_WIRE_MODE=saved;
+  }
+});
+
+test('request-scoped encoding preserves independent samples and bounded complete teacher chains', async () => {
+  const game = new Game({ seed: 211109001, heroRules: false }).setup();
+  const player = game.player(0);
+  while (player.hand.length < 12) game.moveCard(game.deck[0].id, { zone: 'hand', playerId: 0 });
+  player.handLimit = 6;
+  const encode = createEntityEncoder(), roots = [], scopes = [], snapshots = [];
+  const plainWire=createWireEncoder(['<pad>','<unknown>']);
+  const cachedWire=createWireEncoder(['<pad>','<unknown>'],{cachePrefix:true});
+  const choose = input => {
+    roots.push(input.rootRequest);
+    scopes.push(input.decisionScope);
+    const observation = encode(input);
+    assert.deepEqual(observation, encodeEntities(input));
+    assert.deepEqual(cachedWire(observation),plainWire(observation));
+    const wire=cachedWire(observation);
+    wire.entities[0][0][0]=999;
+    assert.deepEqual(cachedWire(encode(input)),plainWire(observation));
+    snapshots.push(JSON.stringify(observation));
+    observation.entities[0].numbers.probe = 999;
+    const refs = observation.entities.find(token => Object.values(token.refs).some(values => values.length));
+    Object.values(refs.refs).find(values => values.length).push(999);
+    assert.deepEqual(encode(input), encodeEntities(input));
+    return teacherIndex(input, AI_POLICY_VERSION);
+  };
+  const request = { type: 'overflow', playerId: 0 };
+  const before = player.hand.map(card => card.id);
+  const discarded = await resolveDecision(game, 0, request, choose);
+  assert.equal(discarded.length, 6);
+  assert.deepEqual(player.hand.map(card => card.id), before);
+  assert.equal(new Set(scopes).size, 1);
+  assert.ok(roots.every(root => root === request));
+  assert.equal(new Set(snapshots).size, 6);
+  const firstScope = scopes[0];
+  game.moveCard(player.hand[0].id, { zone: 'discard' });
+  await resolveDecision(game, 0, request, choose);
+  assert.notEqual(scopes.at(-1), firstScope);
+
+  const scope = {}, root = { type: 'skillChoice' };
+  const input = { game, playerId: 0, rootRequest: root, decisionScope: scope,
+    request: { type: 'skillChoice', playerId: 0 }, candidates: [true, false] };
+  const initial = encode(input);
+  input.request.revealedCards = [game.player(1).hand[0]];
+  assert.notDeepEqual(encode(input), initial);
+  assert.deepEqual(encode(input), encodeEntities(input));
+  game.moveCard(game.deck[0].id, { zone: 'hand', playerId: 0 });
+  input.rootRequest = { type: 'skillChoice' };
+  assert.deepEqual(encode(input), encodeEntities(input));
+
+  const config = { version: 'stratified-chains-v1', samplesPerSeat: 2, chainSteps: 3, bytesPerGame: 30000 };
+  const sample = () => {
+    const sampler = createTeacherSampler(211109001, config);
+    for (let seat = 0; seat < 6; seat++) for (const steps of [3, 4, 1]) {
+      const rootRequest = {};
+      for (let step = 0; step < steps; step++) {
+        const observation = { schema: 'entities-v7', question: 0,
+          entities: [{ kind: 'question', categorical: { type: 'cardChoice', stage: String(step),
+            payload: steps === 1 ? 'x'.repeat(config.bytesPerGame) : '' }, numbers: {}, refs: {} }],
+          candidates: [{ kind: 'candidate', categorical: {}, numbers: {}, refs: {} }] };
+        sampler.add({ playerId: seat, rootRequest }, 0, observation);
+      }
+    }
+    return sampler.finish();
+  };
+  const retained = sample();
+  assert.deepEqual(retained, sample());
+  assert.ok(retained.sampling.retainedBytes <= config.bytesPerGame);
+  for (const coverage of retained.sampling.coverage) {
+    assert.equal(coverage.eligibleChains, 1);
+    assert.equal(coverage.omittedChains, 2);
+    assert.equal(coverage.oversizedSamples, 1);
+    assert.equal(coverage.retainedChain.steps, 3);
+    assert.deepEqual(retained.decisions.filter(row => row.sample.chain === coverage.retainedChain.id)
+      .map(row => row.sample.step), [0, 1, 2]);
+  }
+});
 
 test('entity boundary hides opponent hands/deck/logs at every seat; contracts cover registered heroes', async () => {
   assert.deepEqual(Object.keys(heroFields).sort(), Object.keys(HERO_DEFINITIONS).sort());
+  const plain = { observer: 0, teams: { red: { morale: 10 }, blue: { morale: 10 } },
+    players: DEFAULT_HERO_IDS.map((hero, id) => ({ id, hero, team: [0, 3, 4].includes(id) ? 'red' : 'blue',
+      count: 1, limit: 6, energy: { gem: 0, crystal: 0 }, healing: 0,
+      heroState: {}, skillIds: ['bloodBlade'],
+      ...(id === 0 ? { hand: [{ name: 'fireStrike', type: 'attack', elements: ['fire'], uniqueSkills: ['bloodBlade'] }] } : {}),
+    })) };
+  for (const player of plain.players.slice(1)) for (const key of ['hand', 'known'])
+    Object.defineProperty(player, key, { get() { throw new Error('Capability accessed another hand'); } });
+  const knownAttack = estimateActionCapabilities(plain);
+  assert.equal(knownAttack[0].numbers.abilityOwnUniqueAttacks, 1);
+  assert.ok(knownAttack.every(entry => entry.numbers.abilityCountEstimate > 0));
+  for (const entry of knownAttack) for (const [key, value] of Object.entries(entry.numbers)) {
+    assert.ok(ACTION_CAPABILITY_SYMBOLS.includes(`number:${key}`));
+    assert.ok(Number.isFinite(value));
+  }
+  plain.players[0].hand = [{ name: 'holyLight', type: 'spell', elements: ['light'], uniqueSkills: [] }];
+  const knownLight = estimateActionCapabilities(plain);
+  assert.equal(knownLight[0].numbers.abilityHolyLights, 1);
+  assert.equal(knownLight[0].numbers.abilityAttackElements, 0);
+  assert.equal(knownAttack[0].numbers.abilityCountEstimate, knownLight[0].numbers.abilityCountEstimate);
+  assert.deepEqual(knownAttack.slice(1), knownLight.slice(1));
   const seats=new Map(HERO_IDS.map(id=>[id,Array(6).fill(0)]));
   for(let i=0;i<HERO_IDS.length;i++) {
     const ids=roster(i);
     assert.equal(new Set(ids).size,6);
     assert.ok(!ids.includes('magicArcherEX'));
+    assert.ok(!ids.includes('lawgiver'));
     ids.forEach((id,seat)=>seats.get(id)[seat]++);
   }
   assert.ok([...seats.values()].every(counts=>counts.every(count=>count===1)));

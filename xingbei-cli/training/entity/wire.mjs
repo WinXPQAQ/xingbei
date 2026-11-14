@@ -1,9 +1,11 @@
 import { createHash } from 'node:crypto';
-import { ENTITY_SCHEMA } from './observation.mjs';
+import { ENTITY_SCHEMA, entitySnapshotKey } from './observation.mjs';
 
 // Fixed checkpoint vocabulary: no hashing, learning or hidden state here.
 // This is a transport representation of exactly the model's sparse features.
-export function createWireEncoder(symbols) {
+export function createWireEncoder(symbols, { delta = false, cachePrefix = false } = {}) {
+  let previousKey, prefixId = 0;
+  let packedKey, packedPrefix;
   if (!Array.isArray(symbols) || symbols[0] !== '<pad>' || symbols[1] !== '<unknown>' ||
       new Set(symbols).size !== symbols.length || symbols.some(s => typeof s !== 'string'))
     throw new Error('Invalid entity vocabulary');
@@ -30,7 +32,25 @@ export function createWireEncoder(symbols) {
   };
   return observation => {
     if (observation.schema !== ENTITY_SCHEMA) throw new Error('Incompatible entity schema');
-    return { schema: ENTITY_SCHEMA, wire: 'sparse-v1', vocabulary, question: observation.question,
-      entities: observation.entities.map(pack), candidates: observation.candidates.map(pack) };
+    const question = observation.entities[observation.question].categorical;
+    const snapshotKey = entitySnapshotKey(observation);
+    const fresh = !snapshotKey || snapshotKey !== previousKey;
+    if (delta && fresh) { previousKey = snapshotKey; prefixId++; }
+    const prefix = delta && fresh ? observation.entities.slice(0, observation.question).map(pack) : null;
+    let entities;
+    if(cachePrefix&&!delta&&snapshotKey){
+      if(packedKey!==snapshotKey){
+        packedKey=snapshotKey;
+        packedPrefix=observation.entities.slice(0,observation.question).map(pack);
+      }
+      // A caller owns its arrays. Reuse the expensive feature work, never
+      // expose mutable cached arrays to another observation.
+      entities=[...packedPrefix.map(token=>token.map(values=>values.slice())),
+        ...observation.entities.slice(observation.question).map(pack)];
+    }else entities=(delta?observation.entities.slice(observation.question):observation.entities).map(pack);
+    return { schema: ENTITY_SCHEMA, wire: delta ? 'sparse-delta-v1' : 'sparse-v1', vocabulary, question: observation.question,
+      ...(delta ? { prefixId, ...(fresh ? { prefix } : {}) } : {}),
+      decision_type: question.type, decision_stage: question.stage ?? 'complete', decision_skill: question.skill ?? null,
+      entities, candidates: observation.candidates.map(pack) };
   };
 }

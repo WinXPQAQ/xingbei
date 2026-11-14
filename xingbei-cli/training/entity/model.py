@@ -6,10 +6,11 @@ An entity is encoded once; candidate pointers reuse contextual entity vectors.
 import math
 import hashlib
 import json
+import os
 import torch
 from torch import nn
 
-SCHEMA = 'entities-v5'
+SCHEMA = 'entities-v7'
 
 
 def features(token):
@@ -52,13 +53,56 @@ def pack_observation(observation, vocabulary):
         links = [(vocabulary.id('ref:' + role + (f':{i}' if role == 'targets' else '')), pointer)
                  for role, pointers in token['refs'].items() for i, pointer in enumerate(pointers)]
         return [[p[0] for p in pairs], [p[1] for p in pairs], [p[0] for p in links], [p[1] for p in links]]
+    question = observation['entities'][observation['question']]['categorical']
     return dict(schema=SCHEMA, wire='sparse-v1', vocabulary=vocabulary.digest,
                 question=observation['question'],
-                decision_type=observation['entities'][observation['question']]['categorical']['type'],
+                decision_type=question['type'], decision_stage=question.get('stage', 'complete'),
+                decision_skill=question.get('skill'),
                 entities=[pack(t) for t in observation['entities']], candidates=[pack(t) for t in observation['candidates']])
 
 
+def prepare_observation(observation, vocabulary):
+    if observation.get('wire') == 'tensor-v1':
+        if observation['schema'] != SCHEMA or observation['vocabulary'] != vocabulary.digest:
+            raise ValueError('Tensor observation/checkpoint mismatch')
+        return observation['tensors']
+    return collate([observation], vocabulary)
+
+
+def collate_prepared(entries, device='cpu'):
+    if str(device).startswith('cuda') and os.environ.get('XINGBEI_COLLATE_MODE') == 'gpu':
+        from batching import collate_gpu
+        return collate_gpu(entries, device)
+    if len(entries) == 1:
+        return {key: value.to(device, copy=True) if isinstance(value, torch.Tensor) else value
+                for key, value in entries[0].items()}
+    entities = max(entry['entities'] for entry in entries)
+    actions = max(entry['actions'] for entry in entries)
+    width = entities + actions
+    entity_counts = torch.tensor([entry['entities'] for entry in entries])
+    action_counts = torch.tensor([entry['actions'] for entry in entries])
+    batch = {key: torch.cat([entry[key] for entry in entries])
+             for key in ('rows', 'ids', 'weights', 'source', 'target', 'roles', 'question')}
+    # Repeat each observation's boundary, candidate padding and batch offset
+    # across its features/references, then adjust all indices in two operations.
+    layout = torch.stack((entity_counts, entities - entity_counts,
+                          torch.arange(len(entries)) * width), dim=1)
+    for key in ('rows', 'source'):
+        lengths = torch.tensor([entry[key].numel() for entry in entries])
+        positions = torch.repeat_interleave(layout, lengths, dim=0, output_size=batch[key].numel())
+        batch[key] += (batch[key] >= positions[:, 0]) * positions[:, 1] + positions[:, 2]
+        if key == 'source':
+            batch['target'] += positions[:, 2]
+    columns = torch.arange(width).unsqueeze(0)
+    mask = ((columns >= entity_counts.unsqueeze(1))
+            & ((columns < entities) | (columns >= entities + action_counts.unsqueeze(1))))
+    return {**{key: value.to(device) for key, value in batch.items()},
+            'mask': mask.to(device), 'entities': entities, 'actions': actions}
+
+
 def collate(observations, vocabulary, device='cpu'):
+    if any(o.get('wire') == 'tensor-v1' for o in observations):
+        return collate_prepared([prepare_observation(o, vocabulary) for o in observations], device)
     if any(o['schema'] != SCHEMA for o in observations):
         raise ValueError('Incompatible observation schema')
     batch = len(observations)
@@ -81,12 +125,17 @@ def collate(observations, vocabulary, device='cpu'):
                     feature_ids, feature_weights, roles, pointers = token
                     if len(feature_ids) != len(feature_weights) or len(roles) != len(pointers):
                         raise ValueError('Malformed sparse token')
-                    entries = zip(feature_ids, feature_weights)
-                    relations = zip(roles, pointers)
-                else:
-                    entries = ((vocabulary.id(symbol), weight) for symbol, weight in features(token))
-                    relations = ((vocabulary.id('ref:' + role + (f':{i}' if role == 'targets' else '')), pointer)
-                                 for role, pointers in token['refs'].items() for i, pointer in enumerate(pointers))
+                    rows.extend([row] * len(feature_ids))
+                    ids.extend(feature_ids)
+                    weights.extend(feature_weights)
+                    for role_id, pointer in zip(roles, pointers):
+                        if not 0 <= pointer < len(observation['entities']):
+                            raise ValueError('Invalid entity pointer')
+                        source.append(row); target.append(b * width + pointer); role_ids.append(role_id)
+                    continue
+                entries = ((vocabulary.id(symbol), weight) for symbol, weight in features(token))
+                relations = ((vocabulary.id('ref:' + role + (f':{i}' if role == 'targets' else '')), pointer)
+                             for role, pointers in token['refs'].items() for i, pointer in enumerate(pointers))
                 for feature_id, weight in entries:
                     rows.append(row); ids.append(feature_id); weights.append(weight)
                 for role_id, pointer in relations:
@@ -142,11 +191,16 @@ class EntityEncoder(nn.Module):
 
 
 class EntityPolicy(nn.Module):
-    def __init__(self, vocabulary_size, width=96, layers=2):
+    def __init__(self, vocabulary_size, width=96, layers=2, value_scale=1.0):
         super().__init__()
+        if width < 4 or width % 4 or layers < 1 or not 1 <= value_scale <= 2:
+            raise ValueError('Invalid entity model dimensions or value scale')
         self.config = dict(vocabulary_size=vocabulary_size, width=width, layers=layers)
         self.actor = EntityEncoder(**self.config)
         self.critic = EntityEncoder(**self.config)
+        self.value_scale = value_scale
+        if value_scale != 1:
+            self.config['value_scale'] = value_scale
         self.score = nn.Sequential(nn.Linear(width * 2, width), nn.GELU(), nn.Linear(width, 1))
         self.value = nn.Sequential(nn.Linear(width, width), nn.GELU(), nn.Linear(width, 1), nn.Tanh())
 
@@ -159,8 +213,14 @@ class EntityPolicy(nn.Module):
 
     def forward(self, batch):
         logits = self.policy_logits(batch)
+        return logits, self.predict_values(batch)
+
+    def value_logits(self, batch):
         critic = self.critic(batch, with_actions=False)
-        return logits, self.value(critic).squeeze(-1)
+        return self.value[:3](critic).squeeze(-1)
+
+    def predict_values(self, batch):
+        return torch.tanh(self.value_logits(batch)) * self.value_scale
 
     def checkpoint(self, vocabulary):
         return dict(schema=SCHEMA, architecture='entity', config=self.config, symbols=vocabulary.symbols, state=self.state_dict())

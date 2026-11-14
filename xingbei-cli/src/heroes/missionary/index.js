@@ -4,6 +4,7 @@ import { Timing } from "../../timing.js";
 import { choice, targets, healTarget } from "../shared/actions.js";
 import { discardHand } from "../shared/covered.js";
 import { gainCard } from "../shared/compound.js";
+import { canContinueWithHand, safePaidRemovalChoices } from "../../inability.js";
 export class Missionary extends Hero {
   constructor(enabled = true) {
     super({ id: "missionary", name: "传教士" });
@@ -54,9 +55,9 @@ export class Missionary extends Hero {
         id: "preaching",
         name: "传道",
         ...this.onOwnTurn([Timing.ACTIVATION]),
-        activationEnablesAction: ({ game, player }) => player.hand.length > 0 || (hero.holder(game) != null && game.player(hero.holder(game)).hand.length > 0),
+        activationEnablesAction: ({ game, player }) => player.hand.length > 0 || hero.hasDonorCard(game),
         filter: ({ game, player }) => hero.holder(game) != null &&
-          (player.hand.length > 0 || game.player(hero.holder(game)).hand.length > 0),
+          (player.hand.length > 0 || hero.hasDonorCard(game)),
         *resolve({ game, player, context, options }) {
           if (context.usedSkills.terminalActivation) return;
           if (
@@ -68,7 +69,7 @@ export class Missionary extends Hero {
           )
             return;
           context.usedSkills.terminalActivation = true;
-          const holderEmpty = game.player(hero.holder(game)).hand.length === 0;
+          const holderEmpty = !hero.hasDonorCard(game);
           const mustDraw = game.turn.state?.seekingAction || player.hand.length === 0 || (holderEmpty && player.hand.length === 1);
           const n = yield* choice(
             player.id,
@@ -92,28 +93,45 @@ export class Missionary extends Hero {
           hero.gain(game, player, 1);
           const id = hero.holder(game);
           const donor = game.player(id);
-          const usable = !player.hand.length
-            ? donor.hand.filter(card => game.isUsableHandCard(player.id, card)) : [];
+          const requiresDelivery = player.hand.length === 0;
+          const deliverable = donor.hand.filter(card => !requiresDelivery || card.getDiscardDestination(game).zone === "discard");
+          const usable = new Set(!player.hand.length
+            ? deliverable.filter(card => game.isUsableHandCard(player.id, card)).map(card => card.id) : []);
+          const allowed = new Set(deliverable.map(card => card.id));
           const receivedCards = donor.hand.length ? yield* game.chooseHandCards(id, 1,
-            card => !usable.length || usable.includes(card), {
+            card => allowed.has(card.id) && (!usable.size || usable.has(card.id)), {
               skillId: "preachingRecipient", title: "传道：明弃1张牌交给传教士",
             }) : [];
-          if (receivedCards.length) {
-            game.discardCards(id, receivedCards, { reason: "preachingRecipient", visibility: "public" });
-            yield* game.flushRuleEvents(options);
-          }
           const [received] = receivedCards;
-          if (received?.location.zone === "discard") {
+          const failedDelivery = requiresDelivery && received && received.getDiscardDestination(game).zone !== "discard";
+          let delivered = false;
+          if (received && received.getDiscardDestination(game).zone === "discard") {
             const a = mine?.getTraits({ game, playerId: player.id }),
               b = received.getTraits({ game, playerId: id });
-            yield* gainCard(game, player.id, received, "preaching", options);
+            // This revealed discard is delivered directly. It never enters the
+            // discard pile, so discard-pile acquisition skills cannot claim it.
+            game.queueExposure(id, receivedCards, { reason: "preachingRecipient" });
+            game.recordPublicAction({ type: "discard", playerId: id, card: received.name, elements: [...b.elements] });
+            game.giveCards(id, player.id, receivedCards, { visibility: "public" });
+            delivered = true;
+            yield* game.flushRuleEvents(options);
+            yield* game.drawSteps(player.id, 0, { ...options, cause: { type: "directDraw", skillId: "preaching" } });
             if (
               a &&
               (a.elements.some((e) => b.elements.includes(e)) ||
                 a.fates.some((f) => b.fates.includes(f)))
             )
               hero.gain(game, player, 1);
+          } else if (received) {
+            // Blades and the Chronicle retain their discard replacement and
+            // leaving-hand effects instead of becoming a delivered card.
+            game.discardCards(id, receivedCards, { reason: "preachingRecipient", visibility: "public" });
+            yield* game.flushRuleEvents(options);
           }
+          if (failedDelivery && !delivered && game.forfeitMaliciousInability(id, "preachingRecipient", player.id, {
+            basis: "publicEmptyHandAndDiscardDestination", cardId: received.id,
+            destination: received.getDiscardDestination(game), targetHandCountBefore: 0,
+          })) return;
           // The discard is only an intermediate cost; the donor's card and all
           // Service effects must finish before inability is assessed.
           game.allowActivationRefresh(player.id, "preaching");
@@ -123,6 +141,7 @@ export class Missionary extends Hero {
         id: "spiritualGift",
         name: "属灵恩赐",
         ...this.onOwnTurn([Timing.ACTIVATION]),
+        activationBlockedReason: ({game,player}) => hero.giftBlockedReason(game,player),
         filter: ({ game, player }) => game.canPayEnergy(player.id, "crystal"),
         *resolve({ game, player, context, options }) {
           if (context.usedSkills.terminalActivation) return;
@@ -131,13 +150,17 @@ export class Missionary extends Hero {
               player.id,
               "spiritualGift",
               "属灵恩赐：水晶，治疗+1，弃1牌",
+              {blockedReason: hero.giftBlockedReason(game,player)},
             ))
           )
             return;
           context.usedSkills.terminalActivation = true;
-          yield* game.paySkillEnergy(player.id, "crystal");
+          const payments=safePaidRemovalChoices(game,player.id,{healingGain:1});
+          yield* game.paySkillEnergy(player.id, "crystal", 1, {allowedPayments:payments.map(option=>option.payment)});
           game.changeHealing(player.id, 1);
-          yield* hero.selfDiscard(game, player, "spiritualGiftCost", options);
+          yield* hero.selfDiscard(game, player, "spiritualGiftCost", options, "hidden", {
+            cardFilter: card=>canContinueWithHand(game,player.id,player.hand.filter(c=>c!==card)),
+          });
         },
       },
       { id: "revelation", name: "启示" },
@@ -161,6 +184,13 @@ export class Missionary extends Hero {
     const c = g.cards.get(this.state.waypointCardId);
     return c?.location.zone === "status" ? c.location.playerId : null;
   }
+  hasDonorCard(game) {
+    const id = this.holder(game);
+    // Hidden faces cannot restrict activation. Blades and the Chronicle have
+    // public identities and a known destination outside after being discarded.
+    return id != null && game.player(id).hand.some(card =>
+      !card.publicIdentity || card.getDiscardDestination(game).zone === "discard");
+  }
   followsPlayer(g) {
     return this.holder(g);
   }
@@ -183,10 +213,15 @@ export class Missionary extends Hero {
       `虔诚+${this.state.devotion - old}（${this.state.devotion}/4）`,
     );
   }
+  giftBlockedReason(game, player) {
+    if(player.hand.length<=1)return "你将无法行动：属灵恩赐不能弃到空手";
+    return safePaidRemovalChoices(game,player.id,{healingGain:1}).length?null:"你将无法行动：属灵恩赐必须保留合法后续行动";
+  }
   *selfDiscard(g, p, skill, options, visibility = "hidden", selection = null) {
     let cs;
     if (selection && p.hand.length) {
-      cs = yield* g.chooseHandCards(p.id, 1, () => true, { skillId: skill, ...selection });
+      const {cardFilter=()=>true,...selectionOptions}=selection;
+      cs = yield* g.chooseHandCards(p.id, 1, cardFilter, { skillId: skill, ...selectionOptions });
       g.discardCards(p.id, cs, { reason: skill, visibility });
       yield* g.flushRuleEvents(options);
     } else cs = yield* discardHand(g, p.id, 1, skill, options, visibility);

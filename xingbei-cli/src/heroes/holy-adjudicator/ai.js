@@ -6,7 +6,8 @@ export const holyAdjudicatorAi = {
   id: "holyAdjudicator",
   energyPreference: "crystal",
   cardBonus: ({ elements, player }) =>
-    player.covered.some((c) => c.elements.some((e) => elements.includes(e)))
+    // Another player's covered cards expose only a count when scoring a gift.
+    Array.isArray(player.covered) && player.covered.some((c) => c.elements.some((e) => elements.includes(e)))
       ? 12
       : 0,
   resourceValue: (p) => p.coveredCount * 3 + (p.heroState.sins ?? 0) * 2,

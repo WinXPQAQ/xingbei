@@ -46,10 +46,10 @@ export class Sage extends Hero {
           });
           game.logSkill(player.id, "spellRebound", `明弃${cards.length}张同系牌；对${game.actorLabel(targetId)}造成${cards.length - 1}法术伤害，再对自己造成${cards.length}法术伤害`);
           yield* discardCost(game, player, cards, "spellRebound", options);
-          yield* game.damageSteps(targetId, cards.length - 1, {
-            ...options, sourceId: player.id, damageType: "spell", skillId: "spellRebound",
-          });
-          yield* game.damageSteps(player.id, cards.length, {
+          yield* game.damageSequenceSteps([
+            { targetId, amount: cards.length - 1 },
+            { targetId: player.id, amount: cards.length },
+          ], {
             ...options, sourceId: player.id, damageType: "spell", skillId: "spellRebound",
           });
         },
@@ -71,10 +71,10 @@ export class Sage extends Hero {
           yield* discardCost(game, player, cards, "arcaneCodex", options);
           const amount = cards.length - 1;
           game.logSkill(player.id, "arcaneCodex", `先对${game.actorLabel(targetIds[0])}、再对自己各造成${amount}点法术伤害`);
-          yield* game.damageSteps(targetIds[0], amount, {
-            ...options, sourceId: player.id, damageType: "spell", skillId: "arcaneCodex",
-          });
-          yield* game.damageSteps(player.id, amount, {
+          yield* game.damageSequenceSteps([
+            { targetId: targetIds[0], amount },
+            { targetId: player.id, amount },
+          ], {
             ...options, sourceId: player.id, damageType: "spell", skillId: "arcaneCodex",
           });
         },

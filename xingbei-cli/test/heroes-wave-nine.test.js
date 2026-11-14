@@ -29,6 +29,33 @@ const take = (g, id, pred = () => true) => {
 const action = (g, id, skill) =>
   g.skillActionSteps(id, { skillId: skill, cardIds: [], targetIds: [] });
 
+test("合成经过非伤害士气抵御；第五杯获胜后不再询问", () => {
+  for (const heroId of ["cardinal", "lawgiver"]) for (const prevent of [false, true]) for (const fifthCup of [false, true]) {
+    const g = make(heroId), p = g.player(0);
+    p.hero.state.relics = 1;
+    g.teams.red.morale = 1;
+    g.teams.blue.cups = fifthCup ? 4 : 0;
+    g.addStones("blue", "crystal", 3);
+    let asked = 0;
+    run(g.synthesizeSteps(1, 0), request => {
+      if (["divineDeclaration", "sinAbsolution"].includes(request.skillId)) {
+        asked++;
+        assert.equal(request.context.cause.type, "synthesize");
+        return prevent ? 1 : 0;
+      }
+      return base(request);
+    });
+    assert.equal(asked, fifthCup ? 0 : 1);
+    assert.equal(g.teams.red.morale, fifthCup || prevent ? 1 : 0);
+    assert.equal(p.hero.state.relics, !fifthCup && prevent ? 0 : 1);
+    assert.equal(p.hero.state.silverBullets, !fifthCup && prevent ? 1 : 0);
+    assert.equal(g.winner, fifthCup || !prevent ? "blue" : null);
+    assert.equal(g.player(1).hand.length, 3);
+    assert.equal(g.teams.blue.cups, fifthCup ? 5 : 1);
+    g.assertCardLocations();
+  }
+});
+
 test("铸律者：全场手限、治疗士气代价与换角色资源保留；非伤害抵御不作用于伤害", () => {
   const g = make("lawgiver"),
     p = g.player(0);
@@ -62,7 +89,57 @@ test("铸律者：全场手限、治疗士气代价与换角色资源保留；�
   assert.equal(p.hero.state.relics, 3);
   g.assertCardLocations();
 });
-test("红衣主教：逆位保留实体与资源，王权宝珠一圈后离场且不残留旧订阅", () => {
+test("红衣主教：空手禁止驱魔，逆位保留资源，宝珠离场清理订阅", () => {
+  for (const mode of ["attack", "spell", "holyFate"]) {
+    const game = make("cardinal"), player = game.player(0);
+    const usable = take(game, 0, card => mode === "holyFate"
+      ? card.type === "attack" && card.fate === "S"
+      : card.fate !== "S" && (mode === "attack" ? card.type === "attack" : card.name === "weakness"));
+    const light = take(game, 0, card => card.name === "holyLight" && card.fate !== "S");
+    if (mode === "holyFate") {
+      const attacks = game.deck.filter(card => card.type === "attack").slice(0, 2);
+      const drawnLight = game.deck.find(card => card.name === "holyLight");
+      for (const card of [...attacks, drawnLight]) game.moveCard(card.id, { zone: "deck" });
+    }
+    player.hero.state.silverBullets = 2;
+    player.healing = mode === "holyFate" ? 0 : 1;
+    game.startTurn(0);
+    let selected = false;
+    run(game.activateSteps(0), request => {
+      if (request.skillId === "exorcismRite") return true;
+      if (request.skillId === "exorcismTarget") return 0;
+      if (request.skillId === "exorcismCost") {
+        selected = true;
+        assert.equal(request.valid.includes(player.hand.indexOf(usable)), mode === "holyFate");
+        return [player.hand.indexOf(mode === "holyFate" ? usable : light)];
+      }
+      return base(request);
+    });
+    assert.ok(selected);
+    assert.ok(game.hasOrdinaryContinuation(0));
+    assert.equal(game.winner, null);
+    assert.equal(game.log.some(line => line.includes("无法行动，展示")), mode === "holyFate");
+    game.assertCardLocations();
+  }
+  for (const handCount of [0, 1]) {
+    const game = make("cardinal"), player = game.player(0);
+    player.hero.state.silverBullets = 2;
+    take(game, 3);
+    if (handCount) take(game, 0);
+    game.startTurn(0);
+    if (!handCount) {
+      assert.ok(game.canDrawSpecial(0));
+      assert.ok(!game.activationSuppliers(0).some(skill => skill.id === "exorcismRite"));
+    }
+    let offered = false;
+    run(game.trigger(Timing.ACTIVATION, { playerId: 0, usedSkills: {} }), request => {
+      if (request.skillId === "exorcismRite") { offered = true; return false; }
+      return base(request);
+    });
+    assert.equal(offered, handCount > 0);
+    assert.equal(player.hero.state.silverBullets, 2);
+    assert.equal(player.hand.length, handCount);
+  }
   const g = make("cardinal"),
     p = g.player(0);
   p.hero.state.silverBullets = 2;
@@ -115,6 +192,11 @@ test("记录者：公开遗迹、史书唯一实体使用即场外，知行合�
   assert.ok(g.player(1).hand.length > 0);
   g.startTurn(0);
   run(action(g, 0, "unityOfKnowledge"), (r) => {
+    if (r.skillId === "studyCard") {
+      assert.equal(p.covered.length, 3);
+      assert.equal(g.field.length, 2);
+      assert.ok(p.covered.every(card => card.coveredVisibility === "public"));
+    }
     encodeEntities({
       game: g,
       playerId: r.playerId ?? r.target?.id ?? r.player?.id ?? 0,
@@ -160,6 +242,21 @@ test("传教士：首次放路标，跟随持有者回合，不改变实体座�
   g.assertCardLocations();
 });
 test("异教徒：放逐只选6基础牌，摸牌限定6/7；预言洗混后对本人也隐藏，耗尽后才翻面", () => {
+  const empty = make("heretic"), owner = empty.player(0);
+  owner.energy = { gem: 0, crystal: 0 };
+  owner.hero.state.prophecyFace = "thunderFire";
+  empty.moveCard(owner.hero.state.prophecyCardId, { zone: "field" });
+  owner.hero.addProphecies(empty, owner, [empty.deck[0], empty.deck[1]]);
+  empty.addStones("red", "gem", 3);
+  empty.startTurn(0);
+  assert.ok(empty.activationChoices(0).find(skill => skill.id === "sacrifice").blockedReason);
+  assert.equal(empty.canActivate(0), false);
+  assert.ok(empty.canDrawSpecial(0));
+  assert.ok(empty.canRefine(0));
+  assert.throws(() => run(empty.activateSteps(0, { activationSkill: "sacrifice" })), /不能启动/);
+  assert.equal(owner.covered.length, 2);
+  take(empty, 0, card => card.name === "holyLight");
+  assert.ok(empty.activationSuppliers(0).some(skill => skill.id === "sacrifice"));
   const g = make("heretic"),
     p = g.player(0);
   const exclusive = new ExclusiveCard({ id: "testBlade", name: "testBlade" });

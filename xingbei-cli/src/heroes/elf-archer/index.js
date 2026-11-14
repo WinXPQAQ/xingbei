@@ -28,11 +28,11 @@ export class ElfArcher extends Hero {
           if(coveredCards(player,'blessing').length)choices.push({value:'blessing',label:'移除1张祝福'});
           if(choices.length===1)return;
           const cost=yield* choice(player.id,'elementShot','元素射击',choices,'skip',context);if(cost==='skip')return;
-          if(cost==='spell'){const cards=yield* game.chooseHandCards(player.id,1,c=>c.type==='spell',{skillId:'elementShotCost'});yield* discardCost(game,player,cards,'elementShot',options);}
-          else {const card=yield* game.chooseCoveredCard(player.id,'blessing',{skillId:'elementShotBlessing'});game.discardCovered(player.id,card,{skillId:'elementShot'});}
+          if(cost==='spell'){const cards=yield* game.chooseHandCards(player.id,1,c=>c.type==='spell',{skillId:'elementShotCost',context});yield* discardCost(game,player,cards,'elementShot',options);}
+          else {const card=yield* game.chooseCoveredCard(player.id,'blessing',{skillId:'elementShotBlessing',context});game.discardCovered(player.id,card,{skillId:'elementShot'});}
           hero.state.elementShotUsed=true;
           const elements=context.attackTraits.elements.filter(e=>e!=='dark');
-          const element=elements.length===1?elements[0]:yield* choice(player.id,'elementArrow','选择元素箭效果',elements.map(value=>({value,label:value})),elements[0]);
+          const element=elements.length===1?elements[0]:yield* choice(player.id,'elementArrow','选择元素箭效果',elements.map(value=>({value,label:value})),elements[0],context);
           context.elementArrow=element;
           if(element==='fire')context.amount++;
           if(element==='thunder')context.canCounter=false;

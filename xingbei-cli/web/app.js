@@ -1,15 +1,19 @@
 import { saveInabilityArchive } from './inability-archive.js';
+import { installGameRecorder } from './game-recorder.js';
+import { controlledSeats, revealsHiddenCards } from '../src/play-mode.js';
 import { playableCards } from "../src/playable-cards.js";
 import { resolveAsync } from "/src/resolution/decisions.js";
 import { cardSets, targetCounts } from "/src/card-sets.js";
 import { modelEnabled, installModel, modelChoice } from "/web/model-ai.js";
+import { decisionPlayer } from "/training/candidates.mjs";
 import { PlaybackGate, createModeControls } from "/web/play-mode.js";
 import { chooseRoster, SEAT_LABELS } from "/web/roster-picker.js";
 import { skipDeveloperAction } from "/web/developer-mode.js";
 import { getAvailableHeroes } from "/src/hero.js";
 import { CARD_NAMES, ELEMENT_NAMES, FATE_NAMES } from "/src/cards.js";
 import { Game } from "/src/engine.js";
-import { chooseAiAction, chooseAiResponse, chooseAiRuleDecision } from "/src/ai.js";
+import { overflowChoices } from "/src/inability.js";
+import { chooseAiAction, chooseAiResponse, chooseAiRuleDecision, chooseAiDiscard } from "/src/ai.js";
 import { compareHandCards } from "/src/cards.js";
 
 import { renderTeams, renderPlayers as paintPlayers, renderHand as paintHand, resizeStage, layoutHand, cardContents, cardLabel } from "/web/render.js";
@@ -32,10 +36,13 @@ elements.modal.append(elements.modalActions);
 let playMode = "normal";
 let modeReady = false;
 let playback = new PlaybackGate();
-const isHuman = id => playMode === "developer" ? Number.isInteger(id) && id >= 0 && id < 6 : playMode !== "spectate" && id === humanId;
+let controlledIds = new Set([0]);
+const isHuman = id => controlledIds.has(id);
 const modeControls = createModeControls($("#window"), command => launch(() => modeCommand(command)));
 let game;
+let gameRecorder = null;
 let director = null;
+// Rendering owns a detached playback frame; the live game may be several events ahead.
 let shownGame = null;
 let presenting = false;
 let animationMode = new URLSearchParams(location.search).get("motion") === "off" ? "off" : "normal";
@@ -47,7 +54,53 @@ let busy = false;
 let targetChoice = null;
 let pendingChoice = null;
 let handChoice = null;
+let coveredSelection = null;
 let paused = false;
+let presentationTail = Promise.resolve();
+let presentationError = null;
+let presentationPending = 0;
+let manualPause = false;
+let logPause = false;
+function enqueuePresentation(task) {
+  const active = session;
+  presentationPending++;
+  presenting = true;
+  presentationTail = presentationTail.then(async () => {
+    active.assert();
+    await playback.wait(active);
+    await task();
+  }).catch(error => {
+    if (session === active) presentationError = error;
+  }).finally(() => {
+    if (session === active) {
+      presentationPending--;
+      presenting = presentationPending > 0;
+      render();
+    }
+  });
+  return presentationTail;
+}
+async function awaitPresentation() {
+  const active = session;
+  let tail;
+  do {
+    tail = presentationTail;
+    await tail;
+    active.assert();
+    await playback.wait(active);
+  } while (tail !== presentationTail);
+  if (presentationError) throw presentationError;
+  shownGame = presentationView(game.presentationSnapshot(), game);
+  presenting = false;
+  render();
+}
+function updatePause() {
+  playback.setPaused(manualPause || logPause || document.hidden);
+  director?.pause(playback.paused);
+  const button = document.querySelector('#pause-playback');
+  if (button) button.textContent = manualPause ? '继续' : '暂停';
+  if (shownGame) render();
+}
 let resumeTurn = null;
 let seed;
 let sceneId = null;
@@ -75,24 +128,33 @@ function configureDecisions() {
 
 function newGame(nextGame = null, nextSeed = Date.now(), id = null) {
   session.cancel();
+  gameRecorder = null;
+  const recordFlag = document.querySelector('#game-record-status');
+  if (recordFlag) recordFlag.textContent = isDev ? '本模式不记录' : '正常对局自动记录';
   director?.dispose();
   session = new Session();
   playback = new PlaybackGate();
+  playback.setPaused(document.hidden);
+  presentationTail = Promise.resolve(); presentationError = null; presentationPending = 0;
+  manualPause = false; logPause = false;
   playMode = "normal"; humanId = 0; modeReady = !!nextGame;
+  controlledIds = new Set([0]);
   $("#window").dataset.playMode = playMode;
   shownGame = null; presenting = false;
   seed = nextSeed;
   sceneId = id;
   game = nextGame || new Game({ seed });
+  shownGame = presentationView(game.presentationSnapshot(), game);
   game.onInabilityArchive = saveInabilityArchive;
   configureDecisions();
-  if (playMode !== "developer") installModel(game, isHuman, session, playback.wait.bind(playback, session));
+  if (playMode !== "developer") installModel(game, isHuman, session, async () => session.assert());
   acceptingAction = false;
   busy = false;
   selectedCard = null;
   targetChoice = null;
   pendingChoice = null;
   handChoice = null;
+  coveredSelection = null;
   finishAction = null;
   resumeTurn = null;
   actionLog = [];
@@ -104,45 +166,52 @@ function newGame(nextGame = null, nextSeed = Date.now(), id = null) {
   elements.hint.textContent = "准备行动";
   render();
   const active = session;
-  director = new AnimationDirector($("#arena"), active, { mode: animationMode });
+  director = new AnimationDirector($("#arena"), active, { mode: animationMode, perspective: () => humanId });
   const currentDirector = director;
   presenting = true; render();
-  const onPresentation = async batch => {
+  const playBatch = async batch => {
     active.assert(); await playback.wait(active); presenting = true; render();
     try {
       for (const event of batch) {
         await playback.wait(active);
-        const playerName = event.playerId != null ? game.player(event.playerId).name : "";
-        if (event.type === "move" && event.reason === "play") elements.hint.textContent = `${game.player(event.from.playerId).name}使用【${CARD_NAMES[event.card.name]}】`;
+        const playerName = event.playerId != null ? event.view.players[event.playerId].name : "";
+        if (event.type === "move" && event.reason === "play") elements.hint.textContent = `${event.view.players[event.from.playerId].name}使用【${CARD_NAMES[event.card.name]}】`;
         if (event.type === "draw") elements.hint.textContent = `${playerName}摸${event.cards.length}张牌`;
-        if (event.type === "relay") elements.hint.textContent = `${game.player(event.sourceId).name}向${playerName}传递【魔弹】`;
+        if (event.type === "relay") elements.hint.textContent = `${event.view.players[event.sourceId].name}向${playerName}传递【魔弹】`;
         if (event.type === "damage") elements.hint.textContent = `${playerName}承受${event.amount}点${event.damageType === "spell" ? "法术" : "攻击"}伤害`;
         if (event.type === "miss") elements.hint.textContent = `${playerName}：未命中`;
         if (currentDirector.instant && ["damage", "miss", "winner"].includes(event.type)) {
-          const name = event.playerId != null ? game.player(event.playerId).name : "";
+          const name = playerName;
           notify(event.type === "damage" ? `${name}承受${event.amount}点${event.damageType === "spell" ? "法术" : "攻击"}伤害` : event.type === "miss" ? `${name}：未命中` : `${event.team === "red" ? "红方" : "蓝方"}获胜`);
         }
         await currentDirector.show(event, snapshot => { active.assert(); shownGame = presentationView(snapshot, game); render(); });
         await playback.wait(active);
       }
-    } finally { if (session === active) { presenting = false; render(); } }
+    } finally { if (session === active) { presenting = presentationPending > 0; render(); } }
+  };
+  const onPresentation = batch => {
+    enqueuePresentation(() => playBatch(batch));
+    // Bound spectator look-ahead while keeping human decision latency independent.
+    if (presentationPending >= 32) return presentationTail;
   };
   game.enablePresentation(onPresentation);
   launch(async () => {
     active.assert();
     if (!nextGame) {
-      playMode = await choose("选择游玩模式", [{ value: "normal", label: "正常游玩" }, { value: "test", label: "测试游玩" }, { value: "spectate", label: "观战游玩" }, { value: "developer", label: "开发者模式" }]);
+      playMode = await choose("选择游玩模式", [{ value: "normal", label: "正常游玩" }, { value: "team", label: "多控模式（一人控制一队）" }, { value: "test", label: "测试游玩" }, { value: "spectate", label: "观战游玩" }, { value: "developer", label: "开发者模式" }]);
       active.assert();
       $("#window").dataset.playMode = playMode;
-      const heroIds = await chooseRoster(active, getAvailableHeroes(), elements, openModal, closeModal);
+      const heroIds = await chooseRoster(active, getAvailableHeroes(), elements, openModal, closeModal, { chooseSeat: ["normal", "team"].includes(playMode), teamControl: playMode === "team", onSeat: seat => { humanId = seat; } });
       active.assert();
-      game = new Game({ seed, heroIds, revealHiddenLogs: playMode !== "normal" }).setup();
+      game = new Game({ seed, heroIds, revealHiddenLogs: revealsHiddenCards(playMode) }).setup();
+      controlledIds = new Set(controlledSeats(playMode, humanId, game.players.map(p => p.team)));
       game.onInabilityArchive = saveInabilityArchive;
       configureDecisions();
-      if (playMode !== "developer") installModel(game, isHuman, session, playback.wait.bind(playback, session));
+      if (playMode !== "developer") installModel(game, isHuman, session, async () => session.assert());
       game.enablePresentation(onPresentation);
+      gameRecorder = await installGameRecorder(game, { mode: playMode, humanSeat: humanId, humanSeats: [...controlledIds], session: active, developerScene: isDev });
+      active.assert();
       modeReady = true;
-      render();
       for (const player of game.players) {
         game.recordPresentation("draw", { playerId: player.id, cards: player.hand.map(card => card.toJSON()) });
         const view = game.presentationEvents.at(-1).view;
@@ -158,6 +227,7 @@ function newGame(nextGame = null, nextSeed = Date.now(), id = null) {
         shownGame = presentationView(empty, game); render();
         await preloadAnimationAssets(); await document.fonts.ready; active.assert();
         await game.onPresentation(game.presentationEvents.splice(0));
+        await awaitPresentation();
       }
     }
     await preloadAnimationAssets(); await document.fonts.ready; active.assert();
@@ -167,8 +237,8 @@ function newGame(nextGame = null, nextSeed = Date.now(), id = null) {
 }
 
 function render() {
-  const view = shownGame || game;
-  modeControls.update(playMode, { ready: modeReady, editable: canEditTest(), hasCards: game.player(humanId).hand.length > 0, paused: playback.paused, controlled: `${humanId + 1}号位 ${SEAT_LABELS[humanId]} · ${game.player(humanId).name}`, morale: { red: game.teams.red.morale, blue: game.teams.blue.morale } });
+  const view = shownGame;
+  modeControls.update(playMode, { ready: modeReady, editable: canEditTest(), hasCards: view.player(humanId).hand.length > 0, paused: playback.paused, controlled: `${view.player(humanId).hero.name}（${SEAT_LABELS[humanId]}）`, morale: { red: view.teams.red.morale, blue: view.teams.blue.morale } });
   renderTeams(view, { red: elements.red, blue: elements.blue }, humanId);
   elements.deck.textContent = view.deck.length;
   elements.discard.textContent = view.discard.length;
@@ -176,14 +246,14 @@ function render() {
   elements.handCount.textContent = `${view.player(humanId).hand.length} / ${view.player(humanId).handLimit}`;
   renderPlayers(view);
   paintHand(view, elements.hand, humanId, {
-    acceptingAction: !presenting && ((acceptingAction && (!!game.turn.state?.activationDone || !!targetChoice?.skillCards)) || !!handChoice), selectedCard, locked: presenting || (busy && !targetChoice && !handChoice), handChoice, restrictToLegal: game.turn.hasExtraActions(),
+    acceptingAction: !presenting && (acceptingAction || !!handChoice), selectedCard, locked: presenting || (busy && !targetChoice && !handChoice), handChoice, restrictToLegal: game.turn.hasExtraActions(),
     onSelect: index => handChoice ? handChoice.select(index) : launch(() => selectCard(index)),
   });
   const player = game.player(humanId), stones = game.stoneCounts(player.team);
   $("#sort-hand").disabled = playMode === "spectate" || presenting || busy || !!targetChoice || !!pendingChoice;
   const locked = presenting || !acceptingAction || busy || !!targetChoice;
   endExtra.hidden = !game.turn.hasExtraActions(); endExtra.disabled = locked;
-  activateTurn.hidden = !game.canActivate(humanId) || !!targetChoice; activateTurn.disabled = locked;
+  activateTurn.hidden = !game.turn.state?.activationDeclined || !game.canActivate(humanId) || !game.activationChoices(humanId).length || !!targetChoice; activateTurn.disabled = locked;
   refreshHand.hidden = !game.canRefreshUnableHand(humanId); refreshHand.disabled = locked;
   elements.buy.disabled = locked || !game.canDrawSpecial(humanId);
   elements.synth.disabled = locked || !game.canDrawSpecial(humanId) || stones.total < 3;
@@ -197,8 +267,8 @@ function render() {
   $(".center-hint").hidden = !!pendingChoice && !["hand", "target"].includes(pendingChoice.type);
 }
 
-function renderPlayers(view = shownGame || game) {
-  paintPlayers(view, elements.players, humanId, presenting ? null : targetChoice?.targets, modeReady && playMode !== "normal");
+function renderPlayers(view = shownGame) {
+  paintPlayers(view, elements.players, humanId, presenting ? null : targetChoice?.targets, modeReady && revealsHiddenCards(playMode));
   for (const node of elements.players.children) node.onclick = null;
   if (targetChoice && !presenting) {
     const choice = targetChoice;
@@ -208,7 +278,11 @@ function renderPlayers(view = shownGame || game) {
   }
 }
 
-function appendLog(message, turn = false) {
+function appendLog(message, turn = false, queued = false) {
+  if (presentationPending && !queued) {
+    enqueuePresentation(() => appendLog(message, turn, true));
+    return;
+  }
   for (const line of String(message).split("\n")) actionLog.push({ line, turn });
   actionLog = actionLog.slice(-300);
   elements.log.innerHTML = "";
@@ -222,18 +296,20 @@ function appendLog(message, turn = false) {
 }
 
 function flushLog() {
-  shownGame = null;
   if (game.log.length) appendLog(game.log.splice(0).join("\n"));
-  render();
+  // Capture now, then display only after the preceding animations and prompts.
+  const view = presentationView(game.presentationSnapshot(), game);
+  const display = () => { shownGame = view; render(); };
+  if (presentationPending) enqueuePresentation(display);
+  else display();
 }
 
 function canEditTest() {
   return modeReady && ["test", "developer"].includes(playMode) && acceptingAction && !game.winner && !busy && !presenting && !pendingChoice && !targetChoice;
 }
 async function modeCommand(command) {
-  if (command === "pause" && playMode === "spectate" && modeReady) {
-    playback.setPaused(!playback.paused);
-    director.pause(playback.paused); render(); return;
+  if (command === "pause" && modeReady) {
+    manualPause = !manualPause; updatePause(); return;
   }
   if (!canEditTest()) return;
   const active = session, previousHint = elements.hint.textContent;
@@ -304,27 +380,126 @@ function choose(title, choices, { cancel = false, detail = "" } = {}) {
   });
 }
 
-async function withControlledSeat(playerId, task) {
-  if (playMode !== "developer") return task();
+function setPerspective(playerId) {
+  if (humanId === playerId) return;
+  humanId = playerId; selectedCard = null;
+  gameRecorder?.viewed(playerId, shownGame.player(playerId).hand.map(card => card.id));
+  render();
+}
+async function withControlledSeat(playerId, task, { presented = false } = {}) {
+  if (!["developer", "team"].includes(playMode) || !isHuman(playerId)) return task();
   const active = session, previous = humanId;
   active.assert();
-  if (!Number.isInteger(playerId) || playerId < 0 || playerId >= 6) throw new Error("开发者决策缺少有效座位");
-  humanId = playerId; shownGame = null; selectedCard = null; render();
+  // Queued cosmetic confirmations already run inside the presentation tail.
+  // Waiting for that tail here would wait for this very task and deadlock.
+  if (!presented) await awaitPresentation();
+  active.assert();
+  setPerspective(playerId);
   try { return await task(); }
   finally {
-    if (session === active) { humanId = previous; shownGame = null; selectedCard = null; render(); }
+    if (session === active) setPerspective(previous);
   }
 }
 
 async function chooseRuleDecision(request) {
+  // Turn-start decisions also use the loaded policy, including skills before an action.
+  if (modelEnabled && playMode !== "developer" && !isHuman(decisionPlayer(request))) {
+    if (request.type === "overflow") return resolveHumanOverflow(request);
+    return modelChoice(game, decisionPlayer(request), request);
+  }
   if (request.type === "response") return chooseCombatResponse(request);
   if (request.type === "overflow") return resolveHumanOverflow(request);
+  if (request.cardSelection && isHuman(request.playerId)) {
+    return withControlledSeat(request.playerId, async () => {
+      if (!request.cardSelection.grouped) {
+        await awaitPresentation();
+        const ids = await chooseCoveredSet(request);
+        return ids?.[0] ?? null;
+      }
+      const selected = request.context?.selectedCardIds ?? [];
+      if (!selected.length) {
+        await awaitPresentation();
+        const ids = await chooseCoveredSet(request);
+        coveredSelection = ids && { playerId: request.playerId, skillId: request.skillId, ids };
+        if (!ids) return null;
+      }
+      const selection = coveredSelection;
+      const id = selection?.ids[selected.length] ?? null;
+      if (selection?.playerId !== request.playerId || selection?.skillId !== request.skillId ||
+          !selected.every((value, index) => value === selection.ids[index]) ||
+          !request.choices.some(choice => choice.value === id)) throw new Error("盖牌选择已失效，请重新开始对局");
+      if (id === null || selected.length + 1 === request.cardSelection.max) coveredSelection = null;
+      return id;
+    });
+  }
+  if (playMode !== "developer" && isHuman(request.playerId) && !request.blockedReason && request.choices?.length === 1) {
+    enqueuePresentation(async () => {
+      presenting = false;
+      await withControlledSeat(request.playerId, () => chooseSeatDecision(request, true), { presented: true });
+    });
+    return request.choices[0].value;
+  }
   return withControlledSeat(request.playerId ?? request.player?.id ?? request.actor?.id, () => chooseSeatDecision(request));
 }
-async function chooseSeatDecision(request) {
+
+function chooseCoveredSet(request) {
+  return session.wait(resolve => {
+    const selected = new Set();
+    const previousFocus = document.activeElement;
+    const spec = request.cardSelection;
+    const legalNext = spec.legalNext ?? (ids => spec.cardIds.filter(id => !ids.includes(id)));
+    pendingChoice = { title: request.title, type: "covered", min: spec.min, count: spec.max, selected: [] };
+    elements.modalTitle.textContent = request.title;
+    elements.modalBody.innerHTML = '<div class="choice-list"></div><p class="selection-count"></p>';
+    elements.modalActions.replaceChildren();
+    const confirm = document.createElement('button');
+    confirm.textContent = request.optional ? '确认发动' : '确认'; confirm.disabled = true;
+    const buttons = new Map();
+    function update() {
+      const ids = [...selected];
+      const valid = ids.every((id, index) => legalNext(ids.slice(0, index)).includes(id));
+      const available = legalNext(ids);
+      for (const [id, button] of buttons) {
+        button.classList.toggle('selected', selected.has(id));
+        button.setAttribute('aria-pressed', String(selected.has(id)));
+        button.disabled = !selected.has(id) && spec.max !== 1 && (selected.size >= spec.max || !available.includes(id));
+        if (spec.max === 1) button.disabled = !legalNext([]).includes(id);
+        button.classList.toggle('unusable', button.disabled);
+      }
+      pendingChoice.selected = ids;
+      confirm.disabled = !valid || selected.size < spec.min || selected.size > spec.max;
+      elements.modalBody.querySelector('.selection-count').textContent = `已选${selected.size}张，需选择${spec.min === spec.max ? spec.min : `${spec.min}至${spec.max}`}张`;
+    }
+    for (const id of spec.cardIds) {
+      const card = game.cards.get(id);
+      const button = document.createElement('button');
+      button.className = 'card choice-card'; button.dataset.cardId = card.id;
+      button.innerHTML = cardContents(card, { game, playerId: request.playerId });
+      button.setAttribute('aria-label', cardLabel(card, { game, playerId: request.playerId })); button.setAttribute('aria-pressed', 'false');
+      button.addEventListener('click', () => {
+        if (selected.has(card.id)) selected.delete(card.id);
+        else if (spec.max === 1) { selected.clear(); selected.add(card.id); }
+        else if (selected.size < spec.max && legalNext([...selected]).includes(card.id)) selected.add(card.id);
+        update();
+      });
+      buttons.set(card.id, button);
+      elements.modalBody.firstChild.append(button);
+    }
+    update();
+    confirm.addEventListener('click', () => { if (!confirm.disabled) resolve([...selected]); });
+    elements.modalActions.append(confirm);
+    if (request.optional) {
+      const decline = document.createElement('button'); decline.textContent = '不发动';
+      decline.addEventListener('click', () => resolve(null)); elements.modalActions.append(decline);
+    }
+    openModal();
+    return () => { pendingChoice = null; closeModal(); previousFocus?.focus(); };
+  });
+}
+async function chooseSeatDecision(request, presented = false) {
 
   const active = session;
-  await playback.wait(active);
+  if (!presented && isHuman(request.playerId ?? request.player?.id)) await awaitPresentation();
   if (request.blockedReason) { notify(request.blockedReason); if (isHuman(request.playerId)) await choose(request.blockedReason, [{value:false,label:"返回"}]); return false; }
   if (request.type === "playerChoice") {
     if (!isHuman(request.playerId)) return chooseAiRuleDecision(request, game);
@@ -374,7 +549,7 @@ function closeModal() {
   if (game) render();
 }
 
-function chooseHand(title, cards, { count = 1, valid = cards.map((_, index) => index), cancel = false, cancelLabel = "不响应", validSets = null, confirmLabel = null } = {}) {
+function chooseHand(title, cards, { count = 1, valid = cards.map((_, index) => index), cancel = false, cancelLabel = "不响应", validSets = null, canSelect = () => true, confirmLabel = null } = {}) {
   return session.wait(resolve => {
     const previousHint = elements.hint.textContent;
     const previousFocus = document.activeElement;
@@ -384,14 +559,15 @@ function chooseHand(title, cards, { count = 1, valid = cards.map((_, index) => i
     elements.modalActions.replaceChildren();
     const confirm = document.createElement("button");
     confirm.textContent = confirmLabel ?? (count === 1 ? "确定" : "确认弃置"); confirm.disabled = true;
-    const available = () => validSets ? valid.filter(index => selected.has(index) ||
-      validSets.some(set => set.includes(index) && [...selected].every(i => set.includes(i)))) : valid;
+    const available = () => valid.filter(index => selected.has(index) ||
+      (canSelect([...selected, index]) && (!validSets ||
+        validSets.some(set => set.includes(index) && [...selected].every(i => set.includes(i))))));
     handChoice = { valid: available(), selected, select(index) {
       if (!available().includes(index)) return;
       selected.has(index) ? selected.delete(index) : selected.add(index);
       pendingChoice.selected = [...selected];
       handChoice.valid = available(); pendingChoice.valid = handChoice.valid;
-      confirm.disabled = validSets ? !validSets.some(set => set.length === selected.size && set.every(index => selected.has(index))) : selected.size !== count;
+      confirm.disabled = !canSelect([...selected]) || (validSets ? !validSets.some(set => set.length === selected.size && set.every(index => selected.has(index))) : selected.size !== count);
       render();
     } };
     confirm.addEventListener("click", () => { director.captureHand(); resolve([...selected]); });
@@ -473,14 +649,37 @@ function chooseResponseTarget(title, valid, targets, kind = "attack") {
 }
 
 async function resolveHumanOverflow(request) {
-  if (game.winner || playMode === "spectate") return;
-  const ids = request?.player ? [request.player.id] : playMode === "developer" ? game.players.map(player => player.id) : [humanId];
+  if (game.winner || (playMode === "spectate" && !request)) return;
+  if (request?.resolveInternally) {
+    const id=request.player.id, player=game.player(id);
+    if (!isHuman(id)) {
+      if (modelEnabled) return modelChoice(game,id,request);
+      const preferred=chooseAiDiscard(game,id,player.hand.length-player.handLimit);
+      return request.validSets?.find(set=>set.length===preferred.length && set.every(i=>preferred.includes(i))) ?? request.validSets?.[0] ?? preferred;
+    }
+    return withControlledSeat(id,async()=>{
+      await awaitPresentation();
+      const choices=overflowChoices(game,id);
+      return chooseHand(request.title ?? `爆牌：弃${choices.count}张牌`,player.hand,
+        {...choices,...(request.validSets?{valid:request.valid,validSets:request.validSets}:{})});
+    });
+  }
+  const ids = request?.player ? [request.player.id] : [...controlledIds];
   for (const id of ids) {
-    if (!isHuman(id)) continue;
+    if (!isHuman(id)) {
+      if (modelEnabled && game.player(id).pendingOverflow) {
+        const indexes = await modelChoice(game, id, { type: "overflow", player: game.player(id) });
+        await game.resolveOverflowWithDecisions(id, indexes, { overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow, chooseResponse: chooseCombatResponse });
+      }
+      continue;
+    }
+    if (game.player(id).hand.length <= game.player(id).handLimit) continue;
     await withControlledSeat(id, async () => {
       const active = session, player = game.player(id);
       if (player.hand.length <= player.handLimit) return;
-      const indexes = await chooseCards("爆牌", player.hand, player.hand.length - player.handLimit);
+      await awaitPresentation();
+      const choices = overflowChoices(game, id);
+      const indexes = await chooseHand(`爆牌：弃${choices.count}张牌`, player.hand, choices);
       active.assert();
       await game.resolveOverflowWithDecisions(id, indexes, { ...player.pendingOverflow, overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow, chooseResponse: chooseCombatResponse });
       await game.flushPresentation(); active.assert(); flushLog();
@@ -489,7 +688,7 @@ async function resolveHumanOverflow(request) {
 }
 
 async function selectCard(index) {
-  if (!acceptingAction || (!game.turn.state?.activationDone && !targetChoice?.skillCards)) return;
+  if (!acceptingAction) return;
   if (targetChoice) {
     if (selectedCard === index) { targetChoice.resolve(null); return; }
     if (targetChoice.skillCards) {
@@ -563,7 +762,7 @@ async function completeHumanAction(action) {
 }
 
 function renderSkillControls(locked) {
-  const entries = game.legalSkillActions(humanId).filter(entry => game.turn.state?.activationDone || entry.spec.type === "special");
+  const entries = game.legalSkillActions(humanId);
   for (const node of document.querySelectorAll(".hero-action")) if (!entries.some(entry => entry.skillId === node.dataset.skill)) node.remove();
   for (const entry of entries) {
     let button = document.querySelector(`.hero-action[data-skill="${entry.skillId}"]`);
@@ -578,7 +777,7 @@ function renderSkillControls(locked) {
 async function selectSkillAction(skillId) {
   if (!acceptingAction || busy) return;
   const entry = game.legalSkillActions(humanId).find(entry => entry.skillId === skillId);
-  if (!entry || (!game.turn.state?.activationDone && entry.spec.type !== "special")) return;
+  if (!entry) return;
   const active = session;
   busy = true; render();
   try {
@@ -612,17 +811,34 @@ async function selectSkillAction(skillId) {
   } finally { active.assert(); busy = false; selectedCard = null; render(); }
 }
 
+async function promptActivation() {
+  const state = game.turn.state;
+  if (!state || state.activationDone || state.activationPrompted) return;
+  state.activationPrompted = true;
+  const skills = game.activationChoices(humanId);
+  if (!skills.length) { state.activationDeclined = true; return; }
+  const available = skills.filter(skill => !skill.blockedReason);
+  const detail = skills.filter(skill => skill.blockedReason).map(skill => `因无法行动限制，你不能发动 ${skill.name}。`).join('\n');
+  const title = skills.length === 1 ? (skills[0].blockedReason ? detail : `是否发动 启动-${skills[0].name}？`) : '是否启动？';
+  const skillId = await choose(title, [{value:null,label:'不发动'}, ...available.map(skill => ({value:skill.id,label:`发动${skill.name}`}))], {detail: skills.length > 1 ? detail : ''});
+  if (skillId == null) { state.activationDeclined = true; return; }
+  await game.executeAction(humanId, {type:'activate'}, {activationSkill:skillId, chooseResponse:chooseCombatResponse, overflow:overflowPolicy, resolveOverflow:resolveHumanOverflow});
+}
+
 async function waitForHumanAction() {
+  await awaitPresentation();
+  await promptActivation();
+  await awaitPresentation();
+  if (!game.turn.needsAction()) return;
   acceptingAction = true;
-  elements.hint.textContent = game.canActivate(humanId) ? "选择启动，再进行攻击／法术行动；也可直接选择特殊行动" : game.canRefreshUnableHand(humanId) ? "除提炼外无合法行动，可申请换全手；换后仍须行动" : game.turn.hasExtraActions() ? "额外行动，或结束回合" : "[攻击行动]或者[法术行动]";
+  elements.hint.textContent = game.canRefreshUnableHand(humanId) ? "除提炼外无合法行动，可申请换全手；换后仍须行动" : game.turn.hasExtraActions() ? "额外行动，或结束回合" : "[攻击行动]或者[法术行动]";
   render();
-  if (keyboardMode) (game.canActivate(humanId) ? activateTurn : elements.hand.querySelector("button:enabled"))?.focus();
+  if (keyboardMode) elements.hand.querySelector("button:enabled")?.focus();
   return session.wait(resolve => { finishAction = resolve; return () => { finishAction = null; }; });
 }
 
 async function executeAi(actorId, scriptedAction = null, retried = false) {
   const active = session;
-  await playback.wait(active);
   const action = scriptedAction || (modelEnabled ? await modelChoice(game, actorId) : chooseAiAction(game, actorId));
   active.assert();
   try {
@@ -656,16 +872,24 @@ async function executeAi(actorId, scriptedAction = null, retried = false) {
 // Skills may start the same attack/magic resolution as physical card actions.
 // Route both through one callback so AI decisions and human pending choices agree.
 async function chooseCombatResponse(context) {
-  return withControlledSeat(context.target.id, () => chooseSeatResponse(context));
+  return chooseSeatResponse(context);
 }
 async function chooseSeatResponse(context) {
   const active = session;
-  await playback.wait(active);
   active.assert();
   if (!isHuman(context.target.id)) return chooseAiResponse(game, context);
   const attack = context.attack;
   const targets = attack ? context.counterTargets.map(player => player.id) : context.nextTarget ? [context.nextTarget.id] : [];
-  return chooseResponseTarget(context.title ?? `${context.actor.name}对你使用【${attack ? CARD_NAMES[attack.name] : "魔弹"}】`, context.valid, targets, attack ? "attack" : "magic");
+  const title = context.title ?? `${context.actor.name}对你使用【${attack ? CARD_NAMES[attack.name] : "魔弹"}】`;
+  if (!context.valid.length && playMode !== "developer") {
+    enqueuePresentation(async () => {
+      presenting = false;
+      await withControlledSeat(context.target.id, () => chooseResponseTarget(title, [], [], attack ? "attack" : "magic"), { presented: true });
+    });
+    return null;
+  }
+  await awaitPresentation();
+  return withControlledSeat(context.target.id, () => chooseResponseTarget(title, context.valid, targets, attack ? "attack" : "magic"));
 }
 async function resolveAttackChain(actorId, handIndex, targetId) {
   return game.attackWithDecisions(actorId, handIndex, targetId, {
@@ -685,7 +909,6 @@ async function resolveMagicChain(actorId, handIndex, targetId) {
 }
 
 async function turnGate(active) {
-  await playback.wait(active);
   if (isDev && paused) await active.wait(resolve => { resumeTurn = resolve; return () => { resumeTurn = null; }; });
   active.assert();
 }
@@ -705,9 +928,8 @@ const activateTurn = document.createElement("button"); activateTurn.id = "activa
 $("#control").prepend(activateTurn);
 activateTurn.addEventListener("click", () => launch(async () => {
   if (!acceptingAction || busy || !game.canActivate(humanId)) return;
-  await completeHumanAction(() => game.executeAction(humanId, { type: "activate" }, {
-    chooseResponse: chooseCombatResponse, overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow,
-  }));
+  game.turn.state.activationPrompted = false;
+  await completeHumanAction(() => promptActivation());
 }));
 const endExtra = document.createElement("button"); endExtra.id = "end-extra"; endExtra.textContent = "结束回合";
 $("#control").append(endExtra);
@@ -726,14 +948,14 @@ async function runTurns(active) {
     active.assert();
     if (!isHuman(game.current)) await turnGate(active);
     const player = game.player(game.current);
-    if (playMode === "developer") { humanId = player.id; shownGame = null; selectedCard = null; }
+    if (["developer", "team"].includes(playMode) && isHuman(player.id)) { await awaitPresentation(); setPerspective(player.id); }
     events.push({ type: "turn-start", current: player.id });
-    appendLog(`━━━━━━━━ ${player.name}回合开始 ━━━━━━━━`, true);
-    elements.hint.textContent = isHuman(player.id) ? "准备行动" : "对手思考中";
+    appendLog(`━━━━━━━━ ${game.actorLabel(player.id)}回合开始 ━━━━━━━━`, true);
+    if (!presentationPending) elements.hint.textContent = isHuman(player.id) ? "准备行动" : "对手思考中";
     render();
     const turn = await game.beginTurn(player.id, {
-      chooseWeakness: () => isHuman(player.id)
-        ? choose("【虚弱】触发", [{ value: "draw", label: "摸3张牌并继续" }, { value: "skip", label: "跳过本回合行动" }])
+      chooseWeakness: async () => isHuman(player.id)
+        ? (await awaitPresentation(), choose("【虚弱】触发", [{ value: "draw", label: "摸3张牌并继续" }, { value: "skip", label: "跳过本回合行动" }]))
         : modelEnabled ? modelChoice(game, player.id, { type: "weakness", playerId: player.id }) : chooseAiRuleDecision({ type: "weakness", playerId: player.id }, game),
       resolveOverflow: resolveHumanOverflow,
     }, { overflow: overflowPolicy });
@@ -749,25 +971,29 @@ async function runTurns(active) {
     if (!modelEnabled && !isHuman(player.id) && game.turn.hasExtraActions() && !game.legalCards(player.id).length && !game.legalSkillActions(player.id).length) game.skipExtraActions(player.id);
     } while (game.turn.needsAction());
     active.assert();
-    if (game.winner) { shownGame = null; break; }
+    if (game.winner) { break; }
     events.push({ type: "turn-end", current: player.id });
-    appendLog(`━━━━━━━━ ${player.name}回合结束 ━━━━━━━━`, true);
+    appendLog(`━━━━━━━━ ${game.actorLabel(player.id)}回合结束 ━━━━━━━━`, true);
     await game.endTurnWithDecisions({ overflow: overflowPolicy, resolveOverflow: resolveHumanOverflow, chooseResponse: chooseCombatResponse });
     active.assert();
-    shownGame = null;
+    flushLog();
     if (playMode === "test" && player.id === humanId && !game.winner) {
       render();
+      await awaitPresentation();
       const repeat = await choose("你的回合已结束", [{ value: true, label: "重复回合" }, { value: false, label: "不重复" }]);
       active.assert();
       if (repeat) game.turn.repeatLast(humanId);
     }
-    if (!game.winner) elements.hint.textContent = `${game.player(game.current).name}准备行动`;
+    if (!game.winner && !presentationPending) elements.hint.textContent = `${game.player(game.current).name}准备行动`;
     render();
     if (game.winner) break;
     await delay(isDev ? 0 : 100);
   }
+  await awaitPresentation();
   acceptingAction = false;
   render();
+  await gameRecorder?.finish();
+  active.assert();
   await choose("游戏结束", [{ value: true, label: "再来一局" }], { detail: `${game.winner === "red" ? "红方" : "蓝方"}获胜` });
   active.assert();
   newGame();
@@ -849,16 +1075,24 @@ document.addEventListener("keydown", event => {
 $("#restart").addEventListener("click", () => newGame());
 $("#clear-log").addEventListener("click", () => { actionLog = []; elements.log.replaceChildren(); });
 function setLog(open) {
+  logPause = open; updatePause();
   $("#log-panel").hidden = !open;
   $("#toggle-log").setAttribute("aria-expanded", String(open));
 }
 $("#toggle-log").addEventListener("click", () => setLog($("#log-panel").hidden));
+const pauseButton = document.createElement('button');
+pauseButton.id = 'pause-playback'; pauseButton.textContent = '暂停';
+pauseButton.addEventListener('click', () => { manualPause = !manualPause; updatePause(); });
+$('#toggle-log').after(pauseButton);
+document.addEventListener('visibilitychange', updatePause);
+window.addEventListener('pageshow', updatePause);
 $("#close-log").addEventListener("click", () => setLog(false));
-$("#deck-info").addEventListener("click", () => notify(`牌库 ${game.deck.length} 张，弃牌 ${game.discard.length} 张`));
+$("#deck-info").addEventListener("click", () => notify(`牌库 ${shownGame.deck.length} 张，弃牌 ${shownGame.discard.length} 张`));
 $("#sort-hand").addEventListener("click", () => {
   if (playMode === "spectate" || presenting || busy || targetChoice || pendingChoice) return;
-  shownGame = null;
   game.player(humanId).hand.sort(compareHandCards);
+  shownGame = presentationView(game.presentationSnapshot(), game);
+  gameRecorder?.sorted(humanId);
   selectedCard = null;
   render();
 });
@@ -897,7 +1131,7 @@ if (isDev) {
   $("#dev-step").addEventListener("click", () => { paused = true; $("#dev-pause").textContent = "继续 AI"; resumeTurn?.(); });
   function exportState() {
     game.assertCardLocations();
-    return { seed, scene: sceneId, paused, current: game.current, phase: targetChoice ? "target" : pendingChoice ? "choice" : acceptingAction ? "action" : "turn", selectedCard, legalTargets: targetChoice?.targets || [], pendingChoice, perspective: humanId,
+    return { display: { current: shownGame.current, handCount: shownGame.player(humanId).hand.length, field: shownGame.field, paused: playback.paused }, seed, scene: sceneId, paused, current: game.current, phase: targetChoice ? "target" : pendingChoice ? "choice" : acceptingAction ? "action" : "turn", selectedCard, legalTargets: targetChoice?.targets || [], pendingChoice, perspective: humanId,
       game: { players: game.players.map(player => player.toJSON()), teams: game.teams, deck: game.deck.map(card => card.toJSON()), discard: game.discard.map(card => card.toJSON()), field: game.field.map(card => card.toJSON()), outside: game.outside.map(card => card.toJSON()), winner: game.winner, turn: game.turn.state, timeline: game.timeline }, events, log: actionLog };
   }
   // Developer-only interface shared with the browser verification tool.

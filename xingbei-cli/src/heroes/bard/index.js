@@ -2,7 +2,20 @@ import { Hero } from '../../hero-base.js';
 import { ExclusiveCard } from '../../card.js';
 import { Timing } from '../../timing.js';
 import { sameElements } from '../../card-sets.js';
+import { canContinueWithHand } from '../../inability.js';
 import { choice, discardCost, targets, enemies } from '../shared/actions.js';
+
+function canFinishFugue(game, player, hand, reward, payEnergy = false) {
+  const view = Object.create(game), projected = Object.create(player);
+  projected.hero = Object.create(player.hero);
+  projected.hero.state = { ...player.hero.state,
+    inspiration: Math.min(3, player.hero.state.inspiration + Number(reward === 'inspiration')) };
+  projected.healing = player.healing + Number(reward === 'healing' && player.healing < game.getHealingLimit(player.id));
+  projected.energy = { ...player.energy };
+  if (payEnergy) projected.energy[player.energy.crystal ? 'crystal' : 'gem']--;
+  view.players = game.players.map(other => other.id === player.id ? projected : other);
+  return canContinueWithHand(view, player.id, hand);
+}
 
 function* discardUpTo(game, player, count, skillId, options) {
   count = Math.min(count, player.hand.length);
@@ -105,23 +118,50 @@ export class Bard extends Hero {
           }
         } },
       { id: 'hopeFugue', name: '希望赋格曲', ...this.onOwnTurn([Timing.ACTIVATION]),
+        activationEnablesAction: ({ game, player }) => game.canPayEnergy(player.id, 'crystal') &&
+          (game.cards.get(`eternalMovement-${player.id}`).location.zone !== 'status' || player.hand.length > 0 ||
+            canFinishFugue(game, player, [], 'inspiration', true)),
         filter: ({ game, player }) => game.canPayEnergy(player.id, 'crystal'),
         *resolve({ game, player, options }) {
-          if (!(yield* game.offerSkill(player.id, 'hopeFugue', '希望赋格曲'))) return;
+          const card = game.cards.get(`eternalMovement-${player.id}`);
+          let moving = card.location.zone === 'status';
+          const rewards = [{ value: 'healing', label: '+1治疗' }, { value: 'inspiration', label: '+1灵感' }];
+          const cannotFinishEmpty = !rewards.some(reward => canFinishFugue(game, player, [], reward.value, true));
+          const blockedReason = moving && !player.hand.length && cannotFinishEmpty ? '你将无法行动' : null;
+          if (!(yield* game.offerSkill(player.id, 'hopeFugue', '希望赋格曲', { blockedReason }))) return;
           yield* game.paySkillEnergy(player.id, 'crystal');
-          const draw = yield* choice(player.id, 'hopeFugue', '是否摸1张牌', [{ value: 0, label: '不摸' }, { value: 1, label: '摸1张' }], 0);
+          const remainingHands = moving && player.hand.length
+            ? player.hand.map(card => player.hand.filter(other => other.id !== card.id)) : [player.hand];
+          const safeWithoutDraw = moving
+            ? remainingHands.some(hand => rewards.some(reward => canFinishFugue(game, player, hand, reward.value)))
+            : game.hasOrdinaryContinuation(player.id);
+          const draw = yield* choice(player.id, 'hopeFugue', '是否摸1张牌', [
+            ...(safeWithoutDraw ? [{ value: 0, label: '不摸' }] : []), { value: 1, label: '摸1张' },
+          ], safeWithoutDraw ? 0 : 1);
           if (draw) yield* game.drawSteps(player.id, 1, { ...options, cause: { type: 'directDraw', skillId: 'hopeFugue' } });
           if (game.winner) return;
-          const card = game.cards.get(`eternalMovement-${player.id}`), moving = card.location.zone === 'status';
+          moving = card.location.zone === 'status';
           const previous = moving ? card.location.playerId : player.id;
           const id = yield* game.choosePlayer(player.id, game.players.filter(p => p.team === player.team && p.id !== previous).map(p => p.id), '希望赋格曲：放置或转移永恒乐章', { skillId: 'hopeFugue' });
           game.attachCard(card.id, id, { effectId: 'eternalMovement', sourcePlayerId: player.id, sourceSkillId: 'hopeFugue' });
           if (!moving) return;
-          yield* discardUpTo(game, player, 1, 'hopeFugue', options);
-          const reward = yield* choice(player.id, 'hopeFugue', '选择转移奖励', [{ value: 'healing', label: '+1治疗' }, { value: 'inspiration', label: '+1灵感' }], 'inspiration');
+          const safeCards = player.hand.filter(card => rewards.some(reward =>
+            canFinishFugue(game, player, player.hand.filter(other => other.id !== card.id), reward.value)));
+          const randomRefresh = !!draw && player.hand.length > 1 && !safeCards.length;
+          if (player.hand.length) {
+            const allowed = new Set(safeCards.map(card => card.id));
+            const cards = yield* game.chooseHandCards(player.id, 1, card => randomRefresh || allowed.has(card.id),
+              { skillId: 'hopeFugue', title: '希望赋格曲：暗弃1张牌' });
+            yield* discardCost(game, player, cards, 'hopeFugue', options, 'hidden');
+          }
+          const safeRewards = rewards.filter(reward => canFinishFugue(game, player, player.hand, reward.value));
+          const availableRewards = safeRewards.length || !randomRefresh ? safeRewards : rewards;
+          const reward = yield* choice(player.id, 'hopeFugue', '选择转移奖励',
+            availableRewards, availableRewards.find(option => option.value === 'inspiration')?.value ?? availableRewards[0]?.value);
           if (reward === 'healing') game.changeHealing(player.id, 1);
           else player.hero.state.inspiration = Math.min(3, player.hero.state.inspiration + 1);
           game.logSkill(player.id, 'hopeFugue', `转移乐章、弃1牌，${reward === 'healing' ? '治疗' : '灵感'}+1`);
+          if (randomRefresh) game.allowActivationRefresh(player.id, 'hopeFugue');
         } },
     ];
   }

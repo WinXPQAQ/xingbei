@@ -1,12 +1,15 @@
 import { hiddenEffectFor } from "../../src/card-visibility.js";
 import { playableCards } from "../../src/playable-cards.js";
 import { describeActivationInteractions } from "../../src/ai/activation-interactions.js";
+import { estimateActionCapabilities } from '../../src/ai/action-capability.js';
 import { declaredState } from './hero-state.mjs';
 
-export const ENTITY_SCHEMA = 'entities-v5';
+export const ENTITY_SCHEMA = 'entities-v7';
+const snapshotKeys = new WeakMap();
+export const entitySnapshotKey = observation => snapshotKeys.get(observation);
 // Trusted boundary. Only explicitly visible fields leave this module. Entity
 // references are local array offsets, never engine card IDs or deck positions.
-export function encodeEntities({ game, playerId, request, candidates, continuations, summaries }) {
+function buildEntityState({ game, playerId, request }) {
   const entities = [], cards = new Map(), skills = new Map(), publicPlayers = [];
   const seat = id => (id - playerId + 6) % 6;
   const playerRef = id => id == null ? [] : [seat(id)];
@@ -31,9 +34,17 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
     const owner = card.location.playerId;
     const hidden = hiddenEffectFor(card,playerId) && !(request.playerId===playerId && request.revealedCards?.some(c=>c.id===card.id));
     const traits = hidden ? {elements:[],fates:[]} : card.getTraits({ game, playerId: owner ?? playerId });
+    const pile = card.location.zone === 'covered' ? card.location.pile : null;
+    const numbers = {};
+    // Public notes are an ordered score: first/second/third notes determine
+    // different parts of the movement, and the oldest note leaves first.
+    if (pile === 'notes' && card.coveredVisibility === 'public') {
+      numbers.pilePosition = game.player(owner).covered
+        .filter(note => note.location.pile === 'notes').findIndex(note => note.id === card.id);
+    }
     const index = add('card', { name: hidden ? "hiddenEffect" : card.name, type: hidden ? null : card.type, category: card.category,
-      zone: card.location.zone, elements: [...traits.elements], fates: [...traits.fates], uniqueSkills: hidden ? [] : [...card.uniqueSkills],
-      effect: card.attachment?.effectId ?? null, sourceSkill: card.attachment?.sourceSkillId ?? null }, {},
+      zone: card.location.zone, pile, elements: [...traits.elements], fates: [...traits.fates], uniqueSkills: hidden ? [] : [...card.uniqueSkills],
+      effect: card.attachment?.effectId ?? null, sourceSkill: card.attachment?.sourceSkillId ?? null }, numbers,
       { owner: playerRef(owner), source: playerRef(card.attachment?.sourcePlayerId) });
     cards.set(card.id, index); return index;
   };
@@ -73,6 +84,40 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
         field.type === 'number' ? { value: field.value } : {}, refs);
     }
   }
+  const owner = game.player(playerId);
+  const knownCard = card => {
+    const traits = card.getTraits({ game, playerId });
+    return { name: card.name, type: card.type, elements: [...traits.elements],
+      fates: [...traits.fates], uniqueSkills: [...card.uniqueSkills], reserve: card.location.zone !== 'hand' };
+  };
+  const actionQuery = game.turn.state?.playerId === playerId && !game.turn.state.completed && !game.turn.state.actionType;
+  const legal = actionQuery ? game.legalCards(playerId) : [];
+  const drawSpecial = actionQuery && game.canDrawSpecial(playerId);
+  const capabilityState = {
+    observer: playerId,
+    teams: Object.fromEntries(Object.entries(game.teams).map(([team, data]) => [team, { morale: data.morale, cups: data.cups }])),
+    publicBarriers: game.players.filter(player => player.hero.id === 'barrierMaster').map(player => ({ id: player.id,
+      cards: player.covered.filter(card => card.coveredVisibility === 'public' && card.location.pile === 'barrier')
+        .map(card => ({ name: card.name, elements: [...card.getTraits({ game, playerId: player.id }).elements] })) })),
+    players: publicPlayers.map(player => {
+      const original = game.player(player.id);
+      return { ...player, count: original.hand.length, limit: original.handLimit,
+        healing: original.healing, energy: { ...original.energy },
+        effects: original.statuses.map(card => ({ name: card.attachment?.effectId, category: card.category })),
+        ...(player.id === playerId ? { hand: playableCards(owner).filter(card => cards.has(card.id)).map(knownCard),
+          action: actionQuery ? {
+            attacks: legal.filter(entry => entry.card.type === 'attack').length,
+            spells: legal.filter(entry => entry.card.type === 'spell').length,
+            skills: game.legalSkillActions(playerId).length,
+            purchase: drawSpecial,
+            synthesize: drawSpecial && game.stoneCounts(owner.team).total >= 3,
+            refine: game.canRefine(playerId),
+          } : null } : {}),
+      };
+    }),
+  };
+  for (const capability of estimateActionCapabilities(capabilityState))
+    Object.assign(entities[seat(capability.playerId)].numbers, capability.numbers);
   add('piles', {}, { deckCount: game.deck.length, discardCount: game.discard.length });
   const cardRef = id => {
     if (id == null) return [];
@@ -80,7 +125,9 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
     return [cards.get(id)];
   };
   const skillRef = (id, ownerId = playerId) => skills.has(`${ownerId}:${id}`) ? [skills.get(`${ownerId}:${id}`)] : [];
-  const indexes = (values, playable = false) => values.flatMap(index => cardRef((playable ? playableCards(game.player(playerId)) : game.player(playerId).hand)[index]?.id));
+  const handIds = game.player(playerId).hand.map(card => card.id);
+  const playableIds = playableCards(game.player(playerId)).map(card => card.id);
+  const indexes = (values, playable = false) => values.flatMap(index => cardRef((playable ? playableIds : handIds)[index]));
   const turn = game.turn.state;
   if (turn) {
     add('turn', { phase: turn.phase, route: turn.route, actionType: turn.actionType, skipped: turn.skipped,
@@ -113,8 +160,41 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
     add('extraTurn', {}, { position }, { owner: playerRef(id) });
   for (const [position, id] of game.turn.followupTurns.entries()) add('followupTurn', {}, { position }, { owner: playerRef(id) });
   if (game.turn.resumePlayerId != null) add('resumeTurn', {}, {}, { owner: playerRef(game.turn.resumePlayerId) });
+  const history = [];
+  for (const [position, event] of (game.publicHistory?.actions ?? []).slice(-32).entries()) {
+    const categorical = {}, numbers = { position }, refs = {};
+    for (const key of ['type','card','elements','fates','uniqueSkills','counter','result','skillId','accepted','effectId'])
+      if (event[key] !== undefined) categorical[key] = Array.isArray(event[key]) ? [...event[key]] : event[key];
+    for (const key of ['amount','count','gem','crystal']) if (event[key] !== undefined) numbers[key] = event[key];
+    for (const key of ['playerId','actorId','sourceId','targetId']) if (event[key] != null) refs[key.slice(0,-2)] = playerRef(event[key]);
+    if (event.team != null) categorical.team = side(event.team);
+    history.push({ kind: 'history', categorical, numbers, refs });
+  }
+  return { entities, history, cards, skills, publicPlayers, turn,
+    seat, playerRef, cardRef, skillRef, indexes };
+}
+
+// Each result owns its token containers and arrays. Consumers may retain or
+// modify an observation without changing a cached snapshot or another sample.
+function copyEntity(token) {
+  const copyFields = fields => Object.fromEntries(Object.entries(fields).map(([key, value]) =>
+    [key, Array.isArray(value) ? [...value] : value]));
+  return { kind: token.kind, categorical: copyFields(token.categorical),
+    numbers: { ...token.numbers }, refs: copyFields(token.refs) };
+}
+
+function encodeWithState({ game, playerId, request, candidates, continuations, summaries }, state) {
+  const { cards, skills, publicPlayers, turn, seat, playerRef, cardRef, skillRef, indexes } = state;
+  const entities = state.entities.map(copyEntity);
+  const add = (kind, categorical = {}, numbers = {}, refs = {}) => {
+    entities.push({ kind, categorical, numbers, refs }); return entities.length - 1;
+  };
   const event = game.activeTrigger;
   const context = { ...event?.context, ...request.context };
+  // A played card's current owner/printed traits do not identify the selected
+  // element of this attack. Resolution supplies its public, effective traits.
+  const attackTraits = request.attackTraits ?? context.attackTraits;
+  const contextCardId = context.card?.id ?? context.cardId;
   // Never serialize the raw context: it can contain hidden cards and callbacks.
   const flags = {};
   for (const key of ['hit','forcedHit','forceHitRequested','canCounter','canHolyLight','canDarkStrike','bloodBlade',
@@ -122,14 +202,20 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
     if (context[key] !== undefined || request[key] !== undefined) flags[key] = request[key] ?? context[key];
   const selected = request.prefix ?? request.selectedIndices;
   const intent = request.intent ?? selected?.intent ?? null;
-  const question = add('question', { type: request.type, stage: request.stage ?? 'complete', skill: request.skillId ?? null,
+  const exercise = game.aiExercise;
+  const question = add('question', { type: request.type, stage: request.stage ?? 'complete', skill: request.skillId ?? context.skillId ?? null,
     intent: typeof intent === 'string' ? intent : intent?.type ?? null, intentSkill: intent?.skillId ?? null,
     remainingCounts: request.remainingCounts ?? [],
-    timing: event?.timing ?? null, ...flags, previousAttackFates: context.previousAttackTraits?.fates ?? [],
+    timing: event?.timing ?? null, ...flags,
+    ...(exercise ? {objective:exercise.objective} : {}),
+    attackElements: [...(attackTraits?.elements ?? [])], attackFates: [...(attackTraits?.fates ?? [])],
+    previousAttackFates: context.previousAttackTraits?.fates ?? [],
     continuationStage: context.stage ?? null, triggered: context.triggered ?? null,
     purpose: request.purpose ?? context.purpose ?? null, damageType: context.damageType ?? (request.type === 'response' ? request.attack ? 'attack' : 'spell' : null),
     optional: !!request.optional, required: !!request.required, blocked: !!request.blockedReason, counter: request.isCounter ?? context.isCounter ?? null, shieldable: request.shieldable ?? context.shieldable ?? null },
-    { amount: request.damage ?? context.amount ?? 0, count: request.count ?? context.count ?? 0,
+    { ...(exercise ? {initialGems:exercise.initialGems, gemRetentionBonus:exercise.gemRetentionBonus, rewardScale:exercise.rewardScale,
+      maxOwnMoraleLoss:exercise.maxOwnMoraleLoss, ownMoraleLossSoFar:exercise.startingOwnMorale-game.teams[game.player(playerId).team].morale} : {}),
+      amount: request.damage ?? context.amount ?? 0, count: request.count ?? context.count ?? 0,
       selectedCount: Array.isArray(selected) ? selected.length : (selected?.selectedCardIds ?? selected?.cardIds ?? []).length,
       remainingCount: request.remainingCount ?? null,
       remainingMin: request.remainingMin ?? null, remainingMax: request.remainingMax ?? null,
@@ -145,16 +231,15 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
       selectedCards: Array.isArray(selected) ? indexes(selected)
         : (selected?.selectedCardIds ?? selected?.cardIds ?? (context.selectedCardIds ?? []).filter(id => cards.has(id))).flatMap(cardRef),
       selectedTargets: (selected?.selectedTargetIds ?? selected?.targetIds ?? []).map(seat),
-      card: cardRef(request.attack?.id ?? (cards.has(context.card?.id) ? context.card.id : null)) });
-  for (const [position, event] of (game.publicHistory?.actions ?? []).slice(-32).entries()) {
-    const categorical = {}, numbers = { position }, refs = {};
-    for (const key of ['type','card','elements','fates','uniqueSkills','counter','result','skillId','accepted','effectId'])
-      if (event[key] !== undefined) categorical[key] = Array.isArray(event[key]) ? [...event[key]] : event[key];
-    for (const key of ['amount','count','gem','crystal']) if (event[key] !== undefined) numbers[key] = event[key];
-    for (const key of ['playerId','actorId','sourceId','targetId']) if (event[key] != null) refs[key.slice(0,-2)] = playerRef(event[key]);
-    if (event.team != null) categorical.team = side(event.team);
-    add('history', categorical, numbers, refs);
+      card: cardRef(request.attack?.id ?? (cards.has(contextCardId) ? contextCardId : null)) });
+  // Dynamic tail, never cached with the board prefix. Innermost suspended
+  // sequence resumes first; amounts are declared, not post-mitigation forecasts.
+  for (const [order, hit] of (game.getPendingDamage?.() ?? []).entries()) {
+    add('pendingDamage', { skill: hit.skillId, damageType: hit.damageType },
+      { amount: hit.amount, depth: hit.depth, order },
+      { actor: playerRef(hit.sourceId), target: playerRef(hit.targetId) });
   }
+  entities.push(...state.history.map(copyEntity));
   const candidate = value => {
     const categorical = { type: request.type }, numbers = {}, refs = {};
     if (value == null) categorical.type = 'decline';
@@ -257,4 +342,31 @@ export function encodeEntities({ game, playerId, request, candidates, continuati
   if (turn?.phase === 'activation') entities[question].refs.activationPreview =
     activationPreview(turn.playerId, turn.playerId === playerId ? turn.activationIntent ?? null : null);
   return { schema: ENTITY_SCHEMA, question, entities, candidates: encoded };
+}
+
+export function encodeEntities(input) {
+  return encodeWithState(input, buildEntityState(input));
+}
+
+// The decision driver supplies a new scope for each engine request. Only pure
+// subchoices within that scope reuse state; callers without a scope stay uncached.
+export function createEntityEncoder() {
+  const snapshots = new WeakMap();
+  return input => {
+    const scope = input.decisionScope;
+    if (scope == null || typeof scope !== 'object') return encodeEntities(input);
+    const root = input.rootRequest ?? input.request;
+    const visibility = JSON.stringify([input.request.playerId,
+      (input.request.revealedCards ?? []).map(card => card.id)]);
+    let cached = snapshots.get(scope);
+    if (!cached || cached.game !== input.game || cached.playerId !== input.playerId
+      || cached.root !== root || cached.visibility !== visibility) {
+      cached = { game: input.game, playerId: input.playerId, root, visibility,
+        state: buildEntityState(input), transportKey: {} };
+      snapshots.set(scope, cached);
+    }
+    const observation = encodeWithState(input, cached.state);
+    snapshotKeys.set(observation, cached.transportKey);
+    return observation;
+  };
 }

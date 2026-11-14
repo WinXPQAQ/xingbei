@@ -59,6 +59,8 @@ export class Chronicler extends Hero {
         action: () => ({ type: "spell", targetCount: 0 }),
         *resolveAction({ game, player, options }) {
           const shown = hero.revealTop(game, player, 2, "study");
+          hero.revealedCards = shown;
+          yield* game.present();
           const usable = shown.filter(
             (c) =>
               game.allowsAction(player.id, c.type) &&
@@ -112,13 +114,12 @@ export class Chronicler extends Hero {
             }
           }
           const remaining = shown.filter(
-            (x) => x !== c && x.location.zone === "covered",
+            (x) => x !== c && x.location.zone === "field",
           );
           for (const x of remaining)
-            game.discardCovered(player.id, x, {
-              reveal: true,
-              skillId: "unityOfKnowledge",
-            });
+            game.moveCard(x.id, { zone: "discard" });
+          hero.revealedCards = [];
+          game.recordPresentation("cleanup", { cardIds: shown.map(card => card.id) });
           yield* hero.gainArchives(game, player, remaining.length, options);
         },
       },
@@ -275,7 +276,8 @@ export class Chronicler extends Hero {
     for (let i = 0; i < count; i++) {
       const c = g.takeDeckCard();
       if (!c) break;
-      g.coverCards(p.id, [c], pile, { sources: ["deck"], reveal: true });
+      if (pile === "study") g.moveCard(c.id, { zone: "field" }, { reason: "reveal" });
+      else g.coverCards(p.id, [c], pile, { sources: ["deck"], reveal: true });
       cards.push(c);
     }
     return cards;

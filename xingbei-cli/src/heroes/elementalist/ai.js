@@ -15,9 +15,16 @@ function refinementAdjustment(g, id, action) {
   const player = g.player(id), team = g.stoneCounts(player.team), { gem, crystal } = action.stones;
   const single = team.gem === 1 && team.crystal <= 1 && gem === 1;
   if (gem + crystal < 2 && !single) return -1e6;
-  return gemPreparation(g, id, action, { allowSingle: single, crystalBonus: true });
+  // Moonlight can use a first crystal, but its narrower use should not outrank
+  // another gem just for occupying the slot. Extra crystals are a strong soft
+  // cost, rather than removing an otherwise legal refinement candidate.
+  let crystalCost = 0;
+  for (let i = 0; i < crystal; i++) crystalCost += player.energy.crystal + i === 0 ? 2 : 18;
+  return gemPreparation(g, id, action, { allowSingle: single }) - crystalCost;
 }
 export const elementalistAi = {
+  energyPreference: "gem",
+  usefulCrystals: 1,
   retentionBonus: (g, id, card) => Object.keys(elementalSkills).some((skill) => card.hasUniqueSkill(skill)) ? 5 : 0,
   planActions: planElementalActions,
   actionKey: elementalActionKey,
@@ -27,6 +34,6 @@ export const elementalistAi = {
     if (selected !== undefined) return selected;
     if (request.type === "skillChoice" && request.skillId === "elementAbsorption") return true;
   },
-  acceptsCrystalRefinement: (player, action) => player.energy.crystal + action.stones.crystal <= 1,
+  acceptsCrystalRefinement: () => true,
   refinementAdjustment,
 };

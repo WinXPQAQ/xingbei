@@ -157,21 +157,40 @@ async function checkEmptyAndOverflow(ctx) {
     await page.goto(`${base}/web/dev.html?scene=${scene}`);
     await page.waitForFunction(() => window.xingbeiDev); await settle(page);
     const before = (await state()).game.players[0].hand.length;
+    await page.evaluate(() => {
+      window.handFrames = [];
+      const sample = () => {
+        const counts = [...document.querySelectorAll('#players .count')].map(node => parseInt(node.textContent));
+        counts.push(parseInt(document.querySelector('#hand-count').textContent));
+        if (String(counts) !== String(window.handFrames.at(-1))) window.handFrames.push(counts);
+      };
+      sample();
+      window.handFrameObserver = new MutationObserver(sample);
+      window.handFrameObserver.observe(document.querySelector('#window'), {subtree:true, childList:true, characterData:true});
+    });
     await page.locator("#dev-step").click();
     await page.waitForFunction(() => window.xingbeiDev.exportState().pendingChoice?.type === "hand");
     const waiting = await state();
-    check(`${tag} ${scene}: 无牌进入共用选择流程`, waiting.pendingChoice.valid.length === 0 && waiting.game.players[0].hand.length === before);
+    check(`${tag} ${scene}: 无牌进入共用选择流程`, waiting.pendingChoice.valid.length === 0 && waiting.display.handCount === before);
     check(`${tag} ${scene}: 提示与通用标题完全相同`, await page.locator("#hint").textContent() === waiting.pendingChoice.title);
     check(`${tag} ${scene}: 六人固定坐次`, waiting.game.players.map(player => player.team).join() === "red,blue,blue,red,red,blue");
     check(`${tag} ${scene}: 所有手牌禁用且仍显示通用不响应`, await page.locator("#hand .card:enabled").count() === 0 && await page.getByRole("button", { name: "不响应", exact: true }).count() === 1 && await page.getByRole("button", { name: "确认", exact: true }).count() === 0);
-    check(`${tag} ${scene}: 打出牌在场上`, waiting.game.field.length === 1 && waiting.game.field[0].location.zone === "field");
+    check(`${tag} ${scene}: 打出牌在场上`, waiting.display.field.length === 1 && waiting.display.field[0].location.zone === "field");
     await page.waitForTimeout(400);
-    check(`${tag} ${scene}: 等待时不自动造成伤害`, (await state()).game.players[0].hand.length === before);
+    check(`${tag} ${scene}: 等待时显示保持在受伤之前`, (await state()).display.handCount === before);
+    check(`${tag} ${scene}: 等待全过程没有未来手牌闪现`, await page.evaluate(before => window.handFrames.every(counts => counts[0] === before && counts.at(-1) === before), before));
+    await page.locator('#toggle-log').click();
+    const pausedFrames = await page.evaluate(() => window.handFrames.length);
+    await page.waitForTimeout(150);
+    check(`${tag} ${scene}: 日志暂停期间六人手牌保持当前帧`, await page.evaluate(() => window.handFrames.length) === pausedFrames);
+    await page.locator('#close-log').click();
     await page.screenshot({ path: resolve(output, `${scene}-${tag}.png`) });
     await page.getByRole("button", { name: "不响应", exact: true }).click();
     await page.waitForFunction(() => window.xingbeiDev.exportState().pendingChoice === null); await settle(page);
     const after = await state(), trace = await page.evaluate(() => window.xingbeiDev.animations().trace);
-    check(`${tag} ${scene}: 不响应后才结算且场上牌一起弃置`, after.game.field.length === 0 && after.game.discard.some(card => card.id === waiting.game.field[0].id));
+    const frames = await page.evaluate(() => { window.handFrameObserver.disconnect(); return window.handFrames; });
+    check(`${tag} ${scene}: 摸牌和出牌数量按播放顺序变化`, frames.every((counts, index) => index === 0 || counts.every((count, seat) => seat === 0 || seat === 6 ? count >= frames[index - 1][seat] : count <= frames[index - 1][seat])));
+    check(`${tag} ${scene}: 不响应后播放结算且场上牌一起弃置`, after.game.field.length === 0 && after.game.discard.some(card => card.id === waiting.display.field[0].id));
     check(`${tag} ${scene}: 正确伤害类别或圣盾未命中`, scene === "shield-hit" ? !trace.some(event => event.type === "damage") && after.game.players[0].hand.length === before : trace.some(event => event.type === "damage" && event.damageType === (scene === "magic-empty" ? "spell" : "attack")) && after.game.players[0].hand.length === before + 2);
   }
   await page.goto(`${base}/web/dev.html?scene=overflow`);

@@ -6,6 +6,7 @@ import { sameElements, distinctElements, cardSets } from "../src/card-sets.js";
 import { attackSteps } from "../src/resolution/attack.js";
 import { captureObservation } from "../src/ai/observation.js";
 import { encodeEntities } from "../training/entity/observation.mjs";
+import { godEaterAi } from "../src/heroes/god-eater/ai.js";
 const make = (
   others = [
     "priest",
@@ -246,12 +247,7 @@ test("诸神终焉同时直接移除刃，不渗蚀；两次3伤与额外2伤独
   run(
     g,
     g.skillActionSteps(0, { skillId: "ragnarok", cardIds: [], targetIds: [] }),
-    (r) =>
-      r.skillId === "bladeControl"
-        ? null
-        : r.skillId === "ragnarokTarget"
-          ? 1
-          : base(r),
+    (r) => r.skillId === "ragnarokTarget" ? 1 : base(r),
   );
   assert.deepEqual(
     log.map((e) => [e.target, e.amount]),
@@ -284,7 +280,7 @@ test("诸神终焉同时直接移除刃，不渗蚀；两次3伤与额外2伤独
   run(
     h,
     h.skillActionSteps(0, { skillId: "ragnarok", cardIds: [], targetIds: [] }),
-    (r) => (r.skillId === "bladeControl" ? null : base(r)),
+    base,
   );
   assert.equal(h.winner, "red");
   assert.deepEqual(
@@ -341,6 +337,31 @@ test("明弃双属性刃的封印：自由选择可避开封印，费用限定�
 });
 
 test("御刃及共振：从场外取回原实体、支付同系费用与水晶，受伤③插入1法伤后恢复原伤害", () => {
+  const invalid = make();
+  const selection = invalid.player(0).hero.chooseBlade(invalid, invalid.player(0), "bladeControl");
+  selection.next();
+  assert.throws(() => selection.next(null), /无效的技能选项/);
+  for (const count of [0, 1, 6]) {
+    const h = make(), player = h.player(0);
+    for (const card of [...player.hand]) h.moveCard(card.id, { zone: "deck" });
+    for (let i = 0; i < count; i++) take(h, 0);
+    let asked = false;
+    run(h, h.trigger(Timing.ACTIVATION, { playerId: 0 }), (request) => {
+      if (request.skillId !== "bladeControl") return base(request);
+      asked = true;
+      assert.deepEqual(
+        request.choices.map(c => c.value),
+        player.hero.blades(h).map(c => c.id),
+      );
+      return godEaterAi.decisions.bladeControl({
+        player: { count, limit: player.handLimit },
+        request,
+      });
+    });
+    assert.ok(asked);
+    assert.equal(h.cards.get(player.hero.state.demonBladeId).location.zone, "hand");
+    h.assertCardLocations();
+  }
   const g = make(),
     p = g.player(0);
   let questions = 0;

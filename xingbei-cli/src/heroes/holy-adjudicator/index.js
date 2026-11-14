@@ -166,6 +166,7 @@ export class HolyAdjudicator extends Hero {
               player.id,
               "heavenSin",
               "天罪：1水晶，+1罪，主动命中时可向天平放牌",
+              { blockedReason: game.wouldLoseActionAfterEnergy(player.id, "crystal") ? "你将无法行动" : null },
             ))
           )
             return;

@@ -3,6 +3,7 @@
 import { targetCounts } from '../src/card-sets.js';
 import { playableCards } from '../src/playable-cards.js';
 import { Timing } from '../src/timing.js';
+import { overflowChoices } from '../src/inability.js';
 
 const leaf = value => ({ done: true, value });
 const key = value => JSON.stringify(value);
@@ -39,10 +40,10 @@ function completion(available, count, selected, predicate = () => true) {
   return visit(0,[]);
 }
 
-function setSelection({request,available,counts,validSets,optional=false,selected=[],wrap=x=>x,finish=x=>leaf(x),teacherSet=x=>x,stage='selectCards',prefix=selected,summaries}) {
-  const canFinish = values => validSets ? validSets.some(set=>sameSet(set,values)) : counts.includes(values.length);
-  const canComplete = values => validSets ? validSets.some(set=>contains(set,values))
-    : counts.some(count=>count>=values.length&&count<=available.length);
+function setSelection({request,available,counts,validSets,canSelect=()=>true,optional=false,selected=[],wrap=x=>x,finish=x=>leaf(x),teacherSet=x=>x,stage='selectCards',prefix=selected,summaries}) {
+  const canFinish = values => canSelect(values) && (validSets ? validSets.some(set=>sameSet(set,values)) : counts.includes(values.length));
+  const canComplete = values => canSelect(values) && (validSets ? validSets.some(set=>contains(set,values))
+    : counts.some(count=>count>=values.length&&count<=available.length));
   const extend=available.filter(value=>!selected.includes(value)&&canComplete([...selected,value]));
   const remainingCounts=unique(validSets?validSets.filter(set=>contains(set,selected)).map(set=>set.length-selected.length)
     :counts.filter(count=>count>=selected.length&&count<=available.length).map(count=>count-selected.length));
@@ -55,7 +56,7 @@ function setSelection({request,available,counts,validSets,optional=false,selecte
     const index=candidates.indexOf(value), skip=optional&&!selected.length?1:0;
     if(canFinish(selected)&&index===skip)return finish([...selected].sort((a,b)=>a-b));
     const picked=extend[index-skip-(canFinish(selected)?1:0)];
-    return setSelection({request,available,counts,validSets,optional,selected:[...selected,picked],wrap,finish,teacherSet,stage,
+    return setSelection({request,available,counts,validSets,canSelect,optional,selected:[...selected,picked],wrap,finish,teacherSet,stage,
       prefix:Array.isArray(prefix)?[...selected,picked]:prefix,summaries});
   },command=>{
     const values=teacherSet(command);
@@ -84,7 +85,7 @@ export function buildDecisionSpace(game, playerId, request) {
     const available=overflow?player.hand.map((_,index)=>index):[...request.valid];
     const count=overflow?Math.max(0,player.hand.length-player.handLimit):request.count;
     return setSelection({request,available,counts:request.validSets?unique(request.validSets.map(set=>set.length)):[count],
-      validSets:request.validSets,optional:!!request.optional});
+      validSets:request.validSets,canSelect:overflow?overflowChoices(game,playerId).canSelect:undefined,optional:!!request.optional});
   }
   if(request.type!=='action')return null;
   if(game.winner)return leaf(null);

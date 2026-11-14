@@ -213,6 +213,19 @@ test("隐藏Tricky的规则和实体编码不含牌面；Surprise只接收基础
 });
 
 test("圣煌专属双面与天平实体：炮胜利立即停止；天罪允许一侧已满只放另一侧", () => {
+  for (const healing of [1, 2]) {
+    const shielded = make("holyAdjudicator");
+    take(shielded, 0);
+    shielded.player(0).healing = healing;
+    let offered = 0;
+    run(shielded.damageSteps(0, 2, { sourceId: 1, damageType: "spell", useHealing: healing }), request => {
+      if (request.skillId === "goodEvilReckoning") { offered++; return null; }
+      return base(request);
+    });
+    assert.equal(offered, healing === 2 ? 0 : 1);
+    assert.equal(shielded.player(0).hero.state.reckoningUsed, false);
+    assert.equal(shielded.player(0).hand.length, healing === 2 ? 1 : 2);
+  }
   const g = make("primalArcher"),
     p = g.player(0);
   p.hero.state.form = "radiant";

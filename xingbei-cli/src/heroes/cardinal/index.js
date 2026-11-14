@@ -1,7 +1,8 @@
 import { Ecclesiastic } from "../lawgiver/shared.js";
 import { Timing } from "../../timing.js";
-import { choice, healTarget } from "../shared/actions.js";
+import { choice, healTarget, discardCost } from "../shared/actions.js";
 import { discardHand } from "../shared/covered.js";
+import { actionRequired, canContinueWithHand } from "../../inability.js";
 export class Cardinal extends Ecclesiastic {
   constructor(enabled = true) {
     super("cardinal", "红衣主教");
@@ -28,10 +29,12 @@ export class Cardinal extends Ecclesiastic {
         id: "exorcismRite",
         name: "驱魔式",
         ...this.onOwnTurn([Timing.ACTIVATION]),
-        activationEnablesAction: ({ game, player }) => player.hand.some(c => c.getTraits({ game, playerId: player.id }).fates.includes('S')) || game.players.some(p => p.team === player.team && p.id !== player.id && p.hand.length > 0),
-        filter: () => hero.state.silverBullets >= 2,
+        activationEnablesAction: ({ game, player }) => player.hand.length > 0 &&
+          (player.hand.some(c => c.getTraits({ game, playerId: player.id }).fates.includes('S')) ||
+            game.players.some(p => p.team === player.team && p.id !== player.id && p.hand.length > 0)),
+        filter: ({ player }) => player.hand.length > 0 && hero.state.silverBullets >= 2,
         *resolve({ game, player, context, options }) {
-          if (context.usedSkills.terminalActivation) return;
+          if (!player.hand.length || context.usedSkills.terminalActivation) return;
           if (
             !(yield* game.offerSkill(
               player.id,
@@ -42,22 +45,23 @@ export class Cardinal extends Ecclesiastic {
             return;
           context.usedSkills.terminalActivation = true;
           hero.state.silverBullets -= 2;
+          const canDiscardOwnCard = card =>
+            card.getTraits({ game, playerId: player.id }).fates.includes("S") ||
+            !actionRequired(game, player.id) ||
+            canContinueWithHand(game, player.id, player.hand.filter(remaining => remaining.id !== card.id));
           const id = yield* game.choosePlayer(
             player.id,
             game.players.filter((p) => p.team === player.team &&
-              (p.id !== player.id || p.hand.length !== 1 ||
-                p.hand[0].getTraits({ game, playerId: player.id }).fates.includes("S"))).map((p) => p.id),
+              (p.id !== player.id || (p.hand.some(canDiscardOwnCard) &&
+                (p.hand.length !== 1 || p.hand[0].getTraits({ game, playerId: player.id }).fates.includes("S"))))).map((p) => p.id),
             "驱魔式目标",
             { skillId: "exorcismTarget" },
           );
-          const cs = yield* discardHand(
-            game,
-            id,
-            1,
-            "exorcismCost",
-            options,
-            "public",
-          );
+          const target = game.player(id);
+          const cs = target.hand.length ? yield* game.chooseHandCards(id, 1,
+            card => id !== player.id || canDiscardOwnCard(card),
+            { skillId: "exorcismCost", title: "驱魔式：选择明弃的手牌" }) : [];
+          if (cs.length) yield* discardCost(game, target, cs, "exorcismCost", options);
           if (cs[0]?.getTraits({ game, playerId: id }).fates.includes("S")) {
             game.changeHealing(player.id, 1);
             yield* game.drawSteps(player.id, 1, options);

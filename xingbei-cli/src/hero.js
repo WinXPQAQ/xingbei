@@ -96,7 +96,7 @@ export const HERO_DEFINITIONS = {
   greedyGirl: { name: "贪婪少女", HeroClass: GreedyGirl },
   holidayMage: { name: "节日魔导", HeroClass: HolidayMage },
   godEater: { name: "噬神者", HeroClass: GodEater },
-  lawgiver: { name: "铸律者", HeroClass: Lawgiver },
+  lawgiver: { name: "铸律者", HeroClass: Lawgiver, startingHero: false },
   cardinal: { name: "红衣主教", HeroClass: Cardinal },
   chronicler: { name: "记录者", HeroClass: Chronicler },
   missionary: { name: "传教士", HeroClass: Missionary },
@@ -166,13 +166,14 @@ export function createDefaultHero(seat, enabled = true) { return createHero(enab
 
 export function getAvailableHeroes() {
   const ids = [...new Set([...DEFAULT_HERO_IDS, ...Object.keys(HERO_DEFINITIONS)])];
-  return ids.map(id => ({ id, name: HERO_DEFINITIONS[id].name }));
+  return ids.filter(id => HERO_DEFINITIONS[id].startingHero !== false).map(id => ({ id, name: HERO_DEFINITIONS[id].name }));
 }
 export const WAVE_THREE_HERO_IDS = ["assassin", "magicSwordsman", "adjudicator", "sage", "prayer", "heroicPuppet"];
 export const WAVE_TWO_HERO_IDS = ["saint", "holyLancer", "plagueMage", "elementalist", "valkyrie", "magicalGirl"];
 export function createHeroRoster(playerHeroId, playerSeat = 0, initialRoster = DEFAULT_HERO_IDS) {
   if (initialRoster.length !== 6 || initialRoster.some(id => !Object.hasOwn(HERO_DEFINITIONS, id))) throw new Error("无效的测试阵容");
   if (!Object.hasOwn(HERO_DEFINITIONS, playerHeroId)) throw new Error("角色尚未实现或不存在");
+  if ([playerHeroId, ...initialRoster].some(id => HERO_DEFINITIONS[id].startingHero === false)) throw new Error("铸律者只能由红衣主教转换，不能作为开局角色");
   if (!Number.isInteger(playerSeat) || playerSeat < 0 || playerSeat >= DEFAULT_HERO_IDS.length) throw new Error("无效的玩家座位");
   const roster = [...initialRoster], previousSeat = roster.indexOf(playerHeroId);
   if (previousSeat >= 0) [roster[playerSeat], roster[previousSeat]] = [roster[previousSeat], roster[playerSeat]];

@@ -1,9 +1,11 @@
 import { GOD_EATER_HERO_IDS, WAVE_TWO_HERO_IDS, WAVE_THREE_HERO_IDS, WAVE_FOUR_HERO_IDS, WAVE_FIVE_HERO_IDS, WAVE_SIX_HERO_IDS, WAVE_SEVEN_HERO_IDS, WAVE_NINE_HERO_IDS, WAVE_EIGHT_HERO_IDS } from "./src/hero.js";
 import { AI_POLICY_VERSION } from "./src/ai.js";
+import { ENTITY_SCHEMA } from "./training/entity/observation.mjs";
 import { createServer } from "node:http";
 import { readFile, stat } from "node:fs/promises";
 import { extname, join, resolve, relative } from "node:path";
 import { fileURLToPath } from "node:url";
+import { createGameRecordStore } from "./tools/game-record-store.mjs";
 
 const projectRoot = fileURLToPath(new URL(".", import.meta.url));
 const assetRoot = join(projectRoot, "assets");
@@ -17,14 +19,30 @@ const modelIdentity = modelPort ? await (async () => {
   if (!response.ok) throw new Error("模型身份读取失败");
   return response.json();
 })() : null;
-if (modelIdentity && !['v1.5', 'experimental/hero-foundation-1'].includes(modelIdentity.baseline)) throw new Error('不支持的模型基础策略');
+if (modelIdentity) {
+  if (modelIdentity.architecture === 'entity') {
+    if (modelIdentity.schema !== ENTITY_SCHEMA) throw new Error('实体模型观测接口不匹配');
+  } else if (modelIdentity.architecture || (modelIdentity.schema != null && modelIdentity.schema !== 2) ||
+      !['v1.5', 'experimental/hero-foundation-1'].includes(modelIdentity.baseline)) {
+    throw new Error('不支持的模型架构或基础策略');
+  }
+  if (typeof modelIdentity.label !== 'string' || !/^[a-f0-9]{64}$/i.test(modelIdentity.checkpointSha256 ?? '')) {
+    throw new Error('模型身份缺少显示名称或检查点哈希');
+  }
+}
 const heroRoster = { "god-eater": GOD_EATER_HERO_IDS, "wave-nine": WAVE_NINE_HERO_IDS, "wave-eight": WAVE_EIGHT_HERO_IDS, "wave-seven": WAVE_SEVEN_HERO_IDS, "wave-six": WAVE_SIX_HERO_IDS, "wave-five": WAVE_FIVE_HERO_IDS, "wave-four": WAVE_FOUR_HERO_IDS, "wave-two": WAVE_TWO_HERO_IDS, "wave-three": WAVE_THREE_HERO_IDS }[process.env.HERO_PREVIEW];
 const rosterScript = testMode && heroRoster ? `<script>window.XINGBEI_HERO_ROSTER=${JSON.stringify(heroRoster)};</script>` : "";
-const modelScript = modelIdentity ? `<script>window.XINGBEI_MODEL=true;window.XINGBEI_MODEL_BASELINE=${JSON.stringify(modelIdentity.baseline)};</script>` : '';
+const modelScript = modelIdentity ? `<script>window.XINGBEI_MODEL=true;window.XINGBEI_MODEL_IDENTITY=${JSON.stringify(modelIdentity).replace(/</g, '\\u003c')};window.XINGBEI_MODEL_BASELINE=window.XINGBEI_MODEL_IDENTITY.baseline;</script>` : '';
 const aiLabel = modelIdentity ? modelIdentity.label : AI_POLICY_VERSION.replace(/^v/, "AI ");
 const { version } = JSON.parse(await readFile(join(projectRoot, "package.json"), "utf8"));
+const recordDirectory = process.env.GAME_RECORD_DIR;
+const ruleRevision = process.env.RULE_REVISION ?? 'workspace';
+const recordScript = recordDirectory ? `<script>window.XINGBEI_RECORDING=true;window.XINGBEI_RULE_REVISION=${JSON.stringify(ruleRevision).replace(/</g, '\\u003c')};</script>` : '';
+const handleRecords = createGameRecordStore(recordDirectory, {
+  applicationVersion: version, ruleRevision, model: modelIdentity,
+});
 const legacyAssets = JSON.parse(await readFile(join(projectRoot, "legacy-assets.json"), "utf8"));
-const types = { ".webm": "video/webm", ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".mjs": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".png": "image/png", ".jpg": "image/jpeg", ".svg": "image/svg+xml", ".woff2": "font/woff2" };
+const types = { ".json": "application/json; charset=utf-8", ".webm": "video/webm", ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".mjs": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".png": "image/png", ".jpg": "image/jpeg", ".svg": "image/svg+xml", ".woff2": "font/woff2" };
 
 function within(root, suffix) {
   const file = resolve(root, `.${suffix}`);
@@ -38,7 +56,10 @@ function resolveRequest(pathname) {
   if (pathname === "/theme/wood3.png") return join(assetRoot, "theme/music/wood3.png");
   if (pathname === "/theme/hp-xingBei1.png") return join(assetRoot, "theme/style/hp/image/xingBei1.png");
   if (pathname === "/theme/hp-xingBei4.png") return join(assetRoot, "theme/style/hp/image/xingBei4.png");
-  if (["/training/candidates.mjs", "/training/observation.mjs", "/training/preview.mjs", "/training/teacher.mjs"].includes(pathname)) return within(projectRoot, pathname);
+  if (["/training/candidates.mjs", "/training/observation.mjs", "/training/preview.mjs", "/training/teacher.mjs",
+    "/training/decision-runner.mjs", "/training/decision-space.mjs", "/training/entity/observation.mjs",
+    "/training/entity/hero-state.mjs", "/training/legacy/policy.mjs",
+    "/training/legacy/static-orders.json"].includes(pathname)) return within(projectRoot, pathname);
   if (pathname.startsWith("/src/")) return within(projectRoot, pathname);
   if (pathname.startsWith("/web/")) return within(projectRoot, pathname);
   if (pathname.startsWith("/font/")) return within(join(assetRoot, "font"), pathname.slice(5));
@@ -50,11 +71,14 @@ function resolveRequest(pathname) {
 createServer(async (request, response) => {
   try {
     const pathname = decodeURIComponent(new URL(request.url, "http://localhost").pathname);
+    if (await handleRecords(request, response, pathname)) return;
     if (modelPort && pathname.startsWith('/api/model/')) {
       const route = pathname.slice('/api/model'.length);
       if (!['/health', '/choose'].includes(route)) throw Object.assign(new Error('Not found'), {status:404});
-      let body = '', size = 0;
-      for await (const chunk of request) { size += chunk.length; if (size > 8 * 1024 * 1024) throw new Error('Request too large'); body += chunk; }
+      const chunks = [];
+      let size = 0;
+      for await (const chunk of request) { size += chunk.length; if (size > 8 * 1024 * 1024) throw Object.assign(new Error('Request too large'), { status: 413 }); chunks.push(chunk); }
+      const body = Buffer.concat(chunks);
       const upstream = await fetch(`http://127.0.0.1:${modelPort}${route}`, {method:request.method, headers:{'Content-Type':'application/json'}, ...(request.method === 'POST' ? {body} : {}), signal:AbortSignal.timeout(30000)});
       response.writeHead(upstream.status, {'Content-Type':'application/json', 'Cache-Control':'no-store'});
       response.end(await upstream.text()); return;
@@ -77,13 +101,16 @@ createServer(async (request, response) => {
     }
     response.writeHead(200, headers);
     const content = await readFile(filename);
-    if (testMode && (filename === join(projectRoot, "web/index.html") || filename === join(projectRoot, "web/dev.html"))) {
+    if (filename === join(projectRoot, "web/index.html") || filename === join(projectRoot, "web/dev.html")) {
       // Version comes from package.json, not browser state or the scene renderer.
       const label = version.replace(/[&<>"']/g, character => `&#${character.charCodeAt(0)};`);
-      response.end(content.toString("utf8").replace("<head>", `<head>${modelScript}${rosterScript}`).replace("</body>", `<div id="test-version" class="test-version" aria-label="测试版本">测试 ${label}${" + " + aiLabel.replace(/[&<>"']/g, character => `&#${character.charCodeAt(0)};`)}</div>\n</body>`));
+      const identityLabel = aiLabel.replace(/[&<>"']/g, character => `&#${character.charCodeAt(0)};`);
+      const flag = testMode || modelIdentity || recordDirectory
+        ? `<div id="test-version" class="test-version" aria-label="服务版本">${testMode ? '测试 ' : ''}${label} + ${identityLabel}${recordDirectory ? '<span id="game-record-status">正常对局自动记录</span>' : ''}</div>` : '';
+      response.end(content.toString("utf8").replace("<head>", `<head>${modelScript}${rosterScript}${recordScript}`).replace("</body>", `${flag}\n</body>`));
     } else response.end(content);
   } catch (error) {
-    response.writeHead(error.status || 404, { "Content-Type": "text/plain; charset=utf-8" });
+    response.writeHead(error.status || (request.url.startsWith('/api/') ? 500 : 404), { "Content-Type": "text/plain; charset=utf-8" });
     response.end(error.status === 404 ? "Not found" : "Server error");
   }
 }).listen(port, host, () => {

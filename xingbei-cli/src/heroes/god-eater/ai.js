@@ -42,10 +42,7 @@ export const godEaterAi = {
     return blades.length ? 2 : -10;
   },
   decisions: {
-    bladeControl: ({ player, request }) =>
-      player.count < player.limit
-        ? (request.choices.find((c) => c.value !== null)?.value ?? null)
-        : null,
+    bladeControl: ({ request }) => request.choices[0].value,
     engraving: () => true,
     devour: (a, api) =>
       a.state.players[a.context.targetId]?.healing > 0

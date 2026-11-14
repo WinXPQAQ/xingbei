@@ -24,6 +24,7 @@ export function* chooseVisibleCard(
     title,
     choices,
     revealedCards: cards,
+    cardSelection: { min: 1, max: 1, cardIds: cards.map(card => card.id) },
     optional,
     defaultValue: choices[0].value,
   };

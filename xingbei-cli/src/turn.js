@@ -2,9 +2,17 @@ import { RuleError } from "./errors.js";
 import { ELEMENT_NAMES, FATE_NAMES } from "./cards.js";
 import { playableCards } from "./playable-cards.js";
 import { Timing } from "./timing.js";
+import { guardedActivation } from './resolution/activation-guard.js';
 
 export class TurnFlow {
   constructor(game) { this.game = game; this.state = null; this.lastEndedPlayerId = null; this.extraTurns = []; this.followupTurns = []; this.resumePlayerId = null; }
+  *settleActionBoundary(options = {}) {
+    // Drain immediate consequences before handing control back to action
+    // selection. Keep the current phase until its entire reaction chain ends.
+    // Future phase triggers and pending extra actions are not executed here.
+    yield* this.game.flushRuleEvents(options);
+    yield* this.game.present();
+  }
   normalNext(playerId) {
     for (let step = 1; step <= this.game.players.length; step++) {
       const id = (playerId + step) % this.game.players.length;
@@ -31,6 +39,7 @@ export class TurnFlow {
     yield* this.game.trigger(Timing.ACTION_PHASE_BEFORE, context, options);
     context.phase = context.skipped ? Timing.ACTION_PHASE_SKIPPED : Timing.ACTION_PHASE_START;
     yield* this.game.trigger(context.phase, context, options);
+    yield* this.settleActionBoundary(options);
     return { skipped: context.skipped };
   }
   nextAction() {
@@ -60,9 +69,22 @@ export class TurnFlow {
     return !!action && action.type === type && (!action.element || card?.getTraits({ game: this.game, playerId: state.playerId, purpose: "action" }).elements.includes(action.element)) && (!action.fate || card?.getTraits({ game: this.game, playerId: state.playerId, purpose: "action" }).fates.includes(action.fate));
   }
   *activate(playerId, options = {}, validatedAction = false) {
+    return yield* guardedActivation(this.game,playerId,options,validatedAction);
+  }
+  *activateUnchecked(playerId, options = {}, validatedAction = false) {
     if (!validatedAction && !this.game.canActivate(playerId)) throw new RuleError("当前不能启动");
     const state = this.state, plan = options.plan ?? null, action = plan?.action;
-    if (!validatedAction && !this.game.hasOrdinaryContinuation(playerId)) {
+    if (validatedAction && state.activationDeclined) {
+      state.activationDone = true; state.route = "normal";
+      return;
+    }
+    if (options.activationSkill !== undefined) {
+      const selected = this.game.activationChoices(playerId).find(skill => skill.id === options.activationSkill);
+      if (!selected || selected.blockedReason) throw new RuleError(selected?.blockedReason ?? "无效的启动技能");
+      state.activationSelection = selected.id;
+      state.activationDeclined = false;
+    }
+    if (!validatedAction && options.activationSkill === undefined && !this.game.hasOrdinaryContinuation(playerId)) {
       const suppliers=this.game.activationSuppliers(playerId);
       const skillId=yield {type:"numberChoice",playerId,skillId:"activationRoute",title:"选择启动后获得行动条件的路线",
         choices:suppliers.map(skill=>({value:skill.id,label:skill.name})),defaultValue:suppliers[0]?.id};
@@ -85,9 +107,13 @@ export class TurnFlow {
     this.game.recordPublicAction({type:"activation",playerId});
     try {
       yield* this.game.trigger(Timing.ACTIVATION, state, options);
-      yield* this.game.restoreRandomInability(playerId, options);
+      yield* this.settleActionBoundary(options);
+      // Low-level beginAction fixtures can supply the action outside the normal
+      // candidate API; only adjudicate actual activation/validated game actions.
+      if (!validatedAction || options.validateAction) yield* this.game.restoreRandomInability(playerId, options);
+      yield* this.settleActionBoundary(options);
     } finally {
-      for (const key of ["seekingAction", "requiredActivationSkill", "activationPlan", "activationIntent", "reservedCardIds", "reservedSkillId", "reservedTargetIds", "reservedEnergy", "reservedHealing"]) delete state[key];
+      for (const key of ["activationSelection", "seekingAction", "requiredActivationSkill", "activationPlan", "activationIntent", "reservedCardIds", "reservedSkillId", "reservedTargetIds", "reservedEnergy", "reservedHealing"]) delete state[key];
     }
     // No ACTION_PHASE_START trigger here: it ran before activation, and firing
     // it again would reset forms (notably Magic Swordsman's shadow form).
@@ -133,6 +159,7 @@ export class TurnFlow {
     if (!state || state.completed || !state.actionType) return;
     state.phase = { attack: Timing.ATTACK_ACTION_END, spell: Timing.SPELL_ACTION_END, special: Timing.SPECIAL_ACTION_END }[state.actionType];
     yield* this.game.trigger(state.phase, state, options);
+    yield* this.settleActionBoundary(options);
     state.completed = true;
   }
   *end(options = {}) {
@@ -147,6 +174,8 @@ export class TurnFlow {
     }
     state.phase = Timing.TURN_END;
     yield* this.game.trigger(state.phase, state, options);
+    yield* this.settleActionBoundary(options);
+    if (this.game.winner) return;
     this.lastEndedPlayerId = state.playerId;
     const followers = this.game.players.filter(p => p.id !== state.playerId && p.hero.followsPlayer?.(this.game) === state.playerId).map(p => p.id);
     if (followers.length) {

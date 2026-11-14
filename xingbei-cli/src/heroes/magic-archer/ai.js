@@ -8,6 +8,33 @@ function cover(a,api){
   return !best||a.request.optional&&best.reduce((n,i)=>n+score(i),0)<=0?null:best;
 }
 const coveredCost=({request,game})=>request.choices.filter(c=>c.value!=null).sort((a,b)=>chargeValue(game.cards.get(a.value))-chargeValue(game.cards.get(b.value)))[0]?.value??null;
+// AI-only commitment; human legal actions and game rules stay unrestricted.
+export function forcedMagicArcherRefine(game, id) {
+  const player=game.player(id);
+  if (player.hero.id!=='magicArcher' || player.energy.gem+player.energy.crystal!==0 ||
+      !game.canRefine(id) || game.getEnergyLimit(id)<2 || game.stoneCounts(player.team).gem<2) return null;
+  return {type:'refine',stones:{gem:2,crystal:0}};
+}
+export function allowsMagicArcherAiAction(game,id,action) {
+  const player=game.player(id), type=action?.direction??action?.type;
+  return player.hero.id!=='magicArcher' || player.hand.length<2 ||
+    player.energy.gem+player.energy.crystal===0 || !['purchase','synthesize'].includes(type);
+}
+
+// Undefined means the policy still chooses. Charge is offered before magicEye:
+// with a gem it may decline charge, but must then accept magicEye. With only
+// crystals charge is the sole activation. Never manufacture an illegal offer.
+export function forcedMagicArcherAiChoice(game,id,request) {
+  const player=game.player(id);
+  if(player.hero.id!=='magicArcher' || request.blockedReason)return undefined;
+  if(request.type==='energyChoice' && request.skillId==='charge' && player.energy.crystal>0)
+    return request.choices.find(c=>c.value.crystal===1&&c.value.gem===0)?.value;
+  if(request.type!=='skillChoice' || game.turn.state?.playerId!==id ||
+      game.turn.state?.phase!=='activation' || player.energy.gem+player.energy.crystal===0 ||
+      !request.choices?.some(c=>c.value===true))return undefined;
+  if(request.skillId==='magicEye' || (request.skillId==='charge'&&player.energy.gem===0))return true;
+  return undefined;
+}
 export const magicArcherAi={
   id:'magicArcher', energyPreference: "mixed",acceptsRefine:()=>true,
   cardBonus:({elements,same})=>elements.some(e=>['fire','wind','thunder'].includes(e))?(same?6:10):0,

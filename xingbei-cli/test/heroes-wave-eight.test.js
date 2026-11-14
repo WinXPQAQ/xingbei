@@ -62,6 +62,11 @@ test("矜贵之女：提炼宝石奖励水晶，第三次魔法入门由Magic结
 test("女仆长：摹影保存命中牌，风穴收弃牌；影缝弃牌不足扣士气且观看只给本人", () => {
   const g = make("headMaid"),
     p = g.player(0);
+  for (const playerId of [0, 1, 3]) {
+    p.hero.state.threads = 0;
+    run(g.trigger(Timing.SPECIAL_ACTION_END, {playerId}), r => { assert.notEqual(r.skillId, 'shadowPrison'); return base(r); });
+    assert.equal(p.hero.state.threads, playerId === 0 ? 0 : 1);
+  }
   const c = take(g, 0, (c) => c.type === "attack");
   run(g.actionSteps(0, 0, 1), (r) =>
     r.skillId === "shadowCopy" ? true : base(r),

@@ -148,7 +148,7 @@ export function actionPlan(s,id,action,{sequence=true,baseTotal=value(s),contrac
   spend(next,id,costs,{publicExposure:!skill.hiddenCostSkills?.includes(action.skillId)});
   if(!terminal(next))next=skill.resolveAction?.(next,id,action,{target,costs,selectedEffect,effect})??next;
  }else if(action.type==='purchase'){draw(next,id,3);stones(next,p.team,'gem',1);stones(next,p.team,'crystal',1);}
- else if(action.type==='synthesize'){stones(next,p.team,'gem',-action.gemCount);stones(next,p.team,'crystal',-(3-action.gemCount));draw(next,id,3);next.teams[p.team].cups++;next.teams[p.team==='red'?'blue':'red'].morale--;}
+ else if(action.type==='synthesize'){stones(next,p.team,'gem',-action.gemCount);stones(next,p.team,'crystal',-(3-action.gemCount));draw(next,id,3);if(next.ruleVariant!=='morale-only-v1')next.teams[p.team].cups++;next.teams[p.team==='red'?'blue':'red'].morale--;}
  else if(action.type==='refine'){for(const kind of ['gem','crystal']){stones(next,p.team,kind,-action.stones[kind]);next.players[id].energy[kind]+=action.stones[kind];}}
  else if(action.type==='refresh'){next.players[id].hand=[];next.players[id].count=0;draw(next,id,Math.min(4,p.limit));}
  if(['purchase','synthesize','refine'].includes(action.type))aiFor(p).afterSpecial?.(next,id);
