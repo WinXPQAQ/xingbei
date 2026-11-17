@@ -1,0 +1,1273 @@
+[
+  {
+    "sequence": 31,
+    "decisionId": "1794928760146-0.9175536823810104",
+    "viewId": "1794928760146-0.9175536823810104-1794928769022-0.7559598653992755",
+    "at": "2026-11-17T15:20:30.915Z",
+    "playerId": 0,
+    "request": {
+      "type": "action",
+      "stage": "intent",
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 1,
+    "candidate": {
+      "type": "activate",
+      "intent": {
+        "type": "attack"
+      }
+    },
+    "probability": 0.319447785615921,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": "开局需要用攻击找对手空门，创造机会"
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "reviewed"
+  },
+  {
+    "sequence": 31,
+    "decisionId": "1794928760146-0.9175536823810104",
+    "viewId": "1794928760146-0.9175536823810104-1794928769022-0.7559598653992755",
+    "at": "2026-11-17T15:20:30.915Z",
+    "playerId": 0,
+    "request": {
+      "type": "action",
+      "stage": "intent",
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 2,
+    "candidate": {
+      "type": "activate",
+      "intent": {
+        "type": "spell"
+      }
+    },
+    "probability": 0.32494980096817017,
+    "feedback": {
+      "vote": "bad",
+      "score": null,
+      "comment": "手里只有魔弹，打出去造成不了士气下降，意义不大"
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "reviewed"
+  },
+  {
+    "sequence": 160,
+    "decisionId": "1794928868706-0.9900500741981786",
+    "viewId": "1794928868706-0.9900500741981786-1794928868709-0.04922397009867152",
+    "at": "2026-11-17T15:22:07.703Z",
+    "playerId": 0,
+    "request": {
+      "type": "action",
+      "stage": "direction",
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 0,
+    "candidate": {
+      "type": "direction",
+      "direction": "activate"
+    },
+    "probability": 0.9971652626991272,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": ""
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "reviewed"
+  },
+  {
+    "sequence": 160,
+    "decisionId": "1794928868706-0.9900500741981786",
+    "viewId": "1794928868706-0.9900500741981786-1794928868709-0.04922397009867152",
+    "at": "2026-11-17T15:22:07.703Z",
+    "playerId": 0,
+    "request": {
+      "type": "action",
+      "stage": "direction",
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 1,
+    "candidate": {
+      "type": "direction",
+      "direction": "refine"
+    },
+    "probability": 0.0028346797917038202,
+    "feedback": {
+      "vote": null,
+      "score": null,
+      "comment": "4手只能提炼一个确实不够理想，但是对阵ai时ai可能会不知死活的出我刀变成6手，所以选了会有意义"
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "reviewed"
+  },
+  {
+    "sequence": 172,
+    "decisionId": "1794928868706-0.9900500741981786",
+    "viewId": "1794928868706-0.9900500741981786-1794928932522-0.9695339857055646",
+    "at": "2026-11-17T15:22:41.737Z",
+    "playerId": 0,
+    "request": {
+      "type": "action",
+      "stage": "intent",
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 1,
+    "candidate": {
+      "type": "activate",
+      "intent": {
+        "type": "attack"
+      }
+    },
+    "probability": 0.33000072836875916,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": "继续追剑之子上一轮的空门"
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "reviewed"
+  },
+  {
+    "sequence": 210,
+    "decisionId": "1794928973658-0.03568224637793038",
+    "viewId": "1794928973658-0.03568224637793038-1794928973661-0.7982618505540237",
+    "at": "2026-11-17T15:23:01.298Z",
+    "playerId": 0,
+    "request": {
+      "type": "cardChoice",
+      "stage": "selectCards",
+      "title": "明弃1张法术牌，否则再摸1牌",
+      "skillId": "slothResponse"
+    },
+    "candidateIndex": 1,
+    "candidate": [
+      0
+    ],
+    "probability": 0.5314520597457886,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": ""
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "reviewed"
+  },
+  {
+    "sequence": 276,
+    "decisionId": "1794928994368-0.33923531614649616",
+    "viewId": "1794928994368-0.33923531614649616-1794928994371-0.9375039090870229",
+    "at": "2026-11-17T15:23:45.562Z",
+    "playerId": 0,
+    "request": {
+      "type": "response",
+      "stage": null,
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 0,
+    "candidate": null,
+    "probability": 0.0523635596036911,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": "暗灭留着打魔道是最优解"
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "selected"
+  },
+  {
+    "sequence": 276,
+    "decisionId": "1794928994368-0.33923531614649616",
+    "viewId": "1794928994368-0.33923531614649616-1794928994371-0.9375039090870229",
+    "at": "2026-11-17T15:23:45.562Z",
+    "playerId": 0,
+    "request": {
+      "type": "response",
+      "stage": null,
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 1,
+    "candidate": {
+      "index": 1,
+      "targetId": 1
+    },
+    "probability": 0.38413020968437195,
+    "feedback": {
+      "vote": "bad",
+      "score": null,
+      "comment": ""
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "selected"
+  },
+  {
+    "sequence": 276,
+    "decisionId": "1794928994368-0.33923531614649616",
+    "viewId": "1794928994368-0.33923531614649616-1794928994371-0.9375039090870229",
+    "at": "2026-11-17T15:23:45.562Z",
+    "playerId": 0,
+    "request": {
+      "type": "response",
+      "stage": null,
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 2,
+    "candidate": {
+      "index": 1,
+      "targetId": 2
+    },
+    "probability": 0.5635062456130981,
+    "feedback": {
+      "vote": "bad",
+      "score": null,
+      "comment": ""
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "selected"
+  },
+  {
+    "sequence": 422,
+    "decisionId": "1794929082943-0.3242546515965944",
+    "viewId": "1794929082943-0.3242546515965944-1794929082947-0.6702947256394458",
+    "at": "2026-11-17T15:24:48.781Z",
+    "playerId": 0,
+    "request": {
+      "type": "response",
+      "stage": null,
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 0,
+    "candidate": null,
+    "probability": 0.10606523603200912,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": ""
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "selected"
+  },
+  {
+    "sequence": 450,
+    "decisionId": "1794929096126-0.556938231697126",
+    "viewId": "1794929096126-0.556938231697126-1794929096129-0.8770888841495375",
+    "at": "2026-11-17T15:24:59.555Z",
+    "playerId": 0,
+    "request": {
+      "type": "action",
+      "stage": "direction",
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 1,
+    "candidate": {
+      "type": "direction",
+      "direction": "refine"
+    },
+    "probability": 0.01243111863732338,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": ""
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "reviewed"
+  },
+  {
+    "sequence": 574,
+    "decisionId": "1794929146363-0.5257784763085341",
+    "viewId": "1794929146363-0.5257784763085341-1794929154609-0.7605670454576018",
+    "at": "2026-11-17T15:25:59.923Z",
+    "playerId": 0,
+    "request": {
+      "type": "action",
+      "stage": "intent",
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 4,
+    "candidate": {
+      "type": "activate",
+      "intent": {
+        "type": "skill",
+        "skillId": "holyCodex"
+      }
+    },
+    "probability": 0.3094309866428375,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": ""
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "reviewed"
+  },
+  {
+    "sequence": 590,
+    "decisionId": "1794929178146-0.7110156145136219",
+    "viewId": "1794929178146-0.7110156145136219-1794929178149-0.37956158810192675",
+    "at": "2026-11-17T15:26:36.415Z",
+    "playerId": 0,
+    "request": {
+      "type": "healing",
+      "stage": null,
+      "title": "使用治疗抵挡伤害",
+      "skillId": null
+    },
+    "candidateIndex": 0,
+    "candidate": 0,
+    "probability": 0.034323129802942276,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": "受4点法伤为什么要用治疗抵消"
+    },
+    "choice": 0,
+    "command": null,
+    "outcome": "selected"
+  },
+  {
+    "sequence": 590,
+    "decisionId": "1794929178146-0.7110156145136219",
+    "viewId": "1794929178146-0.7110156145136219-1794929178149-0.37956158810192675",
+    "at": "2026-11-17T15:26:36.415Z",
+    "playerId": 0,
+    "request": {
+      "type": "healing",
+      "stage": null,
+      "title": "使用治疗抵挡伤害",
+      "skillId": null
+    },
+    "candidateIndex": 1,
+    "candidate": 1,
+    "probability": 0.265554279088974,
+    "feedback": {
+      "vote": "bad",
+      "score": null,
+      "comment": ""
+    },
+    "choice": 0,
+    "command": null,
+    "outcome": "selected"
+  },
+  {
+    "sequence": 590,
+    "decisionId": "1794929178146-0.7110156145136219",
+    "viewId": "1794929178146-0.7110156145136219-1794929178149-0.37956158810192675",
+    "at": "2026-11-17T15:26:36.415Z",
+    "playerId": 0,
+    "request": {
+      "type": "healing",
+      "stage": null,
+      "title": "使用治疗抵挡伤害",
+      "skillId": null
+    },
+    "candidateIndex": 2,
+    "candidate": 2,
+    "probability": 0.7001225352287292,
+    "feedback": {
+      "vote": "bad",
+      "score": null,
+      "comment": ""
+    },
+    "choice": 0,
+    "command": null,
+    "outcome": "selected"
+  },
+  {
+    "sequence": 608,
+    "decisionId": "1794929197657-0.39773313366984997",
+    "viewId": "1794929197657-0.39773313366984997-1794929197659-0.39177605751652655",
+    "at": "2026-11-17T15:27:11.656Z",
+    "playerId": 0,
+    "request": {
+      "type": "cardChoice",
+      "stage": "selectCards",
+      "title": "智慧法典：暗弃1张牌",
+      "skillId": "wisdomCodex"
+    },
+    "candidateIndex": 0,
+    "candidate": [
+      0
+    ],
+    "probability": 0.392291784286499,
+    "feedback": {
+      "vote": "bad",
+      "score": null,
+      "comment": "两张水，弃水系刀，中毒对贤者和灵溪之潮都有用"
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "reviewed"
+  },
+  {
+    "sequence": 608,
+    "decisionId": "1794929197657-0.39773313366984997",
+    "viewId": "1794929197657-0.39773313366984997-1794929197659-0.39177605751652655",
+    "at": "2026-11-17T15:27:11.656Z",
+    "playerId": 0,
+    "request": {
+      "type": "cardChoice",
+      "stage": "selectCards",
+      "title": "智慧法典：暗弃1张牌",
+      "skillId": "wisdomCodex"
+    },
+    "candidateIndex": 2,
+    "candidate": [
+      2
+    ],
+    "probability": 0.23277688026428223,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": ""
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "reviewed"
+  },
+  {
+    "sequence": 681,
+    "decisionId": "1794929252273-0.11358173949073624",
+    "viewId": "1794929252273-0.11358173949073624-1794929252276-0.9832428487785794",
+    "at": "2026-11-17T15:27:42.548Z",
+    "playerId": 0,
+    "request": {
+      "type": "action",
+      "stage": "direction",
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 1,
+    "candidate": {
+      "type": "direction",
+      "direction": "refine"
+    },
+    "probability": 0.005803126376122236,
+    "feedback": {
+      "vote": "bad",
+      "score": null,
+      "comment": "已经有资源不用提炼了"
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "reviewed"
+  },
+  {
+    "sequence": 708,
+    "decisionId": "1794929252273-0.11358173949073624",
+    "viewId": "1794929252273-0.11358173949073624-1794929271290-0.9920429068639663",
+    "at": "2026-11-17T15:28:55.975Z",
+    "playerId": 0,
+    "request": {
+      "type": "action",
+      "stage": "intent",
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 1,
+    "candidate": {
+      "type": "activate",
+      "intent": {
+        "type": "attack"
+      }
+    },
+    "probability": 0.14643368124961853,
+    "feedback": {
+      "vote": "bad",
+      "score": null,
+      "comment": ""
+    },
+    "choice": {
+      "type": "play",
+      "index": 0,
+      "targetId": 0
+    },
+    "command": {
+      "type": "play",
+      "index": 0,
+      "targetId": 0
+    },
+    "outcome": "selected"
+  },
+  {
+    "sequence": 708,
+    "decisionId": "1794929252273-0.11358173949073624",
+    "viewId": "1794929252273-0.11358173949073624-1794929271290-0.9920429068639663",
+    "at": "2026-11-17T15:28:55.975Z",
+    "playerId": 0,
+    "request": {
+      "type": "action",
+      "stage": "intent",
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 2,
+    "candidate": {
+      "type": "activate",
+      "intent": {
+        "type": "spell"
+      }
+    },
+    "probability": 0.10415441542863846,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": "可以考虑中毒贴自己，下个回合可以利用反弹补手牌"
+    },
+    "choice": {
+      "type": "play",
+      "index": 0,
+      "targetId": 0
+    },
+    "command": {
+      "type": "play",
+      "index": 0,
+      "targetId": 0
+    },
+    "outcome": "selected"
+  },
+  {
+    "sequence": 708,
+    "decisionId": "1794929252273-0.11358173949073624",
+    "viewId": "1794929252273-0.11358173949073624-1794929271290-0.9920429068639663",
+    "at": "2026-11-17T15:28:55.975Z",
+    "playerId": 0,
+    "request": {
+      "type": "action",
+      "stage": "intent",
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 3,
+    "candidate": {
+      "type": "activate",
+      "intent": {
+        "type": "skill",
+        "skillId": "arcaneCodex"
+      }
+    },
+    "probability": 0.29604533314704895,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": ""
+    },
+    "choice": {
+      "type": "play",
+      "index": 0,
+      "targetId": 0
+    },
+    "command": {
+      "type": "play",
+      "index": 0,
+      "targetId": 0
+    },
+    "outcome": "selected"
+  },
+  {
+    "sequence": 708,
+    "decisionId": "1794929252273-0.11358173949073624",
+    "viewId": "1794929252273-0.11358173949073624-1794929271290-0.9920429068639663",
+    "at": "2026-11-17T15:28:55.975Z",
+    "playerId": 0,
+    "request": {
+      "type": "action",
+      "stage": "intent",
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 4,
+    "candidate": {
+      "type": "activate",
+      "intent": {
+        "type": "skill",
+        "skillId": "holyCodex"
+      }
+    },
+    "probability": 0.3221020996570587,
+    "feedback": {
+      "vote": "bad",
+      "score": 0,
+      "comment": "有治疗在重复发"
+    },
+    "choice": {
+      "type": "play",
+      "index": 0,
+      "targetId": 0
+    },
+    "command": {
+      "type": "play",
+      "index": 0,
+      "targetId": 0
+    },
+    "outcome": "selected"
+  },
+  {
+    "sequence": 812,
+    "decisionId": "1794929361414-0.37865424564372596",
+    "viewId": "1794929361414-0.37865424564372596-1794929361415-0.7350137377462613",
+    "at": "2026-11-17T15:29:55.800Z",
+    "playerId": 0,
+    "request": {
+      "type": "healing",
+      "stage": null,
+      "title": "使用治疗抵挡伤害",
+      "skillId": null
+    },
+    "candidateIndex": 0,
+    "candidate": 0,
+    "probability": 0.04192700609564781,
+    "feedback": {
+      "vote": "good",
+      "score": 10,
+      "comment": "补高手牌打人了"
+    },
+    "choice": 0,
+    "command": null,
+    "outcome": "selected"
+  },
+  {
+    "sequence": 812,
+    "decisionId": "1794929361414-0.37865424564372596",
+    "viewId": "1794929361414-0.37865424564372596-1794929361415-0.7350137377462613",
+    "at": "2026-11-17T15:29:55.800Z",
+    "playerId": 0,
+    "request": {
+      "type": "healing",
+      "stage": null,
+      "title": "使用治疗抵挡伤害",
+      "skillId": null
+    },
+    "candidateIndex": 1,
+    "candidate": 1,
+    "probability": 0.279742568731308,
+    "feedback": {
+      "vote": "good",
+      "score": 5,
+      "comment": "可以触发法术反弹"
+    },
+    "choice": 0,
+    "command": null,
+    "outcome": "selected"
+  },
+  {
+    "sequence": 812,
+    "decisionId": "1794929361414-0.37865424564372596",
+    "viewId": "1794929361414-0.37865424564372596-1794929361415-0.7350137377462613",
+    "at": "2026-11-17T15:29:55.800Z",
+    "playerId": 0,
+    "request": {
+      "type": "healing",
+      "stage": null,
+      "title": "使用治疗抵挡伤害",
+      "skillId": null
+    },
+    "candidateIndex": 2,
+    "candidate": 2,
+    "probability": 0.6783303618431091,
+    "feedback": {
+      "vote": "bad",
+      "score": null,
+      "comment": "非常不好"
+    },
+    "choice": 0,
+    "command": null,
+    "outcome": "selected"
+  },
+  {
+    "sequence": 820,
+    "decisionId": "1794929398217-0.32028865143633956",
+    "viewId": "1794929398217-0.32028865143633956-1794929398222-0.6990005784075906",
+    "at": "2026-11-17T15:30:02.710Z",
+    "playerId": 0,
+    "request": {
+      "type": "healing",
+      "stage": null,
+      "title": "使用治疗抵挡伤害",
+      "skillId": null
+    },
+    "candidateIndex": 0,
+    "candidate": 0,
+    "probability": 0.2869133949279785,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": ""
+    },
+    "choice": 0,
+    "command": null,
+    "outcome": "selected"
+  },
+  {
+    "sequence": 820,
+    "decisionId": "1794929398217-0.32028865143633956",
+    "viewId": "1794929398217-0.32028865143633956-1794929398222-0.6990005784075906",
+    "at": "2026-11-17T15:30:02.710Z",
+    "playerId": 0,
+    "request": {
+      "type": "healing",
+      "stage": null,
+      "title": "使用治疗抵挡伤害",
+      "skillId": null
+    },
+    "candidateIndex": 1,
+    "candidate": 1,
+    "probability": 0.7130866050720215,
+    "feedback": {
+      "vote": "bad",
+      "score": null,
+      "comment": ""
+    },
+    "choice": 0,
+    "command": null,
+    "outcome": "selected"
+  },
+  {
+    "sequence": 846,
+    "decisionId": "1794929420783-0.26659022913705677",
+    "viewId": "1794929420783-0.26659022913705677-1794929420786-0.7383656172303463",
+    "at": "2026-11-17T15:30:45.281Z",
+    "playerId": 0,
+    "request": {
+      "type": "playerChoice",
+      "stage": null,
+      "title": "法术反弹：选择伤害目标",
+      "skillId": "spellRebound"
+    },
+    "candidateIndex": 1,
+    "candidate": 1,
+    "probability": 0.3875298500061035,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": ""
+    },
+    "choice": 1,
+    "command": null,
+    "outcome": "selected"
+  },
+  {
+    "sequence": 846,
+    "decisionId": "1794929420783-0.26659022913705677",
+    "viewId": "1794929420783-0.26659022913705677-1794929420786-0.7383656172303463",
+    "at": "2026-11-17T15:30:45.281Z",
+    "playerId": 0,
+    "request": {
+      "type": "playerChoice",
+      "stage": null,
+      "title": "法术反弹：选择伤害目标",
+      "skillId": "spellRebound"
+    },
+    "candidateIndex": 3,
+    "candidate": 3,
+    "probability": 0.008268611505627632,
+    "feedback": {
+      "vote": "bad",
+      "score": null,
+      "comment": ""
+    },
+    "choice": 1,
+    "command": null,
+    "outcome": "selected"
+  },
+  {
+    "sequence": 846,
+    "decisionId": "1794929420783-0.26659022913705677",
+    "viewId": "1794929420783-0.26659022913705677-1794929420786-0.7383656172303463",
+    "at": "2026-11-17T15:30:45.281Z",
+    "playerId": 0,
+    "request": {
+      "type": "playerChoice",
+      "stage": null,
+      "title": "法术反弹：选择伤害目标",
+      "skillId": "spellRebound"
+    },
+    "candidateIndex": 4,
+    "candidate": 4,
+    "probability": 0.021464722231030464,
+    "feedback": {
+      "vote": "bad",
+      "score": null,
+      "comment": ""
+    },
+    "choice": 1,
+    "command": null,
+    "outcome": "selected"
+  },
+  {
+    "sequence": 846,
+    "decisionId": "1794929420783-0.26659022913705677",
+    "viewId": "1794929420783-0.26659022913705677-1794929420786-0.7383656172303463",
+    "at": "2026-11-17T15:30:45.281Z",
+    "playerId": 0,
+    "request": {
+      "type": "playerChoice",
+      "stage": null,
+      "title": "法术反弹：选择伤害目标",
+      "skillId": "spellRebound"
+    },
+    "candidateIndex": 5,
+    "candidate": 5,
+    "probability": 0.3515097498893738,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": ""
+    },
+    "choice": 1,
+    "command": null,
+    "outcome": "selected"
+  },
+  {
+    "sequence": 851,
+    "decisionId": "1794929446905-0.511467645811802",
+    "viewId": "1794929446905-0.511467645811802-1794929446910-0.9967245154600912",
+    "at": "2026-11-17T15:30:53.417Z",
+    "playerId": 0,
+    "request": {
+      "type": "healing",
+      "stage": null,
+      "title": "使用治疗抵挡伤害",
+      "skillId": null
+    },
+    "candidateIndex": 1,
+    "candidate": 1,
+    "probability": 0.3303406834602356,
+    "feedback": {
+      "vote": "bad",
+      "score": null,
+      "comment": ""
+    },
+    "choice": 0,
+    "command": null,
+    "outcome": "selected"
+  },
+  {
+    "sequence": 851,
+    "decisionId": "1794929446905-0.511467645811802",
+    "viewId": "1794929446905-0.511467645811802-1794929446910-0.9967245154600912",
+    "at": "2026-11-17T15:30:53.417Z",
+    "playerId": 0,
+    "request": {
+      "type": "healing",
+      "stage": null,
+      "title": "使用治疗抵挡伤害",
+      "skillId": null
+    },
+    "candidateIndex": 2,
+    "candidate": 2,
+    "probability": 0.6218011975288391,
+    "feedback": {
+      "vote": "bad",
+      "score": null,
+      "comment": ""
+    },
+    "choice": 0,
+    "command": null,
+    "outcome": "selected"
+  },
+  {
+    "sequence": 855,
+    "decisionId": "1794929454656-0.9083041803521469",
+    "viewId": "1794929454656-0.9083041803521469-1794929454659-0.1087692770903742",
+    "at": "2026-11-17T15:31:00.138Z",
+    "playerId": 0,
+    "request": {
+      "type": "healing",
+      "stage": null,
+      "title": "使用治疗抵挡伤害",
+      "skillId": null
+    },
+    "candidateIndex": 1,
+    "candidate": 1,
+    "probability": 0.2960900664329529,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": ""
+    },
+    "choice": 1,
+    "command": null,
+    "outcome": "selected"
+  },
+  {
+    "sequence": 855,
+    "decisionId": "1794929454656-0.9083041803521469",
+    "viewId": "1794929454656-0.9083041803521469-1794929454659-0.1087692770903742",
+    "at": "2026-11-17T15:31:00.138Z",
+    "playerId": 0,
+    "request": {
+      "type": "healing",
+      "stage": null,
+      "title": "使用治疗抵挡伤害",
+      "skillId": null
+    },
+    "candidateIndex": 2,
+    "candidate": 2,
+    "probability": 0.6678688526153564,
+    "feedback": {
+      "vote": "bad",
+      "score": null,
+      "comment": ""
+    },
+    "choice": 1,
+    "command": null,
+    "outcome": "selected"
+  },
+  {
+    "sequence": 860,
+    "decisionId": "1794929461955-0.4864690568957206",
+    "viewId": "1794929461955-0.4864690568957206-1794929461958-0.5182742350583793",
+    "at": "2026-11-17T15:31:08.089Z",
+    "playerId": 0,
+    "request": {
+      "type": "cardChoice",
+      "stage": "selectCards",
+      "title": "法术反弹：可明弃至少2张同系牌",
+      "skillId": "spellRebound"
+    },
+    "candidateIndex": 0,
+    "candidate": null,
+    "probability": 0.002565596718341112,
+    "feedback": {
+      "vote": "bad",
+      "score": null,
+      "comment": ""
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "reviewed"
+  },
+  {
+    "sequence": 866,
+    "decisionId": "1794929470909-0.9961507026198623",
+    "viewId": "1794929470909-0.9961507026198623-1794929470913-0.6537536565452859",
+    "at": "2026-11-17T15:31:15.867Z",
+    "playerId": 0,
+    "request": {
+      "type": "playerChoice",
+      "stage": null,
+      "title": "法术反弹：选择伤害目标",
+      "skillId": "spellRebound"
+    },
+    "candidateIndex": 1,
+    "candidate": 1,
+    "probability": 0.7502502202987671,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": ""
+    },
+    "choice": 1,
+    "command": null,
+    "outcome": "selected"
+  },
+  {
+    "sequence": 870,
+    "decisionId": "1794929477501-0.9102577643262234",
+    "viewId": "1794929477501-0.9102577643262234-1794929477506-0.4156885699753241",
+    "at": "2026-11-17T15:31:20.334Z",
+    "playerId": 0,
+    "request": {
+      "type": "healing",
+      "stage": null,
+      "title": "使用治疗抵挡伤害",
+      "skillId": null
+    },
+    "candidateIndex": 1,
+    "candidate": 1,
+    "probability": 0.888064444065094,
+    "feedback": {
+      "vote": "bad",
+      "score": null,
+      "comment": ""
+    },
+    "choice": 0,
+    "command": null,
+    "outcome": "selected"
+  },
+  {
+    "sequence": 875,
+    "decisionId": "1794929482203-0.9228385801907402",
+    "viewId": "1794929482203-0.9228385801907402-1794929485789-0.28257633792177816",
+    "at": "2026-11-17T15:31:30.334Z",
+    "playerId": 0,
+    "request": {
+      "type": "action",
+      "stage": "intent",
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 3,
+    "candidate": {
+      "type": "activate",
+      "intent": {
+        "type": "skill",
+        "skillId": "arcaneCodex"
+      }
+    },
+    "probability": 0.25023311376571655,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": ""
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "reviewed"
+  },
+  {
+    "sequence": 875,
+    "decisionId": "1794929482203-0.9228385801907402",
+    "viewId": "1794929482203-0.9228385801907402-1794929485789-0.28257633792177816",
+    "at": "2026-11-17T15:31:30.334Z",
+    "playerId": 0,
+    "request": {
+      "type": "action",
+      "stage": "intent",
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 4,
+    "candidate": {
+      "type": "activate",
+      "intent": {
+        "type": "skill",
+        "skillId": "holyCodex"
+      }
+    },
+    "probability": 0.30035319924354553,
+    "feedback": {
+      "vote": "bad",
+      "score": null,
+      "comment": ""
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "reviewed"
+  },
+  {
+    "sequence": 888,
+    "decisionId": "1794929502521-0.29048150805468353",
+    "viewId": "1794929502521-0.29048150805468353-1794929502525-0.04727545567405145",
+    "at": "2026-11-17T15:31:47.059Z",
+    "playerId": 0,
+    "request": {
+      "type": "healing",
+      "stage": null,
+      "title": "使用治疗抵挡伤害",
+      "skillId": null
+    },
+    "candidateIndex": 1,
+    "candidate": 1,
+    "probability": 0.8825681209564209,
+    "feedback": {
+      "vote": "bad",
+      "score": null,
+      "comment": ""
+    },
+    "choice": 0,
+    "command": null,
+    "outcome": "selected"
+  },
+  {
+    "sequence": 898,
+    "decisionId": "1794929508274-0.2552095258358569",
+    "viewId": "1794929508274-0.2552095258358569-1794929508277-0.44234889869693983",
+    "at": "2026-11-17T15:32:07.361Z",
+    "playerId": 0,
+    "request": {
+      "type": "cardChoice",
+      "stage": "selectCards",
+      "title": "智慧法典：暗弃1张牌",
+      "skillId": "wisdomCodex"
+    },
+    "candidateIndex": 0,
+    "candidate": [
+      0
+    ],
+    "probability": 0.46529510617256165,
+    "feedback": {
+      "vote": "bad",
+      "score": null,
+      "comment": ""
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "reviewed"
+  },
+  {
+    "sequence": 898,
+    "decisionId": "1794929508274-0.2552095258358569",
+    "viewId": "1794929508274-0.2552095258358569-1794929508277-0.44234889869693983",
+    "at": "2026-11-17T15:32:07.361Z",
+    "playerId": 0,
+    "request": {
+      "type": "cardChoice",
+      "stage": "selectCards",
+      "title": "智慧法典：暗弃1张牌",
+      "skillId": "wisdomCodex"
+    },
+    "candidateIndex": 2,
+    "candidate": [
+      2
+    ],
+    "probability": 0.23565441370010376,
+    "feedback": {
+      "vote": "bad",
+      "score": null,
+      "comment": ""
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "reviewed"
+  },
+  {
+    "sequence": 898,
+    "decisionId": "1794929508274-0.2552095258358569",
+    "viewId": "1794929508274-0.2552095258358569-1794929508277-0.44234889869693983",
+    "at": "2026-11-17T15:32:07.361Z",
+    "playerId": 0,
+    "request": {
+      "type": "cardChoice",
+      "stage": "selectCards",
+      "title": "智慧法典：暗弃1张牌",
+      "skillId": "wisdomCodex"
+    },
+    "candidateIndex": 3,
+    "candidate": [
+      3
+    ],
+    "probability": 0.07681892812252045,
+    "feedback": {
+      "vote": "bad",
+      "score": null,
+      "comment": "3张雷等待1法伤"
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "reviewed"
+  },
+  {
+    "sequence": 898,
+    "decisionId": "1794929508274-0.2552095258358569",
+    "viewId": "1794929508274-0.2552095258358569-1794929508277-0.44234889869693983",
+    "at": "2026-11-17T15:32:07.361Z",
+    "playerId": 0,
+    "request": {
+      "type": "cardChoice",
+      "stage": "selectCards",
+      "title": "智慧法典：暗弃1张牌",
+      "skillId": "wisdomCodex"
+    },
+    "candidateIndex": 4,
+    "candidate": [
+      4
+    ],
+    "probability": 0.2075040191411972,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": ""
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "reviewed"
+  },
+  {
+    "sequence": 950,
+    "decisionId": "1794929537597-0.6577767634618694",
+    "viewId": "1794929537597-0.6577767634618694-1794929537601-0.6575729913785162",
+    "at": "2026-11-17T15:32:28.139Z",
+    "playerId": 0,
+    "request": {
+      "type": "healing",
+      "stage": null,
+      "title": "使用治疗抵挡伤害",
+      "skillId": null
+    },
+    "candidateIndex": 0,
+    "candidate": 0,
+    "probability": 0.12246441096067429,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": ""
+    },
+    "choice": 0,
+    "command": null,
+    "outcome": "selected"
+  },
+  {
+    "sequence": 950,
+    "decisionId": "1794929537597-0.6577767634618694",
+    "viewId": "1794929537597-0.6577767634618694-1794929537601-0.6575729913785162",
+    "at": "2026-11-17T15:32:28.139Z",
+    "playerId": 0,
+    "request": {
+      "type": "healing",
+      "stage": null,
+      "title": "使用治疗抵挡伤害",
+      "skillId": null
+    },
+    "candidateIndex": 1,
+    "candidate": 1,
+    "probability": 0.8775355219841003,
+    "feedback": {
+      "vote": "bad",
+      "score": null,
+      "comment": ""
+    },
+    "choice": 0,
+    "command": null,
+    "outcome": "selected"
+  },
+  {
+    "sequence": 968,
+    "decisionId": "1794929557101-0.17283734544752127",
+    "viewId": "1794929557101-0.17283734544752127-1794929557104-0.27992409596441314",
+    "at": "2026-11-17T15:32:39.694Z",
+    "playerId": 0,
+    "request": {
+      "type": "healing",
+      "stage": null,
+      "title": "使用治疗抵挡伤害",
+      "skillId": null
+    },
+    "candidateIndex": 1,
+    "candidate": 1,
+    "probability": 0.8613621592521667,
+    "feedback": {
+      "vote": "bad",
+      "score": null,
+      "comment": ""
+    },
+    "choice": 0,
+    "command": null,
+    "outcome": "selected"
+  }
+]

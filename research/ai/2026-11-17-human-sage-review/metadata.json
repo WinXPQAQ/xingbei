@@ -1,0 +1,100 @@
+{
+  "format": "xingbei-human-game-v1",
+  "id": "fa13235d3e1582bbcd19a5f6defb6f2b06ce2859de4c0e0b",
+  "createdAt": "2026-11-17T15:19:15.960Z",
+  "applicationVersion": "0.16.12",
+  "ruleRevision": "d6e7ca3d21bd82c8252326b89f23b4903945f7cf2cc9444fa4a0c4718c7e87d8",
+  "model": {
+    "id": "team-m06-504",
+    "schema": "entities-v7",
+    "architecture": "entity",
+    "decisionMode": "hierarchical-v1",
+    "checkpointSha256": "6e182bda47f21d190092289e2f288f60024deb8e6ef7c70fb51c2759a8c691d1",
+    "revision": "branch-targets-20261114",
+    "label": "AI v7 · 504轮（推荐）",
+    "description": "士气倾向0.6，仍保留合杯胜利",
+    "device": "cpu"
+  },
+  "models": [
+    {
+      "id": "team-m06-504",
+      "schema": "entities-v7",
+      "architecture": "entity",
+      "decisionMode": "hierarchical-v1",
+      "checkpointSha256": "6e182bda47f21d190092289e2f288f60024deb8e6ef7c70fb51c2759a8c691d1",
+      "revision": "branch-targets-20261114",
+      "label": "AI v7 · 504轮（推荐）",
+      "description": "士气倾向0.6，仍保留合杯胜利",
+      "device": "cpu"
+    },
+    {
+      "id": "team-m03-198",
+      "schema": "entities-v7",
+      "architecture": "entity",
+      "decisionMode": "hierarchical-v1",
+      "checkpointSha256": "c06445d7fdd3395d4674d7538b489a01e44d0b7a45e092153da4d1377fc2e92c",
+      "revision": "branch-targets-20261114",
+      "label": "AI v7 · 198轮",
+      "description": "士气倾向0.3，仍保留合杯胜利",
+      "device": "cpu"
+    },
+    {
+      "id": "team-cup-295",
+      "schema": "entities-v7",
+      "architecture": "entity",
+      "decisionMode": "hierarchical-v1",
+      "checkpointSha256": "505ab6b9275979bd86f4f241e19a95cb9293f4f44376cae97bdad0dc482907cd",
+      "revision": "branch-targets-20261114",
+      "label": "AI v7 · 295轮",
+      "description": "仅终局胜负训练，无额外士气倾向",
+      "device": "cpu"
+    }
+  ],
+  "configuration": {
+    "mode": "normal",
+    "humanSeat": 0,
+    "humanSeats": [
+      0
+    ],
+    "informationScope": "individual",
+    "aiSeats": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "initialConfig": {
+      "seed": 1794928722071,
+      "names": [
+        "红一",
+        "蓝一",
+        "蓝二",
+        "红二",
+        "红三",
+        "蓝三"
+      ],
+      "teams": [
+        "red",
+        "blue",
+        "blue",
+        "red",
+        "red",
+        "blue"
+      ],
+      "heroIds": [
+        "sage",
+        "butterflyDancer",
+        "slothGirl",
+        "spiritTide",
+        "elementalist",
+        "swordChild"
+      ],
+      "shuffleDeck": true,
+      "heroRules": true,
+      "ruleVariant": "standard"
+    },
+    "modelHash": "6e182bda47f21d190092289e2f288f60024deb8e6ef7c70fb51c2759a8c691d1",
+    "ruleRevision": "d6e7ca3d21bd82c8252326b89f23b4903945f7cf2cc9444fa4a0c4718c7e87d8"
+  }
+}
