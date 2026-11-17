@@ -1,0 +1,78 @@
+{
+  "base": {
+    "wins": 604,
+    "completed": 1152,
+    "win_rate": 0.5243055555555556,
+    "refine": 0,
+    "arcane": 134,
+    "holy": 0,
+    "wisdom": 90,
+    "rebound": 1143,
+    "spell": 2726,
+    "attack": 7587
+  },
+  "gem": {
+    "wins": 614,
+    "completed": 1152,
+    "win_rate": 0.5329861111111112,
+    "refine": 0,
+    "arcane": 434,
+    "holy": 0,
+    "wisdom": 90,
+    "rebound": 1160,
+    "spell": 3073,
+    "attack": 7409
+  },
+  "base+refine": {
+    "wins": 534,
+    "completed": 1152,
+    "win_rate": 0.4635416666666667,
+    "refine": 1010,
+    "arcane": 1356,
+    "holy": 0,
+    "wisdom": 139,
+    "rebound": 1280,
+    "spell": 3780,
+    "attack": 6704
+  },
+  "gem+refine": {
+    "wins": 561,
+    "completed": 1152,
+    "win_rate": 0.4869791666666667,
+    "refine": 1034,
+    "arcane": 4190,
+    "holy": 0,
+    "wisdom": 171,
+    "rebound": 1208,
+    "spell": 6472,
+    "attack": 5527
+  },
+  "gem - base": {
+    "difference": 0.008680555555555556,
+    "interval95": [
+      -0.0008680555555555555,
+      0.019097222222222224
+    ]
+  },
+  "base+refine - base": {
+    "difference": -0.06076388888888889,
+    "interval95": [
+      -0.09288194444444445,
+      -0.030381944444444444
+    ]
+  },
+  "gem+refine - base": {
+    "difference": -0.03732638888888889,
+    "interval95": [
+      -0.07118055555555555,
+      -0.004340277777777778
+    ]
+  },
+  "gem+refine - base+refine": {
+    "difference": 0.0234375,
+    "interval95": [
+      -0.006944444444444444,
+      0.05295138888888889
+    ]
+  }
+}

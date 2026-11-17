@@ -1,0 +1,497 @@
+{
+ "control": {
+  "games": 576,
+  "completed": 576,
+  "wins": 250,
+  "truncated": 0,
+  "win_rate": 0.4340277777777778,
+  "seed_cluster_interval95": [
+   0.38020833333333326,
+   0.4861111111111111
+  ],
+  "inability_forfeits": 0,
+  "victory_routes": {
+   "morale": 240,
+   "cups": 336
+  },
+  "behavior": {
+   "turns": 5322,
+   "coveredAdded": 0,
+   "enemyAttackDamage": 3104,
+   "enemySpellDamage": 1019,
+   "refineGem": 24,
+   "refineCrystal": 12
+  },
+  "skill_notes": {
+   "spellRebound": 374,
+   "wisdomCodex": 27,
+   "arcaneCodex": 86,
+   "heresyJudgment": 14,
+   "wayOfService": 5,
+   "service": 10,
+   "whiteKarma": 20,
+   "powerBlessing": 2,
+   "provocation": 2
+  },
+  "root_actions": {
+   "activate": 4080,
+   "play": 4037,
+   "arcaneCodex": 43,
+   "synthesize": 630,
+   "purchase": 253,
+   "refine": 29
+  },
+  "opponents": {
+   "model:frozenCurrent": {
+    "wins": 85,
+    "completed": 144
+   },
+   "model:anchor417": {
+    "wins": 34,
+    "completed": 144
+   },
+   "v1.17.0-preview.5": {
+    "wins": 40,
+    "completed": 144
+   },
+   "legacy-score-partial-v1": {
+    "wins": 91,
+    "completed": 144
+   }
+  },
+  "behavior_note": "Public event totals, not rewards. Skill notes can include multiple notes per activation; damage is not morale loss."
+ },
+ "candidates": {
+  "merged": {
+   "path": "/root/xb/models/sage-merged-v1.pt",
+   "summary": {
+    "games": 576,
+    "completed": 576,
+    "wins": 314,
+    "truncated": 0,
+    "win_rate": 0.5451388888888888,
+    "seed_cluster_interval95": [
+     0.4878472222222225,
+     0.6006944444444445
+    ],
+    "inability_forfeits": 0,
+    "victory_routes": {
+     "cups": 353,
+     "morale": 223
+    },
+    "behavior": {
+     "turns": 5104,
+     "coveredAdded": 0,
+     "enemyAttackDamage": 3559,
+     "enemySpellDamage": 1342,
+     "refineGem": 0,
+     "refineCrystal": 0
+    },
+    "skill_notes": {
+     "spellRebound": 557,
+     "wisdomCodex": 40,
+     "arcaneCodex": 116,
+     "wayOfService": 3,
+     "heresyJudgment": 13,
+     "service": 6,
+     "whiteKarma": 2
+    },
+    "root_actions": {
+     "activate": 3331,
+     "play": 3273,
+     "purchase": 643,
+     "synthesize": 760,
+     "arcaneCodex": 58
+    },
+    "opponents": {
+     "model:frozenCurrent": {
+      "wins": 107,
+      "completed": 144
+     },
+     "model:anchor417": {
+      "wins": 50,
+      "completed": 144
+     },
+     "v1.17.0-preview.5": {
+      "wins": 55,
+      "completed": 144
+     },
+     "legacy-score-partial-v1": {
+      "wins": 102,
+      "completed": 144
+     }
+    },
+    "behavior_note": "Public event totals, not rewards. Skill notes can include multiple notes per activation; damage is not morale loss."
+   },
+   "paired": {
+    "paired_completed": 576,
+    "difference": 0.1111111111111111,
+    "seed_cluster_interval95": [
+     0.05902777777777776,
+     0.16319444444444448
+    ]
+   }
+  },
+  "cup295": {
+   "path": "/root/xb-runs/sage-team-20261116/sage/round-000295.pt",
+   "summary": {
+    "games": 576,
+    "completed": 576,
+    "wins": 367,
+    "truncated": 0,
+    "win_rate": 0.6371527777777778,
+    "seed_cluster_interval95": [
+     0.5729166666666667,
+     0.6961805555555557
+    ],
+    "inability_forfeits": 0,
+    "victory_routes": {
+     "cups": 452,
+     "morale": 124
+    },
+    "behavior": {
+     "turns": 5438,
+     "coveredAdded": 0,
+     "enemyAttackDamage": 4234,
+     "enemySpellDamage": 1029,
+     "refineGem": 0,
+     "refineCrystal": 0
+    },
+    "skill_notes": {
+     "spellRebound": 498,
+     "whiteKarma": 18,
+     "wisdomCodex": 28,
+     "heresyJudgment": 17,
+     "arcaneCodex": 42,
+     "service": 6,
+     "wayOfService": 3
+    },
+    "root_actions": {
+     "activate": 4025,
+     "play": 4004,
+     "synthesize": 812,
+     "purchase": 248,
+     "arcaneCodex": 21
+    },
+    "opponents": {
+     "model:frozenCurrent": {
+      "wins": 121,
+      "completed": 144
+     },
+     "model:anchor417": {
+      "wins": 40,
+      "completed": 144
+     },
+     "v1.17.0-preview.5": {
+      "wins": 94,
+      "completed": 144
+     },
+     "legacy-score-partial-v1": {
+      "wins": 112,
+      "completed": 144
+     }
+    },
+    "behavior_note": "Public event totals, not rewards. Skill notes can include multiple notes per activation; damage is not morale loss."
+   },
+   "paired": {
+    "paired_completed": 576,
+    "difference": 0.203125,
+    "seed_cluster_interval95": [
+     0.1440972222222222,
+     0.26388888888888895
+    ]
+   }
+  },
+  "m03_198": {
+   "path": "/root/xb-runs/sage-team-morale-20261116/sage/round-000198.pt",
+   "summary": {
+    "games": 576,
+    "completed": 576,
+    "wins": 381,
+    "truncated": 0,
+    "win_rate": 0.6614583333333334,
+    "seed_cluster_interval95": [
+     0.6076388888888891,
+     0.7135416666666666
+    ],
+    "inability_forfeits": 0,
+    "victory_routes": {
+     "morale": 153,
+     "cups": 423
+    },
+    "behavior": {
+     "turns": 5291,
+     "coveredAdded": 0,
+     "enemyAttackDamage": 4003,
+     "enemySpellDamage": 1142,
+     "refineGem": 0,
+     "refineCrystal": 0
+    },
+    "skill_notes": {
+     "spellRebound": 489,
+     "wisdomCodex": 31,
+     "arcaneCodex": 100,
+     "heresyJudgment": 8,
+     "wayOfService": 3,
+     "powerBlessing": 10,
+     "service": 8,
+     "whiteKarma": 28,
+     "speedBlessing": 2
+    },
+    "root_actions": {
+     "activate": 3742,
+     "play": 3693,
+     "arcaneCodex": 50,
+     "synthesize": 902,
+     "purchase": 282
+    },
+    "opponents": {
+     "model:frozenCurrent": {
+      "wins": 121,
+      "completed": 144
+     },
+     "model:anchor417": {
+      "wins": 68,
+      "completed": 144
+     },
+     "v1.17.0-preview.5": {
+      "wins": 76,
+      "completed": 144
+     },
+     "legacy-score-partial-v1": {
+      "wins": 116,
+      "completed": 144
+     }
+    },
+    "behavior_note": "Public event totals, not rewards. Skill notes can include multiple notes per activation; damage is not morale loss."
+   },
+   "paired": {
+    "paired_completed": 576,
+    "difference": 0.22743055555555558,
+    "seed_cluster_interval95": [
+     0.18229166666666677,
+     0.2725694444444444
+    ]
+   }
+  },
+  "m06_256": {
+   "path": "/root/xb-runs/sage-team-morale06-20261117/sage/round-000256.pt",
+   "summary": {
+    "games": 576,
+    "completed": 576,
+    "wins": 378,
+    "truncated": 0,
+    "win_rate": 0.65625,
+    "seed_cluster_interval95": [
+     0.6059027777777778,
+     0.7048611111111113
+    ],
+    "inability_forfeits": 0,
+    "victory_routes": {
+     "cups": 409,
+     "morale": 167
+    },
+    "behavior": {
+     "turns": 5260,
+     "coveredAdded": 0,
+     "enemyAttackDamage": 3817,
+     "enemySpellDamage": 1247,
+     "refineGem": 0,
+     "refineCrystal": 0
+    },
+    "skill_notes": {
+     "spellRebound": 511,
+     "wisdomCodex": 40,
+     "arcaneCodex": 128,
+     "heresyJudgment": 19,
+     "wayOfService": 4,
+     "service": 9,
+     "powerBlessing": 12,
+     "whiteKarma": 4,
+     "speedBlessing": 4
+    },
+    "root_actions": {
+     "activate": 3570,
+     "play": 3508,
+     "purchase": 545,
+     "synthesize": 788,
+     "arcaneCodex": 64
+    },
+    "opponents": {
+     "model:frozenCurrent": {
+      "wins": 118,
+      "completed": 144
+     },
+     "model:anchor417": {
+      "wins": 77,
+      "completed": 144
+     },
+     "v1.17.0-preview.5": {
+      "wins": 72,
+      "completed": 144
+     },
+     "legacy-score-partial-v1": {
+      "wins": 111,
+      "completed": 144
+     }
+    },
+    "behavior_note": "Public event totals, not rewards. Skill notes can include multiple notes per activation; damage is not morale loss."
+   },
+   "paired": {
+    "paired_completed": 576,
+    "difference": 0.22222222222222224,
+    "seed_cluster_interval95": [
+     0.17361111111111108,
+     0.26909722222222215
+    ]
+   }
+  },
+  "m06_504": {
+   "path": "/root/xb-runs/sage-team-morale06-20261117/sage/round-000504.pt",
+   "summary": {
+    "games": 576,
+    "completed": 576,
+    "wins": 387,
+    "truncated": 0,
+    "win_rate": 0.671875,
+    "seed_cluster_interval95": [
+     0.6215277777777778,
+     0.7187499999999999
+    ],
+    "inability_forfeits": 0,
+    "victory_routes": {
+     "cups": 411,
+     "morale": 165
+    },
+    "behavior": {
+     "turns": 5342,
+     "coveredAdded": 0,
+     "enemyAttackDamage": 3713,
+     "enemySpellDamage": 1073,
+     "refineGem": 0,
+     "refineCrystal": 0
+    },
+    "skill_notes": {
+     "spellRebound": 456,
+     "wisdomCodex": 28,
+     "arcaneCodex": 58,
+     "heresyJudgment": 7,
+     "wayOfService": 2,
+     "service": 6,
+     "calmWind": 3,
+     "whiteKarma": 8,
+     "provocation": 2,
+     "powerBlessing": 4
+    },
+    "root_actions": {
+     "activate": 3650,
+     "play": 3621,
+     "synthesize": 811,
+     "purchase": 522,
+     "arcaneCodex": 29
+    },
+    "opponents": {
+     "model:frozenCurrent": {
+      "wins": 126,
+      "completed": 144
+     },
+     "model:anchor417": {
+      "wins": 73,
+      "completed": 144
+     },
+     "v1.17.0-preview.5": {
+      "wins": 81,
+      "completed": 144
+     },
+     "legacy-score-partial-v1": {
+      "wins": 107,
+      "completed": 144
+     }
+    },
+    "behavior_note": "Public event totals, not rewards. Skill notes can include multiple notes per activation; damage is not morale loss."
+   },
+   "paired": {
+    "paired_completed": 576,
+    "difference": 0.23784722222222224,
+    "seed_cluster_interval95": [
+     0.18749999999999992,
+     0.2864583333333334
+    ]
+   }
+  },
+  "m06_656": {
+   "path": "/root/xb-runs/sage-team-morale06-20261117/sage/round-000656.pt",
+   "summary": {
+    "games": 576,
+    "completed": 576,
+    "wins": 373,
+    "truncated": 0,
+    "win_rate": 0.6475694444444444,
+    "seed_cluster_interval95": [
+     0.5868055555555558,
+     0.7048611111111113
+    ],
+    "inability_forfeits": 0,
+    "victory_routes": {
+     "cups": 425,
+     "morale": 151
+    },
+    "behavior": {
+     "turns": 5299,
+     "coveredAdded": 0,
+     "enemyAttackDamage": 3893,
+     "enemySpellDamage": 1018,
+     "refineGem": 0,
+     "refineCrystal": 0
+    },
+    "skill_notes": {
+     "spellRebound": 469,
+     "wisdomCodex": 23,
+     "arcaneCodex": 50,
+     "wayOfService": 8,
+     "heresyJudgment": 10,
+     "confession": 12,
+     "service": 11,
+     "calmWind": 2,
+     "powerBlessing": 10,
+     "provocation": 4,
+     "whiteKarma": 2
+    },
+    "root_actions": {
+     "activate": 3743,
+     "play": 3716,
+     "synthesize": 841,
+     "purchase": 336,
+     "arcaneCodex": 25
+    },
+    "opponents": {
+     "model:frozenCurrent": {
+      "wins": 119,
+      "completed": 144
+     },
+     "model:anchor417": {
+      "wins": 58,
+      "completed": 144
+     },
+     "v1.17.0-preview.5": {
+      "wins": 77,
+      "completed": 144
+     },
+     "legacy-score-partial-v1": {
+      "wins": 119,
+      "completed": 144
+     }
+    },
+    "behavior_note": "Public event totals, not rewards. Skill notes can include multiple notes per activation; damage is not morale loss."
+   },
+   "paired": {
+    "paired_completed": 576,
+    "difference": 0.21354166666666663,
+    "seed_cluster_interval95": [
+     0.1614583333333333,
+     0.26562500000000006
+    ]
+   }
+  }
+ }
+}

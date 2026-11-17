@@ -1,0 +1,201 @@
+{
+  "nodes": 508,
+  "informative": 218,
+  "greedy_optimal": 403,
+  "greedy_regret_sum": 128.14224870792273,
+  "labels": {
+    "cost:d3:more:3": {
+      "available": 90,
+      "q_sum": 7.604303380833983,
+      "best": 16,
+      "target_sum": 49.24033701309905,
+      "greedy": 79,
+      "q_mean": 0.08449225978704425,
+      "target_mean": 0.5471148557011005
+    },
+    "cost:d3:more:4": {
+      "available": 28,
+      "q_sum": -0.0719448398483662,
+      "best": 3,
+      "target_sum": 13.997368393975709,
+      "greedy": 26,
+      "q_mean": -0.002569458566013078,
+      "target_mean": 0.499906014070561
+    },
+    "cost:d3:stop:2": {
+      "available": 90,
+      "q_sum": -10.0,
+      "best": 12,
+      "target_sum": 40.75966298690095,
+      "greedy": 11,
+      "q_mean": -0.1111111111111111,
+      "target_mean": 0.4528851442988994
+    },
+    "cost:d3:stop:3": {
+      "available": 28,
+      "q_sum": 0.0,
+      "best": 3,
+      "target_sum": 14.002631606024291,
+      "greedy": 2,
+      "q_mean": 0.0,
+      "target_mean": 0.500093985929439
+    },
+    "cost:d4:more:4": {
+      "available": 28,
+      "q_sum": 8.0,
+      "best": 7,
+      "target_sum": 15.446041370113726,
+      "greedy": 26,
+      "q_mean": 0.2857142857142857,
+      "target_mean": 0.5516443346469188
+    },
+    "cost:d4:more:5": {
+      "available": 6,
+      "q_sum": -2.0,
+      "best": 1,
+      "target_sum": 3.0,
+      "greedy": 4,
+      "q_mean": -0.3333333333333333,
+      "target_mean": 0.5
+    },
+    "cost:d4:stop:3": {
+      "available": 28,
+      "q_sum": 2.0,
+      "best": 4,
+      "target_sum": 12.553958629886274,
+      "greedy": 2,
+      "q_mean": 0.07142857142857142,
+      "target_mean": 0.44835566535308125
+    },
+    "cost:d4:stop:4": {
+      "available": 6,
+      "q_sum": -2.0,
+      "best": 1,
+      "target_sum": 3.0,
+      "greedy": 2,
+      "q_mean": -0.3333333333333333,
+      "target_mean": 0.5
+    },
+    "cost:d5:more:5": {
+      "available": 2,
+      "q_sum": 2.0,
+      "best": 0,
+      "target_sum": 1.0,
+      "greedy": 2,
+      "q_mean": 1.0,
+      "target_mean": 0.5
+    },
+    "cost:d5:stop:4": {
+      "available": 2,
+      "q_sum": 2.0,
+      "best": 0,
+      "target_sum": 1.0,
+      "greedy": 0,
+      "q_mean": 1.0,
+      "target_mean": 0.5
+    },
+    "direction:d0:activate": {
+      "available": 133,
+      "q_sum": 47.780298954568366,
+      "best": 36,
+      "target_sum": 71.62146524470103,
+      "greedy": 75,
+      "q_mean": 0.3592503680794614,
+      "target_mean": 0.5385072574789551
+    },
+    "direction:d0:purchase": {
+      "available": 65,
+      "q_sum": -3.0,
+      "best": 13,
+      "target_sum": 17.702283962803246,
+      "greedy": 32,
+      "q_mean": -0.046153846153846156,
+      "target_mean": 0.27234283019697303
+    },
+    "direction:d0:refine": {
+      "available": 127,
+      "q_sum": -21.0,
+      "best": 27,
+      "target_sum": 37.837702938508635,
+      "greedy": 0,
+      "q_mean": -0.16535433070866143,
+      "target_mean": 0.2979346688071546
+    },
+    "direction:d0:synthesize": {
+      "available": 29,
+      "q_sum": 9.0,
+      "best": 11,
+      "target_sum": 8.8385478539871,
+      "greedy": 29,
+      "q_mean": 0.3103448275862069,
+      "target_mean": 0.3047775122064517
+    },
+    "direction:d1:attack": {
+      "available": 126,
+      "q_sum": -8.0,
+      "best": 28,
+      "target_sum": 48.26373571668722,
+      "greedy": 72,
+      "q_mean": -0.06349206349206349,
+      "target_mean": 0.3830455215610097
+    },
+    "direction:d1:heroSkill": {
+      "available": 128,
+      "q_sum": 40.09121102556377,
+      "best": 30,
+      "target_sum": 70.40723798997291,
+      "greedy": 26,
+      "q_mean": 0.313212586137217,
+      "target_mean": 0.5500565467966634
+    },
+    "direction:d1:spell": {
+      "available": 42,
+      "q_sum": -8.0,
+      "best": 7,
+      "target_sum": 9.329026293339888,
+      "greedy": 30,
+      "q_mean": -0.19047619047619047,
+      "target_mean": 0.22211967365094973
+    },
+    "skill:d2:skill:arcaneCodex": {
+      "available": 90,
+      "q_sum": 20.858478819753262,
+      "best": 22,
+      "target_sum": 52.057724079470134,
+      "greedy": 90,
+      "q_mean": 0.23176087577503626,
+      "target_mean": 0.578419156438557
+    },
+    "skill:d2:skill:holyCodex": {
+      "available": 90,
+      "q_sum": -8.291653891209865,
+      "best": 18,
+      "target_sum": 37.94227592052988,
+      "greedy": 0,
+      "q_mean": -0.09212948768010962,
+      "target_mean": 0.4215808435614431
+    }
+  },
+  "greedy_optimal_rate": 0.7933070866141733,
+  "greedy_regret_mean": 0.25224852107858803,
+  "stats": {
+    "jobs": 1345,
+    "seconds": 196.7402768812608,
+    "levels": 7,
+    "invalid": {
+      "preRoot": 21,
+      "labelMissing": 13
+    },
+    "trees": 136,
+    "nodes": 508,
+    "leaves": 766
+  },
+  "examples": 218,
+  "checkpoint": "/root/xb/models/sage-full-476.pt",
+  "hero": "sage",
+  "games": 192,
+  "greedy_wins": 88,
+  "play_seconds": 60.85778522491455,
+  "branch_seconds": 196.77779579162598,
+  "game_seconds_per_game": 0.3169676313797633
+}

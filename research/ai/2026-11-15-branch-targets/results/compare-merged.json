@@ -1,0 +1,41 @@
+{
+  "base": {
+    "wins": 1183,
+    "completed": 2304,
+    "win_rate": 0.5134548611111112,
+    "refine": 0,
+    "arcane": 168,
+    "holy": 0,
+    "wisdom": 134,
+    "spell": 5100,
+    "attack": 15352,
+    "routes": {
+      "morale": 1248,
+      "cups": 1055,
+      "forfeit": 1
+    }
+  },
+  "merged": {
+    "wins": 1228,
+    "completed": 2304,
+    "win_rate": 0.5329861111111112,
+    "refine": 0,
+    "arcane": 738,
+    "holy": 0,
+    "wisdom": 161,
+    "spell": 5666,
+    "attack": 15262,
+    "routes": {
+      "morale": 1235,
+      "cups": 1068,
+      "forfeit": 1
+    }
+  },
+  "merged - base": {
+    "difference": 0.01953125,
+    "interval95": [
+      -0.0013020833333333333,
+      0.040364583333333336
+    ]
+  }
+}
