@@ -38,7 +38,7 @@ TEAMS = ["red", "blue", "blue", "red", "red", "blue"]  # engine DEFAULT_TEAMS by
 
 
 def configurations(hero, count, offset, revision, *, evaluation=False, capture_focal=False, eval_seed=920000000, team=False,
-                   rule_variant='standard'):
+                   rule_variant='standard', decision_mode='hierarchical-v1'):
     configs = []
     hero_index = HEROES.index(hero)
     for i in range(count):
@@ -60,7 +60,7 @@ def configurations(hero, count, offset, revision, *, evaluation=False, capture_f
             policies = ['model' if TEAMS[s] == TEAMS[seat] else rival for s in range(6)]
         configs.append(dict(seed=(eval_seed if evaluation else 850000000)+hero_index*10000000+(group if evaluation else index),
             heroIds=heroes, start=group % 6, revision=revision, ruleVariant='standard' if evaluation else rule_variant,
-            decisionMode='hierarchical-v1', profile=True, capture=False,
+            decisionMode=decision_mode, profile=True, capture=False,
             seatPolicies=policies, focusSeat=seat, opponent=rival,
             **(dict(captureSeat=seat) if capture_focal else {})))
     return configs
@@ -156,6 +156,11 @@ def main(runtime):
     parser.add_argument('--style', default='win', choices=['win', 'attack', 'cups', 'support', 'morale'],
                         help='Bounded public-behavior bonus added to the terminal reward (learning.style_score)')
     parser.add_argument('--style-weight', type=float, default=0.)
+    parser.add_argument('--branch-phases', nargs='+', default=None, help='Only branch focal turns in these phases (early/middle/ending)')
+    parser.add_argument('--endgame-fraction', type=float, default=0., help='Share of training games resumed from recent late positions')
+    parser.add_argument('--endgame-phases', nargs='+', default=['ending', 'middle'])
+    parser.add_argument('--endgame-bank', type=int, default=1500)
+    parser.add_argument('--decision-mode', default='hierarchical-v1', choices=['hierarchical-v1', 'hierarchical-v2'])
     parser.add_argument('--rule-variant', default='standard', choices=['standard', 'morale-only-v1'],
                         help='Rules for training games; evaluation always uses standard rules')
     parser.add_argument('--target-kl', type=float, default=.02)
@@ -198,6 +203,11 @@ def main(runtime):
         transfer['team'] = True
     if args.rule_variant != 'standard':
         transfer['rule_variant'] = args.rule_variant
+    if args.decision_mode != 'hierarchical-v1':
+        transfer['decision_mode'] = args.decision_mode
+    if args.endgame_fraction:
+        transfer['endgame'] = dict(fraction=args.endgame_fraction, phases=args.endgame_phases, bank=args.endgame_bank)
+    endgame_bank = collections.deque(maxlen=args.endgame_bank)
     if args.style != 'win':
         transfer['style'] = dict(style=args.style, weight=args.style_weight)
     if args.branch_boundaries:
@@ -205,7 +215,7 @@ def main(runtime):
             temperature=args.branch_temperature, depth=args.branch_depth, leaves=args.branch_leaves,
             samples=args.branch_samples, z=args.branch_z, margin=args.branch_margin,
             window=args.branch_window, count=args.branch_count, target_kl=args.target_kl, epochs=args.branch_epochs,
-            anchor=args.branch_anchor, honest=True, min_steps=args.branch_min_steps,
+            anchor=args.branch_anchor, honest=True, min_steps=args.branch_min_steps, phases=args.branch_phases,
             explore_games=args.branch_explore_games, explore_boundaries=args.branch_explore_boundaries)
     human_path = directory/'sage-human.jsonl'
     references = [json.loads(line) for line in human_path.read_text().splitlines() if line.strip()] if human_path.exists() else []
@@ -279,7 +289,20 @@ def main(runtime):
                     random.seed(rng_seed); torch.manual_seed(rng_seed); torch.cuda.manual_seed_all(rng_seed)
                     publish('collecting', hero=hero, round=round_number)
                     configs = configurations(hero, args.games, manifest.get('training_offset', 0)+branch['round']*args.games, revision,
-                                             capture_focal=bool(args.branch_boundaries), team=args.team, rule_variant=args.rule_variant)
+                                             capture_focal=bool(args.branch_boundaries), team=args.team, rule_variant=args.rule_variant,
+                                             decision_mode=args.decision_mode)
+                    if args.endgame_fraction:
+                        # Endgame curriculum: some games resume from recorded late
+                        # positions of the learner's own recent games (same seed,
+                        # lineup and seat policies; the prefix is replayed exactly).
+                        rng = random.Random(rng_seed + 7)
+                        for config in configs: config['capture'] = True
+                        usable = [b for b in endgame_bank if b['category'] in args.endgame_phases]
+                        count = int(round(args.endgame_fraction * len(configs))) if usable else 0
+                        for index in rng.sample(range(len(configs)), count):
+                            pick = rng.choice(usable)
+                            configs[index] = dict(pick['config'], replay=pick['replay'], capture=True,
+                                                  curriculumKind=pick['category'])
                     rollout = runtime.run(branch['model'], branch['vocabulary'], configs,
                         workers=args.workers, device=device, models=models, trajectory=True, binary=True, opponent_temperature=0.,
                         continuation_temperature=args.continuation_temperature)
@@ -289,13 +312,25 @@ def main(runtime):
                             raise ValueError('Non-specialist trajectory leaked into training')
                     rows = training_samples(rollout['results'], method='mc', style=args.style, style_weight=args.style_weight)
                     metrics = summarize(rollout['results'], configs)
+                    if args.endgame_fraction:
+                        kinds = collections.Counter(c.get('curriculumKind', 'full') for c in configs)
+                        wins_by_kind = collections.Counter(c.get('curriculumKind', 'full') for r, c in zip(rollout['results'], configs)
+                                                           if r.get('rewards') and r['rewards'][str(c['focusSeat'])] == 1)
+                        metrics['curriculum'] = {k: dict(games=n, wins=wins_by_kind[k]) for k, n in kinds.items()}
+                        for result, config in zip(rollout['results'], configs):
+                            base = {k: v for k, v in config.items() if k not in ('replay', 'curriculumKind', 'capture')}
+                            for b in result.get('boundaries') or []:
+                                endgame_bank.append(dict(category=b['category'], config=base, replay=dict(
+                                    config=dict(ruleVariant=config.get('ruleVariant', 'standard')), choices=b['choices'],
+                                    turns=b['turns'], hash=b['hash'], revision=b['revision'])))
                     branch_report = None
                     rehearsal = branch['rehearsal']
                     rehearsal_weight = args.rehearsal_weight
                     rehearsal_steps = 0
                     if args.branch_boundaries:
                         publish('branching', hero=hero, round=round_number)
-                        picks = select_boundaries(rollout['results'], configs, args.branch_boundaries, random.Random(rng_seed))
+                        picks = select_boundaries(rollout['results'], configs, args.branch_boundaries, random.Random(rng_seed),
+                                                  phases=args.branch_phases)
                         if hero == 'sage' and args.branch_explore_games:
                             explore = [dict(config, sageRefineFirst=True, profile=False) for config in
                                        configurations(hero, args.branch_explore_games, 5000000+manifest.get('training_offset', 0)+branch['round']*args.branch_explore_games,
@@ -329,7 +364,7 @@ def main(runtime):
                         learning=learning, value=value_diagnostics(rows), human_reference=human_diagnostic(branch['model'],branch['vocabulary'],human_train,device) if hero=='sage' else None,
                         human_holdout=human_diagnostic(branch['model'],branch['vocabulary'],human_holdout,device) if hero=='sage' else None,
                         branch=branch_report,
-                        results=[{k:v for k,v in result.items() if k not in ('trajectory','choices','focalBoundaries')} for result in rollout['results']])
+                        results=[{k:v for k,v in result.items() if k not in ('trajectory','choices','focalBoundaries','boundaries')} for result in rollout['results']])
                     if bank and bank.get('validation'):
                         publish('checking-skill-retention', hero=hero, round=round_number)
                         report['skill_retention'] = evaluate_skill_retention(runtime, branch['model'], branch['vocabulary'],
@@ -363,7 +398,8 @@ def main(runtime):
                 if due and not (directory/'PAUSE').exists():
                     evaluations = {}
                     for hero, branch in branches.items():
-                        configs = configurations(hero,args.eval_games,0,revision,evaluation=True,eval_seed=args.eval_seed,team=args.team)
+                        configs = configurations(hero,args.eval_games,0,revision,evaluation=True,eval_seed=args.eval_seed,team=args.team,
+                                                 decision_mode=args.decision_mode)
                         control_path=directory/hero/f'control-{args.eval_games}.json'
                         if control_path.exists():
                             control=json.loads(control_path.read_text())

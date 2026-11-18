@@ -64,7 +64,7 @@ createInterface({ input: process.stdin }).on('line', async line => {
       // Search rollouts run from resampled hidden states; a rule failure there
       // invalidates that one rollout (archived by the driver), not the batch.
       const tolerate = message.config.resample != null;
-      const result = await driver({ ...message.config, decisionMode: message.schema === ENTITY_SCHEMA ? "hierarchical-v1" : "flat" }, async input => {
+      const result = await driver({ ...message.config, decisionMode: message.schema === ENTITY_SCHEMA ? (message.config.decisionMode === 'hierarchical-v2' ? 'hierarchical-v2' : "hierarchical-v1") : "flat" }, async input => {
         const policy = message.seatPolicies?.[input.playerId] ?? 'model';
         if (policy !== 'model' && !policy.startsWith('model:')) return timed('teacherMs',()=>teacherIndex(input, policy));
         let recordNode = null;

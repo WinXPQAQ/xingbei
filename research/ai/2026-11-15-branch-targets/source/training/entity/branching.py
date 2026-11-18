@@ -19,12 +19,14 @@ import random
 from rehearsal import PolicyRehearsal
 
 
-def select_boundaries(results, configs, count, rng, *, require_gem=False):
+def select_boundaries(results, configs, count, rng, *, require_gem=False, phases=None):
     candidates = []
     for index, (result, config) in enumerate(zip(results, configs)):
         boundaries = result.get('focalBoundaries') or []
         if require_gem:
             boundaries = [b for b in boundaries if (b.get('energy') or {}).get('gem', 0) >= 1]
+        if phases:
+            boundaries = [b for b in boundaries if b.get('phase', 'early') in phases]
         if boundaries:
             candidates.append((index, rng.choice(boundaries)))
     rng.shuffle(candidates)

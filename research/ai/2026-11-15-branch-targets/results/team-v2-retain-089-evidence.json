@@ -1,0 +1,697 @@
+{
+  "checkpoint_sha256": "cb205e2b226d9185a5e1fe2139881e05a23300118af52d5c929e8b02ced742a1",
+  "review": {
+    "retain89": {
+      "path": "/root/xb-runs/team-v2-retain-20261118/sage/round-000089.pt",
+      "views": 25,
+      "good": 22,
+      "bad": 25,
+      "mean_good": 0.364,
+      "mean_bad": 0.267,
+      "pairs": 23,
+      "pairwise_accuracy": 0.609,
+      "detail": [
+        {
+          "sequence": 31,
+          "request": "action",
+          "stage": "intent",
+          "skill": null,
+          "marks": [
+            {
+              "index": 1,
+              "label": "good",
+              "probability": 0.387,
+              "recorded": 0.319,
+              "comment": "开局需要用攻击找对手空门，创造机会"
+            },
+            {
+              "index": 2,
+              "label": "bad",
+              "probability": 0.291,
+              "recorded": 0.325,
+              "comment": "手里只有魔弹，打出去造成不了士气下降，意义不大"
+            }
+          ]
+        },
+        {
+          "sequence": 172,
+          "request": "action",
+          "stage": "intent",
+          "skill": null,
+          "marks": [
+            {
+              "index": 1,
+              "label": "good",
+              "probability": 0.331,
+              "recorded": 0.33,
+              "comment": "继续追剑之子上一轮的空门"
+            }
+          ]
+        },
+        {
+          "sequence": 276,
+          "request": "response",
+          "stage": null,
+          "skill": null,
+          "marks": [
+            {
+              "index": 0,
+              "label": "good",
+              "probability": 0.009,
+              "recorded": 0.052,
+              "comment": "暗灭留着打魔道是最优解"
+            },
+            {
+              "index": 1,
+              "label": "bad",
+              "probability": 0.344,
+              "recorded": 0.384,
+              "comment": ""
+            },
+            {
+              "index": 2,
+              "label": "bad",
+              "probability": 0.647,
+              "recorded": 0.564,
+              "comment": ""
+            }
+          ]
+        },
+        {
+          "sequence": 590,
+          "request": "healing",
+          "stage": null,
+          "skill": null,
+          "marks": [
+            {
+              "index": 0,
+              "label": "good",
+              "probability": 0.819,
+              "recorded": 0.034,
+              "comment": "受4点法伤为什么要用治疗抵消"
+            },
+            {
+              "index": 1,
+              "label": "bad",
+              "probability": 0.138,
+              "recorded": 0.266,
+              "comment": ""
+            },
+            {
+              "index": 2,
+              "label": "bad",
+              "probability": 0.043,
+              "recorded": 0.7,
+              "comment": ""
+            }
+          ]
+        },
+        {
+          "sequence": 608,
+          "request": "cardChoice",
+          "stage": "selectCards",
+          "skill": "wisdomCodex",
+          "marks": [
+            {
+              "index": 0,
+              "label": "bad",
+              "probability": 0.195,
+              "recorded": 0.392,
+              "comment": "两张水，弃水系刀，中毒对贤者和灵溪之潮都有用"
+            },
+            {
+              "index": 2,
+              "label": "good",
+              "probability": 0.212,
+              "recorded": 0.233,
+              "comment": ""
+            }
+          ]
+        },
+        {
+          "sequence": 681,
+          "request": "action",
+          "stage": "direction",
+          "skill": null,
+          "marks": [
+            {
+              "index": 1,
+              "label": "bad",
+              "probability": 0.0,
+              "recorded": 0.006,
+              "comment": "已经有资源不用提炼了"
+            }
+          ]
+        },
+        {
+          "sequence": 708,
+          "request": "action",
+          "stage": "intent",
+          "skill": null,
+          "marks": [
+            {
+              "index": 1,
+              "label": "bad",
+              "probability": 0.154,
+              "recorded": 0.146,
+              "comment": ""
+            },
+            {
+              "index": 2,
+              "label": "good",
+              "probability": 0.131,
+              "recorded": 0.104,
+              "comment": "可以考虑中毒贴自己，下个回合可以利用反弹补手牌"
+            },
+            {
+              "index": 3,
+              "label": "good",
+              "probability": 0.203,
+              "recorded": 0.296,
+              "comment": ""
+            },
+            {
+              "index": 4,
+              "label": "bad",
+              "probability": 0.33,
+              "recorded": 0.322,
+              "comment": "有治疗在重复发"
+            }
+          ]
+        },
+        {
+          "sequence": 812,
+          "request": "healing",
+          "stage": null,
+          "skill": null,
+          "marks": [
+            {
+              "index": 0,
+              "label": "good",
+              "probability": 0.689,
+              "recorded": 0.042,
+              "comment": "补高手牌打人了"
+            },
+            {
+              "index": 1,
+              "label": "good",
+              "probability": 0.229,
+              "recorded": 0.28,
+              "comment": "可以触发法术反弹"
+            },
+            {
+              "index": 2,
+              "label": "bad",
+              "probability": 0.082,
+              "recorded": 0.678,
+              "comment": "非常不好"
+            }
+          ]
+        },
+        {
+          "sequence": 898,
+          "request": "cardChoice",
+          "stage": "selectCards",
+          "skill": "wisdomCodex",
+          "marks": [
+            {
+              "index": 0,
+              "label": "bad",
+              "probability": 0.21,
+              "recorded": 0.465,
+              "comment": ""
+            },
+            {
+              "index": 2,
+              "label": "bad",
+              "probability": 0.16,
+              "recorded": 0.236,
+              "comment": ""
+            },
+            {
+              "index": 3,
+              "label": "bad",
+              "probability": 0.212,
+              "recorded": 0.077,
+              "comment": "3张雷等待1法伤"
+            },
+            {
+              "index": 4,
+              "label": "good",
+              "probability": 0.191,
+              "recorded": 0.208,
+              "comment": ""
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "configuration": {
+    "directory": "/root/xb-runs/team-v2-retain-20261118",
+    "heroes": [
+      "sage"
+    ],
+    "games": 192,
+    "workers": 9,
+    "eval_games": 288,
+    "rounds": 0,
+    "eval_seconds": 3600,
+    "rehearsal_bank": "/root/xb/models/sage-retention-v2.pt",
+    "rehearsal_weight": 1.0,
+    "continuation_temperature": 1.0,
+    "branch_boundaries": 0,
+    "branch_weight": 0.0,
+    "branch_temperature": 0.5,
+    "branch_depth": 3,
+    "branch_leaves": 8,
+    "branch_samples": 8,
+    "branch_z": 2.0,
+    "branch_margin": 0.1,
+    "rollback_margin": 0.0,
+    "branch_window": 3,
+    "branch_count": 32,
+    "branch_explore_games": 0,
+    "branch_explore_boundaries": 0,
+    "eval_seed": 940000000,
+    "team": true,
+    "style": "morale",
+    "style_weight": 0.6,
+    "branch_phases": null,
+    "endgame_fraction": 0.0,
+    "endgame_phases": [
+      "ending",
+      "middle"
+    ],
+    "endgame_bank": 1500,
+    "decision_mode": "hierarchical-v2",
+    "rule_variant": "standard",
+    "target_kl": 0.02,
+    "branch_min_steps": 0,
+    "branch_anchor": 0.0,
+    "branch_epochs": 2.0
+  },
+  "evaluations": [
+    {
+      "hero": "sage",
+      "round": 1,
+      "checkpoint": "/root/xb-runs/team-v2-retain-20261118/sage/round-000001.pt",
+      "control": {
+        "games": 288,
+        "completed": 288,
+        "wins": 131,
+        "truncated": 0,
+        "win_rate": 0.4548611111111111,
+        "seed_cluster_interval95": [
+          0.3819444444444444,
+          0.5243055555555555
+        ],
+        "inability_forfeits": 0,
+        "victory_routes": {
+          "morale": 116,
+          "cups": 172
+        },
+        "behavior": {
+          "turns": 2619,
+          "coveredAdded": 0,
+          "enemyAttackDamage": 1486,
+          "enemySpellDamage": 617,
+          "refineGem": 10,
+          "refineCrystal": 5
+        },
+        "skill_notes": {
+          "spellRebound": 229,
+          "wisdomCodex": 17,
+          "arcaneCodex": 70,
+          "wayOfService": 1,
+          "service": 9,
+          "calmWind": 1,
+          "whiteKarma": 12,
+          "heresyJudgment": 3
+        },
+        "root_actions": {
+          "play": 1953,
+          "synthesize": 313,
+          "purchase": 133,
+          "arcaneCodex": 35,
+          "refine": 13
+        },
+        "opponents": {
+          "model:frozenCurrent": {
+            "wins": 42,
+            "completed": 72
+          },
+          "model:anchor417": {
+            "wins": 21,
+            "completed": 72
+          },
+          "v1.17.0-preview.5": {
+            "wins": 25,
+            "completed": 72
+          },
+          "legacy-score-partial-v1": {
+            "wins": 43,
+            "completed": 72
+          }
+        },
+        "behavior_note": "Public event totals, not rewards. Skill notes can include multiple notes per activation; damage is not morale loss."
+      },
+      "specialist": {
+        "games": 288,
+        "completed": 288,
+        "wins": 182,
+        "truncated": 0,
+        "win_rate": 0.6319444444444444,
+        "seed_cluster_interval95": [
+          0.5555555555555556,
+          0.704861111111111
+        ],
+        "inability_forfeits": 0,
+        "victory_routes": {
+          "cups": 205,
+          "morale": 83
+        },
+        "behavior": {
+          "turns": 2546,
+          "coveredAdded": 0,
+          "enemyAttackDamage": 1709,
+          "enemySpellDamage": 489,
+          "refineGem": 0,
+          "refineCrystal": 0
+        },
+        "skill_notes": {
+          "spellRebound": 204,
+          "wisdomCodex": 14,
+          "provocation": 1,
+          "heresyJudgment": 6,
+          "arcaneCodex": 30,
+          "wayOfService": 2,
+          "powerBlessing": 2,
+          "service": 8,
+          "confession": 1,
+          "whiteKarma": 6
+        },
+        "root_actions": {
+          "play": 1721,
+          "synthesize": 446,
+          "purchase": 202,
+          "activate": 1,
+          "arcaneCodex": 15
+        },
+        "opponents": {
+          "model:frozenCurrent": {
+            "wins": 64,
+            "completed": 72
+          },
+          "model:anchor417": {
+            "wins": 34,
+            "completed": 72
+          },
+          "v1.17.0-preview.5": {
+            "wins": 37,
+            "completed": 72
+          },
+          "legacy-score-partial-v1": {
+            "wins": 47,
+            "completed": 72
+          }
+        },
+        "behavior_note": "Public event totals, not rewards. Skill notes can include multiple notes per activation; damage is not morale loss."
+      },
+      "paired": {
+        "paired_completed": 288,
+        "difference": 0.17708333333333337,
+        "seed_cluster_interval95": [
+          0.10416666666666667,
+          0.24652777777777782
+        ]
+      }
+    },
+    {
+      "hero": "sage",
+      "round": 45,
+      "checkpoint": "/root/xb-runs/team-v2-retain-20261118/sage/round-000045.pt",
+      "control": {
+        "games": 288,
+        "completed": 288,
+        "wins": 131,
+        "truncated": 0,
+        "win_rate": 0.4548611111111111,
+        "seed_cluster_interval95": [
+          0.3819444444444444,
+          0.5243055555555555
+        ],
+        "inability_forfeits": 0,
+        "victory_routes": {
+          "morale": 116,
+          "cups": 172
+        },
+        "behavior": {
+          "turns": 2619,
+          "coveredAdded": 0,
+          "enemyAttackDamage": 1486,
+          "enemySpellDamage": 617,
+          "refineGem": 10,
+          "refineCrystal": 5
+        },
+        "skill_notes": {
+          "spellRebound": 229,
+          "wisdomCodex": 17,
+          "arcaneCodex": 70,
+          "wayOfService": 1,
+          "service": 9,
+          "calmWind": 1,
+          "whiteKarma": 12,
+          "heresyJudgment": 3
+        },
+        "root_actions": {
+          "play": 1953,
+          "synthesize": 313,
+          "purchase": 133,
+          "arcaneCodex": 35,
+          "refine": 13
+        },
+        "opponents": {
+          "model:frozenCurrent": {
+            "wins": 42,
+            "completed": 72
+          },
+          "model:anchor417": {
+            "wins": 21,
+            "completed": 72
+          },
+          "v1.17.0-preview.5": {
+            "wins": 25,
+            "completed": 72
+          },
+          "legacy-score-partial-v1": {
+            "wins": 43,
+            "completed": 72
+          }
+        },
+        "behavior_note": "Public event totals, not rewards. Skill notes can include multiple notes per activation; damage is not morale loss."
+      },
+      "specialist": {
+        "games": 288,
+        "completed": 287,
+        "wins": 164,
+        "truncated": 1,
+        "win_rate": 0.5714285714285714,
+        "seed_cluster_interval95": [
+          0.4965277777777777,
+          0.6458333333333329
+        ],
+        "inability_forfeits": 0,
+        "victory_routes": {
+          "cups": 190,
+          "morale": 97
+        },
+        "behavior": {
+          "turns": 2608,
+          "coveredAdded": 0,
+          "enemyAttackDamage": 1829,
+          "enemySpellDamage": 613,
+          "refineGem": 0,
+          "refineCrystal": 0
+        },
+        "skill_notes": {
+          "spellRebound": 228,
+          "wisdomCodex": 14,
+          "arcaneCodex": 42,
+          "wayOfService": 4,
+          "heresyJudgment": 4,
+          "service": 6,
+          "confession": 1,
+          "whiteKarma": 4
+        },
+        "root_actions": {
+          "play": 1778,
+          "purchase": 256,
+          "synthesize": 402,
+          "arcaneCodex": 21,
+          "activate": 1
+        },
+        "opponents": {
+          "model:frozenCurrent": {
+            "wins": 62,
+            "completed": 72
+          },
+          "model:anchor417": {
+            "wins": 31,
+            "completed": 72
+          },
+          "v1.17.0-preview.5": {
+            "wins": 26,
+            "completed": 72
+          },
+          "legacy-score-partial-v1": {
+            "wins": 45,
+            "completed": 71
+          }
+        },
+        "behavior_note": "Public event totals, not rewards. Skill notes can include multiple notes per activation; damage is not morale loss."
+      },
+      "paired": {
+        "paired_completed": 287,
+        "difference": 0.11458333333333331,
+        "seed_cluster_interval95": [
+          0.048611111111111105,
+          0.1805555555555556
+        ]
+      }
+    },
+    {
+      "hero": "sage",
+      "round": 89,
+      "checkpoint": "/root/xb-runs/team-v2-retain-20261118/sage/round-000089.pt",
+      "control": {
+        "games": 288,
+        "completed": 288,
+        "wins": 131,
+        "truncated": 0,
+        "win_rate": 0.4548611111111111,
+        "seed_cluster_interval95": [
+          0.3819444444444444,
+          0.5243055555555555
+        ],
+        "inability_forfeits": 0,
+        "victory_routes": {
+          "morale": 116,
+          "cups": 172
+        },
+        "behavior": {
+          "turns": 2619,
+          "coveredAdded": 0,
+          "enemyAttackDamage": 1486,
+          "enemySpellDamage": 617,
+          "refineGem": 10,
+          "refineCrystal": 5
+        },
+        "skill_notes": {
+          "spellRebound": 229,
+          "wisdomCodex": 17,
+          "arcaneCodex": 70,
+          "wayOfService": 1,
+          "service": 9,
+          "calmWind": 1,
+          "whiteKarma": 12,
+          "heresyJudgment": 3
+        },
+        "root_actions": {
+          "play": 1953,
+          "synthesize": 313,
+          "purchase": 133,
+          "arcaneCodex": 35,
+          "refine": 13
+        },
+        "opponents": {
+          "model:frozenCurrent": {
+            "wins": 42,
+            "completed": 72
+          },
+          "model:anchor417": {
+            "wins": 21,
+            "completed": 72
+          },
+          "v1.17.0-preview.5": {
+            "wins": 25,
+            "completed": 72
+          },
+          "legacy-score-partial-v1": {
+            "wins": 43,
+            "completed": 72
+          }
+        },
+        "behavior_note": "Public event totals, not rewards. Skill notes can include multiple notes per activation; damage is not morale loss."
+      },
+      "specialist": {
+        "games": 288,
+        "completed": 288,
+        "wins": 179,
+        "truncated": 0,
+        "win_rate": 0.6215277777777778,
+        "seed_cluster_interval95": [
+          0.545138888888889,
+          0.6944444444444445
+        ],
+        "inability_forfeits": 0,
+        "victory_routes": {
+          "cups": 202,
+          "morale": 86
+        },
+        "behavior": {
+          "turns": 2600,
+          "coveredAdded": 0,
+          "enemyAttackDamage": 1873,
+          "enemySpellDamage": 571,
+          "refineGem": 0,
+          "refineCrystal": 0
+        },
+        "skill_notes": {
+          "spellRebound": 246,
+          "wisdomCodex": 13,
+          "arcaneCodex": 44,
+          "heresyJudgment": 6,
+          "wayOfService": 5,
+          "confession": 1,
+          "service": 10,
+          "whiteKarma": 4
+        },
+        "root_actions": {
+          "play": 1850,
+          "synthesize": 369,
+          "purchase": 185,
+          "arcaneCodex": 22,
+          "activate": 1
+        },
+        "opponents": {
+          "model:frozenCurrent": {
+            "wins": 58,
+            "completed": 72
+          },
+          "model:anchor417": {
+            "wins": 32,
+            "completed": 72
+          },
+          "v1.17.0-preview.5": {
+            "wins": 37,
+            "completed": 72
+          },
+          "legacy-score-partial-v1": {
+            "wins": 52,
+            "completed": 72
+          }
+        },
+        "behavior_note": "Public event totals, not rewards. Skill notes can include multiple notes per activation; damage is not morale loss."
+      },
+      "paired": {
+        "paired_completed": 288,
+        "difference": 0.16666666666666666,
+        "seed_cluster_interval95": [
+          0.09375000000000001,
+          0.2395833333333333
+        ]
+      }
+    }
+  ]
+}

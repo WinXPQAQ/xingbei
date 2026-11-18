@@ -145,7 +145,10 @@ def main():
     model, vocabulary = EntityPolicy.restore(checkpoint)
     model.eval()
     digest = checkpoint_hash.hexdigest()
-    identity = dict(schema=SCHEMA, architecture='entity', decisionMode='hierarchical-v1',
+    decision_mode = checkpoint.get('transfer', {}).get('decision_mode', 'hierarchical-v1')
+    if decision_mode not in ('hierarchical-v1', 'hierarchical-v2'):
+        raise ValueError(f'Unsupported checkpoint decision mode: {decision_mode}')
+    identity = dict(schema=SCHEMA, architecture='entity', decisionMode=decision_mode,
                     checkpointSha256=digest, revision=checkpoint.get('revision', 'development'),
                     label=args.label or f'实体AI · {digest[:12]}', device='cpu')
     print(json.dumps(identity, ensure_ascii=False), flush=True)

@@ -6,6 +6,7 @@ import { actionCandidates, decisionCandidates } from './candidates.mjs';
 // function; partial choices never move cards or advance the engine.
 export async function resolveDecision(game, playerId, request, select, {
   hierarchical = true,
+  mode = 'hierarchical-v1',
   measureCandidates = operation => operation(),
 } = {}) {
   const decisionScope = {};
@@ -34,7 +35,7 @@ export async function resolveDecision(game, playerId, request, select, {
   if (forced) return choose({...request, required:true}, [forced]);
   const forcedChoice=forcedMagicArcherAiChoice(game,playerId,request);
   if(forcedChoice!==undefined)return choose({...request,required:true},[forcedChoice]);
-  let node = hierarchical ? measureCandidates(() => buildDecisionSpace(game, playerId, request)) : null;
+  let node = hierarchical ? measureCandidates(() => buildDecisionSpace(game, playerId, request, { mode })) : null;
   if (node) {
     while (!node.done) {
       const value = await choose(node.request, node.candidates,

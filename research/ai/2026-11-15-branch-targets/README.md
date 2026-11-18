@@ -1,3 +1,42 @@
+# 贤者 v2 与行为保持检查点 · 2026-11-18
+
+本次交付模型为 `results/team-v2-retain-089.pt`，来自 `team-v2-retain-20261118` 第 89 轮，使用 `entities-v7` 观测和 `hierarchical-v2` 决策接口。SHA-256 为 `cb205e2b226d9185a5e1fe2139881e05a23300118af52d5c929e8b02ced742a1`。
+
+- 人工复盘回归为 23 个好／差动作配对中的 14 个排序正确，即 60.9%。重新运行 `review-test.py` 得到 0.609。该指标使用归档对局中已有的观测与候选，属于固定局面的排序回归。
+- 第 89 轮标准规则全队评测 179/288，冻结整队对照 131/288。第 1、45 轮分别为 182、164 胜。评测使用开发种子 940000000，每个种子包含座位轮换。
+- 行为保持目标来自 `sage-merged-v1` 对贤者非行动决策的概率分布，训练权重 1.0。全队 PPO 使用士气风格权重 0.6，分支搜索目标和残局课程均关闭。
+- 模型与评测证据见 `results/team-v2-retain-089-evidence.json`。复盘输入从已有提交 f087dfe 原样恢复到 `../2026-11-17-human-sage-review/`。
+- 本次编码器对应新增手牌形状、公开缺系特征之前的版本。后续特征训练另行记录。
+- 本批完成代码与模型归档推送；网页部署验收尚待进行。
+
+## v2 入口
+
+`training/decision-space.mjs` 增加 `hierarchical-v2`。有启动时点订阅时先结算启动，再选普通行动；其他情况直接选择普通或特殊行动。等价牌按当前规则相关属性合并。无可选行动的判负与存档由研究训练 driver 处理。
+
+训练入口显式传入 `--decision-mode hierarchical-v2`。独立全队评测 `training/entity/eval-team.py` 同样支持该参数。推理服务 `training/entity/serve.py` 从检查点 `transfer.decision_mode` 读取模式，旧检查点默认 v1。网页调用端仍需支持 v2 决策接口。
+
+在本目录下复查人工评价（Python 环境需有 PyTorch）：
+
+```bash
+python source/training/entity/review-test.py   ../2026-11-17-human-sage-review/events.jsonl.gz   ../2026-11-17-human-sage-review/reviews.json   --models retain89=results/team-v2-retain-089.pt
+```
+
+单独启动该模型的推理服务：
+
+```bash
+python source/training/entity/serve.py   --checkpoint results/team-v2-retain-089.pt --port 4185 --label '贤者 v2 · retain89'
+```
+
+## 本批检查
+
+- 主项目现有核心规则测试 148 项通过。
+- 在隔离工作区中，归档源码训练适配器和实体接口测试 14 项通过。
+- v2 跨阵容 30 局通过（15 局规则 AI、15 局随机合法选择），共 9,326 个决策，无异常、无法行动判负或截断。
+- 模型下载后按远端 SHA-256 校验。
+- 推理服务校验 v1、v2 检查点的模式识别，并执行现有服务请求回归。
+
+---
+
 # 贤者与全队训练 · 2026-11-14～17
 
 ## 待盲测的 AI

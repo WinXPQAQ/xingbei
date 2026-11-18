@@ -28,13 +28,14 @@ def main(runtime):
     parser.add_argument('--eval-seed', type=int, default=960000000)
     parser.add_argument('--workers', type=int, default=18)
     parser.add_argument('--device', default='cuda')
+    parser.add_argument('--decision-mode', default='hierarchical-v1', choices=['hierarchical-v1', 'hierarchical-v2'])
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     torch.set_num_threads(2)
     frozen = load(args.frozen_current)
     models = {'frozenCurrent': frozen, 'anchor417': load(args.frozen_417)}
     configs = configurations('sage', args.games, 0, 'branch-targets-20261114', evaluation=True,
-                             eval_seed=args.eval_seed, team=True)
+                             eval_seed=args.eval_seed, team=True, decision_mode=args.decision_mode)
     for c in configs: c['profile'] = False
     run = lambda m, v: runtime.run(m, v, configs, workers=args.workers, device=args.device, models=models, binary=True)['results']
     control = run(*frozen)

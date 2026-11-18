@@ -211,11 +211,30 @@ export async function driveGame({ seed, heroIds, start = 0, turnLimit = 500, dec
     engineRequests++;
     if (!restored) replayedEngineRequests++;
     pendingDecision = { playerId, type: request.type, skillId: request.skillId, purpose: request.purpose, count: request.count };
+    if (request.type === 'action') {
+      // No selectable action at all: the seat cannot act. Forfeit and archive
+      // instead of stopping training; coverage gaps are fixed from archives.
+      try { return await resolveAction(playerId, request); }
+      catch (error) {
+        if (!/^Empty (conditional decision|candidates)/.test(error?.message ?? '')) throw error;
+        game.winner = game.player(playerId).team === 'red' ? 'blue' : 'red';
+        game.inabilityArchives.push(JSON.parse(JSON.stringify({ version: 1, initialConfig: game.initialConfig,
+          reason: 'noSelectableAction', responsiblePlayerId: playerId, targetId: playerId, skillId: 'noSelectableAction',
+          evidence: { error: error.message, decisionMode }, winner: game.winner, turn: game.turn.state, current: game.current,
+          teams: game.teams, players: game.players.map(p => p.toJSON()), cards: [...game.cards.values()],
+          deck: game.deck.map(c => c.id), discard: game.discard.map(c => c.id), log: game.log.slice(-60) })));
+        return { type: 'forfeit' };
+      }
+    }
+    return resolveAction(playerId, request);
+  }
+  function resolveAction(playerId, request) {
     return resolveDecision(game, playerId, request, input => {
       const { request: current, candidates, ...extra } = input;
       return pick(playerId, current, candidates, extra);
     }, {
-      hierarchical: decisionMode === 'hierarchical-v1',
+      hierarchical: decisionMode === 'hierarchical-v1' || decisionMode === 'hierarchical-v2',
+      mode: decisionMode,
       measureCandidates: operation => timed('candidatesMs', operation),
     });
   }
@@ -240,7 +259,7 @@ export async function driveGame({ seed, heroIds, start = 0, turnLimit = 500, dec
     // turn. Only counts are kept; the caller slices this game's choice list.
     if (restored && captureSeat != null && game.current === captureSeat)
       focalBoundaries.push({ turns, choiceCount: choices.length, hash: digest(boundaryState(game)),
-        energy: { ...game.player(captureSeat).energy } });
+        energy: { ...game.player(captureSeat).energy }, phase: phaseClass(game) ?? 'early' });
     if (restored && capture) {
       const category = phaseClass(game);
       if (category && !boundaries.some(b=>b.category===category)) boundaries.push({category, turns, hash:digest(boundaryState(game)), choices:[...choices], revision, config});
@@ -262,9 +281,14 @@ export async function driveGame({ seed, heroIds, start = 0, turnLimit = 500, dec
           const key = action.type === 'skill' ? action.skillId : action.type;
           heroBehavior[id].rootActions[key] = (heroBehavior[id].rootActions[key] ?? 0) + 1;
         }
+        if (action.type === 'forfeit') break;
         if (action.type === 'pass') game.skipExtraActions(id);
         else if (action.type === 'activate') await game.activateAsync(id, { ...options, intent:action.intent });
         else {
+          // v2 direct ordinary action: run the (effect-free for this hero) activation first.
+          const ordinary = action.type === 'play' || (action.type === 'skill' && game.skillActionSpec(id, action)?.type !== 'special');
+          if (decisionMode === 'hierarchical-v2' && ordinary && game.turn.state && !game.turn.state.activationDone)
+            await game.activateAsync(id, { ...options, intent: action });
           try { await game.executeAction(id, action, options); }
           catch (error) { if (!error.actionInvalidated) throw error; }
         }
