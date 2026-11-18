@@ -1,0 +1,22 @@
+{
+  "metadata.json": {
+    "bytes": 3364,
+    "sha256": "d15390822da2816c54a00057c5f3b20dca5b8b6200c8e8c789bed5265601d847"
+  },
+  "summary.json": {
+    "bytes": 173,
+    "sha256": "6d5ded9df30fe566565013c83afacd523896b4e343f6e40e54a3fbdfd1d17df0"
+  },
+  "events.jsonl.gz": {
+    "bytes": 2082310,
+    "sha256": "f7e9eeac34d6deec52b1908efe2a903a7e2b4a3d0a516947b2f77edcb6cd9afe"
+  },
+  "reviews.json": {
+    "bytes": 16440,
+    "sha256": "7673e765931b1c81e0307d96f25bfb14b1b3e342f981f2ef69f652ef6143f57b"
+  },
+  "statistics.json": {
+    "bytes": 166,
+    "sha256": "13598fe76e41ca4ee2e91e95d249bfcdbd1983ffc941e184c3957f9c78183466"
+  }
+}

@@ -1,0 +1,699 @@
+[
+  {
+    "sequence": 3,
+    "decisionId": "1794987261846-0.6438824665026947",
+    "viewId": "1794987261846-0.6438824665026947-1794987263384-0.8984244780272302",
+    "at": "2026-11-18T07:34:29.655Z",
+    "playerId": 0,
+    "request": {
+      "type": "action",
+      "stage": "direction",
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 1,
+    "candidate": {
+      "type": "direction",
+      "direction": "spell"
+    },
+    "probability": 0.801893413066864,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": ""
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "reviewed",
+    "annotationRevision": 1,
+    "pendingAction": null
+  },
+  {
+    "sequence": 24,
+    "decisionId": "1794987284761-0.9762588973169077",
+    "viewId": "1794987284761-0.9762588973169077-1794987284764-0.26294587615109133",
+    "at": "2026-11-18T07:34:53.184Z",
+    "playerId": 0,
+    "request": {
+      "type": "response",
+      "stage": null,
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 0,
+    "candidate": null,
+    "probability": 0.3390534222126007,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": ""
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "selected",
+    "annotationRevision": 3,
+    "pendingAction": null
+  },
+  {
+    "sequence": 24,
+    "decisionId": "1794987284761-0.9762588973169077",
+    "viewId": "1794987284761-0.9762588973169077-1794987284764-0.26294587615109133",
+    "at": "2026-11-18T07:34:53.184Z",
+    "playerId": 0,
+    "request": {
+      "type": "response",
+      "stage": null,
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 1,
+    "candidate": {
+      "index": 0,
+      "targetId": null
+    },
+    "probability": 0.6609465479850769,
+    "feedback": {
+      "vote": "bad",
+      "score": null,
+      "comment": ""
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "selected",
+    "annotationRevision": 3,
+    "pendingAction": null
+  },
+  {
+    "sequence": 97,
+    "decisionId": "1794987343237-0.17358624462536",
+    "viewId": "1794987343237-0.17358624462536-1794987343240-0.9570252859935845",
+    "at": "2026-11-18T07:35:52.862Z",
+    "playerId": 0,
+    "request": {
+      "type": "action",
+      "stage": "direction",
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 0,
+    "candidate": {
+      "type": "direction",
+      "direction": "attack"
+    },
+    "probability": 0.3444029688835144,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": ""
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "reviewed",
+    "annotationRevision": 2,
+    "pendingAction": null
+  },
+  {
+    "sequence": 97,
+    "decisionId": "1794987343237-0.17358624462536",
+    "viewId": "1794987343237-0.17358624462536-1794987343240-0.9570252859935845",
+    "at": "2026-11-18T07:35:52.862Z",
+    "playerId": 0,
+    "request": {
+      "type": "action",
+      "stage": "direction",
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 1,
+    "candidate": {
+      "type": "direction",
+      "direction": "spell"
+    },
+    "probability": 0.65434330701828,
+    "feedback": {
+      "vote": "bad",
+      "score": null,
+      "comment": ""
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "reviewed",
+    "annotationRevision": 2,
+    "pendingAction": null
+  },
+  {
+    "sequence": 225,
+    "decisionId": "1794987389244-0.8517015457192065",
+    "viewId": "1794987389244-0.8517015457192065-1794987389249-0.32213125185356195",
+    "at": "2026-11-18T07:36:33.584Z",
+    "playerId": 0,
+    "request": {
+      "type": "action",
+      "stage": "direction",
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 0,
+    "candidate": {
+      "type": "direction",
+      "direction": "attack"
+    },
+    "probability": 0.40396496653556824,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": ""
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "reviewed",
+    "annotationRevision": 1,
+    "pendingAction": null
+  },
+  {
+    "sequence": 225,
+    "decisionId": "1794987389244-0.8517015457192065",
+    "viewId": "1794987389244-0.8517015457192065-1794987389249-0.32213125185356195",
+    "at": "2026-11-18T07:36:33.584Z",
+    "playerId": 0,
+    "request": {
+      "type": "action",
+      "stage": "direction",
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 1,
+    "candidate": {
+      "type": "direction",
+      "direction": "spell"
+    },
+    "probability": 0.5941151976585388,
+    "feedback": {
+      "vote": "bad",
+      "score": null,
+      "comment": ""
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "reviewed",
+    "annotationRevision": 1,
+    "pendingAction": null
+  },
+  {
+    "sequence": 258,
+    "decisionId": "1794987407746-0.7035274939463737",
+    "viewId": "1794987407746-0.7035274939463737-1794987407748-0.5538598577057796",
+    "at": "2026-11-18T07:36:56.972Z",
+    "playerId": 0,
+    "request": {
+      "type": "response",
+      "stage": null,
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 1,
+    "candidate": {
+      "index": 0,
+      "targetId": null
+    },
+    "probability": 0.9589473605155945,
+    "feedback": {
+      "vote": "bad",
+      "score": null,
+      "comment": ""
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "selected",
+    "annotationRevision": 2,
+    "pendingAction": null
+  },
+  {
+    "sequence": 317,
+    "decisionId": "1794987433654-0.4682111511675724",
+    "viewId": "1794987433654-0.4682111511675724-1794987433658-0.17901949812474527",
+    "at": "2026-11-18T07:37:25.324Z",
+    "playerId": 0,
+    "request": {
+      "type": "response",
+      "stage": null,
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 2,
+    "candidate": {
+      "index": 5,
+      "targetId": 1
+    },
+    "probability": 0.41051676869392395,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": ""
+    },
+    "choice": {
+      "index": 5,
+      "targetId": 1
+    },
+    "command": null,
+    "outcome": "selected",
+    "annotationRevision": 2,
+    "pendingAction": null
+  },
+  {
+    "sequence": 336,
+    "decisionId": "1794987449405-0.043062542555953875",
+    "viewId": "1794987449405-0.043062542555953875-1794987449408-0.5090459787452071",
+    "at": "2026-11-18T07:37:43.211Z",
+    "playerId": 0,
+    "request": {
+      "type": "action",
+      "stage": "direction",
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 2,
+    "candidate": {
+      "type": "direction",
+      "direction": "refine"
+    },
+    "probability": 0.0016048531979322433,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": ""
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "reviewed",
+    "annotationRevision": 1,
+    "pendingAction": null
+  },
+  {
+    "sequence": 371,
+    "decisionId": "1794987474787-0.13116921482748545",
+    "viewId": "1794987474787-0.13116921482748545-1794987474791-0.6879181681200943",
+    "at": "2026-11-18T07:37:57.788Z",
+    "playerId": 0,
+    "request": {
+      "type": "healing",
+      "stage": null,
+      "title": "使用治疗抵挡伤害",
+      "skillId": null
+    },
+    "candidateIndex": 0,
+    "candidate": 0,
+    "probability": 0.9301749467849731,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": ""
+    },
+    "choice": 0,
+    "command": null,
+    "outcome": "selected",
+    "annotationRevision": 2,
+    "pendingAction": null
+  },
+  {
+    "sequence": 380,
+    "decisionId": "1794987479028-0.4316040316088542",
+    "viewId": "1794987479028-0.4316040316088542-1794987479031-0.09010632431293741",
+    "at": "2026-11-18T07:38:51.716Z",
+    "playerId": 0,
+    "request": {
+      "type": "overflow",
+      "stage": "selectCards",
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 0,
+    "candidate": [
+      0
+    ],
+    "probability": 0.20068305730819702,
+    "feedback": {
+      "vote": "bad",
+      "score": null,
+      "comment": "这个什么情况？"
+    },
+    "choice": [
+      6
+    ],
+    "command": null,
+    "outcome": "selected",
+    "annotationRevision": 7,
+    "pendingAction": null
+  },
+  {
+    "sequence": 380,
+    "decisionId": "1794987479028-0.4316040316088542",
+    "viewId": "1794987479028-0.4316040316088542-1794987479031-0.09010632431293741",
+    "at": "2026-11-18T07:38:51.716Z",
+    "playerId": 0,
+    "request": {
+      "type": "overflow",
+      "stage": "selectCards",
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 4,
+    "candidate": [
+      4
+    ],
+    "probability": 0.15743903815746307,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": ""
+    },
+    "choice": [
+      6
+    ],
+    "command": null,
+    "outcome": "selected",
+    "annotationRevision": 7,
+    "pendingAction": null
+  },
+  {
+    "sequence": 460,
+    "decisionId": "1794987550572-0.9277174612144706",
+    "viewId": "1794987550572-0.9277174612144706-1794987550577-0.12485944629001022",
+    "at": "2026-11-18T07:39:25.564Z",
+    "playerId": 0,
+    "request": {
+      "type": "action",
+      "stage": "direction",
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 2,
+    "candidate": {
+      "type": "direction",
+      "direction": "heroSkill",
+      "skillId": "arcaneCodex"
+    },
+    "probability": 0.638513445854187,
+    "feedback": {
+      "vote": "bad",
+      "score": null,
+      "comment": "不能续航，会断续"
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "reviewed",
+    "annotationRevision": 5,
+    "pendingAction": null
+  },
+  {
+    "sequence": 462,
+    "decisionId": "1794987550572-0.9277174612144706",
+    "viewId": "1794987550572-0.9277174612144706-1794987572540-0.7177886516691944",
+    "at": "2026-11-18T07:39:35.304Z",
+    "playerId": 0,
+    "request": {
+      "type": "action",
+      "stage": "direction",
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 2,
+    "candidate": {
+      "type": "direction",
+      "direction": "heroSkill",
+      "skillId": "arcaneCodex"
+    },
+    "probability": 0.638513445854187,
+    "feedback": {
+      "vote": "bad",
+      "score": null,
+      "comment": ""
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "reviewed",
+    "annotationRevision": 1,
+    "pendingAction": null
+  },
+  {
+    "sequence": 463,
+    "decisionId": "1794987550572-0.9277174612144706",
+    "viewId": "1794987550572-0.9277174612144706-1794987576371-0.8743558016106583",
+    "at": "2026-11-18T07:39:38.560Z",
+    "playerId": 0,
+    "request": {
+      "type": "action",
+      "stage": "card",
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 1,
+    "candidate": {
+      "type": "play",
+      "index": 2
+    },
+    "probability": 0.6549893617630005,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": ""
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "reviewed",
+    "annotationRevision": 1,
+    "pendingAction": null
+  },
+  {
+    "sequence": 467,
+    "decisionId": "1794987550572-0.9277174612144706",
+    "viewId": "1794987550572-0.9277174612144706-1794987578869-0.27982073258435414",
+    "at": "2026-11-18T07:39:41.787Z",
+    "playerId": 0,
+    "request": {
+      "type": "action",
+      "stage": "targets",
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 0,
+    "candidate": {
+      "type": "play",
+      "index": 2,
+      "targetId": 0
+    },
+    "probability": 0.01587243191897869,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": ""
+    },
+    "choice": {
+      "type": "play",
+      "index": 2,
+      "targetId": 0
+    },
+    "command": {
+      "type": "play",
+      "index": 2,
+      "targetId": 0
+    },
+    "outcome": "selected",
+    "annotationRevision": 2,
+    "pendingAction": {
+      "type": "play",
+      "index": 2
+    }
+  },
+  {
+    "sequence": 567,
+    "decisionId": "1794987616000-0.9761779201340978",
+    "viewId": "1794987616000-0.9761779201340978-1794987616006-0.6564820453598497",
+    "at": "2026-11-18T07:41:02.523Z",
+    "playerId": 0,
+    "request": {
+      "type": "overflow",
+      "stage": "selectCards",
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 5,
+    "candidate": [
+      6
+    ],
+    "probability": 0.1839788407087326,
+    "feedback": {
+      "vote": null,
+      "score": null,
+      "comment": "这里马上反弹，3火留着"
+    },
+    "choice": [
+      3
+    ],
+    "command": null,
+    "outcome": "selected",
+    "annotationRevision": 9,
+    "pendingAction": null
+  },
+  {
+    "sequence": 596,
+    "decisionId": "1794987688654-0.8128710628539608",
+    "viewId": "1794987688654-0.8128710628539608-1794987688658-0.7536200840437749",
+    "at": "2026-11-18T07:41:31.980Z",
+    "playerId": 0,
+    "request": {
+      "type": "healing",
+      "stage": null,
+      "title": "使用治疗抵挡伤害",
+      "skillId": null
+    },
+    "candidateIndex": 1,
+    "candidate": 1,
+    "probability": 0.8097860813140869,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": ""
+    },
+    "choice": 1,
+    "command": null,
+    "outcome": "selected",
+    "annotationRevision": 2,
+    "pendingAction": null
+  },
+  {
+    "sequence": 616,
+    "decisionId": "1794987701609-0.8818251646903486",
+    "viewId": "1794987701609-0.8818251646903486-1794987701613-0.8486065943227896",
+    "at": "2026-11-18T07:41:56.218Z",
+    "playerId": 0,
+    "request": {
+      "type": "weakness",
+      "stage": null,
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 0,
+    "candidate": "draw",
+    "probability": 0.013911879621446133,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": "摸3张牌继续斩杀了"
+    },
+    "choice": "draw",
+    "command": null,
+    "outcome": "selected",
+    "annotationRevision": 8,
+    "pendingAction": null
+  },
+  {
+    "sequence": 630,
+    "decisionId": "1794987717658-0.33571574918299496",
+    "viewId": "1794987717658-0.33571574918299496-1794987752824-0.2746078093608254",
+    "at": "2026-11-18T07:43:02.566Z",
+    "playerId": 0,
+    "request": {
+      "type": "overflow",
+      "stage": "selectCards",
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 0,
+    "candidate": [
+      0
+    ],
+    "probability": 0.1250057965517044,
+    "feedback": {
+      "vote": null,
+      "score": null,
+      "comment": "这里异系多，应该弃置同系牌"
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "reviewed",
+    "annotationRevision": 8,
+    "pendingAction": null
+  },
+  {
+    "sequence": 635,
+    "decisionId": "1794987793773-0.12239788264546936",
+    "viewId": "1794987793773-0.12239788264546936-1794987793778-0.7106435951622821",
+    "at": "2026-11-18T07:43:16.987Z",
+    "playerId": 0,
+    "request": {
+      "type": "action",
+      "stage": "direction",
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 2,
+    "candidate": {
+      "type": "direction",
+      "direction": "heroSkill",
+      "skillId": "arcaneCodex"
+    },
+    "probability": 0.5175385475158691,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": ""
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "reviewed",
+    "annotationRevision": 1,
+    "pendingAction": null
+  },
+  {
+    "sequence": 650,
+    "decisionId": "1794987793773-0.12239788264546936",
+    "viewId": "1794987793773-0.12239788264546936-1794987807898-0.4460605062846026",
+    "at": "2026-11-18T07:43:39.732Z",
+    "playerId": 0,
+    "request": {
+      "type": "action",
+      "stage": "targets",
+      "title": null,
+      "skillId": null
+    },
+    "candidateIndex": 5,
+    "candidate": {
+      "type": "skill",
+      "skillId": "arcaneCodex",
+      "cardIds": [
+        "c59",
+        "c9",
+        "c34",
+        "c143",
+        "c5",
+        "c110"
+      ],
+      "targetIds": [
+        5
+      ]
+    },
+    "probability": 0.3064241111278534,
+    "feedback": {
+      "vote": "good",
+      "score": null,
+      "comment": "怎么只有30%"
+    },
+    "choice": null,
+    "command": null,
+    "outcome": "reviewed",
+    "annotationRevision": 4,
+    "pendingAction": {
+      "type": "skill",
+      "skillId": "arcaneCodex",
+      "cardIds": [
+        "c110",
+        "c5",
+        "c143",
+        "c34",
+        "c9",
+        "c59"
+      ]
+    }
+  }
+]

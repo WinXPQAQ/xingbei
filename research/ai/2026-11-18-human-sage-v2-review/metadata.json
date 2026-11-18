@@ -1,0 +1,111 @@
+{
+  "format": "xingbei-human-game-v1",
+  "id": "22145ec4c02a70be23d187f071bfaec79ea41e20f3e22d30",
+  "createdAt": "2026-11-18T07:34:17.685Z",
+  "applicationVersion": "0.16.12",
+  "ruleRevision": "532f6bed38c7ff3880bf127f8b02ea2b47cb8fa57dec7cc12f7214008b567f74",
+  "model": {
+    "id": "team-v2-retain-089",
+    "schema": "entities-v7",
+    "architecture": "entity",
+    "decisionMode": "hierarchical-v2",
+    "checkpointSha256": "cb205e2b226d9185a5e1fe2139881e05a23300118af52d5c929e8b02ced742a1",
+    "revision": "branch-targets-20261114",
+    "label": "AI v2 · 89轮（推荐）",
+    "description": "新版启动与行动决策；全队共享网络，加入贤者行为保持训练",
+    "device": "cpu"
+  },
+  "models": [
+    {
+      "id": "team-v2-retain-089",
+      "schema": "entities-v7",
+      "architecture": "entity",
+      "decisionMode": "hierarchical-v2",
+      "checkpointSha256": "cb205e2b226d9185a5e1fe2139881e05a23300118af52d5c929e8b02ced742a1",
+      "revision": "branch-targets-20261114",
+      "label": "AI v2 · 89轮（推荐）",
+      "description": "新版启动与行动决策；全队共享网络，加入贤者行为保持训练",
+      "device": "cpu"
+    },
+    {
+      "id": "team-m06-504",
+      "schema": "entities-v7",
+      "architecture": "entity",
+      "decisionMode": "hierarchical-v1",
+      "checkpointSha256": "6e182bda47f21d190092289e2f288f60024deb8e6ef7c70fb51c2759a8c691d1",
+      "revision": "branch-targets-20261114",
+      "label": "AI v7 · 504轮（旧版对照）",
+      "description": "士气倾向0.6，仍保留合杯胜利",
+      "device": "cpu"
+    },
+    {
+      "id": "team-m03-198",
+      "schema": "entities-v7",
+      "architecture": "entity",
+      "decisionMode": "hierarchical-v1",
+      "checkpointSha256": "c06445d7fdd3395d4674d7538b489a01e44d0b7a45e092153da4d1377fc2e92c",
+      "revision": "branch-targets-20261114",
+      "label": "AI v7 · 198轮",
+      "description": "士气倾向0.3，仍保留合杯胜利",
+      "device": "cpu"
+    },
+    {
+      "id": "team-cup-295",
+      "schema": "entities-v7",
+      "architecture": "entity",
+      "decisionMode": "hierarchical-v1",
+      "checkpointSha256": "505ab6b9275979bd86f4f241e19a95cb9293f4f44376cae97bdad0dc482907cd",
+      "revision": "branch-targets-20261114",
+      "label": "AI v7 · 295轮",
+      "description": "仅终局胜负训练，无额外士气倾向",
+      "device": "cpu"
+    }
+  ],
+  "configuration": {
+    "mode": "normal",
+    "humanSeat": 0,
+    "humanSeats": [
+      0
+    ],
+    "informationScope": "individual",
+    "aiSeats": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "initialConfig": {
+      "seed": 1794987242614,
+      "names": [
+        "红一",
+        "蓝一",
+        "蓝二",
+        "红二",
+        "红三",
+        "蓝三"
+      ],
+      "teams": [
+        "red",
+        "blue",
+        "blue",
+        "red",
+        "red",
+        "blue"
+      ],
+      "heroIds": [
+        "sage",
+        "priest",
+        "windSwordmaster",
+        "greedyGirl",
+        "holyLancer",
+        "magicSwordsman"
+      ],
+      "shuffleDeck": true,
+      "heroRules": true,
+      "ruleVariant": "standard"
+    },
+    "modelHash": "cb205e2b226d9185a5e1fe2139881e05a23300118af52d5c929e8b02ced742a1",
+    "ruleRevision": "532f6bed38c7ff3880bf127f8b02ea2b47cb8fa57dec7cc12f7214008b567f74"
+  }
+}
