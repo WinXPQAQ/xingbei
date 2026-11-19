@@ -1,0 +1,156 @@
+# 英雄实现入口
+
+当前72位已实现英雄均在本目录，每位英雄一个英文名称目录。
+
+```text
+heroes/
+  berserker/
+    index.js        # 英雄类、全部技能、英雄专属状态与规则效果
+    ai.js           # 留牌、行动评分、技能响应与局面估计
+  elementalist/
+    index.js
+    ai.js
+    ai-*.js         # 较大的专属搜索/评分实现，仍留在英雄自己的目录
+  shared/
+    actions.js      # 多英雄共用的规则操作
+    ai/             # 公共状态估计、分支计算与策略路由
+```
+
+修改某个英雄，从下表进入其规则或评分文件。`ai.js`保存实际英雄决策函数；复杂逻辑允许拆到同目录的`ai-*.js`，不在另一个按批次命名的目录里另存完整实现。
+
+| 英雄 | 技能与规则 | AI评分 |
+| --- | --- | --- |
+| 狂战士 | [berserker/index.js](berserker/index.js) | [berserker/ai.js](berserker/ai.js) |
+| 风之剑圣 | [wind-swordmaster/index.js](wind-swordmaster/index.js) | [wind-swordmaster/ai.js](wind-swordmaster/ai.js) |
+| 神箭手 | [marksman/index.js](marksman/index.js) | [marksman/ai.js](marksman/ai.js) |
+| 封印师 | [sealer/index.js](sealer/index.js) | [sealer/ai.js](sealer/ai.js) |
+| 守护天使 | [guardian-angel/index.js](guardian-angel/index.js) | [guardian-angel/ai.js](guardian-angel/ai.js) |
+| 神官 | [priest/index.js](priest/index.js) | [priest/ai.js](priest/ai.js) |
+| 圣女 | [saint/index.js](saint/index.js) | [saint/ai.js](saint/ai.js) |
+| 圣枪骑士 | [holy-lancer/index.js](holy-lancer/index.js) | [holy-lancer/ai.js](holy-lancer/ai.js) |
+| 瘟疫法师 | [plague-mage/index.js](plague-mage/index.js) | [plague-mage/ai.js](plague-mage/ai.js) |
+| 元素师 | [elementalist/index.js](elementalist/index.js) | [elementalist/ai.js](elementalist/ai.js) |
+| 女武神 | [valkyrie/index.js](valkyrie/index.js) | [valkyrie/ai.js](valkyrie/ai.js) |
+| 魔法少女 | [magical-girl/index.js](magical-girl/index.js) | [magical-girl/ai.js](magical-girl/ai.js) |
+| 暗杀者 | [assassin/index.js](assassin/index.js) | [assassin/ai.js](assassin/ai.js) |
+| 魔剑士 | [magic-swordsman/index.js](magic-swordsman/index.js) | [magic-swordsman/ai.js](magic-swordsman/ai.js) |
+| 仲裁者 | [adjudicator/index.js](adjudicator/index.js) | [adjudicator/ai.js](adjudicator/ai.js) |
+| 贤者 | [sage/index.js](sage/index.js) | [sage/ai.js](sage/ai.js) |
+| 祈祷师 | [prayer/index.js](prayer/index.js) | [prayer/ai.js](prayer/ai.js) |
+| 英灵人形 | [heroic-puppet/index.js](heroic-puppet/index.js) | [heroic-puppet/ai.js](heroic-puppet/ai.js) |
+| 冒险家 | [adventurer/index.js](adventurer/index.js) | [adventurer/ai.js](adventurer/ai.js) |
+| 格斗家 | [fighter/index.js](fighter/index.js) | [fighter/ai.js](fighter/ai.js) |
+| 勇者 | [brave/index.js](brave/index.js) | [brave/ai.js](brave/ai.js) |
+| 红莲骑士 | [red-lotus-knight/index.js](red-lotus-knight/index.js) | [red-lotus-knight/ai.js](red-lotus-knight/ai.js) |
+| 魔枪 | [magic-lancer/index.js](magic-lancer/index.js) | [magic-lancer/ai.js](magic-lancer/ai.js) |
+| 吟游诗人 | [bard/index.js](bard/index.js) | [bard/ai.js](bard/ai.js) |
+| 灵符师 | [talisman-master/index.js](talisman-master/index.js) | [talisman-master/ai.js](talisman-master/ai.js) |
+| 剑帝 | [sword-emperor/index.js](sword-emperor/index.js) | [sword-emperor/ai.js](sword-emperor/ai.js) |
+| 魔弓 | [magic-archer/index.js](magic-archer/index.js) | [magic-archer/ai.js](magic-archer/ai.js) |
+| 苍炎魔女 | [azure-flame-witch/index.js](azure-flame-witch/index.js) | [azure-flame-witch/ai.js](azure-flame-witch/ai.js) |
+| 血色剑灵 | [blood-sword-spirit/index.js](blood-sword-spirit/index.js) | [blood-sword-spirit/ai.js](blood-sword-spirit/ai.js) |
+| 兽灵武士 | [beast-warrior/index.js](beast-warrior/index.js) | [beast-warrior/ai.js](beast-warrior/ai.js) |
+
+`../hero.js`只负责英雄注册、选角列表与阵容；`../hero-base.js`是共用英雄基类。规则文件不导入评分代码，AI只能估计候选结果，真实结算仍走规则引擎。
+
+共享AI负责观测隔离、合法行动、通用伤害与分支计算，通过每个英雄的函数取得特殊行为；英雄特有的技能效果、留牌分数和资源用途跟随英雄目录。`shared/ai/base`承载原六英雄的公共策略，`wave-two`和`wave-three`是现有评分层的组合入口，目录名表示兼容层，不再存放六位英雄的集中技能实现。
+
+`../ai/`保留生产版本选择、公开观测、通用执行器，以及带明确版本号的历史AI实验。历史版本用于旧对照和训练复现，其冻结代码不是新英雄开发入口；不要为了改当前英雄而顺带修改历史策略。当前策略通过`../ai/versions.js`组合这里的真实评分模块。
+
+日常开发位置为`/home/xp/xingbei`的`main`。原`/home/xp/xingbei-heroes`工作树的已完成英雄已合入main，后续不需要另开英雄分支。
+
+## 本次目录迁移验证（2026-10-24）
+
+规则和评分参数保持不变，AI版本仍为1.8.0-preview.1。92项核心规则测试与2项生产/冻结策略检查通过；10局迁移前后对照包含522次行动、1899条决策及排序记录，各局记录和最终状态的SHA-256全部一致。三批英雄另做局面级精确对照，不将这些临时检查加入日常评分测试。
+
+桌面1440×900与触屏390×844均实际加载18份英雄规则和18份AI入口，选角、进入对局成功，控制台及HTTP错误0。这是路径与运行检查，没有重新进行整套视觉还原验收。原始记录保存在本地`artifacts/heroes/layout-2026-10-24/`。
+
+第四批：`adventurer`（冒险家）、`fighter`（格斗家）、`brave`（勇者）、`red-lotus-knight`（红莲骑士）、`magic-lancer`（魔枪）、`bard`（吟游诗人）。各目录同样包含规则、AI和观测声明。规则裁定与验证见 [第四批报告](../../docs/heroes-wave-four.md)。
+
+第五批规则、AI及观测接口说明见[第五批报告](../../docs/heroes-wave-five.md)。盖牌实体共用操作位于`shared/covered.js`，各英雄的触发条件、费用与效果仍在自己的目录。
+
+## 第六批
+
+| 英雄 | 规则 | 评分 |
+| --- | --- | --- |
+| 精灵射手 | [elf-archer/index.js](elf-archer/index.js) | [ai.js](elf-archer/ai.js) |
+| 阴阳师 | [yin-yang-master/index.js](yin-yang-master/index.js) | [ai.js](yin-yang-master/ai.js) |
+| 灵魂术士 | [soul-warlock/index.js](soul-warlock/index.js) | [ai.js](soul-warlock/ai.js) |
+| 血之巫女 | [blood-witch/index.js](blood-witch/index.js) | [ai.js](blood-witch/ai.js) |
+| 月之女神 | [moon-goddess/index.js](moon-goddess/index.js) | [ai.js](moon-goddess/ai.js) |
+| 圣弓 | [holy-archer/index.js](holy-archer/index.js) | [ai.js](holy-archer/ai.js) |
+
+本批裁定、共用接口和评分说明见[第六批报告](../../docs/heroes-wave-six.md)。各目录同时提供 `observation.js`。
+
+## 第七批
+
+| 英雄 | 规则 | 评分 |
+| --- | --- | --- |
+| 蝶舞者 | [index.js](butterfly-dancer/index.js) | [ai.js](butterfly-dancer/ai.js) |
+| 战斗法师 | [index.js](battle-mage/index.js) | [ai.js](battle-mage/ai.js) |
+| 星坠女巫 | [index.js](starfall-witch/index.js) | [ai.js](starfall-witch/ai.js) |
+| 圣庭检察士 | [index.js](inquisitor/index.js) | [ai.js](inquisitor/ai.js) |
+| 猎巫人 | [index.js](witch-hunter/index.js) | [ai.js](witch-hunter/ai.js) |
+| 圣殿骑士 | [index.js](templar/index.js) | [ai.js](templar/ai.js) |
+
+各目录提供观测声明。来源包、规则裁定、评分与验收见[第七批报告](../../docs/heroes-wave-seven.md)。
+
+## 第八批
+
+| 英雄 | 规则 | 评分 |
+| --- | --- | --- |
+| 矜贵之女 | [index.js](noble-lady/index.js) | [ai.js](noble-lady/ai.js) |
+| 女仆长 | [index.js](head-maid/index.js) | [ai.js](head-maid/ai.js) |
+| 结界师 | [index.js](barrier-master/index.js) | [ai.js](barrier-master/ai.js) |
+| 神秘学者 | [index.js](mystic/index.js) | [ai.js](mystic/ai.js) |
+| 染污者 | [index.js](defiler/index.js) | [ai.js](defiler/ai.js) |
+| 剑之魔女 | [index.js](sword-witch/index.js) | [ai.js](sword-witch/ai.js) |
+
+各目录提供观测声明。规则与验证见[第八批报告](../../docs/heroes-wave-eight.md)。神秘学者续接是立即结算的技能链，不存入额外行动队列；噬神者按用户要求留到下批。
+
+## 第九批：终末祷铸
+
+| 英雄 | 规则 | 评分 |
+| --- | --- | --- |
+| 铸律者 | [index.js](lawgiver/index.js) | [ai.js](lawgiver/ai.js) |
+| 红衣主教 | [index.js](cardinal/index.js) | [ai.js](cardinal/ai.js) |
+| 记录者 | [index.js](chronicler/index.js) | [ai.js](chronicler/ai.js) |
+| 传教士 | [index.js](missionary/index.js) | [ai.js](missionary/ai.js) |
+| 异教徒 | [index.js](heretic/index.js) | [ai.js](heretic/ai.js) |
+
+各目录提供观测声明，铸律者与红衣主教共享资源操作在`lawgiver/shared.js`。放逐按用户修订摸6–7张牌、选6张基础牌；噬神者现已在后续批次实现。规则、AI及验证见[第九批报告](../../docs/heroes-wave-nine.md)。
+
+## 噬神者（0.15.0）
+
+| 英雄 | 规则与刃实体 | 基础AI | 观测 |
+| --- | --- | --- | --- |
+| 噬神者 | `god-eater/index.js` | `god-eater/ai.js` | `god-eater/observation.js` |
+
+渗蚀由卡牌移动触发，伤害来源固定为该刃所属噬神者；共用引擎只负责移牌事件与嵌套结算。双属性约束解释在`src/resolution/card-traits.js`。用户裁定、验证及评分局限见[噬神者报告](../../docs/god-eater.md)。
+
+## 特典补全（0.16.0）
+
+每个目录同时提供规则、评分和观测声明；在已有英雄上继承共用技能，变体差异留在自己的目录。
+
+| 英雄 | 目录 |
+| --- | --- |
+| 节日魔导 | [holiday-mage](holiday-mage/index.js) |
+| 贪婪少女 | [greedy-girl](greedy-girl/index.js) |
+| 咒符师 | [curse-talisman](curse-talisman/index.js) |
+| 萝莉番长 | [delinquent-girl](delinquent-girl/index.js) |
+| 见习制片 | [apprentice-producer](apprentice-producer/index.js) |
+| 魔弓EX | [magic-archer-ex](magic-archer-ex/index.js) |
+| 游击士 | [ranger](ranger/index.js) |
+| 嫉妒少女 | [envious-girl](envious-girl/index.js) |
+| trick圣弓 | [trick-holy-archer](trick-holy-archer/index.js) |
+| 原初之弓 | [primal-archer](primal-archer/index.js) |
+| trick冒险家 | [trick-adventurer](trick-adventurer/index.js) |
+| 农暴食少女 | [gluttonous-girl](gluttonous-girl/index.js) |
+| 灵熙之潮 | [spirit-tide](spirit-tide/index.js) |
+| 怠惰少女 | [sloth-girl](sloth-girl/index.js) |
+| 剑之子 | [sword-child](sword-child/index.js) |
+| 乐团首席 | [orchestra-leader](orchestra-leader/index.js) |
+| 圣仲裁者 | [holy-adjudicator](holy-adjudicator/index.js) |
+| 捣蛋萝莉 | [mischief-girl](mischief-girl/index.js) |
+
+规则裁定、三批顺序及验证见[特典报告](../../docs/special-heroes.md)。

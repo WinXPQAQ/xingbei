@@ -1,0 +1,70 @@
+{
+  "name": "residual-unique-only-211",
+  "state": "registered-not-launched",
+  "launchCondition": "All-hero rule-generated fixtures, regression tests and CUDA smoke pass.",
+  "parent": "/home/xp/.local/share/xingbei-ml/runs/residual-focused-candidate-211/checkpoint-192.pt",
+  "parentSha256": "bc8accee0bc33e02624a81fdcd8ee4861c413c6356d7e73194047cd0444a2849",
+  "hypothesis": "Preserve unused hero-specific card capabilities when a legal ordinary attack at the same target has identical local attack behavior. No refinement exploration. Not guaranteed long-term dominance.",
+  "arms": [
+    {
+      "name": "residual-unique-only-control-211",
+      "curriculum": "v15-focused",
+      "preserveSkills": false
+    },
+    {
+      "name": "residual-unique-only-candidate-211",
+      "curriculum": "v15-focused",
+      "preserveSkills": true
+    }
+  ],
+  "initialization": "Same AI 1.5.1 checkpoint; fresh identical Adam/RNG. Both use corrected terminal-v1 rules.",
+  "shared": {
+    "updates": 192,
+    "games": 24,
+    "gamesPerArm": 4608,
+    "firstSeed": 252700000,
+    "lastSeed": 252704607,
+    "seed": 211,
+    "device": "cuda",
+    "workers": 4,
+    "threads": 2,
+    "epochs": 3,
+    "learningRate": 0.0001,
+    "batchSize": 512,
+    "temperature": 1.3,
+    "baseline": "v1.5",
+    "baselineProbability": 0.95,
+    "encoding": "decision-context-v6",
+    "separateCritic": true,
+    "warmup": 0,
+    "saveEvery": 96,
+    "maximumMinutes": 60,
+    "cpuQuota": "400%",
+    "memory": "12G"
+  },
+  "development": {
+    "checkpoints": [
+      96,
+      192
+    ],
+    "firstSeed": 231000000,
+    "seeds": 18,
+    "recordsPerEvaluation": 1512,
+    "compareAgainst": "ai151-terminal-v1-v2-greedy",
+    "greedy": true,
+    "balancedMixed": true,
+    "report": "All four checkpoints and paired between-arm endpoint difference; seven lineups and hero/mixed controls. Reused development only."
+  },
+  "reward": "Terminal team +/-1 only",
+  "finalSeedsUsed": false,
+  "decision": "Evaluate both arms at 96 and 192 with no inference bias. Report all-hero conservation opportunity/chosen rates, active-skill counterexamples, team and mixed win rates; no automatic promotion/deployment. Future refine-only trial must require zero own energy; not launched.",
+  "rulesVersion": "terminal-v1",
+  "bias": {
+    "unusedSkillWithEquivalentOrdinaryAttack": -0.35,
+    "refine": 0,
+    "equivalence": "same elements, or empty target hand with no own elemental seal; matching current effects; known active skills excluded",
+    "applies": "training only; no added reward; replay exact behavior distribution"
+  },
+  "supersedes": "preservation-211 stopped on user clarification; partial artifacts retained, initialize from original AI 1.5.1.",
+  "scope": "Only labels of the current hero unique skills; priest excluded; no element-only or darkStrike resource preference; no refinement bias."
+}
